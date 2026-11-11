@@ -46,8 +46,19 @@
   .empty p { color: var(--muted); margin: 14px 0 0; }
 
   .photo-wrap { border-radius: 18px; overflow: hidden; background: var(--surface); }
-  canvas#photo { display: block; width: 100%; height: auto; touch-action: manipulation; cursor: crosshair; }
+  canvas#photo { display: block; width: auto; height: auto; max-width: 100%; max-height: 58vh; margin: 0 auto;
+                 touch-action: none; cursor: crosshair; -webkit-user-select: none; user-select: none; }
+  #loupe { position: fixed; z-index: 40; width: 120px; height: 120px; border-radius: 50%; overflow: hidden;
+           border: 4px solid #FFFFFF; box-shadow: 0 0 0 2px #000000, 0 6px 18px rgba(0,0,0,0.35); pointer-events: none; }
+  #loupe canvas { width: 100%; height: 100%; display: block; }
   .hint { color: var(--muted); font-size: 0.9rem; margin: 8px 2px 0; }
+  .instruction { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; padding: 12px 14px;
+                 border-radius: 14px; background: var(--surface); font-size: 1.05rem; font-weight: 700; line-height: 1.3; }
+  .instruction::before { content: "👆"; font-size: 1.4rem; }
+  .instruction.active { background: var(--ink); color: var(--bg); }
+  .instruction.active::before { content: "⬜"; }
+  .instruction.ok { color: var(--ok); }
+  .instruction.ok::before { content: "✓"; font-weight: 900; }
   .hint.active { color: var(--ink); font-weight: 700; }
   .hint.ok { color: var(--ok); font-weight: 700; }
   .row-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
@@ -169,7 +180,15 @@
   .tab .badge { position: absolute; top: -6px; right: -14px; font-size: 0.7rem; }
   .sheet { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
   #setup, #orderSheet { z-index: 30; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
-    @media (prefers-reduced-motion: reduce) { .sample { transition: none; } }
+    ol.how { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 14px; }
+  .how-step { display: grid; grid-template-columns: 120px 1fr; gap: 14px; align-items: center;
+              background: var(--surface); border-radius: 16px; padding: 12px; }
+  .how-art svg { width: 100%; height: auto; display: block; border-radius: 10px; }
+  .how-num { width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: var(--bg);
+             display: grid; place-items: center; font-weight: 800; font-size: 0.85rem; }
+  .how-step h3 { margin: 6px 0 2px; font-size: 1.02rem; }
+  .how-step p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  @media (prefers-reduced-motion: reduce) { .sample { transition: none; } }
 </style>
 </head>
 <body>
@@ -183,8 +202,9 @@
   </section>
 
   <section id="viewer" hidden>
+    <p class="instruction" id="hint" aria-live="polite"></p>
     <div class="photo-wrap"><canvas id="photo"></canvas></div>
-    <p class="hint" id="hint"></p>
+    <div id="loupe" aria-hidden="true" hidden><canvas id="loupeCanvas" width="240" height="240"></canvas></div>
     <div class="row-actions">
       <button type="button" class="secondary" id="fixLight" data-i18n="fixLight"></button>
       <button type="button" class="secondary" id="resetLight" data-i18n="resetLight" hidden></button>
@@ -242,10 +262,19 @@
     </div>
     <div id="stepAbout" hidden>
       <p class="step-count" data-i18n="step2"></p>
-      <h2 data-i18n="aboutTitle"></h2>
-      <p data-i18n="about"></p>
-      <h3 class="sub-h" data-i18n="tipsTitle"></h3>
-      <ol class="tips" id="tipsList"></ol>
+      <h2 data-i18n="howTitle"></h2>
+      <ol class="how">
+        <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="8" y="10" width="144" height="90" rx="10" fill="#E9DFC0"/><rect x="80" y="10" width="72" height="90" fill="#C8463A"/><rect x="52" y="22" width="56" height="78" rx="10" fill="var(--ink)"/><rect x="57" y="30" width="46" height="52" rx="4" fill="#C8463A"/><rect x="57" y="30" width="20" height="52" fill="#E9DFC0"/><circle cx="80" cy="91" r="5" fill="var(--bg)"/></svg></div>
+          <div><div class="how-num">1</div><h3 data-i18n="s1t"></h3><p data-i18n="s1d"></p></div></li>
+        <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="20" y="8" width="120" height="94" rx="10" fill="#E9DFC0"/><rect x="80" y="8" width="60" height="94" fill="#C8463A"/><circle cx="104" cy="34" r="20" fill="#C8463A" stroke="#fff" stroke-width="4"/><circle cx="104" cy="34" r="22" fill="none" stroke="#161616" stroke-width="1.5"/><circle cx="104" cy="34" r="6" fill="none" stroke="#fff" stroke-width="2"/><path d="M104 66c-6 0-10 5-10 10v22h22V76c0-5-6-10-12-10z" fill="#F7F7F5" stroke="#161616" stroke-width="3"/></svg></div>
+          <div><div class="how-num">2</div><h3 data-i18n="s2t"></h3><p data-i18n="s2d"></p></div></li>
+        <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="20" y="8" width="120" height="94" rx="10" fill="#D9C27A"/><rect x="34" y="22" width="34" height="26" rx="3" fill="#FFF6D8" stroke="#161616" stroke-width="1.5"/><path d="M51 54c-6 0-10 5-10 10v34h22V64c0-5-6-10-12-10z" fill="#F7F7F5" stroke="#161616" stroke-width="3"/><circle cx="112" cy="42" r="11" fill="#F5C400"/><g stroke="#F5C400" stroke-width="3" stroke-linecap="round"><path d="M112 22v-6M112 68v-6M92 42h-6M138 42h-6M98 28l-4-4M130 60l-4-4M126 28l4-4M94 60l4-4"/></g></svg></div>
+          <div><div class="how-num">3</div><h3 data-i18n="s3t"></h3><p data-i18n="s3d"></p></div></li>
+        <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="10" y="10" width="140" height="26" rx="6" fill="#F7F7F5" stroke="#C9C8C3"/><rect x="16" y="15" width="10" height="16" fill="#C8463A"/><rect x="26" y="15" width="10" height="16" fill="#C2402F"/><rect x="42" y="18" width="50" height="5" rx="2" fill="#161616"/><rect x="42" y="26" width="34" height="3" rx="1.5" fill="#5E5F61"/><text x="142" y="28" text-anchor="end" font-size="11" font-weight="800" fill="#161616" font-family="Archivo, sans-serif">98%</text><rect x="10" y="42" width="140" height="26" rx="6" fill="#F7F7F5" stroke="#C9C8C3"/><rect x="16" y="47" width="10" height="16" fill="#C8463A"/><rect x="26" y="47" width="10" height="16" fill="#B8372E"/><rect x="42" y="50" width="44" height="5" rx="2" fill="#161616"/><rect x="42" y="58" width="30" height="3" rx="1.5" fill="#5E5F61"/><text x="142" y="60" text-anchor="end" font-size="11" font-weight="800" fill="#161616" font-family="Archivo, sans-serif">95%</text><rect x="30" y="78" width="100" height="24" rx="12" fill="#161616"/><text x="80" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#F7F7F5" font-family="Archivo, sans-serif">🛒 + 1</text></svg></div>
+          <div><div class="how-num">4</div><h3 data-i18n="s4t"></h3><p data-i18n="s4d"></p></div></li>
+      </ol>
+      <h3 class="sub-h" data-i18n="goodToKnow"></h3>
+      <ul class="tips" id="tipsList"></ul>
       <div class="sheet-actions"><button type="button" class="primary" id="aboutDone" data-i18n="gotIt"></button></div>
     </div>
   </div>
@@ -287,7 +316,7 @@
 
     <h3 class="sub-h" data-i18n="help"></h3>
     <div class="sheet-actions" style="margin-top:10px">
-      <button type="button" class="secondary" id="setAbout" data-i18n="aboutTitle"></button>
+      <button type="button" class="secondary" id="setAbout" data-i18n="howTitle"></button>
       <button type="button" class="secondary" id="setEmpty" data-i18n="clearList"></button>
     </div>
     <p class="hint ok" id="setMsg" aria-live="polite"></p>
@@ -393,6 +422,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
+    howTitle: 'How to use CanMatch', goodToKnow: 'Good to know', s1t: 'Take or choose a photo', s1d: 'Photograph the colour in daylight, straight on, without flash.', s2t: 'Touch the colour', s2d: 'A magnifier shows exactly where you’re pointing. Slide to adjust, then let go.', s3t: 'Fix the lighting (optional)', s3d: 'Tap “Fix lighting”, then touch something white or grey in the same photo.', s4t: 'Pick a can and buy', s4d: 'The best matches come first. Add cans to your cart and buy from your local shop.',
     tabMatch: 'Match', filters: 'Filters', filtersOn: 'Filters ({n})', showMore: 'Show more matches', showLess: 'Show fewer',
     low: 'Fine detail (low pressure)', high: 'Fast coverage (high pressure)', all: 'All cans',
     testNotice: 'Test version. CanMatch isn’t affiliated with {shop}. Prices come from the shop’s website (November 2026) and can vary by colour.',
@@ -413,9 +443,9 @@ const T = {
     availableAt: 'At', notNearby: 'Not listed at shops near you', listShops: 'Where to buy',
     tagline: 'Photograph any colour and find the closest spray paints.',
     takePhoto: 'Take or choose a photo', shootHint: 'Shoot in daylight, straight on, without flash.',
-    tapHint: 'Tap the spot you want to match.', newPhoto: 'New photo',
-    fixLight: 'Fix lighting', fixLightPrompt: 'Now tap something white or grey in the photo.',
-    lightOn: 'Lighting corrected. Tap the spot you want to match.', resetLight: 'Undo lighting fix',
+    tapHint: 'Touch the colour you want to match. Slide your finger to adjust, then let go.', newPhoto: 'New photo',
+    fixLight: 'Fix lighting', fixLightPrompt: 'Now touch something white or grey in the photo, then let go.',
+    lightOn: 'Lighting fixed. Now touch the colour you want to match.', resetLight: 'Undo lighting fix',
     lightBad: 'That spot is too dark or too colourful. Tap something white or light grey.',
     yourColour: 'Your colour', pressure: 'Pressure', 
     brands: 'Brands', includeSpecial: 'Include fluorescent, transparent and metallic cans',
@@ -433,14 +463,11 @@ const T = {
     whereAreYou: 'Where are you?', locationWhy: 'We’ll use this to show you shops nearby. It stays on your phone.',
     country: 'Country', city: 'City', cityPh: 'e.g. Athens',
     tipsTitle: 'Tips for better matches', gotIt: 'Start matching',
-    tips: ['Shoot in daylight, not under yellow indoor bulbs.',
-           'Turn off the flash and hold the phone straight on to the surface.',
-           'Use “Fix lighting”: tap something white or grey in the same photo.',
-           'Matte and gloss cans look different, even with the same colour.',
-           'Fluorescent, transparent and metallic paints don’t photograph well. Always check them in the shop.'],
+    tips: ['Matte and gloss cans look different, even with the same colour.', 'Fluorescent, transparent and metallic paints don’t photograph well. Always check them in the shop.'],
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
+    howTitle: 'Πώς χρησιμοποιείς το CanMatch', goodToKnow: 'Καλό να ξέρεις', s1t: 'Τράβηξε ή διάλεξε φωτογραφία', s1d: 'Φωτογράφισε το χρώμα στο φως της ημέρας, κάθετα, χωρίς φλας.', s2t: 'Άγγιξε το χρώμα', s2d: 'Ένας μεγεθυντικός φακός δείχνει ακριβώς πού δείχνεις. Σύρε για να το ρυθμίσεις και άφησε το δάχτυλο.', s3t: 'Διόρθωσε τον φωτισμό (προαιρετικά)', s3d: 'Πάτα «Διόρθωση φωτισμού» και άγγιξε κάτι λευκό ή γκρι στην ίδια φωτογραφία.', s4t: 'Διάλεξε σπρέι και αγόρασε', s4d: 'Οι καλύτερες αντιστοιχίες εμφανίζονται πρώτες. Πρόσθεσε σπρέι στο καλάθι και αγόρασε από το κατάστημα της περιοχής σου.',
     tabMatch: 'Ταίριασμα', filters: 'Φίλτρα', filtersOn: 'Φίλτρα ({n})', showMore: 'Περισσότερα αποτελέσματα', showLess: 'Λιγότερα',
     low: 'Λεπτομέρεια (χαμηλή πίεση)', high: 'Γρήγορη κάλυψη (υψηλή πίεση)', all: 'Όλα τα σπρέι',
     testNotice: 'Δοκιμαστική έκδοση. Το CanMatch δεν συνεργάζεται με το {shop}. Οι τιμές είναι από την ιστοσελίδα του καταστήματος (Νοέμβριος 2026) και μπορεί να διαφέρουν ανά χρώμα.',
@@ -461,9 +488,9 @@ const T = {
     availableAt: 'Σε', notNearby: 'Δεν υπάρχει σε κατάστημα κοντά σου', listShops: 'Πού θα τα βρεις',
     tagline: 'Φωτογράφισε οποιοδήποτε χρώμα και βρες τα πιο κοντινά σπρέι.',
     takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία', shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
-    tapHint: 'Πάτα το σημείο που θέλεις να ταιριάξεις.', newPhoto: 'Νέα φωτογραφία',
-    fixLight: 'Διόρθωση φωτισμού', fixLightPrompt: 'Τώρα πάτα κάτι λευκό ή γκρι στη φωτογραφία.',
-    lightOn: 'Ο φωτισμός διορθώθηκε. Πάτα το σημείο που θέλεις να ταιριάξεις.', resetLight: 'Αναίρεση διόρθωσης',
+    tapHint: 'Άγγιξε το χρώμα που θέλεις. Σύρε το δάχτυλο για να το ρυθμίσεις και μετά άφησέ το.', newPhoto: 'Νέα φωτογραφία',
+    fixLight: 'Διόρθωση φωτισμού', fixLightPrompt: 'Τώρα άγγιξε κάτι λευκό ή γκρι στη φωτογραφία και άφησε το δάχτυλο.',
+    lightOn: 'Ο φωτισμός διορθώθηκε. Τώρα άγγιξε το χρώμα που θέλεις.', resetLight: 'Αναίρεση διόρθωσης',
     lightBad: 'Το σημείο είναι πολύ σκούρο ή πολύ χρωματιστό. Πάτα κάτι λευκό ή ανοιχτό γκρι.',
     yourColour: 'Το χρώμα σου', pressure: 'Πίεση', 
     brands: 'Μάρκες', includeSpecial: 'Συμπερίληψη φθοριζόντων, διάφανων και μεταλλικών σπρέι',
@@ -481,14 +508,11 @@ const T = {
     whereAreYou: 'Πού βρίσκεσαι;', locationWhy: 'Θα το χρησιμοποιήσουμε για να σου δείχνουμε καταστήματα κοντά σου. Μένει μόνο στο κινητό σου.',
     country: 'Χώρα', city: 'Πόλη', cityPh: 'π.χ. Αθήνα',
     tipsTitle: 'Συμβουλές για καλύτερα αποτελέσματα', gotIt: 'Ξεκίνα',
-    tips: ['Φωτογράφισε στο φως της ημέρας, όχι κάτω από κίτρινες λάμπες.',
-           'Κλείσε το φλας και κράτα το κινητό κάθετα στην επιφάνεια.',
-           'Χρησιμοποίησε τη «Διόρθωση φωτισμού»: πάτα κάτι λευκό ή γκρι στην ίδια φωτογραφία.',
-           'Τα ματ και τα γυαλιστερά σπρέι δείχνουν διαφορετικά, ακόμα και στο ίδιο χρώμα.',
-           'Τα φθορίζοντα, διάφανα και μεταλλικά χρώματα δεν φαίνονται σωστά στις φωτογραφίες. Έλεγξέ τα πάντα στο κατάστημα.'],
+    tips: ['Τα ματ και τα γυαλιστερά σπρέι δείχνουν διαφορετικά, ακόμα και στο ίδιο χρώμα.', 'Τα φθορίζοντα, διάφανα και μεταλλικά χρώματα δεν φαίνονται σωστά στις φωτογραφίες. Έλεγξέ τα πάντα στο κατάστημα.'],
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
+    howTitle: 'Comment utiliser CanMatch', goodToKnow: 'Bon à savoir', s1t: 'Prenez ou choisissez une photo', s1d: 'Photographiez la couleur à la lumière du jour, bien en face, sans flash.', s2t: 'Touchez la couleur', s2d: 'Une loupe montre exactement où vous pointez. Glissez pour ajuster, puis relâchez.', s3t: 'Corrigez l’éclairage (facultatif)', s3d: 'Touchez «\u00a0Corriger l’éclairage\u00a0», puis quelque chose de blanc ou de gris sur la même photo.', s4t: 'Choisissez une bombe et achetez', s4d: 'Les meilleures correspondances s’affichent en premier. Ajoutez des bombes au panier et achetez dans votre magasin local.',
     tabMatch: 'Trouver', filters: 'Filtres', filtersOn: 'Filtres ({n})', showMore: 'Plus de résultats', showLess: 'Moins de résultats',
     low: 'Détails fins (basse pression)', high: 'Couverture rapide (haute pression)', all: 'Toutes les bombes',
     testNotice: 'Version de test. CanMatch n’est pas affilié à {shop}. Les prix viennent du site du magasin (novembre 2026) et peuvent varier selon la couleur.',
@@ -509,9 +533,9 @@ const T = {
     availableAt: 'Chez', notNearby: 'Pas référencé près de chez vous', listShops: 'Où acheter',
     tagline: 'Photographiez n’importe quelle couleur et trouvez les bombes les plus proches.',
     takePhoto: 'Prendre ou choisir une photo', shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
-    tapHint: 'Touchez l’endroit à faire correspondre.', newPhoto: 'Nouvelle photo',
-    fixLight: 'Corriger l’éclairage', fixLightPrompt: 'Touchez maintenant quelque chose de blanc ou de gris sur la photo.',
-    lightOn: 'Éclairage corrigé. Touchez l’endroit à faire correspondre.', resetLight: 'Annuler la correction',
+    tapHint: 'Touchez la couleur voulue. Glissez le doigt pour ajuster, puis relâchez.', newPhoto: 'Nouvelle photo',
+    fixLight: 'Corriger l’éclairage', fixLightPrompt: 'Touchez maintenant quelque chose de blanc ou de gris sur la photo, puis relâchez.',
+    lightOn: 'Éclairage corrigé. Touchez maintenant la couleur voulue.', resetLight: 'Annuler la correction',
     lightBad: 'Cet endroit est trop sombre ou trop coloré. Touchez quelque chose de blanc ou de gris clair.',
     yourColour: 'Votre couleur', pressure: 'Pression', 
     brands: 'Marques', includeSpecial: 'Inclure les bombes fluo, transparentes et métallisées',
@@ -529,11 +553,7 @@ const T = {
     whereAreYou: 'Où êtes-vous\u202f?', locationWhy: 'Nous l’utiliserons pour vous montrer les magasins proches. Ces informations restent sur votre téléphone.',
     country: 'Pays', city: 'Ville', cityPh: 'ex. Paris',
     tipsTitle: 'Conseils pour de meilleurs résultats', gotIt: 'Commencer',
-    tips: ['Photographiez à la lumière du jour, pas sous des ampoules jaunes.',
-           'Coupez le flash et tenez le téléphone bien en face de la surface.',
-           'Utilisez «\u00a0Corriger l’éclairage\u00a0»\u202f: touchez quelque chose de blanc ou de gris sur la même photo.',
-           'Les bombes mates et brillantes paraissent différentes, même pour une même couleur.',
-           'Les couleurs fluo, transparentes et métallisées se photographient mal. Vérifiez-les toujours en magasin.'],
+    tips: ['Les bombes mates et brillantes paraissent différentes, même pour une même couleur.', 'Les couleurs fluo, transparentes et métallisées se photographient mal. Vérifiez-les toujours en magasin.'],
     badImage: 'Ce fichier ne peut pas être ouvert comme image. Essayez une photo JPG ou PNG.'
   }
 };
@@ -608,7 +628,7 @@ let gains = null, pickingWhite = false, hintState = 'tap';
 function setHint(state) {
   hintState = state;
   const el = $('hint');
-  el.className = 'hint' + (state === 'pick' ? ' active' : state === 'on' ? ' ok' : '');
+  el.className = 'instruction' + (state === 'pick' ? ' active' : state === 'on' ? ' ok' : '');
   el.textContent = t({ tap: 'tapHint', pick: 'fixLightPrompt', on: 'lightOn', bad: 'lightBad' }[state]);
 }
 
@@ -647,13 +667,17 @@ function rebuildShown() {
   }
   draw();
 }
+const srcCanvas = document.createElement('canvas'), srcCtx = srcCanvas.getContext('2d');
 function draw() {
   ctx.putImageData(shownData, 0, 0);
+  srcCanvas.width = shownData.width; srcCanvas.height = shownData.height; srcCtx.putImageData(shownData, 0, 0);
   if (marker) {
-    const r = Math.max(14, canvas.width / 40);
-    ctx.lineWidth = Math.max(3, canvas.width / 300);
+    // Size the marker in screen pixels so it's always clearly visible
+    const rect = canvas.getBoundingClientRect(); const k = rect.width ? canvas.width / rect.width : 1;
+    const r = 16 * k, lw = 3 * k;
+    ctx.lineWidth = lw;
+    ctx.strokeStyle = '#000000'; ctx.beginPath(); ctx.arc(marker.x, marker.y, r + lw, 0, Math.PI * 2); ctx.stroke();
     ctx.strokeStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(marker.x, marker.y, r, 0, Math.PI * 2); ctx.stroke();
-    ctx.strokeStyle = '#000000'; ctx.beginPath(); ctx.arc(marker.x, marker.y, r + ctx.lineWidth, 0, Math.PI * 2); ctx.stroke();
   }
 }
 // Average a small square so one noisy pixel doesn't decide the colour
@@ -674,11 +698,7 @@ $('resetLight').addEventListener('click', () => {
   if (lastPoint) sampleAndShow(lastPoint.x, lastPoint.y);
 });
 
-canvas.addEventListener('click', e => {
-  if (!originalData) return;
-  const rect = canvas.getBoundingClientRect();
-  const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-  const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+function pickAt(x, y) {
   if (pickingWhite) {
     pickingWhite = false;
     const lin = averageAt(originalData, x, y).map(toLin);
@@ -691,7 +711,52 @@ canvas.addEventListener('click', e => {
     return;
   }
   sampleAndShow(x, y);
+}
+
+/* ---------- Touch and hold: magnifier above the finger, colour picked on release ---------- */
+const loupe = $('loupe'), lctx = $('loupeCanvas').getContext('2d');
+let dragging = false, dragPt = null;
+function canvasPoint(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.min(canvas.width - 1, Math.max(0, (e.clientX - rect.left) * (canvas.width / rect.width)));
+  const y = Math.min(canvas.height - 1, Math.max(0, (e.clientY - rect.top) * (canvas.height / rect.height)));
+  return { x, y, k: canvas.width / rect.width };
+}
+function showLoupe(e, pt) {
+  const L = 240, viewCss = 40;                 // the loupe shows a 40-screen-pixel area, 3x enlarged
+  const sw = viewCss * pt.k;
+  lctx.imageSmoothingEnabled = false;
+  lctx.fillStyle = '#808080'; lctx.fillRect(0, 0, L, L);
+  lctx.drawImage(srcCanvas, pt.x - sw / 2, pt.y - sw / 2, sw, sw, 0, 0, L, L);
+  // Ring showing the exact area that will be averaged
+  const half = Math.max(3, Math.round(shownData.width / 200));
+  const rr = Math.max(8, (half + 0.5) * L / sw);
+  lctx.lineWidth = 4; lctx.strokeStyle = '#000000'; lctx.beginPath(); lctx.arc(L / 2, L / 2, rr + 3, 0, Math.PI * 2); lctx.stroke();
+  lctx.lineWidth = 3; lctx.strokeStyle = '#FFFFFF'; lctx.beginPath(); lctx.arc(L / 2, L / 2, rr, 0, Math.PI * 2); lctx.stroke();
+  // Place it above the finger, or below if there's no room
+  const size = 120, gap = 36;
+  let left = e.clientX - size / 2, top = e.clientY - size - gap;
+  if (top < 8) top = e.clientY + gap;
+  left = Math.max(8, Math.min(window.innerWidth - size - 8, left));
+  loupe.style.left = left + 'px'; loupe.style.top = top + 'px'; loupe.hidden = false;
+}
+canvas.addEventListener('pointerdown', e => {
+  if (!originalData) return;
+  e.preventDefault(); dragging = true;
+  try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+  dragPt = canvasPoint(e); showLoupe(e, dragPt);
 });
+canvas.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  e.preventDefault(); dragPt = canvasPoint(e); showLoupe(e, dragPt);
+});
+canvas.addEventListener('pointerup', e => {
+  if (!dragging) return;
+  dragging = false; loupe.hidden = true;
+  const pt = dragPt || canvasPoint(e); pickAt(pt.x, pt.y);
+});
+canvas.addEventListener('pointercancel', () => { dragging = false; loupe.hidden = true; });
+canvas.addEventListener('contextmenu', e => e.preventDefault());
 function sampleAndShow(x, y) {
   lastPoint = { x, y }; marker = { x, y };
   lastSample = averageAt(shownData, x, y);
