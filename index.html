@@ -154,6 +154,8 @@
   .shop-opt { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; background: var(--surface);
               border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
   .shop-opt:has(input:checked) { border-color: var(--ink); }
+  .shop-opt .shop-meta { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+  #coTotals .order-line { padding: 6px 0; }
   .shop-opt input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--ink); }
   .stock-ok { color: var(--ok); font-weight: 700; font-size: 0.85rem; }
   .stock-part { color: var(--muted); font-weight: 700; font-size: 0.85rem; }
@@ -193,6 +195,7 @@
   .filter-btn { padding: 8px 14px; font-size: 0.9rem; white-space: nowrap; }
   .filter-panel { background: var(--surface); border-radius: 14px; padding: 4px 14px 14px; margin-top: 12px; }
   .filter-panel .sub-h { margin-top: 14px; }
+  .near-toggle { color: var(--ink); font-weight: 700; margin-top: 10px; }
   .show-more { width: 100%; margin-top: 12px; }
   .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: grid; grid-template-columns: repeat(3, 1fr);
             background: var(--surface); border-top: 1px solid var(--line);
@@ -254,6 +257,7 @@
       <h2 data-i18n="closest"></h2>
       <button type="button" class="secondary filter-btn" id="filterBtn" aria-expanded="false" aria-controls="filterPanel"></button>
     </div>
+    <p class="note" id="nearNote" hidden></p>
     <div id="filterPanel" class="filter-panel" hidden>
     <div id="sprayFilters">
     <h3 class="sub-h" data-i18n="pressure"></h3>
@@ -261,11 +265,11 @@
       <button type="button" class="chip" data-p="all" aria-pressed="true" data-i18n="all"></button>
       <button type="button" class="chip" data-p="low" aria-pressed="false" data-i18n="low"></button>
       <button type="button" class="chip" data-p="high" aria-pressed="false" data-i18n="high"></button>
-      <button type="button" class="chip" data-p="hardware" aria-pressed="false" data-i18n="hardwareCans"></button>
     </div>
     <h3 class="sub-h" data-i18n="brands"></h3>
     <div class="chips" id="brandChips"></div>
     <label class="toggle"><input type="checkbox" id="specialToggle"> <span data-i18n="includeSpecial"></span></label>
+    <label class="toggle"><input type="checkbox" id="hardwareToggle"> <span data-i18n="includeHardware"></span></label>
     </div>
     </div>
     <ol class="matches" id="matchList"></ol>
@@ -382,20 +386,38 @@
   </div>
 </div>
 
-<!-- Order confirmation (ordering not connected yet) -->
+<!-- Checkout and order confirmation (ordering not connected yet) -->
 <div class="sheet" id="orderSheet" hidden role="dialog" aria-modal="true" aria-labelledby="orderTitle">
   <div class="sheet-inner">
-    <div class="order-check" aria-hidden="true">✓</div>
-    <h2 id="orderTitle"></h2>
-    <p class="demo-note" data-i18n="demoNote"></p>
-    <div id="orderBody"></div>
-    <div class="sheet-actions" id="orderLinks"></div>
-    <div class="sheet-actions"><button type="button" class="secondary" id="orderClose" data-i18n="backToCart"></button></div>
+    <div id="checkoutView">
+      <h2 id="coTitle"></h2>
+      <div id="coItems"></div>
+      <h3 class="sub-h" data-i18n="howGet"></h3>
+      <label class="shop-opt" style="margin-top:10px"><input type="radio" name="method" value="pickup" checked>
+        <div><b data-i18n="pickup"></b><div class="shop-meta" data-i18n="pickupDesc"></div></div></label>
+      <label class="shop-opt" id="deliveryOpt"><input type="radio" name="method" value="delivery">
+        <div><b data-i18n="delivery"></b><div class="shop-meta" id="deliveryDesc"></div></div></label>
+      <p class="note" id="pickupOnly" data-i18n="pickupOnly" hidden></p>
+      <label class="field" id="addrField" hidden><span data-i18n="deliveryAddr"></span>
+        <input id="coAddr" type="text" autocomplete="street-address"></label>
+      <div id="coTotals" class="cart-total"></div>
+      <p class="hint" id="coMsg" aria-live="polite"></p>
+      <button type="button" class="primary buy" id="placeOrder" data-i18n="placeOrder"></button>
+      <div class="sheet-actions"><button type="button" class="secondary" id="coBack" data-i18n="backToCart"></button></div>
+    </div>
+    <div id="doneView" hidden>
+      <div class="order-check" aria-hidden="true">✓</div>
+      <h2 id="orderTitle"></h2>
+      <p class="demo-note" data-i18n="demoNote"></p>
+      <div id="orderBody"></div>
+      <div class="sheet-actions" id="orderLinks"></div>
+      <div class="sheet-actions"><button type="button" class="secondary" id="orderClose" data-i18n="backToCart"></button></div>
+    </div>
   </div>
 </div>
 
-<script src="colors.js"></script>
-<script src="shops.js"></script>
+<script src="colors.js?v=2026-11-11-delivery"></script>
+<script src="shops.js?v=2026-11-11-delivery"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -455,6 +477,8 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
+    checkoutTitle: 'Checkout · {shop}', howGet: 'How do you want your cans?', pickup: 'Reserve for pickup', pickupDesc: 'The shop sets your cans aside. Pay when you collect them.', delivery: 'Delivery', deliveryDesc: '{fee} delivery', freeOver: 'free over {amount}', pickupOnly: 'This shop offers pickup only.', deliveryAddr: 'Delivery address', addrNeeded: 'Please enter a delivery address.', subtotal: 'Cans', deliveryFee: 'Delivery', free: 'Free', placeOrder: 'Place order', donePickup: 'Reserved for pickup at {shop}', doneDelivery: 'Delivery ordered from {shop}', methodLabel: 'Method', payOnDelivery: 'Pay on delivery',
+    includeHardware: 'Include hardware store cans (Krylon)', nearOnly: 'Only show cans sold near me', nearNoShops: 'No partner shops in your city yet, so all cans are shown.',
     medium: 'Medium (variable output)', hardwareCans: 'Hardware store cans', pMedium: 'medium pressure', pairYou: 'Yours', pairCan: 'Can',
     notInCity: 'Not sold in your city', hardware: 'hardware store spray', yourShops: 'Shops in your city: {shops}',
     lightQ: 'Colours look off?', lightHow: 'Indoor bulbs, shade and evening light tint photos yellow or blue. Tap “Fix lighting”, then touch something in the photo that is white or light grey in real life, like paper or a white wall.', cancel: 'Cancel', fixLight: '☀ Fix lighting',
@@ -503,6 +527,8 @@ const T = {
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
+    checkoutTitle: 'Ολοκλήρωση · {shop}', howGet: 'Πώς θέλεις να πάρεις τα σπρέι;', pickup: 'Κράτηση για παραλαβή', pickupDesc: 'Το κατάστημα σου κρατάει τα σπρέι. Πληρώνεις όταν τα παραλάβεις.', delivery: 'Παράδοση', deliveryDesc: 'Μεταφορικά {fee}', freeOver: 'δωρεάν άνω των {amount}', pickupOnly: 'Αυτό το κατάστημα προσφέρει μόνο παραλαβή.', deliveryAddr: 'Διεύθυνση παράδοσης', addrNeeded: 'Συμπλήρωσε διεύθυνση παράδοσης.', subtotal: 'Σπρέι', deliveryFee: 'Μεταφορικά', free: 'Δωρεάν', placeOrder: 'Ολοκλήρωση παραγγελίας', donePickup: 'Κράτηση για παραλαβή στο {shop}', doneDelivery: 'Παραγγελία με παράδοση από {shop}', methodLabel: 'Τρόπος', payOnDelivery: 'Πληρωμή κατά την παράδοση',
+    includeHardware: 'Συμπερίληψη σπρέι σιδηροπωλείου (Krylon)', nearOnly: 'Μόνο σπρέι που πωλούνται κοντά μου', nearNoShops: 'Δεν υπάρχουν ακόμα συνεργαζόμενα καταστήματα στην πόλη σου, οπότε εμφανίζονται όλα τα σπρέι.',
     medium: 'Μεσαία (ρυθμιζόμενη ροή)', hardwareCans: 'Σπρέι σιδηροπωλείου', pMedium: 'μεσαία πίεση', pairYou: 'Δικό σου', pairCan: 'Σπρέι',
     notInCity: 'Δεν πωλείται στην πόλη σου', hardware: 'σπρέι καταστήματος σιδηρικών', yourShops: 'Καταστήματα στην πόλη σου: {shops}',
     lightQ: 'Τα χρώματα δεν φαίνονται σωστά;', lightHow: 'Οι λάμπες, η σκιά και το βραδινό φως κάνουν τις φωτογραφίες πιο κίτρινες ή πιο μπλε. Πάτα «Διόρθωση φωτισμού» και άγγιξε κάτι στη φωτογραφία που στην πραγματικότητα είναι λευκό ή ανοιχτό γκρι, όπως χαρτί ή λευκός τοίχος.', cancel: 'Ακύρωση', fixLight: '☀ Διόρθωση φωτισμού',
@@ -551,6 +577,8 @@ const T = {
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
+    checkoutTitle: 'Commande · {shop}', howGet: 'Comment voulez-vous recevoir vos bombes\u202f?', pickup: 'Réserver et retirer en magasin', pickupDesc: 'Le magasin met vos bombes de côté. Vous payez au retrait.', delivery: 'Livraison', deliveryDesc: 'Livraison {fee}', freeOver: 'offerte dès {amount}', pickupOnly: 'Ce magasin propose uniquement le retrait.', deliveryAddr: 'Adresse de livraison', addrNeeded: 'Veuillez saisir une adresse de livraison.', subtotal: 'Bombes', deliveryFee: 'Livraison', free: 'Offerte', placeOrder: 'Passer la commande', donePickup: 'Réservé pour retrait chez {shop}', doneDelivery: 'Livraison commandée chez {shop}', methodLabel: 'Mode', payOnDelivery: 'Paiement à la livraison',
+    includeHardware: 'Inclure les bombes de quincaillerie (Krylon)', nearOnly: 'Seulement les bombes vendues près de chez moi', nearNoShops: 'Pas encore de magasin partenaire dans votre ville\u202f: toutes les bombes sont affichées.',
     medium: 'Moyenne (débit variable)', hardwareCans: 'Bombes de quincaillerie', pMedium: 'pression moyenne', pairYou: 'Vous', pairCan: 'Bombe',
     notInCity: 'Non vendu dans votre ville', hardware: 'bombe de quincaillerie', yourShops: 'Magasins dans votre ville\u00a0: {shops}',
     lightQ: 'Les couleurs semblent fausses\u202f?', lightHow: 'Les ampoules, l’ombre et la lumière du soir teintent les photos en jaune ou en bleu. Touchez «\u00a0Corriger l’éclairage\u00a0», puis quelque chose sur la photo qui est blanc ou gris clair en vrai, comme du papier ou un mur blanc.', cancel: 'Annuler', fixLight: '☀ Corriger l’éclairage',
@@ -659,7 +687,9 @@ const PAINTS = [];
 }));
 const BRANDS = [...new Set(PAINTS.map(p => p.brand))];
 const activeBrands = new Set(BRANDS);
-let includeSpecial = false;
+let includeSpecial = false, includeHardware = false;
+const nearOnly = true; // only cans sold in the user's city (when the city has partner shops)
+const isHardware = p => p.pressure === 'hardware';
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 const paintName = p => (lang === 'fr' && p.name_fr) ? cap(p.name_fr) : cap(p.name);
 
@@ -837,7 +867,9 @@ function showResults() {
   $('sampleHex').textContent = hex;
 
   const list = PAINTS
-    .filter(p => activeBrands.has(p.brand) && (includeSpecial || p.finish === 'solid'))
+    .filter(p => activeBrands.has(p.brand) && (includeSpecial || p.finish === 'solid')
+              && (includeHardware || !isHardware(p))
+              && (!nearOnly || !cityShops().length || shopFor(p.brand)))
     .map(p => ({ ...p, d: deltaE2000(lab, p.lab) }))
     .sort((a, b) => a.d - b.d)
     .slice(0, showAll ? 12 : 3);
@@ -869,6 +901,8 @@ function showResults() {
   });
   $('results').hidden = false;
   $('showMore').hidden = !list.length;
+  $('nearNote').hidden = !(nearOnly && !cityShops().length);
+  $('nearNote').textContent = store.city ? t('nearNoShops') : t('noCity');
   $('showMore').textContent = showAll ? t('showLess') : t('showMore');
   updateFilterBtn();
 }
@@ -876,7 +910,8 @@ let showAll = false;
 $('showMore').addEventListener('click', () => { showAll = !showAll; showResults(); });
 function updateFilterBtn() {
   // Count how many filters differ from the defaults (all brands on, special finishes off)
-  const n = (activeBrands.size < BRANDS.length ? 1 : 0) + (includeSpecial ? 1 : 0);
+  const graffiti = BRANDS.filter(b => BRAND_PRESSURE[b] !== 'hardware');
+  const n = (graffiti.some(b => !activeBrands.has(b)) ? 1 : 0) + (includeSpecial ? 1 : 0) + (includeHardware ? 1 : 0);
   $('filterBtn').textContent = n ? t('filtersOn').replace('{n}', n) : t('filters');
 }
 $('filterBtn').addEventListener('click', () => {
@@ -889,13 +924,23 @@ PAINTS.forEach(p => { BRAND_PRESSURE[p.brand] = p.pressure; });
 function setPressure(p) {
   // Low pressure selects only low-pressure lines, high only high, all selects everything
   activeBrands.clear();
-  BRANDS.forEach(b => { if (p === 'all' || BRAND_PRESSURE[b] === p) activeBrands.add(b); });
+  BRANDS.forEach(b => { if (BRAND_PRESSURE[b] === 'hardware' ? includeHardware : (p === 'all' || BRAND_PRESSURE[b] === p)) activeBrands.add(b); });
   document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
   document.querySelectorAll('#brandChips .chip').forEach(c => c.setAttribute('aria-pressed', activeBrands.has(c.dataset.brand) ? 'true' : 'false'));
   showResults();
 }
 document.querySelectorAll('#pressureChips .chip').forEach(btn => btn.addEventListener('click', () => setPressure(btn.dataset.p)));
 $('specialToggle').addEventListener('change', e => { includeSpecial = e.target.checked; showResults(); });
+function syncHardwareChips() {
+  document.querySelectorAll('#brandChips .chip').forEach(c => {
+    if (BRAND_PRESSURE[c.dataset.brand] !== 'hardware') return;
+    c.hidden = !includeHardware;
+    if (includeHardware) activeBrands.add(c.dataset.brand); else activeBrands.delete(c.dataset.brand);
+    c.setAttribute('aria-pressed', activeBrands.has(c.dataset.brand) ? 'true' : 'false');
+  });
+}
+$('hardwareToggle').addEventListener('change', e => { includeHardware = e.target.checked; syncHardwareChips(); showResults(); });
+
 BRANDS.forEach(brand => {
   const btn = document.createElement('button');
   btn.className = 'chip'; btn.type = 'button'; btn.textContent = brand; btn.setAttribute('aria-pressed', 'true');
@@ -905,14 +950,17 @@ BRANDS.forEach(brand => {
     btn.setAttribute('aria-pressed', activeBrands.has(brand) ? 'true' : 'false');
     // A manual brand choice no longer matches a single pressure setting
     const sel = [...activeBrands];
-    const groups = [...new Set(BRANDS.map(b => BRAND_PRESSURE[b]))];
-    const p = sel.length === BRANDS.length ? 'all'
+    const graffiti = BRANDS.filter(b => BRAND_PRESSURE[b] !== 'hardware');
+    const groups = [...new Set(graffiti.map(b => BRAND_PRESSURE[b]))];
+    const p = graffiti.every(b => activeBrands.has(b)) ? 'all'
       : groups.find(g => sel.length && sel.every(b => BRAND_PRESSURE[b] === g) && BRANDS.filter(b => BRAND_PRESSURE[b] === g).every(b => activeBrands.has(b))) || '';
     document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
     showResults();
   });
   $('brandChips').appendChild(btn);
 });
+
+syncHardwareChips();
 
 /* ---------- Shopping list (several colours, several cans) ---------- */
 function addToList(p, target) {
@@ -1030,11 +1078,13 @@ function orderLines(shop) {
   });
 }
 function orderText(shop) {
-  const { sum, unpriced } = totalsFor(shop);
-  const lines = [`${t('orderHeader')} · ${shop.name}`, ''];
+  const tt = checkoutTotals(shop);
+  const lines = [`${t('orderHeader')} · ${shop.name}`, `${t('methodLabel')}: ${t(coMethod === 'delivery' ? 'delivery' : 'pickup')}`, ''];
   orderLines(shop).forEach(l => lines.push(`${l.label}: ${l.price}`));
-  lines.push('', `${t('total')}: ${totalText(shop, sum, unpriced)} ${unpricedText(sum, unpriced)}`.trim());
-  lines.push(`${t('payLabel')}: ${t('payInShop')}`);
+  if (coMethod === 'delivery') lines.push(`${t('deliveryFee')}: ${tt.fee === 0 ? t('free') : money(tt.fee, shop.currency)}`);
+  lines.push('', `${t('total')}: ${(tt.sum > 0 || tt.unpriced === 0) ? money(tt.grand, shop.currency) : t('priceAtShop')} ${unpricedText(tt.sum, tt.unpriced)}`.trim());
+  lines.push(`${t('payLabel')}: ${t(coMethod === 'delivery' ? 'payOnDelivery' : 'payInShop')}`);
+  if (coMethod === 'delivery' && store.account && store.account.address) lines.push(`${t('deliveryAddr')}: ${store.account.address}`);
   const a = store.account || {};
   const who = [a.name, a.phone, a.email].filter(Boolean).join(', ');
   if (who) lines.push(`${t('customer')}: ${who}`);
@@ -1052,27 +1102,76 @@ async function shareText(text, title, msgEl) {
     await navigator.clipboard.writeText(text); done();
   } catch (e) { try { await navigator.clipboard.writeText(text); done(); } catch (e2) {} }
 }
+/* ---------- Checkout: pickup or delivery ---------- */
+let coShop = null, coMethod = 'pickup';
+function deliveryFee(shop, sum) {
+  const d = shop.delivery; if (!d) return null;
+  return (d.freeOver != null && sum >= d.freeOver) ? 0 : d.fee;
+}
+function checkoutTotals(shop) {
+  const { sum, unpriced, count } = totalsFor(shop);
+  const fee = coMethod === 'delivery' ? deliveryFee(shop, sum) : 0;
+  return { sum, unpriced, count, fee: fee || 0, grand: sum + (fee || 0) };
+}
+function lineEl(label, value, bold) {
+  const d = document.createElement('div'); d.className = 'order-line' + (bold ? ' total-row' : '');
+  const a = document.createElement('span'); a.textContent = label;
+  const b = document.createElement('b'); b.textContent = value; d.append(a, b); return d;
+}
+function renderCheckout() {
+  const shop = coShop;
+  $('coTitle').textContent = t('checkoutTitle').replace('{shop}', shop.name);
+  const items = $('coItems'); items.innerHTML = '';
+  orderLines(shop).forEach(l => items.appendChild(lineEl(l.label, l.price)));
+  const d = shop.delivery;
+  $('deliveryOpt').hidden = !d; $('pickupOnly').hidden = !!d;
+  if (!d) coMethod = 'pickup';
+  document.querySelectorAll('input[name=method]').forEach(r => { r.checked = r.value === coMethod; });
+  if (d) {
+    const parts = [t('deliveryDesc').replace('{fee}', money(d.fee, shop.currency))];
+    if (d.freeOver != null) parts.push(t('freeOver').replace('{amount}', money(d.freeOver, shop.currency)));
+    if (d.note) parts.push(d.note);
+    $('deliveryDesc').textContent = parts.join(' · ');
+  }
+  $('addrField').hidden = coMethod !== 'delivery';
+  $('coAddr').value = (store.account && store.account.address) || $('coAddr').value || '';
+  const tt = checkoutTotals(shop), box = $('coTotals'); box.innerHTML = '';
+  box.appendChild(lineEl(t('subtotal'), totalText(shop, tt.sum, tt.unpriced)));
+  if (coMethod === 'delivery') box.appendChild(lineEl(t('deliveryFee'), tt.fee === 0 ? t('free') : money(tt.fee, shop.currency)));
+  box.appendChild(lineEl(t('total'), (tt.sum > 0 || tt.unpriced === 0) ? money(tt.grand, shop.currency) : t('priceAtShop'), true));
+  const u = unpricedText(tt.sum, tt.unpriced); if (u) { const sm = document.createElement('small'); sm.textContent = u; box.appendChild(sm); }
+  $('coMsg').textContent = '';
+}
 function openOrder(shop) {
-  $('orderTitle').textContent = t('orderTitle').replace('{shop}', shop.name);
+  coShop = shop; coMethod = 'pickup';
+  $('checkoutView').hidden = false; $('doneView').hidden = true;
+  renderCheckout(); $('orderSheet').hidden = false; $('orderSheet').scrollTop = 0;
+}
+document.querySelectorAll('input[name=method]').forEach(r => r.addEventListener('change', () => { coMethod = r.value; renderCheckout(); }));
+$('coBack').addEventListener('click', () => { $('orderSheet').hidden = true; });
+$('placeOrder').addEventListener('click', () => {
+  const shop = coShop;
+  if (coMethod === 'delivery') {
+    const addr = $('coAddr').value.trim();
+    if (!addr) { $('coMsg').textContent = t('addrNeeded'); $('coAddr').focus(); return; }
+    store.account = Object.assign(store.account || {}, { address: addr }); save();
+  }
+  const tt = checkoutTotals(shop);
+  $('orderTitle').textContent = t(coMethod === 'delivery' ? 'doneDelivery' : 'donePickup').replace('{shop}', shop.name);
   const body = $('orderBody'); body.innerHTML = '';
-  orderLines(shop).forEach(l => {
-    const d = document.createElement('div'); d.className = 'order-line';
-    const a = document.createElement('span'); a.textContent = l.label;
-    const b = document.createElement('b'); b.textContent = l.price; d.append(a, b); body.appendChild(d);
-  });
-  const { sum, unpriced } = totalsFor(shop);
-  const tr = document.createElement('div'); tr.className = 'order-line total-row';
-  const tl = document.createElement('span'); tl.textContent = t('total');
-  const tv = document.createElement('b'); tv.textContent = totalText(shop, sum, unpriced); tr.append(tl, tv); body.appendChild(tr);
+  orderLines(shop).forEach(l => body.appendChild(lineEl(l.label, l.price)));
+  if (coMethod === 'delivery') body.appendChild(lineEl(t('deliveryFee'), tt.fee === 0 ? t('free') : money(tt.fee, shop.currency)));
+  body.appendChild(lineEl(t('total'), (tt.sum > 0 || tt.unpriced === 0) ? money(tt.grand, shop.currency) : t('priceAtShop'), true));
   const note = document.createElement('p'); note.className = 'note';
-  note.textContent = [unpricedText(sum, unpriced), `${t('payLabel')}: ${t('payInShop')}`].filter(Boolean).join(' · ');
+  note.textContent = [unpricedText(tt.sum, tt.unpriced), `${t('payLabel')}: ${t(coMethod === 'delivery' ? 'payOnDelivery' : 'payInShop')}`,
+    coMethod === 'delivery' ? `${t('deliveryAddr')}: ${store.account.address}` : ''].filter(Boolean).join(' · ');
   body.appendChild(note);
   const tn = document.createElement('p'); tn.className = 'note'; tn.textContent = t('testNotice').replace('{shop}', shop.name); body.appendChild(tn);
   const links = $('orderLinks'); links.innerHTML = '';
   const sh = document.createElement('button'); sh.type = 'button'; sh.className = 'secondary'; sh.textContent = t('shareOrder');
   sh.addEventListener('click', () => shareText(orderText(shop), t('orderHeader'))); links.appendChild(sh);
-  $('orderSheet').hidden = false;
-}
+  $('checkoutView').hidden = true; $('doneView').hidden = false; $('orderSheet').scrollTop = 0;
+});
 $('orderClose').addEventListener('click', () => { $('orderSheet').hidden = true; });
 function setTab(id) {
   ['tabMatch', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });

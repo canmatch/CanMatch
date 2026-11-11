@@ -10,10 +10,15 @@
 //           "brand" names in colors.js
 // prices:   price per can for each line, in the shop's currency.
 //           null = price not confirmed (shown as "Price at shop").
+// delivery: null = pickup only. Otherwise { fee, freeOver, note }:
+//           fee = delivery charge, freeOver = order total above which
+//           delivery is free (null = never free). Spray cans are dangerous
+//           goods, so delivery is ground/courier only. Example values.
 // ------------------------------------------------------------------
 window.SHOPS = [
   {
     name: "Graffiti Shop Athens",
+    delivery: { fee: 4.00, freeOver: 60, note: "courier, within Greece" },
     city: "athens",
     demo: true,
     currency: "EUR",
@@ -30,6 +35,7 @@ window.SHOPS = [
   },
   {
     name: "Graffiti Shop Toronto",
+    delivery: { fee: 15.00, freeOver: 150, note: "ground shipping, within Canada" },
     city: "toronto",
     demo: true,
     currency: "CAD",
@@ -46,6 +52,7 @@ window.SHOPS = [
   },
   {
     name: "Canadian Hardware Store",
+    delivery: null,
     city: "toronto",
     demo: true,
     currency: "CAD",
@@ -57,6 +64,7 @@ window.SHOPS = [
   },
   {
     name: "Graffiti Shop New York",
+    delivery: { fee: 12.00, freeOver: 125, note: "ground shipping, within the US" },
     city: "newyork",
     demo: true,
     currency: "USD",
@@ -75,6 +83,7 @@ window.SHOPS = [
   },
   {
     name: "American Hardware Store",
+    delivery: null,
     city: "newyork",
     demo: true,
     currency: "USD",
