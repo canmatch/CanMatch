@@ -210,6 +210,8 @@
   .filter-panel .sub-h { margin-top: 14px; }
   .near-toggle { color: var(--ink); font-weight: 700; margin-top: 10px; }
   .codes-box { margin-top: 14px; background: var(--surface); border-radius: 14px; padding: 10px 14px; }
+  .wall-box { margin-top: 14px; background: var(--surface); border-radius: 14px; padding: 4px 14px 12px; }
+  .wall-box .sub-h { margin-top: 10px; }
   .codes-box summary { font-weight: 700; cursor: pointer; }
   .codes-box textarea { width: 100%; margin: 10px 0; font: inherit; padding: 10px; border-radius: 10px;
                         border: 2px solid var(--line); background: var(--bg); color: var(--ink); }
@@ -371,6 +373,16 @@
       <button type="button" class="secondary small" id="codesGo" data-i18n="codesGo"></button>
       <p class="hint" id="hexMsg" aria-live="polite"></p>
     </details>
+    <div class="wall-box">
+      <h3 class="sub-h" data-i18n="wallQ"></h3>
+      <p class="note" style="margin:2px 0 0" data-i18n="wallWhy"></p>
+      <div class="wall-row">
+        <label class="field"><span data-i18n="width"></span><input id="wallW" type="number" min="0" step="0.1" placeholder="4" inputmode="decimal"></label>
+        <label class="field"><span data-i18n="height"></span><input id="wallH" type="number" min="0" step="0.1" placeholder="2.5" inputmode="decimal"></label>
+        <label class="field"><span>&nbsp;</span><select id="wallUnit"><option value="m">m</option><option value="ft">ft</option></select></label>
+        <label class="field"><span data-i18n="coats"></span><select id="wallCoats"><option value="1" data-i18n="oneCoat"></option><option value="2" data-i18n="twoCoats"></option></select></label>
+      </div>
+    </div>
 
     <div id="designBody" hidden>
       <div class="chips" id="viewChips" style="margin-top:16px" role="group">
@@ -384,15 +396,7 @@
       <p class="note" data-i18n="usingFilters"></p>
 
       <ol class="matches" id="paletteList"></ol>
-      <button type="button" class="primary buy" id="estimateBtn" data-i18n="estimateBtn"></button>
       <div id="estimateBox" hidden>
-      <h3 class="sub-h" data-i18n="wallSize"></h3>
-      <div class="wall-row">
-        <label class="field"><span data-i18n="width"></span><input id="wallW" type="number" min="0" step="0.1" value="4" inputmode="decimal"></label>
-        <label class="field"><span data-i18n="height"></span><input id="wallH" type="number" min="0" step="0.1" value="2.5" inputmode="decimal"></label>
-        <label class="field"><span>&nbsp;</span><select id="wallUnit"><option value="m">m</option><option value="ft">ft</option></select></label>
-        <label class="field"><span data-i18n="coats"></span><select id="wallCoats"><option value="1" data-i18n="oneCoat"></option><option value="2" data-i18n="twoCoats"></option></select></label>
-      </div>
       <p class="note" id="coverageNote"></p>
       <div class="cart-total" id="designTotal"></div>
       <button type="button" class="primary buy" id="addAll" data-i18n="addAll"></button>
@@ -510,8 +514,8 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-11-simple"></script>
-<script src="shops.js?v=2026-11-11-simple"></script>
+<script src="colors.js?v=2026-11-11-wall"></script>
+<script src="shops.js?v=2026-11-11-wall"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -571,6 +575,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
+    wallQ: 'How big is the wall?', wallWhy: 'Optional. Fill it in to see how many cans of each colour you need.',
     details: 'Details', lightLink: 'Colours look off? Fix lighting', codesQ: 'Have colour codes? Paste them here', codesGo: 'Match these colours', estimateBtn: 'How big is the wall? Estimate cans', testShort: 'Test version: these are demo shops with example prices.', gotIt: 'Start',
     homeMatchTitle: 'Match a colour', homeMatchDesc: 'Photograph any colour and find the closest can.', homeDesignDesc: 'Upload a sketch and get every can you need for the wall.', homeDesignNote: 'From Procreate, Photoshop or Illustrator, as PNG or JPG.', designPromptQ: 'Planning a whole piece?', designPromptBtn: 'Upload your design', s5t: 'Planning a whole piece? Use Design', s5d: 'Upload your sketch. CanMatch finds every colour, matches cans and works out how many you need for the wall.',
     autoDetected: 'detected automatically', backToAuto: 'Detect colours automatically',
@@ -625,6 +630,7 @@ const T = {
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
+    wallQ: 'Πόσο μεγάλος είναι ο τοίχος;', wallWhy: 'Προαιρετικό. Συμπλήρωσέ το για να δεις πόσα σπρέι από κάθε χρώμα χρειάζεσαι.',
     details: 'Λεπτομέρειες', lightLink: 'Τα χρώματα δεν φαίνονται σωστά; Διόρθωση φωτισμού', codesQ: 'Έχεις κωδικούς χρωμάτων; Επικόλλησέ τους εδώ', codesGo: 'Ταίριαξε αυτά τα χρώματα', estimateBtn: 'Πόσο μεγάλος είναι ο τοίχος; Υπολόγισε σπρέι', testShort: 'Δοκιμαστική έκδοση: καταστήματα επίδειξης με ενδεικτικές τιμές.', gotIt: 'Ξεκίνα',
     homeMatchTitle: 'Ταίριαξε ένα χρώμα', homeMatchDesc: 'Φωτογράφισε οποιοδήποτε χρώμα και βρες το πιο κοντινό σπρέι.', homeDesignDesc: 'Ανέβασε ένα σχέδιο και πάρε κάθε σπρέι που χρειάζεσαι για τον τοίχο.', homeDesignNote: 'Από Procreate, Photoshop ή Illustrator, σε PNG ή JPG.', designPromptQ: 'Σχεδιάζεις ολόκληρο έργο;', designPromptBtn: 'Ανέβασε το σχέδιό σου', s5t: 'Ολόκληρο έργο; Χρησιμοποίησε το Σχέδιο', s5d: 'Ανέβασε το σχέδιό σου. Το CanMatch βρίσκει κάθε χρώμα, το ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι για τον τοίχο.',
     autoDetected: 'εντοπίστηκαν αυτόματα', backToAuto: 'Αυτόματος εντοπισμός χρωμάτων',
@@ -679,6 +685,7 @@ const T = {
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
+    wallQ: 'Quelle taille fait le mur\u202f?', wallWhy: 'Facultatif. Renseignez-le pour voir combien de bombes de chaque couleur il vous faut.',
     details: 'Détails', lightLink: 'Les couleurs semblent fausses\u202f? Corriger l’éclairage', codesQ: 'Vous avez des codes couleur\u202f? Collez-les ici', codesGo: 'Trouver ces couleurs', estimateBtn: 'Quelle taille fait le mur\u202f? Estimer les bombes', testShort: 'Version de test\u202f: magasins fictifs avec des prix d’exemple.', gotIt: 'Commencer',
     homeMatchTitle: 'Trouver une couleur', homeMatchDesc: 'Photographiez n’importe quelle couleur et trouvez la bombe la plus proche.', homeDesignDesc: 'Importez un croquis et obtenez toutes les bombes nécessaires pour le mur.', homeDesignNote: 'Depuis Procreate, Photoshop ou Illustrator, en PNG ou JPG.', designPromptQ: 'Vous préparez toute une fresque\u202f?', designPromptBtn: 'Importez votre dessin', s5t: 'Toute une fresque\u202f? Utilisez Projet', s5d: 'Importez votre croquis. CanMatch trouve chaque couleur, l’associe à des bombes et calcule combien il en faut pour le mur.',
     autoDetected: 'détectées automatiquement', backToAuto: 'Détecter les couleurs automatiquement',
@@ -1431,7 +1438,7 @@ function runCodes(hexes) {
   picks = clusters.map(() => 0);
   $('designBody').hidden = false; renderPalette();
 }
-$('estimateBtn').addEventListener('click', () => { estimateOn = true; renderPalette(); $('estimateBox').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+
 function runDesign() {
   if (codesMode && clusters.length && !designOrig) { runCodes(clusters.map(c => c.hex)); return; }
   if (!designOrig) return;
@@ -1484,6 +1491,7 @@ function cansFor(share) {
   return Math.max(1, Math.ceil(wallArea() * share * coats / COVERAGE_M2));
 }
 function renderPalette() {
+  estimateOn = wallArea() > 0;
   const ol = $('paletteList'); ol.innerHTML = ''; $('designMsg').textContent = '';
   $('coverageNote').textContent = t('coverageNote').replace('{c}', COVERAGE_M2);
   const totals = {};  // per currency
@@ -1519,7 +1527,7 @@ function renderPalette() {
     });
     ol.appendChild(li);
   });
-  $('estimateBox').hidden = !estimateOn; $('estimateBtn').hidden = estimateOn;
+  $('estimateBox').hidden = !estimateOn;
   const tot = $('designTotal'); tot.innerHTML = '';
   const row = document.createElement('div'); row.className = 'total-row';
   const l = document.createElement('span'); l.textContent = `${t('designTotal')} · ${cansText(totalCans)}`;
@@ -1533,7 +1541,7 @@ function updateColoursLabel() {
 $('numColours').addEventListener('input', () => { autoColours = false; updateColoursLabel(); });
 $('numColours').addEventListener('change', () => { autoColours = false; runDesign(); });
 $('autoColours').addEventListener('click', () => { autoColours = true; runDesign(); });
-['wallW', 'wallH', 'wallUnit', 'wallCoats'].forEach(id => $(id).addEventListener('input', renderPalette));
+['wallW', 'wallH', 'wallUnit', 'wallCoats'].forEach(id => { $(id).addEventListener('input', renderPalette); $(id).addEventListener('change', renderPalette); });
 $('viewOrig').addEventListener('click', () => { designView = 'orig'; drawDesign(); });
 $('viewCans').addEventListener('click', () => { designView = 'cans'; drawDesign(); });
 $('addAll').addEventListener('click', () => {
