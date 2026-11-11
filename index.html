@@ -68,6 +68,9 @@
            border: 4px solid #FFFFFF; box-shadow: 0 0 0 2px #000000, 0 6px 18px rgba(0,0,0,0.35); pointer-events: none; }
   #loupe canvas { width: 100%; height: 100%; display: block; }
   .hint { color: var(--muted); font-size: 0.9rem; margin: 8px 2px 0; }
+  .light-card { background: var(--surface); border-radius: 14px; padding: 12px 14px; margin-top: 12px; }
+  .light-card p { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+  button.small { padding: 9px 14px; font-size: 0.9rem; }
   .instruction { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; padding: 12px 14px;
                  border-radius: 14px; background: var(--surface); font-size: 1.05rem; font-weight: 700; line-height: 1.3; }
   .instruction::before { content: "👆"; font-size: 1.4rem; }
@@ -221,6 +224,17 @@
     <p class="instruction" id="hint" aria-live="polite"></p>
     <div class="photo-wrap"><canvas id="photo"></canvas></div>
     <div id="loupe" aria-hidden="true" hidden><canvas id="loupeCanvas" width="240" height="240"></canvas></div>
+    <div class="light-card" id="lightCard">
+      <div>
+        <b data-i18n="lightQ"></b>
+        <p data-i18n="lightHow"></p>
+      </div>
+      <div class="row-actions" style="margin-top:8px">
+        <button type="button" class="primary small" id="fixLight" data-i18n="fixLight"></button>
+        <button type="button" class="secondary small" id="cancelLight" data-i18n="cancel" hidden></button>
+        <button type="button" class="secondary small" id="resetLight" data-i18n="resetLight" hidden></button>
+      </div>
+    </div>
     <div class="row-actions">
       <label class="secondary"><span data-i18n="newPhoto"></span><input id="file2" type="file" accept="image/*"></label>
     </div>
@@ -282,8 +296,10 @@
           <div><div class="how-num">1</div><h3 data-i18n="s1t"></h3><p data-i18n="s1d"></p></div></li>
         <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="20" y="8" width="120" height="94" rx="10" fill="#E9DFC0"/><rect x="80" y="8" width="60" height="94" fill="#C8463A"/><circle cx="104" cy="34" r="20" fill="#C8463A" stroke="#fff" stroke-width="4"/><circle cx="104" cy="34" r="22" fill="none" stroke="#161616" stroke-width="1.5"/><circle cx="104" cy="34" r="6" fill="none" stroke="#fff" stroke-width="2"/><path d="M104 66c-6 0-10 5-10 10v22h22V76c0-5-6-10-12-10z" fill="#F7F7F5" stroke="#161616" stroke-width="3"/></svg></div>
           <div><div class="how-num">2</div><h3 data-i18n="s2t"></h3><p data-i18n="s2d"></p></div></li>
+        <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="20" y="8" width="120" height="94" rx="10" fill="#D9C27A"/><rect x="34" y="22" width="34" height="26" rx="3" fill="#FFF6D8" stroke="#161616" stroke-width="1.5"/><path d="M51 54c-6 0-10 5-10 10v34h22V64c0-5-6-10-12-10z" fill="#F7F7F5" stroke="#161616" stroke-width="3"/><circle cx="112" cy="42" r="11" fill="#F5C400"/><g stroke="#F5C400" stroke-width="3" stroke-linecap="round"><path d="M112 22v-6M112 68v-6M92 42h-6M138 42h-6M98 28l-4-4M130 60l-4-4M126 28l4-4M94 60l4-4"/></g></svg></div>
+          <div><div class="how-num">3</div><h3 data-i18n="s3t"></h3><p data-i18n="s3d"></p></div></li>
         <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="10" y="10" width="140" height="26" rx="6" fill="#F7F7F5" stroke="#C9C8C3"/><rect x="16" y="15" width="10" height="16" fill="#C8463A"/><rect x="26" y="15" width="10" height="16" fill="#C2402F"/><rect x="42" y="18" width="50" height="5" rx="2" fill="#161616"/><rect x="42" y="26" width="34" height="3" rx="1.5" fill="#5E5F61"/><text x="142" y="28" text-anchor="end" font-size="11" font-weight="800" fill="#161616" font-family="Archivo, sans-serif">98%</text><rect x="10" y="42" width="140" height="26" rx="6" fill="#F7F7F5" stroke="#C9C8C3"/><rect x="16" y="47" width="10" height="16" fill="#C8463A"/><rect x="26" y="47" width="10" height="16" fill="#B8372E"/><rect x="42" y="50" width="44" height="5" rx="2" fill="#161616"/><rect x="42" y="58" width="30" height="3" rx="1.5" fill="#5E5F61"/><text x="142" y="60" text-anchor="end" font-size="11" font-weight="800" fill="#161616" font-family="Archivo, sans-serif">95%</text><rect x="30" y="78" width="100" height="24" rx="12" fill="#161616"/><text x="80" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#F7F7F5" font-family="Archivo, sans-serif">🛒 + 1</text></svg></div>
-          <div><div class="how-num">3</div><h3 data-i18n="s4t"></h3><p data-i18n="s4d"></p></div></li>
+          <div><div class="how-num">4</div><h3 data-i18n="s4t"></h3><p data-i18n="s4d"></p></div></li>
       </ol>
       <h3 class="sub-h" data-i18n="goodToKnow"></h3>
       <ul class="tips" id="tipsList"></ul>
@@ -434,7 +450,8 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
-    howTitle: 'How to use CanMatch', goodToKnow: 'Good to know', s1t: 'Take or choose a photo', s1d: 'Photograph the colour in daylight, straight on, without flash.', s2t: 'Touch the colour', s2d: 'A magnifier shows exactly where you’re pointing. Slide to adjust, then let go.', s3t: 'Fix the lighting (optional)', s3d: 'Tap “Fix lighting”, then touch something white or grey in the same photo.', s4t: 'Pick a can and buy', s4d: 'The best matches come first. Add cans to your cart and buy from your local shop.',
+    lightQ: 'Colours look off?', lightHow: 'Indoor bulbs, shade and evening light tint photos yellow or blue. Tap “Fix lighting”, then touch something in the photo that is white or light grey in real life, like paper or a white wall.', cancel: 'Cancel', fixLight: '☀ Fix lighting',
+    howTitle: 'How to use CanMatch', goodToKnow: 'Good to know', s1t: 'Take or choose a photo', s1d: 'Photograph the colour in daylight, straight on, without flash.', s2t: 'Touch the colour', s2d: 'A magnifier shows exactly where you’re pointing. Slide to adjust, then let go.', s3t: 'Fix the lighting (optional)', s3d: 'If colours look yellow or blue, tap “☀ Fix lighting”, then touch something in the photo that’s white in real life, like paper.', s4t: 'Pick a can and buy', s4d: 'The best matches come first. Add cans to your cart and buy from your local shop.',
     tabMatch: 'Match', filters: 'Filters', filtersOn: 'Filters ({n})', showMore: 'Show more matches', showLess: 'Show fewer',
     low: 'Fine detail (low pressure)', high: 'Fast coverage (high pressure)', all: 'All cans',
     testNotice: 'Test version. {shop} is a demo shop for testing, not a real business. Prices are realistic examples.',
@@ -456,9 +473,9 @@ const T = {
     tagline: 'Photograph any colour and find the closest spray paints.',
     takePhoto: 'Take or choose a photo', shootHint: 'Shoot in daylight, straight on, without flash.',
     tapHint: 'Touch the colour you want to match. Slide your finger to adjust, then let go.', newPhoto: 'New photo',
-    fixLight: 'Fix lighting', fixLightPrompt: 'Now touch something white or grey in the photo, then let go.',
+    fixLightPrompt: 'Now touch something that’s white or light grey in real life, then let go.',
     lightOn: 'Lighting fixed. Now touch the colour you want to match.', resetLight: 'Undo lighting fix',
-    lightBad: 'That spot is too dark or too colourful. Tap something white or light grey.',
+    lightBad: 'That spot is too dark or too colourful to use. Tap “Fix lighting” and try something white or light grey.',
     yourColour: 'Your colour', pressure: 'Pressure', 
     brands: 'Brands', includeSpecial: 'Include fluorescent, transparent and metallic cans',
     closest: 'Best matches', matchWord: 'match',
@@ -479,7 +496,8 @@ const T = {
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
-    howTitle: 'Πώς χρησιμοποιείς το CanMatch', goodToKnow: 'Καλό να ξέρεις', s1t: 'Τράβηξε ή διάλεξε φωτογραφία', s1d: 'Φωτογράφισε το χρώμα στο φως της ημέρας, κάθετα, χωρίς φλας.', s2t: 'Άγγιξε το χρώμα', s2d: 'Ένας μεγεθυντικός φακός δείχνει ακριβώς πού δείχνεις. Σύρε για να το ρυθμίσεις και άφησε το δάχτυλο.', s3t: 'Διόρθωσε τον φωτισμό (προαιρετικά)', s3d: 'Πάτα «Διόρθωση φωτισμού» και άγγιξε κάτι λευκό ή γκρι στην ίδια φωτογραφία.', s4t: 'Διάλεξε σπρέι και αγόρασε', s4d: 'Οι καλύτερες αντιστοιχίες εμφανίζονται πρώτες. Πρόσθεσε σπρέι στο καλάθι και αγόρασε από το κατάστημα της περιοχής σου.',
+    lightQ: 'Τα χρώματα δεν φαίνονται σωστά;', lightHow: 'Οι λάμπες, η σκιά και το βραδινό φως κάνουν τις φωτογραφίες πιο κίτρινες ή πιο μπλε. Πάτα «Διόρθωση φωτισμού» και άγγιξε κάτι στη φωτογραφία που στην πραγματικότητα είναι λευκό ή ανοιχτό γκρι, όπως χαρτί ή λευκός τοίχος.', cancel: 'Ακύρωση', fixLight: '☀ Διόρθωση φωτισμού',
+    howTitle: 'Πώς χρησιμοποιείς το CanMatch', goodToKnow: 'Καλό να ξέρεις', s1t: 'Τράβηξε ή διάλεξε φωτογραφία', s1d: 'Φωτογράφισε το χρώμα στο φως της ημέρας, κάθετα, χωρίς φλας.', s2t: 'Άγγιξε το χρώμα', s2d: 'Ένας μεγεθυντικός φακός δείχνει ακριβώς πού δείχνεις. Σύρε για να το ρυθμίσεις και άφησε το δάχτυλο.', s3t: 'Διόρθωσε τον φωτισμό (προαιρετικά)', s3d: 'Αν τα χρώματα φαίνονται κίτρινα ή μπλε, πάτα «☀ Διόρθωση φωτισμού» και άγγιξε κάτι στη φωτογραφία που στην πραγματικότητα είναι λευκό, όπως χαρτί.', s4t: 'Διάλεξε σπρέι και αγόρασε', s4d: 'Οι καλύτερες αντιστοιχίες εμφανίζονται πρώτες. Πρόσθεσε σπρέι στο καλάθι και αγόρασε από το κατάστημα της περιοχής σου.',
     tabMatch: 'Ταίριασμα', filters: 'Φίλτρα', filtersOn: 'Φίλτρα ({n})', showMore: 'Περισσότερα αποτελέσματα', showLess: 'Λιγότερα',
     low: 'Λεπτομέρεια (χαμηλή πίεση)', high: 'Γρήγορη κάλυψη (υψηλή πίεση)', all: 'Όλα τα σπρέι',
     testNotice: 'Δοκιμαστική έκδοση. Το {shop} είναι κατάστημα επίδειξης για δοκιμές, όχι πραγματική επιχείρηση. Οι τιμές είναι ρεαλιστικά παραδείγματα.',
@@ -501,7 +519,7 @@ const T = {
     tagline: 'Φωτογράφισε οποιοδήποτε χρώμα και βρες τα πιο κοντινά σπρέι.',
     takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία', shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
     tapHint: 'Άγγιξε το χρώμα που θέλεις. Σύρε το δάχτυλο για να το ρυθμίσεις και μετά άφησέ το.', newPhoto: 'Νέα φωτογραφία',
-    fixLight: 'Διόρθωση φωτισμού', fixLightPrompt: 'Τώρα άγγιξε κάτι λευκό ή γκρι στη φωτογραφία και άφησε το δάχτυλο.',
+    fixLightPrompt: 'Τώρα άγγιξε κάτι που στην πραγματικότητα είναι λευκό ή ανοιχτό γκρι και άφησε το δάχτυλο.',
     lightOn: 'Ο φωτισμός διορθώθηκε. Τώρα άγγιξε το χρώμα που θέλεις.', resetLight: 'Αναίρεση διόρθωσης',
     lightBad: 'Το σημείο είναι πολύ σκούρο ή πολύ χρωματιστό. Πάτα κάτι λευκό ή ανοιχτό γκρι.',
     yourColour: 'Το χρώμα σου', pressure: 'Πίεση', 
@@ -524,7 +542,8 @@ const T = {
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
-    howTitle: 'Comment utiliser CanMatch', goodToKnow: 'Bon à savoir', s1t: 'Prenez ou choisissez une photo', s1d: 'Photographiez la couleur à la lumière du jour, bien en face, sans flash.', s2t: 'Touchez la couleur', s2d: 'Une loupe montre exactement où vous pointez. Glissez pour ajuster, puis relâchez.', s3t: 'Corrigez l’éclairage (facultatif)', s3d: 'Touchez «\u00a0Corriger l’éclairage\u00a0», puis quelque chose de blanc ou de gris sur la même photo.', s4t: 'Choisissez une bombe et achetez', s4d: 'Les meilleures correspondances s’affichent en premier. Ajoutez des bombes au panier et achetez dans votre magasin local.',
+    lightQ: 'Les couleurs semblent fausses\u202f?', lightHow: 'Les ampoules, l’ombre et la lumière du soir teintent les photos en jaune ou en bleu. Touchez «\u00a0Corriger l’éclairage\u00a0», puis quelque chose sur la photo qui est blanc ou gris clair en vrai, comme du papier ou un mur blanc.', cancel: 'Annuler', fixLight: '☀ Corriger l’éclairage',
+    howTitle: 'Comment utiliser CanMatch', goodToKnow: 'Bon à savoir', s1t: 'Prenez ou choisissez une photo', s1d: 'Photographiez la couleur à la lumière du jour, bien en face, sans flash.', s2t: 'Touchez la couleur', s2d: 'Une loupe montre exactement où vous pointez. Glissez pour ajuster, puis relâchez.', s3t: 'Corrigez l’éclairage (facultatif)', s3d: 'Si les couleurs semblent jaunes ou bleues, touchez «\u00a0☀ Corriger l’éclairage\u00a0», puis quelque chose sur la photo qui est blanc en vrai, comme du papier.', s4t: 'Choisissez une bombe et achetez', s4d: 'Les meilleures correspondances s’affichent en premier. Ajoutez des bombes au panier et achetez dans votre magasin local.',
     tabMatch: 'Trouver', filters: 'Filtres', filtersOn: 'Filtres ({n})', showMore: 'Plus de résultats', showLess: 'Moins de résultats',
     low: 'Détails fins (basse pression)', high: 'Couverture rapide (haute pression)', all: 'Toutes les bombes',
     testNotice: 'Version de test. {shop} est un magasin fictif pour les tests, pas une vraie entreprise. Les prix sont des exemples réalistes.',
@@ -546,7 +565,7 @@ const T = {
     tagline: 'Photographiez n’importe quelle couleur et trouvez les bombes les plus proches.',
     takePhoto: 'Prendre ou choisir une photo', shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
     tapHint: 'Touchez la couleur voulue. Glissez le doigt pour ajuster, puis relâchez.', newPhoto: 'Nouvelle photo',
-    fixLight: 'Corriger l’éclairage', fixLightPrompt: 'Touchez maintenant quelque chose de blanc ou de gris sur la photo, puis relâchez.',
+    fixLightPrompt: 'Touchez maintenant quelque chose qui est blanc ou gris clair en vrai, puis relâchez.',
     lightOn: 'Éclairage corrigé. Touchez maintenant la couleur voulue.', resetLight: 'Annuler la correction',
     lightBad: 'Cet endroit est trop sombre ou trop coloré. Touchez quelque chose de blanc ou de gris clair.',
     yourColour: 'Votre couleur', pressure: 'Pression', 
@@ -654,7 +673,7 @@ function loadFile(file) {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     gains = null; marker = null; lastSample = null; pickingWhite = false;
-    $('results').hidden = true;
+    $('results').hidden = true; $('resetLight').hidden = true; $('cancelLight').hidden = true; $('fixLight').hidden = false;
     rebuildShown(); setHint('tap');
     URL.revokeObjectURL(url);
     $('empty').hidden = true; $('viewer').hidden = false;
@@ -686,28 +705,61 @@ function draw() {
   if (marker) {
     // Size the marker in screen pixels so it's always clearly visible
     const rect = canvas.getBoundingClientRect(); const k = rect.width ? canvas.width / rect.width : 1;
-    const r = 16 * k, lw = 3 * k;
+    const r = 10 * k, lw = 2.5 * k;
     ctx.lineWidth = lw;
     ctx.strokeStyle = '#000000'; ctx.beginPath(); ctx.arc(marker.x, marker.y, r + lw, 0, Math.PI * 2); ctx.stroke();
     ctx.strokeStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(marker.x, marker.y, r, 0, Math.PI * 2); ctx.stroke();
   }
 }
 // Average a small square so one noisy pixel doesn't decide the colour
+// Small sample area: about 9 x 9 pixels on a full-size photo
+const sampleHalf = w => Math.max(2, Math.round(w / 400));
+// Picks the colour under the centre of the marker. It averages a small area to remove camera
+// noise, but only uses pixels that look like the centre, so a nearby second colour isn't blended in.
 function averageAt(data, x, y) {
-  const half = Math.max(3, Math.round(data.width / 200));
-  const x0 = Math.max(0, Math.round(x) - half), y0 = Math.max(0, Math.round(y) - half);
-  const x1 = Math.min(data.width, x0 + half * 2 + 1), y1 = Math.min(data.height, y0 + half * 2 + 1);
+  const W = data.width, H = data.height, d = data.data;
+  const cx = Math.round(x), cy = Math.round(y);
+  const px = (xx, yy) => (Math.min(H - 1, Math.max(0, yy)) * W + Math.min(W - 1, Math.max(0, xx))) * 4;
+  // Reference: the centre 3 x 3 pixels
+  let r0 = 0, g0 = 0, b0 = 0;
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const i = px(cx + dx, cy + dy); r0 += d[i]; g0 += d[i + 1]; b0 += d[i + 2]; }
+  r0 /= 9; g0 /= 9; b0 /= 9;
+  const half = sampleHalf(W), LIMIT = 36 * 36;
   let r = 0, g = 0, b = 0, n = 0;
-  for (let yy = y0; yy < y1; yy++) for (let xx = x0; xx < x1; xx++) {
-    const i = (yy * data.width + xx) * 4; r += data.data[i]; g += data.data[i + 1]; b += data.data[i + 2]; n++;
+  for (let dy = -half; dy <= half; dy++) for (let dx = -half; dx <= half; dx++) {
+    const i = px(cx + dx, cy + dy);
+    const dr = d[i] - r0, dg = d[i + 1] - g0, db = d[i + 2] - b0;
+    if (dr * dr + dg * dg + db * db <= LIMIT) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
   }
-  return [r / n, g / n, b / n];
+  return n ? [r / n, g / n, b / n] : [r0, g0, b0];
 }
 
 
 function pickAt(x, y) {
+  if (pickingWhite) {
+    pickingWhite = false; $('cancelLight').hidden = true; $('fixLight').hidden = false;
+    const lin = averageAt(originalData, x, y).map(toLin);
+    const Y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+    const spread = Math.max(...lin) / Math.max(1e-4, Math.min(...lin));
+    if (Y < 0.03 || spread > 2.5) { setHint('bad'); return; }
+    gains = lin.map(c => Y / Math.max(1e-4, c));
+    $('resetLight').hidden = false; $('fixLight').hidden = true; rebuildShown(); setHint('on');
+    if (lastPoint) sampleAndShow(lastPoint.x, lastPoint.y);
+    return;
+  }
   sampleAndShow(x, y);
 }
+$('fixLight').addEventListener('click', () => {
+  pickingWhite = true; setHint('pick'); $('fixLight').hidden = true; $('cancelLight').hidden = false;
+  $('hint').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+$('cancelLight').addEventListener('click', () => {
+  pickingWhite = false; $('cancelLight').hidden = true; $('fixLight').hidden = false; setHint('tap');
+});
+$('resetLight').addEventListener('click', () => {
+  gains = null; $('resetLight').hidden = true; $('fixLight').hidden = false; rebuildShown(); setHint('tap');
+  if (lastPoint) sampleAndShow(lastPoint.x, lastPoint.y);
+});
 
 /* ---------- Touch and hold: magnifier above the finger, colour picked on release ---------- */
 const loupe = $('loupe'), lctx = $('loupeCanvas').getContext('2d');
@@ -725,8 +777,8 @@ function showLoupe(e, pt) {
   lctx.fillStyle = '#808080'; lctx.fillRect(0, 0, L, L);
   lctx.drawImage(srcCanvas, pt.x - sw / 2, pt.y - sw / 2, sw, sw, 0, 0, L, L);
   // Ring showing the exact area that will be averaged
-  const half = Math.max(3, Math.round(shownData.width / 200));
-  const rr = Math.max(8, (half + 0.5) * L / sw);
+  const half = sampleHalf(shownData.width);
+  const rr = Math.max(7, (half + 0.5) * L / sw);
   lctx.lineWidth = 4; lctx.strokeStyle = '#000000'; lctx.beginPath(); lctx.arc(L / 2, L / 2, rr + 3, 0, Math.PI * 2); lctx.stroke();
   lctx.lineWidth = 3; lctx.strokeStyle = '#FFFFFF'; lctx.beginPath(); lctx.arc(L / 2, L / 2, rr, 0, Math.PI * 2); lctx.stroke();
   // Place it above the finger, or below if there's no room
