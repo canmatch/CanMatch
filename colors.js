@@ -1342,7 +1342,7 @@ window.PAINT_DATA = [
   {
     "brand": "Ironlak",
     "maker": "Ironlak",
-    "pressure": "",
+    "pressure": "high",
     "colors": [
       {"code": "BOLSIK", "name": "Bolt", "hex": "#4E3231"},
       {"code": "ETHSIK", "name": "Earth", "hex": "#523629"},
@@ -1540,7 +1540,7 @@ window.PAINT_DATA = [
   {
     "brand": "Krylon Fusion All-In-One",
     "maker": "Krylon",
-    "pressure": "",
+    "pressure": "hardware",
     "category": "hardware",
     "colors": [
       {"code": "42716", "name": "Gloss Patriotic Blue", "hex": "#114B98"},
@@ -1612,7 +1612,7 @@ window.PAINT_DATA = [
   {
     "brand": "Krylon COLORmaxx",
     "maker": "Krylon",
-    "pressure": "",
+    "pressure": "hardware",
     "category": "hardware",
     "colors": [
       {"code": "45506", "name": "Gloss Blue Ocean Breeze", "hex": "#9AD8DA"},

@@ -101,6 +101,9 @@
            background: var(--surface); border-radius: 14px; padding: 10px; }
   .pair { display: flex; height: 56px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
   .pair span { flex: 1; }
+  .pair-cap { display: flex; font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+  .pair-cap span { flex: 1; text-align: center; }
+  .cart .list-item .pair { height: 52px; }
   .match .name { font-weight: 700; }
   .match .meta { color: var(--muted); font-size: 0.85rem; }
   .score { text-align: right; font-size: 0.8rem; }
@@ -145,7 +148,7 @@
   .shop-links { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.9rem; font-weight: 700; }
   .shop-links a { color: var(--ink); }
   .where { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
-  .cart .list-item { grid-template-columns: 52px 1fr auto; }
+  .cart .list-item { grid-template-columns: 64px 1fr auto; }
   .cart .list-item .sw { height: 52px; }
   .remove { font: inherit; font-size: 0.8rem; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
   .shop-opt { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; background: var(--surface);
@@ -179,7 +182,7 @@
   .price-tag.na { color: var(--muted); font-weight: 600; }
   .total-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 1.15rem; }
   .total-row b { font-size: 1.4rem; font-stretch: 110%; }
-  .cart .list-item { grid-template-columns: 52px 1fr auto; }
+  .cart .list-item { grid-template-columns: 64px 1fr auto; }
   .cart .qty-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
   main { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
   h1 { margin-top: 10px; }
@@ -258,6 +261,7 @@
       <button type="button" class="chip" data-p="all" aria-pressed="true" data-i18n="all"></button>
       <button type="button" class="chip" data-p="low" aria-pressed="false" data-i18n="low"></button>
       <button type="button" class="chip" data-p="high" aria-pressed="false" data-i18n="high"></button>
+      <button type="button" class="chip" data-p="hardware" aria-pressed="false" data-i18n="hardwareCans"></button>
     </div>
     <h3 class="sub-h" data-i18n="brands"></h3>
     <div class="chips" id="brandChips"></div>
@@ -451,6 +455,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
+    medium: 'Medium (variable output)', hardwareCans: 'Hardware store cans', pMedium: 'medium pressure', pairYou: 'Yours', pairCan: 'Can',
     notInCity: 'Not sold in your city', hardware: 'hardware store spray', yourShops: 'Shops in your city: {shops}',
     lightQ: 'Colours look off?', lightHow: 'Indoor bulbs, shade and evening light tint photos yellow or blue. Tap “Fix lighting”, then touch something in the photo that is white or light grey in real life, like paper or a white wall.', cancel: 'Cancel', fixLight: '☀ Fix lighting',
     howTitle: 'How to use CanMatch', goodToKnow: 'Good to know', s1t: 'Take or choose a photo', s1d: 'Photograph the colour in daylight, straight on, without flash.', s2t: 'Touch the colour', s2d: 'A magnifier shows exactly where you’re pointing. Slide to adjust, then let go.', s3t: 'Fix the lighting (optional)', s3d: 'If colours look yellow or blue, tap “☀ Fix lighting”, then touch something in the photo that’s white in real life, like paper.', s4t: 'Pick a can and buy', s4d: 'The best matches come first. Add cans to your cart and buy from your local shop.',
@@ -498,6 +503,7 @@ const T = {
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
+    medium: 'Μεσαία (ρυθμιζόμενη ροή)', hardwareCans: 'Σπρέι σιδηροπωλείου', pMedium: 'μεσαία πίεση', pairYou: 'Δικό σου', pairCan: 'Σπρέι',
     notInCity: 'Δεν πωλείται στην πόλη σου', hardware: 'σπρέι καταστήματος σιδηρικών', yourShops: 'Καταστήματα στην πόλη σου: {shops}',
     lightQ: 'Τα χρώματα δεν φαίνονται σωστά;', lightHow: 'Οι λάμπες, η σκιά και το βραδινό φως κάνουν τις φωτογραφίες πιο κίτρινες ή πιο μπλε. Πάτα «Διόρθωση φωτισμού» και άγγιξε κάτι στη φωτογραφία που στην πραγματικότητα είναι λευκό ή ανοιχτό γκρι, όπως χαρτί ή λευκός τοίχος.', cancel: 'Ακύρωση', fixLight: '☀ Διόρθωση φωτισμού',
     howTitle: 'Πώς χρησιμοποιείς το CanMatch', goodToKnow: 'Καλό να ξέρεις', s1t: 'Τράβηξε ή διάλεξε φωτογραφία', s1d: 'Φωτογράφισε το χρώμα στο φως της ημέρας, κάθετα, χωρίς φλας.', s2t: 'Άγγιξε το χρώμα', s2d: 'Ένας μεγεθυντικός φακός δείχνει ακριβώς πού δείχνεις. Σύρε για να το ρυθμίσεις και άφησε το δάχτυλο.', s3t: 'Διόρθωσε τον φωτισμό (προαιρετικά)', s3d: 'Αν τα χρώματα φαίνονται κίτρινα ή μπλε, πάτα «☀ Διόρθωση φωτισμού» και άγγιξε κάτι στη φωτογραφία που στην πραγματικότητα είναι λευκό, όπως χαρτί.', s4t: 'Διάλεξε σπρέι και αγόρασε', s4d: 'Οι καλύτερες αντιστοιχίες εμφανίζονται πρώτες. Πρόσθεσε σπρέι στο καλάθι και αγόρασε από το κατάστημα της περιοχής σου.',
@@ -545,6 +551,7 @@ const T = {
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
+    medium: 'Moyenne (débit variable)', hardwareCans: 'Bombes de quincaillerie', pMedium: 'pression moyenne', pairYou: 'Vous', pairCan: 'Bombe',
     notInCity: 'Non vendu dans votre ville', hardware: 'bombe de quincaillerie', yourShops: 'Magasins dans votre ville\u00a0: {shops}',
     lightQ: 'Les couleurs semblent fausses\u202f?', lightHow: 'Les ampoules, l’ombre et la lumière du soir teintent les photos en jaune ou en bleu. Touchez «\u00a0Corriger l’éclairage\u00a0», puis quelque chose sur la photo qui est blanc ou gris clair en vrai, comme du papier ou un mur blanc.', cancel: 'Annuler', fixLight: '☀ Corriger l’éclairage',
     howTitle: 'Comment utiliser CanMatch', goodToKnow: 'Bon à savoir', s1t: 'Prenez ou choisissez une photo', s1d: 'Photographiez la couleur à la lumière du jour, bien en face, sans flash.', s2t: 'Touchez la couleur', s2d: 'Une loupe montre exactement où vous pointez. Glissez pour ajuster, puis relâchez.', s3t: 'Corrigez l’éclairage (facultatif)', s3d: 'Si les couleurs semblent jaunes ou bleues, touchez «\u00a0☀ Corriger l’éclairage\u00a0», puis quelque chose sur la photo qui est blanc en vrai, comme du papier.', s4t: 'Choisissez une bombe et achetez', s4d: 'Les meilleures correspondances s’affichent en premier. Ajoutez des bombes au panier et achetez dans votre magasin local.',
@@ -840,12 +847,14 @@ function showResults() {
   list.forEach(p => {
     const m = matchPct(p.d);
     const li = document.createElement('li'); li.className = 'match';
-    li.innerHTML = `<div class="pair" aria-hidden="true"><span style="background:${hex}"></span><span style="background:${p.hex}"></span></div>
+    li.innerHTML = `<div class="pair-wrap"><div class="pair" aria-hidden="true"><span style="background:${hex}"></span><span style="background:${p.hex}"></span></div>
+        <div class="pair-cap" aria-hidden="true"><span>${t('pairYou')}</span><span>${t('pairCan')}</span></div></div>
       <div><div class="name"></div><div class="meta"></div></div>
       <div class="score"><b></b><span></span></div>
       <button type="button" class="add"></button>`;
     li.querySelector('.name').textContent = paintName(p);
-    const extra = [p.code, p.pressure ? t(p.pressure === 'low' ? 'pLow' : 'pHigh') : (p.category === 'hardware' ? t('hardware') : ''), p.finish !== 'solid' ? t(p.finish) : ''];
+    const PL = { low: 'pLow', medium: 'pMedium', high: 'pHigh', hardware: 'hardware' };
+    const extra = [p.code, PL[p.pressure] ? t(PL[p.pressure]) : '', p.finish !== 'solid' ? t(p.finish) : ''];
     li.querySelector('.meta').textContent = [p.brand, ...extra].filter(Boolean).join(', ');
     const pt = priceTag(p.brand);
     if (pt) { const d = document.createElement('div'); d.className = 'price-tag' + (pt.na ? ' na' : ''); d.textContent = pt.text;
@@ -896,9 +905,9 @@ BRANDS.forEach(brand => {
     btn.setAttribute('aria-pressed', activeBrands.has(brand) ? 'true' : 'false');
     // A manual brand choice no longer matches a single pressure setting
     const sel = [...activeBrands];
+    const groups = [...new Set(BRANDS.map(b => BRAND_PRESSURE[b]))];
     const p = sel.length === BRANDS.length ? 'all'
-      : sel.length && sel.every(b => BRAND_PRESSURE[b] === 'low') && BRANDS.filter(b => BRAND_PRESSURE[b] === 'low').every(b => activeBrands.has(b)) ? 'low'
-      : sel.length && sel.every(b => BRAND_PRESSURE[b] === 'high') && BRANDS.filter(b => BRAND_PRESSURE[b] === 'high').every(b => activeBrands.has(b)) ? 'high' : '';
+      : groups.find(g => sel.length && sel.every(b => BRAND_PRESSURE[b] === g) && BRANDS.filter(b => BRAND_PRESSURE[b] === g).every(b => activeBrands.has(b))) || '';
     document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
     showResults();
   });
@@ -952,7 +961,8 @@ const unpricedText = (sum, unpriced) => (unpriced && sum > 0) ? t('plusUnpriced'
 function itemRow(i, shop) {
   const p = shop ? priceOf(shop, i.brand) : undefined;
   const row = document.createElement('div'); row.className = 'list-item' + (shop ? '' : ' unavail');
-  row.innerHTML = `<div class="sw" style="background:${i.hex}"></div>
+  row.innerHTML = `<div class="pair-wrap"><div class="pair" aria-hidden="true"><span style="background:${i.targets[i.targets.length - 1] || i.hex}"></span><span style="background:${i.hex}"></span></div>
+      <div class="pair-cap" aria-hidden="true"><span>${t('pairYou')}</span><span>${t('pairCan')}</span></div></div>
     <div><div style="font-weight:700" class="nm"></div><div class="meta" style="color:var(--muted);font-size:0.85rem"></div>
       <div class="targets" aria-hidden="true"></div><button type="button" class="remove"></button></div>
     <div class="qty-wrap"><div class="price-col"><div class="line"></div><div class="unit"></div></div>
