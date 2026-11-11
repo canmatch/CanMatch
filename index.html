@@ -58,6 +58,16 @@
   button:focus-visible, label:focus-within, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
   input[type=file] { position: absolute; opacity: 0; width: 1px; height: 1px; }
 
+  .home-cards { display: grid; gap: 14px; }
+  .home-card { background: var(--surface); border-radius: 18px; padding: 18px; border: 1px solid var(--line); }
+  .home-card h2 { margin: 6px 0 4px; font-size: 1.3rem; }
+  .home-card p { margin: 0 0 14px; }
+  .home-card .note { margin: 10px 0 0; }
+  .home-card label.primary { width: 100%; }
+  .home-ico { font-size: 1.8rem; line-height: 1; }
+  .design-prompt { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface);
+                   border-radius: 14px; padding: 12px 14px; margin-top: 16px; }
+  .design-prompt b { font-size: 0.95rem; }
   .empty { border: 2px dashed var(--line); border-radius: 18px; padding: 40px 20px; text-align: center; background: var(--surface); }
   .empty p { color: var(--muted); margin: 14px 0 0; }
 
@@ -232,9 +242,21 @@
   <h1>CanMatch</h1>
   <p class="tagline" data-i18n="tagline"></p>
 
-  <section id="empty" class="empty">
-    <label class="primary"><span data-i18n="takePhoto"></span><input id="file" type="file" accept="image/*"></label>
-    <p data-i18n="shootHint"></p>
+  <section id="empty" class="home-cards">
+    <div class="home-card">
+      <div class="home-ico" aria-hidden="true">📷</div>
+      <h2 data-i18n="homeMatchTitle"></h2>
+      <p data-i18n="homeMatchDesc"></p>
+      <label class="primary"><span data-i18n="takePhoto"></span><input id="file" type="file" accept="image/*"></label>
+      <p class="note" data-i18n="shootHint"></p>
+    </div>
+    <div class="home-card">
+      <div class="home-ico" aria-hidden="true">🎨</div>
+      <h2 data-i18n="designTitle"></h2>
+      <p data-i18n="homeDesignDesc"></p>
+      <label class="primary"><span data-i18n="uploadDesign"></span><input id="homeDesignFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
+      <p class="note" data-i18n="homeDesignNote"></p>
+    </div>
   </section>
 
   <section id="viewer" hidden>
@@ -289,6 +311,8 @@
     </div>
     <ol class="matches" id="matchList"></ol>
     <button type="button" class="secondary show-more" id="showMore" hidden></button>
+    <div class="design-prompt"><b data-i18n="designPromptQ"></b>
+      <button type="button" class="secondary small" id="designPromptBtn" data-i18n="designPromptBtn"></button></div>
     <p class="note" data-i18n="note"></p>
   </section>
 </main>
@@ -328,6 +352,8 @@
           <div><div class="how-num">3</div><h3 data-i18n="s3t"></h3><p data-i18n="s3d"></p></div></li>
         <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="10" y="10" width="140" height="26" rx="6" fill="#F7F7F5" stroke="#C9C8C3"/><rect x="16" y="15" width="10" height="16" fill="#C8463A"/><rect x="26" y="15" width="10" height="16" fill="#C2402F"/><rect x="42" y="18" width="50" height="5" rx="2" fill="#161616"/><rect x="42" y="26" width="34" height="3" rx="1.5" fill="#5E5F61"/><text x="142" y="28" text-anchor="end" font-size="11" font-weight="800" fill="#161616" font-family="Archivo, sans-serif">98%</text><rect x="10" y="42" width="140" height="26" rx="6" fill="#F7F7F5" stroke="#C9C8C3"/><rect x="16" y="47" width="10" height="16" fill="#C8463A"/><rect x="26" y="47" width="10" height="16" fill="#B8372E"/><rect x="42" y="50" width="44" height="5" rx="2" fill="#161616"/><rect x="42" y="58" width="30" height="3" rx="1.5" fill="#5E5F61"/><text x="142" y="60" text-anchor="end" font-size="11" font-weight="800" fill="#161616" font-family="Archivo, sans-serif">95%</text><rect x="30" y="78" width="100" height="24" rx="12" fill="#161616"/><text x="80" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#F7F7F5" font-family="Archivo, sans-serif">🛒 + 1</text></svg></div>
           <div><div class="how-num">4</div><h3 data-i18n="s4t"></h3><p data-i18n="s4d"></p></div></li>
+        <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="6" y="10" width="78" height="90" rx="8" fill="#161616"/><rect x="12" y="16" width="66" height="78" rx="4" fill="#F7F7F5"/><circle cx="34" cy="46" r="14" fill="#C8463A"/><rect x="48" y="58" width="24" height="26" fill="#F5C400"/><rect x="18" y="74" width="26" height="12" fill="#1F6FB2"/><g font-family="Archivo, sans-serif" font-size="9" font-weight="700" fill="#161616"><rect x="94" y="18" width="12" height="12" rx="2" fill="#C8463A"/><text x="110" y="28">× 3</text><rect x="94" y="40" width="12" height="12" rx="2" fill="#F5C400"/><text x="110" y="50">× 2</text><rect x="94" y="62" width="12" height="12" rx="2" fill="#1F6FB2"/><text x="110" y="72">× 1</text><rect x="94" y="84" width="58" height="16" rx="8" fill="#161616"/><text x="123" y="95" text-anchor="middle" fill="#F7F7F5" font-size="8">🛒 6</text></g></svg></div>
+          <div><div class="how-num">5</div><h3 data-i18n="s5t"></h3><p data-i18n="s5d"></p></div></li>
       </ol>
       <h3 class="sub-h" data-i18n="goodToKnow"></h3>
       <ul class="tips" id="tipsList"></ul>
@@ -356,7 +382,8 @@
       </div>
       <div class="photo-wrap" style="margin-top:10px"><canvas id="designCanvas"></canvas></div>
       <label class="field"><span id="numColoursLabel"></span>
-        <input id="numColours" type="range" min="3" max="16" value="8" style="padding:0"></label>
+        <input id="numColours" type="range" min="2" max="40" value="8" style="padding:0"></label>
+      <button type="button" class="link-btn" id="autoColours" data-i18n="backToAuto" hidden></button>
       <p class="note" data-i18n="usingFilters"></p>
 
       <h3 class="sub-h" data-i18n="wallSize"></h3>
@@ -482,8 +509,8 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-11-design"></script>
-<script src="shops.js?v=2026-11-11-design"></script>
+<script src="colors.js?v=2026-11-11-home"></script>
+<script src="shops.js?v=2026-11-11-home"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -543,7 +570,9 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
-    tabDesign: 'Design', designTitle: 'Plan a design', designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. CanMatch finds its colours, matches cans and works out how many you need.', uploadDesign: 'Upload a design', designTip: 'Export as PNG or JPG. The file’s exact colours are used, so no lighting fix is needed.', viewOriginal: 'Original', viewCans: 'With cans', numColours: 'Colours: {n}', usingFilters: 'Matches use your brand and pressure filters from the Match tab.', wallSize: 'Wall size', width: 'Width', height: 'Height', coats: 'Coats', oneCoat: '1 coat', twoCoats: '2 coats', coverageNote: 'Estimate assumes about {c} m² per 400 ml can per coat. Real coverage depends on the brand, cap and wall.', ofDesign: '{p}% of design', otherOptions: 'Other options', designTotal: 'Total for this wall', addAll: 'Add all to cart', addedAll: 'Added {n} cans to your cart.', dlTitle: 'Use these colours in your design app', dlProcreate: 'Procreate palette', dlAdobe: 'Adobe palette (.ase)', rangeTitle: 'Design with real can colours', rangeIntro: 'Download a whole range as a palette, so every colour you pick exists as a can.', nearRange: 'Everything sold near me', procreateNote: 'Procreate palettes hold 30 colours, so large ranges download as a .zip of several palettes.', hexLabel: 'Or type a colour code', hexGo: 'Match', hexBad: 'Enter a code like #E8432F.',
+    homeMatchTitle: 'Match a colour', homeMatchDesc: 'Photograph any colour and find the closest can.', homeDesignDesc: 'Upload a sketch and get every can you need for the wall.', homeDesignNote: 'From Procreate, Photoshop or Illustrator, as PNG or JPG.', designPromptQ: 'Planning a whole piece?', designPromptBtn: 'Upload your design', s5t: 'Planning a whole piece? Use Design', s5d: 'Upload your sketch. CanMatch finds every colour, matches cans and works out how many you need for the wall.',
+    autoDetected: 'detected automatically', backToAuto: 'Detect colours automatically',
+    tabDesign: 'Design', designTitle: 'Plan a design', designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. CanMatch finds its colours, matches cans and works out how many you need.', uploadDesign: 'Upload a design', designTip: 'Export as PNG or JPG. The file’s exact colours are used, so no lighting fix is needed.', viewOriginal: 'Original', viewCans: 'With cans', numColours: 'Colours: {n}', usingFilters: 'CanMatch finds the colours automatically. Move the slider to merge or split colours. Matches use your brand and pressure filters from the Match tab.', wallSize: 'Wall size', width: 'Width', height: 'Height', coats: 'Coats', oneCoat: '1 coat', twoCoats: '2 coats', coverageNote: 'Estimate assumes about {c} m² per 400 ml can per coat. Real coverage depends on the brand, cap and wall.', ofDesign: '{p}% of design', otherOptions: 'Other options', designTotal: 'Total for this wall', addAll: 'Add all to cart', addedAll: 'Added {n} cans to your cart.', dlTitle: 'Use these colours in your design app', dlProcreate: 'Procreate palette', dlAdobe: 'Adobe palette (.ase)', rangeTitle: 'Design with real can colours', rangeIntro: 'Download a whole range as a palette, so every colour you pick exists as a can.', nearRange: 'Everything sold near me', procreateNote: 'Procreate palettes hold 30 colours, so large ranges download as a .zip of several palettes.', hexLabel: 'Or type a colour code', hexGo: 'Match', hexBad: 'Enter a code like #E8432F.',
     checkoutTitle: 'Checkout · {shop}', howGet: 'How do you want your cans?', pickup: 'Reserve for pickup', pickupDesc: 'The shop sets your cans aside. Pay when you collect them.', delivery: 'Delivery', deliveryDesc: '{fee} delivery', freeOver: 'free over {amount}', pickupOnly: 'This shop offers pickup only.', deliveryAddr: 'Delivery address', addrNeeded: 'Please enter a delivery address.', subtotal: 'Cans', deliveryFee: 'Delivery', free: 'Free', placeOrder: 'Place order', donePickup: 'Reserved for pickup at {shop}', doneDelivery: 'Delivery ordered from {shop}', methodLabel: 'Method', payOnDelivery: 'Pay on delivery',
     includeHardware: 'Include hardware store cans (Krylon)', nearOnly: 'Only show cans sold near me', nearNoShops: 'No partner shops in your city yet, so all cans are shown.',
     medium: 'Medium (variable output)', hardwareCans: 'Hardware store cans', pMedium: 'medium pressure', pairYou: 'Yours', pairCan: 'Can',
@@ -568,7 +597,7 @@ const T = {
     noShops: 'No shops are listed for your city yet.', noCity: 'Choose your city in Settings to see shops near you.',
     checkStock: 'Stock changes, so call ahead to check the colours you need.', directions: 'Directions', call: 'Call', site: 'Website',
     availableAt: 'At', notNearby: 'Not listed at shops near you', listShops: 'Where to buy',
-    tagline: 'Photograph any colour and find the closest spray paints.',
+    tagline: 'Match any colour or plan a whole mural with real spray cans.',
     takePhoto: 'Take or choose a photo', shootHint: 'Shoot in daylight, straight on, without flash.',
     tapHint: 'Touch the colour you want to match. Slide your finger to adjust, then let go.', newPhoto: 'New photo',
     fixLightPrompt: 'Now touch something that’s white or light grey in real life, then let go.',
@@ -594,6 +623,8 @@ const T = {
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
+    homeMatchTitle: 'Ταίριαξε ένα χρώμα', homeMatchDesc: 'Φωτογράφισε οποιοδήποτε χρώμα και βρες το πιο κοντινό σπρέι.', homeDesignDesc: 'Ανέβασε ένα σχέδιο και πάρε κάθε σπρέι που χρειάζεσαι για τον τοίχο.', homeDesignNote: 'Από Procreate, Photoshop ή Illustrator, σε PNG ή JPG.', designPromptQ: 'Σχεδιάζεις ολόκληρο έργο;', designPromptBtn: 'Ανέβασε το σχέδιό σου', s5t: 'Ολόκληρο έργο; Χρησιμοποίησε το Σχέδιο', s5d: 'Ανέβασε το σχέδιό σου. Το CanMatch βρίσκει κάθε χρώμα, το ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι για τον τοίχο.',
+    autoDetected: 'εντοπίστηκαν αυτόματα', backToAuto: 'Αυτόματος εντοπισμός χρωμάτων',
     tabDesign: 'Σχέδιο', designTitle: 'Σχεδίασε ένα έργο', designIntro: 'Ανέβασε ένα σχέδιο από Procreate, Photoshop ή Illustrator. Το CanMatch βρίσκει τα χρώματά του, τα ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι.', uploadDesign: 'Ανέβασε σχέδιο', designTip: 'Κάνε εξαγωγή σε PNG ή JPG. Χρησιμοποιούνται τα ακριβή χρώματα του αρχείου, οπότε δεν χρειάζεται διόρθωση φωτισμού.', viewOriginal: 'Αρχικό', viewCans: 'Με σπρέι', numColours: 'Χρώματα: {n}', usingFilters: 'Οι αντιστοιχίες χρησιμοποιούν τα φίλτρα μάρκας και πίεσης από την καρτέλα Ταίριασμα.', wallSize: 'Μέγεθος τοίχου', width: 'Πλάτος', height: 'Ύψος', coats: 'Στρώσεις', oneCoat: '1 στρώση', twoCoats: '2 στρώσεις', coverageNote: 'Ο υπολογισμός θεωρεί περίπου {c} m² ανά σπρέι 400 ml ανά στρώση. Η πραγματική κάλυψη εξαρτάται από τη μάρκα, το καπάκι και τον τοίχο.', ofDesign: '{p}% του σχεδίου', otherOptions: 'Άλλες επιλογές', designTotal: 'Σύνολο για αυτόν τον τοίχο', addAll: 'Όλα στο καλάθι', addedAll: 'Προστέθηκαν {n} σπρέι στο καλάθι σου.', dlTitle: 'Χρησιμοποίησε αυτά τα χρώματα στην εφαρμογή σχεδίασης', dlProcreate: 'Παλέτα Procreate', dlAdobe: 'Παλέτα Adobe (.ase)', rangeTitle: 'Σχεδίασε με πραγματικά χρώματα σπρέι', rangeIntro: 'Κατέβασε μια ολόκληρη σειρά ως παλέτα, ώστε κάθε χρώμα που διαλέγεις να υπάρχει σε σπρέι.', nearRange: 'Όλα όσα πωλούνται κοντά μου', procreateNote: 'Οι παλέτες του Procreate χωράνε 30 χρώματα, οπότε οι μεγάλες σειρές κατεβαίνουν ως .zip με πολλές παλέτες.', hexLabel: 'Ή γράψε κωδικό χρώματος', hexGo: 'Ταίριαξε', hexBad: 'Γράψε έναν κωδικό όπως #E8432F.',
     checkoutTitle: 'Ολοκλήρωση · {shop}', howGet: 'Πώς θέλεις να πάρεις τα σπρέι;', pickup: 'Κράτηση για παραλαβή', pickupDesc: 'Το κατάστημα σου κρατάει τα σπρέι. Πληρώνεις όταν τα παραλάβεις.', delivery: 'Παράδοση', deliveryDesc: 'Μεταφορικά {fee}', freeOver: 'δωρεάν άνω των {amount}', pickupOnly: 'Αυτό το κατάστημα προσφέρει μόνο παραλαβή.', deliveryAddr: 'Διεύθυνση παράδοσης', addrNeeded: 'Συμπλήρωσε διεύθυνση παράδοσης.', subtotal: 'Σπρέι', deliveryFee: 'Μεταφορικά', free: 'Δωρεάν', placeOrder: 'Ολοκλήρωση παραγγελίας', donePickup: 'Κράτηση για παραλαβή στο {shop}', doneDelivery: 'Παραγγελία με παράδοση από {shop}', methodLabel: 'Τρόπος', payOnDelivery: 'Πληρωμή κατά την παράδοση',
     includeHardware: 'Συμπερίληψη σπρέι σιδηροπωλείου (Krylon)', nearOnly: 'Μόνο σπρέι που πωλούνται κοντά μου', nearNoShops: 'Δεν υπάρχουν ακόμα συνεργαζόμενα καταστήματα στην πόλη σου, οπότε εμφανίζονται όλα τα σπρέι.',
@@ -619,7 +650,7 @@ const T = {
     noShops: 'Δεν υπάρχουν ακόμα καταστήματα για την πόλη σου.', noCity: 'Διάλεξε την πόλη σου στις Ρυθμίσεις για να δεις καταστήματα κοντά σου.',
     checkStock: 'Το απόθεμα αλλάζει, γι’ αυτό πάρε τηλέφωνο πριν πας για να ελέγξεις τα χρώματα.', directions: 'Οδηγίες', call: 'Κλήση', site: 'Ιστοσελίδα',
     availableAt: 'Σε', notNearby: 'Δεν υπάρχει σε κατάστημα κοντά σου', listShops: 'Πού θα τα βρεις',
-    tagline: 'Φωτογράφισε οποιοδήποτε χρώμα και βρες τα πιο κοντινά σπρέι.',
+    tagline: 'Ταίριαξε οποιοδήποτε χρώμα ή σχεδίασε ολόκληρη τοιχογραφία με πραγματικά σπρέι.',
     takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία', shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
     tapHint: 'Άγγιξε το χρώμα που θέλεις. Σύρε το δάχτυλο για να το ρυθμίσεις και μετά άφησέ το.', newPhoto: 'Νέα φωτογραφία',
     fixLightPrompt: 'Τώρα άγγιξε κάτι που στην πραγματικότητα είναι λευκό ή ανοιχτό γκρι και άφησε το δάχτυλο.',
@@ -645,6 +676,8 @@ const T = {
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
+    homeMatchTitle: 'Trouver une couleur', homeMatchDesc: 'Photographiez n’importe quelle couleur et trouvez la bombe la plus proche.', homeDesignDesc: 'Importez un croquis et obtenez toutes les bombes nécessaires pour le mur.', homeDesignNote: 'Depuis Procreate, Photoshop ou Illustrator, en PNG ou JPG.', designPromptQ: 'Vous préparez toute une fresque\u202f?', designPromptBtn: 'Importez votre dessin', s5t: 'Toute une fresque\u202f? Utilisez Projet', s5d: 'Importez votre croquis. CanMatch trouve chaque couleur, l’associe à des bombes et calcule combien il en faut pour le mur.',
+    autoDetected: 'détectées automatiquement', backToAuto: 'Détecter les couleurs automatiquement',
     tabDesign: 'Projet', designTitle: 'Préparer un projet', designIntro: 'Importez un croquis depuis Procreate, Photoshop ou Illustrator. CanMatch trouve ses couleurs, les associe à des bombes et calcule combien il vous en faut.', uploadDesign: 'Importer un dessin', designTip: 'Exportez en PNG ou JPG. Les couleurs exactes du fichier sont utilisées\u202f: pas besoin de corriger l’éclairage.', viewOriginal: 'Original', viewCans: 'Avec les bombes', numColours: 'Couleurs\u00a0: {n}', usingFilters: 'Les correspondances utilisent vos filtres de marque et de pression de l’onglet Trouver.', wallSize: 'Taille du mur', width: 'Largeur', height: 'Hauteur', coats: 'Couches', oneCoat: '1 couche', twoCoats: '2 couches', coverageNote: 'Estimation basée sur environ {c} m² par bombe de 400 ml et par couche. La couverture réelle dépend de la marque, du cap et du mur.', ofDesign: '{p}\u202f% du dessin', otherOptions: 'Autres choix', designTotal: 'Total pour ce mur', addAll: 'Tout ajouter au panier', addedAll: '{n} bombes ajoutées au panier.', dlTitle: 'Utilisez ces couleurs dans votre logiciel', dlProcreate: 'Palette Procreate', dlAdobe: 'Palette Adobe (.ase)', rangeTitle: 'Dessinez avec de vraies couleurs de bombes', rangeIntro: 'Téléchargez toute une gamme en palette\u202f: chaque couleur choisie existe en bombe.', nearRange: 'Tout ce qui est vendu près de chez moi', procreateNote: 'Une palette Procreate contient 30 couleurs\u202f: les grandes gammes sont téléchargées en .zip de plusieurs palettes.', hexLabel: 'Ou saisissez un code couleur', hexGo: 'Trouver', hexBad: 'Saisissez un code comme #E8432F.',
     checkoutTitle: 'Commande · {shop}', howGet: 'Comment voulez-vous recevoir vos bombes\u202f?', pickup: 'Réserver et retirer en magasin', pickupDesc: 'Le magasin met vos bombes de côté. Vous payez au retrait.', delivery: 'Livraison', deliveryDesc: 'Livraison {fee}', freeOver: 'offerte dès {amount}', pickupOnly: 'Ce magasin propose uniquement le retrait.', deliveryAddr: 'Adresse de livraison', addrNeeded: 'Veuillez saisir une adresse de livraison.', subtotal: 'Bombes', deliveryFee: 'Livraison', free: 'Offerte', placeOrder: 'Passer la commande', donePickup: 'Réservé pour retrait chez {shop}', doneDelivery: 'Livraison commandée chez {shop}', methodLabel: 'Mode', payOnDelivery: 'Paiement à la livraison',
     includeHardware: 'Inclure les bombes de quincaillerie (Krylon)', nearOnly: 'Seulement les bombes vendues près de chez moi', nearNoShops: 'Pas encore de magasin partenaire dans votre ville\u202f: toutes les bombes sont affichées.',
@@ -670,7 +703,7 @@ const T = {
     noShops: 'Aucun magasin n’est encore référencé pour votre ville.', noCity: 'Choisissez votre ville dans Réglages pour voir les magasins proches.',
     checkStock: 'Les stocks changent\u202f: appelez avant de passer pour vérifier les couleurs.', directions: 'Itinéraire', call: 'Appeler', site: 'Site web',
     availableAt: 'Chez', notNearby: 'Pas référencé près de chez vous', listShops: 'Où acheter',
-    tagline: 'Photographiez n’importe quelle couleur et trouvez les bombes les plus proches.',
+    tagline: 'Trouvez n’importe quelle couleur ou préparez toute une fresque avec de vraies bombes.',
     takePhoto: 'Prendre ou choisir une photo', shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
     tapHint: 'Touchez la couleur voulue. Glissez le doigt pour ajuster, puis relâchez.', newPhoto: 'Nouvelle photo',
     fixLightPrompt: 'Touchez maintenant quelque chose qui est blanc ou gris clair en vrai, puis relâchez.',
@@ -1283,8 +1316,13 @@ let designImg = null, designPixels = null, clusters = [], picks = [], designView
 const dCanvas = $('designCanvas'), dCtx = dCanvas.getContext('2d', { willReadFrequently: true });
 let designOrig = null, designMap = null;
 
-$('designFile').addEventListener('change', e => {
-  const file = e.target.files[0]; if (!file) return;
+$('designFile').addEventListener('change', e => loadDesignFile(e.target.files[0]));
+function openDesignTab() {
+  $('listSheet').hidden = true; $('settingsSheet').hidden = true;
+  fillRangeSelect(); $('designSheet').hidden = false; setTab('openDesign');
+}
+function loadDesignFile(file) {
+  if (!file) return;
   const url = URL.createObjectURL(file), img = new Image();
   img.onload = () => {
     const MAX = 900, sc = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
@@ -1292,12 +1330,12 @@ $('designFile').addEventListener('change', e => {
     dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
     dCtx.drawImage(img, 0, 0, dCanvas.width, dCanvas.height);
     designOrig = dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height);
-    designImg = img; URL.revokeObjectURL(url);
+    designImg = img; URL.revokeObjectURL(url); autoColours = true;
     $('designBody').hidden = false; runDesign();
   };
   img.onerror = () => alert(t('badImage'));
   img.src = url;
-});
+}
 
 // Group the design's pixels into its main colours (k-means in Lab colour space)
 function extractPalette(data, k) {
@@ -1336,6 +1374,30 @@ function extractPalette(data, k) {
   return cents.map((lab, i) => ({ lab, share: counts[i] / pts.length }))
     .filter(c => c.share > 0).sort((a, b) => b.share - a.share);
 }
+// Detect how many distinct colours a design really has: start with many groups, then merge
+// groups that look the same and fold in tiny groups (anti-aliased edges, specks).
+function detectPalette(data) {
+  let cl = extractPalette(data, 40).map(c => ({ lab: c.lab.slice(), share: c.share }));
+  const MERGE = 8, MIN_SHARE = 0.006;
+  const mergeInto = (a, b) => { const w = a.share + b.share;
+    a.lab = a.lab.map((v, i) => (v * a.share + b.lab[i] * b.share) / w); a.share = w; };
+  for (;;) {
+    let bi = -1, bj = -1, bd = Infinity;
+    for (let i = 0; i < cl.length; i++) for (let j = i + 1; j < cl.length; j++) {
+      const d = deltaE2000(cl[i].lab, cl[j].lab); if (d < bd) { bd = d; bi = i; bj = j; } }
+    if (bd >= MERGE || bi < 0) break;
+    mergeInto(cl[bi], cl[bj]); cl.splice(bj, 1);
+  }
+  cl.sort((a, b) => b.share - a.share);
+  for (let i = cl.length - 1; i > 0; i--) {
+    if (cl[i].share >= MIN_SHARE || cl.length <= 2) continue;
+    // fold a tiny group into its closest neighbour (its share counts toward that colour's cans)
+    let bj = 0, bd = Infinity;
+    for (let j = 0; j < cl.length; j++) if (j !== i) { const d = deltaE2000(cl[i].lab, cl[j].lab); if (d < bd) { bd = d; bj = j; } }
+    cl[bj].share += cl[i].share; cl.splice(i, 1);
+  }
+  return cl.sort((a, b) => b.share - a.share);
+}
 function labToHex(lab) {
   // Lab -> sRGB (D65), for showing the design's own colours
   const [L, a, b] = lab; const fy = (L + 16) / 116, fx = fy + a / 500, fz = fy - b / 200;
@@ -1345,11 +1407,12 @@ function labToHex(lab) {
   const g = v => { v = Math.min(1, Math.max(0, v)); return 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055); };
   return rgbToHex(...lin.map(g));
 }
+let autoColours = true;
 function runDesign() {
   if (!designOrig) return;
-  const k = +$('numColours').value;
-  $('numColoursLabel').textContent = t('numColours').replace('{n}', k);
-  clusters = extractPalette(designOrig, k);
+  if (autoColours) { clusters = detectPalette(designOrig); $('numColours').value = clusters.length; }
+  else clusters = extractPalette(designOrig, +$('numColours').value);
+  updateColoursLabel();
   const cands = candidatePaints();
   clusters.forEach(c => {
     c.hex = labToHex(c.lab);
@@ -1434,8 +1497,13 @@ function renderPalette() {
   const v = document.createElement('b'); v.textContent = Object.entries(totals).map(([cur, val]) => money(val, cur)).join(' + ');
   row.append(l, v); tot.appendChild(row);
 }
-$('numColours').addEventListener('input', () => { $('numColoursLabel').textContent = t('numColours').replace('{n}', $('numColours').value); });
-$('numColours').addEventListener('change', runDesign);
+function updateColoursLabel() {
+  $('numColoursLabel').textContent = t('numColours').replace('{n}', $('numColours').value) + (autoColours ? ` · ${t('autoDetected')}` : '');
+  $('autoColours').hidden = autoColours;
+}
+$('numColours').addEventListener('input', () => { autoColours = false; updateColoursLabel(); });
+$('numColours').addEventListener('change', () => { autoColours = false; runDesign(); });
+$('autoColours').addEventListener('click', () => { autoColours = true; runDesign(); });
 ['wallW', 'wallH', 'wallUnit', 'wallCoats'].forEach(id => $(id).addEventListener('input', renderPalette));
 $('viewOrig').addEventListener('click', () => { designView = 'orig'; drawDesign(); });
 $('viewCans').addEventListener('click', () => { designView = 'cans'; drawDesign(); });
@@ -1532,11 +1600,9 @@ $('dlRangeProcreate').addEventListener('click', () => { const r = rangePaints();
 $('dlRangeAse').addEventListener('click', () => { const r = rangePaints(); download(`${r.title.replace(/[\\/:*?"<>|]/g, '-')}.ase`, makeASE(r.title, r.list)); });
 
 /* ---------- Design tab ---------- */
-$('openDesign').addEventListener('click', () => {
-  $('listSheet').hidden = true; $('settingsSheet').hidden = true;
-  fillRangeSelect(); if (designOrig) runDesign();
-  $('designSheet').hidden = false; setTab('openDesign');
-});
+$('openDesign').addEventListener('click', () => { openDesignTab(); if (designOrig) runDesign(); });
+$('homeDesignFile').addEventListener('change', e => { openDesignTab(); loadDesignFile(e.target.files[0]); e.target.value = ''; });
+$('designPromptBtn').addEventListener('click', () => { openDesignTab(); if (designOrig) runDesign(); });
 
 /* ---------- Settings (no walkthrough) ---------- */
 function fillCitySelect(sel, value) {
