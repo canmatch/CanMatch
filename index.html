@@ -78,7 +78,8 @@
            border: 4px solid #FFFFFF; box-shadow: 0 0 0 2px #000000, 0 6px 18px rgba(0,0,0,0.35); pointer-events: none; }
   #loupe canvas { width: 100%; height: 100%; display: block; }
   .hint { color: var(--muted); font-size: 0.9rem; margin: 8px 2px 0; }
-  .light-card { background: var(--surface); border-radius: 14px; padding: 12px 14px; margin-top: 12px; }
+  .light-card { background: var(--surface); border-radius: 14px; padding: 10px 14px; margin-top: 12px; }
+  .light-card summary { font-weight: 700; cursor: pointer; font-size: 0.95rem; }
   .light-card p { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
   button.small { padding: 9px 14px; font-size: 0.9rem; }
   .instruction { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; padding: 12px 14px;
@@ -121,6 +122,8 @@
   .add { grid-column: 2 / 4; justify-self: start; font: inherit; font-size: 0.85rem; font-weight: 700;
          border: 2px solid var(--ink); background: transparent; color: var(--ink); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
   .add[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .details-btn { font: inherit; font-size: 0.8rem; color: var(--muted); background: none; border: 0; padding: 2px 0;
+                 text-decoration: underline; cursor: pointer; }
   .note { color: var(--muted); font-size: 0.85rem; margin-top: 18px; }
 
   /* Sheets: onboarding, tips, shopping list */
@@ -206,8 +209,10 @@
   .filter-panel { background: var(--surface); border-radius: 14px; padding: 4px 14px 14px; margin-top: 12px; }
   .filter-panel .sub-h { margin-top: 14px; }
   .near-toggle { color: var(--ink); font-weight: 700; margin-top: 10px; }
-  .hex-row { display: flex; gap: 10px; align-items: flex-end; margin-top: 18px; }
-  .hex-row button { padding: 11px 16px; }
+  .codes-box { margin-top: 14px; background: var(--surface); border-radius: 14px; padding: 10px 14px; }
+  .codes-box summary { font-weight: 700; cursor: pointer; }
+  .codes-box textarea { width: 100%; margin: 10px 0; font: inherit; padding: 10px; border-radius: 10px;
+                        border: 2px solid var(--line); background: var(--bg); color: var(--ink); }
   .wall-row { display: grid; grid-template-columns: 1fr 1fr 70px 104px; gap: 6px; }
   .wall-row select, .wall-row input { padding: 12px 8px !important; }
   .wall-row .field { margin-top: 8px; font-size: 0.9rem; }
@@ -263,27 +268,20 @@
     <p class="instruction" id="hint" aria-live="polite"></p>
     <div class="photo-wrap"><canvas id="photo"></canvas></div>
     <div id="loupe" aria-hidden="true" hidden><canvas id="loupeCanvas" width="240" height="240"></canvas></div>
-    <div class="light-card" id="lightCard">
-      <div>
-        <b data-i18n="lightQ"></b>
-        <p data-i18n="lightHow"></p>
-      </div>
+    <details class="light-card" id="lightCard">
+      <summary data-i18n="lightLink"></summary>
+      <p data-i18n="lightHow"></p>
       <div class="row-actions" style="margin-top:8px">
         <button type="button" class="primary small" id="fixLight" data-i18n="fixLight"></button>
         <button type="button" class="secondary small" id="cancelLight" data-i18n="cancel" hidden></button>
         <button type="button" class="secondary small" id="resetLight" data-i18n="resetLight" hidden></button>
       </div>
-    </div>
+    </details>
     <div class="row-actions">
       <label class="secondary"><span data-i18n="newPhoto"></span><input id="file2" type="file" accept="image/*"></label>
     </div>
   </section>
 
-  <div class="hex-row">
-    <label class="field" style="margin:0;flex:1"><span data-i18n="hexLabel"></span><input id="hexIn" type="text" placeholder="#E8432F" autocomplete="off" spellcheck="false"></label>
-    <button type="button" class="secondary" id="hexGo" data-i18n="hexGo"></button>
-  </div>
-  <p class="hint" id="hexMsg" aria-live="polite"></p>
 
   <section id="results" hidden>
     <div id="sample" class="sample" aria-live="polite">
@@ -328,20 +326,13 @@
 <div class="sheet" id="setup" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
   <div class="sheet-inner">
     <div id="stepStart">
-      <p class="step-count" data-i18n="step1"></p>
-      <h2 id="setupTitle" data-i18n="startTitle"></h2>
-      <div class="lang-list" role="group" aria-label="Language · Γλώσσα · Langue">
-        <button type="button" class="lang-btn" data-lang="en">English</button>
-        <button type="button" class="lang-btn" data-lang="el">Ελληνικά</button>
-        <button type="button" class="lang-btn" data-lang="fr">Français</button>
-      </div>
+      <h2 id="setupTitle" data-i18n="whereAreYou"></h2>
       <label class="field"><span data-i18n="cityLabel"></span><select id="citySelect"></select></label>
       <label class="field" id="otherCityField" hidden><span data-i18n="otherCity"></span><input id="otherCity" type="text" autocomplete="address-level2"></label>
       <p class="tagline" style="margin-top:10px" data-i18n="locationWhy"></p>
-      <div class="sheet-actions"><button type="button" class="primary" id="startNext" data-i18n="continue"></button></div>
+      <div class="sheet-actions"><button type="button" class="primary" id="startNext" data-i18n="gotIt"></button></div>
     </div>
     <div id="stepAbout" hidden>
-      <p class="step-count" data-i18n="step2"></p>
       <h2 data-i18n="howTitle"></h2>
       <ol class="how">
         <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="8" y="10" width="144" height="90" rx="10" fill="#E9DFC0"/><rect x="80" y="10" width="72" height="90" fill="#C8463A"/><rect x="52" y="22" width="56" height="78" rx="10" fill="var(--ink)"/><rect x="57" y="30" width="46" height="52" rx="4" fill="#C8463A"/><rect x="57" y="30" width="20" height="52" fill="#E9DFC0"/><circle cx="80" cy="91" r="5" fill="var(--bg)"/></svg></div>
@@ -374,18 +365,27 @@
     <p class="tagline" data-i18n="designIntro"></p>
     <label class="primary"><span data-i18n="uploadDesign"></span><input id="designFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
     <p class="note" data-i18n="designTip"></p>
+    <details class="codes-box">
+      <summary data-i18n="codesQ"></summary>
+      <textarea id="codesIn" rows="3" placeholder="#E8432F, #1F6FB2, #F5C400" spellcheck="false"></textarea>
+      <button type="button" class="secondary small" id="codesGo" data-i18n="codesGo"></button>
+      <p class="hint" id="hexMsg" aria-live="polite"></p>
+    </details>
 
     <div id="designBody" hidden>
-      <div class="chips" style="margin-top:16px" role="group">
+      <div class="chips" id="viewChips" style="margin-top:16px" role="group">
         <button type="button" class="chip" id="viewOrig" aria-pressed="false" data-i18n="viewOriginal"></button>
         <button type="button" class="chip" id="viewCans" aria-pressed="true" data-i18n="viewCans"></button>
       </div>
-      <div class="photo-wrap" style="margin-top:10px"><canvas id="designCanvas"></canvas></div>
-      <label class="field"><span id="numColoursLabel"></span>
+      <div class="photo-wrap" id="designWrap" style="margin-top:10px"><canvas id="designCanvas"></canvas></div>
+      <label class="field" id="coloursField"><span id="numColoursLabel"></span>
         <input id="numColours" type="range" min="2" max="40" value="8" style="padding:0"></label>
       <button type="button" class="link-btn" id="autoColours" data-i18n="backToAuto" hidden></button>
       <p class="note" data-i18n="usingFilters"></p>
 
+      <ol class="matches" id="paletteList"></ol>
+      <button type="button" class="primary buy" id="estimateBtn" data-i18n="estimateBtn"></button>
+      <div id="estimateBox" hidden>
       <h3 class="sub-h" data-i18n="wallSize"></h3>
       <div class="wall-row">
         <label class="field"><span data-i18n="width"></span><input id="wallW" type="number" min="0" step="0.1" value="4" inputmode="decimal"></label>
@@ -394,10 +394,9 @@
         <label class="field"><span data-i18n="coats"></span><select id="wallCoats"><option value="1" data-i18n="oneCoat"></option><option value="2" data-i18n="twoCoats"></option></select></label>
       </div>
       <p class="note" id="coverageNote"></p>
-
-      <ol class="matches" id="paletteList"></ol>
       <div class="cart-total" id="designTotal"></div>
       <button type="button" class="primary buy" id="addAll" data-i18n="addAll"></button>
+      </div>
       <p class="hint ok" id="designMsg" aria-live="polite"></p>
 
       <h3 class="sub-h" data-i18n="dlTitle"></h3>
@@ -407,7 +406,8 @@
       </div>
     </div>
 
-    <h3 class="sub-h" data-i18n="rangeTitle"></h3>
+    <details class="codes-box" style="margin-top:24px">
+    <summary data-i18n="rangeTitle"></summary>
     <p class="note" data-i18n="rangeIntro"></p>
     <label class="field"><select id="rangeSelect"></select></label>
     <div class="sheet-actions" style="margin-top:10px">
@@ -415,6 +415,7 @@
       <button type="button" class="secondary" id="dlRangeAse" data-i18n="dlAdobe"></button>
     </div>
     <p class="note" data-i18n="procreateNote"></p>
+    </details>
   </div>
 </div>
 
@@ -509,8 +510,8 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-11-home"></script>
-<script src="shops.js?v=2026-11-11-home"></script>
+<script src="colors.js?v=2026-11-11-simple"></script>
+<script src="shops.js?v=2026-11-11-simple"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -570,6 +571,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
+    details: 'Details', lightLink: 'Colours look off? Fix lighting', codesQ: 'Have colour codes? Paste them here', codesGo: 'Match these colours', estimateBtn: 'How big is the wall? Estimate cans', testShort: 'Test version: these are demo shops with example prices.', gotIt: 'Start',
     homeMatchTitle: 'Match a colour', homeMatchDesc: 'Photograph any colour and find the closest can.', homeDesignDesc: 'Upload a sketch and get every can you need for the wall.', homeDesignNote: 'From Procreate, Photoshop or Illustrator, as PNG or JPG.', designPromptQ: 'Planning a whole piece?', designPromptBtn: 'Upload your design', s5t: 'Planning a whole piece? Use Design', s5d: 'Upload your sketch. CanMatch finds every colour, matches cans and works out how many you need for the wall.',
     autoDetected: 'detected automatically', backToAuto: 'Detect colours automatically',
     tabDesign: 'Design', designTitle: 'Plan a design', designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. CanMatch finds its colours, matches cans and works out how many you need.', uploadDesign: 'Upload a design', designTip: 'Export as PNG or JPG. The file’s exact colours are used, so no lighting fix is needed.', viewOriginal: 'Original', viewCans: 'With cans', numColours: 'Colours: {n}', usingFilters: 'CanMatch finds the colours automatically. Move the slider to merge or split colours. Matches use your brand and pressure filters from the Match tab.', wallSize: 'Wall size', width: 'Width', height: 'Height', coats: 'Coats', oneCoat: '1 coat', twoCoats: '2 coats', coverageNote: 'Estimate assumes about {c} m² per 400 ml can per coat. Real coverage depends on the brand, cap and wall.', ofDesign: '{p}% of design', otherOptions: 'Other options', designTotal: 'Total for this wall', addAll: 'Add all to cart', addedAll: 'Added {n} cans to your cart.', dlTitle: 'Use these colours in your design app', dlProcreate: 'Procreate palette', dlAdobe: 'Adobe palette (.ase)', rangeTitle: 'Design with real can colours', rangeIntro: 'Download a whole range as a palette, so every colour you pick exists as a can.', nearRange: 'Everything sold near me', procreateNote: 'Procreate palettes hold 30 colours, so large ranges download as a .zip of several palettes.', hexLabel: 'Or type a colour code', hexGo: 'Match', hexBad: 'Enter a code like #E8432F.',
@@ -618,11 +620,12 @@ const T = {
     step1: 'Step 1 of 2', step2: 'Step 2 of 2', continue: 'Continue', skip: 'Skip',
     whereAreYou: 'Where are you?', locationWhy: 'We’ll use this to show you shops nearby. It stays on your phone.',
     country: 'Country', city: 'City', cityPh: 'e.g. Athens',
-    tipsTitle: 'Tips for better matches', gotIt: 'Start matching',
+    tipsTitle: 'Tips for better matches', 
     tips: ['Matte and gloss cans look different, even with the same colour.', 'Fluorescent, transparent and metallic paints don’t photograph well. Always check them in the shop.'],
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
+    details: 'Λεπτομέρειες', lightLink: 'Τα χρώματα δεν φαίνονται σωστά; Διόρθωση φωτισμού', codesQ: 'Έχεις κωδικούς χρωμάτων; Επικόλλησέ τους εδώ', codesGo: 'Ταίριαξε αυτά τα χρώματα', estimateBtn: 'Πόσο μεγάλος είναι ο τοίχος; Υπολόγισε σπρέι', testShort: 'Δοκιμαστική έκδοση: καταστήματα επίδειξης με ενδεικτικές τιμές.', gotIt: 'Ξεκίνα',
     homeMatchTitle: 'Ταίριαξε ένα χρώμα', homeMatchDesc: 'Φωτογράφισε οποιοδήποτε χρώμα και βρες το πιο κοντινό σπρέι.', homeDesignDesc: 'Ανέβασε ένα σχέδιο και πάρε κάθε σπρέι που χρειάζεσαι για τον τοίχο.', homeDesignNote: 'Από Procreate, Photoshop ή Illustrator, σε PNG ή JPG.', designPromptQ: 'Σχεδιάζεις ολόκληρο έργο;', designPromptBtn: 'Ανέβασε το σχέδιό σου', s5t: 'Ολόκληρο έργο; Χρησιμοποίησε το Σχέδιο', s5d: 'Ανέβασε το σχέδιό σου. Το CanMatch βρίσκει κάθε χρώμα, το ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι για τον τοίχο.',
     autoDetected: 'εντοπίστηκαν αυτόματα', backToAuto: 'Αυτόματος εντοπισμός χρωμάτων',
     tabDesign: 'Σχέδιο', designTitle: 'Σχεδίασε ένα έργο', designIntro: 'Ανέβασε ένα σχέδιο από Procreate, Photoshop ή Illustrator. Το CanMatch βρίσκει τα χρώματά του, τα ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι.', uploadDesign: 'Ανέβασε σχέδιο', designTip: 'Κάνε εξαγωγή σε PNG ή JPG. Χρησιμοποιούνται τα ακριβή χρώματα του αρχείου, οπότε δεν χρειάζεται διόρθωση φωτισμού.', viewOriginal: 'Αρχικό', viewCans: 'Με σπρέι', numColours: 'Χρώματα: {n}', usingFilters: 'Οι αντιστοιχίες χρησιμοποιούν τα φίλτρα μάρκας και πίεσης από την καρτέλα Ταίριασμα.', wallSize: 'Μέγεθος τοίχου', width: 'Πλάτος', height: 'Ύψος', coats: 'Στρώσεις', oneCoat: '1 στρώση', twoCoats: '2 στρώσεις', coverageNote: 'Ο υπολογισμός θεωρεί περίπου {c} m² ανά σπρέι 400 ml ανά στρώση. Η πραγματική κάλυψη εξαρτάται από τη μάρκα, το καπάκι και τον τοίχο.', ofDesign: '{p}% του σχεδίου', otherOptions: 'Άλλες επιλογές', designTotal: 'Σύνολο για αυτόν τον τοίχο', addAll: 'Όλα στο καλάθι', addedAll: 'Προστέθηκαν {n} σπρέι στο καλάθι σου.', dlTitle: 'Χρησιμοποίησε αυτά τα χρώματα στην εφαρμογή σχεδίασης', dlProcreate: 'Παλέτα Procreate', dlAdobe: 'Παλέτα Adobe (.ase)', rangeTitle: 'Σχεδίασε με πραγματικά χρώματα σπρέι', rangeIntro: 'Κατέβασε μια ολόκληρη σειρά ως παλέτα, ώστε κάθε χρώμα που διαλέγεις να υπάρχει σε σπρέι.', nearRange: 'Όλα όσα πωλούνται κοντά μου', procreateNote: 'Οι παλέτες του Procreate χωράνε 30 χρώματα, οπότε οι μεγάλες σειρές κατεβαίνουν ως .zip με πολλές παλέτες.', hexLabel: 'Ή γράψε κωδικό χρώματος', hexGo: 'Ταίριαξε', hexBad: 'Γράψε έναν κωδικό όπως #E8432F.',
@@ -671,11 +674,12 @@ const T = {
     step1: 'Βήμα 1 από 2', step2: 'Βήμα 2 από 2', continue: 'Συνέχεια', skip: 'Παράλειψη',
     whereAreYou: 'Πού βρίσκεσαι;', locationWhy: 'Θα το χρησιμοποιήσουμε για να σου δείχνουμε καταστήματα κοντά σου. Μένει μόνο στο κινητό σου.',
     country: 'Χώρα', city: 'Πόλη', cityPh: 'π.χ. Αθήνα',
-    tipsTitle: 'Συμβουλές για καλύτερα αποτελέσματα', gotIt: 'Ξεκίνα',
+    tipsTitle: 'Συμβουλές για καλύτερα αποτελέσματα', 
     tips: ['Τα ματ και τα γυαλιστερά σπρέι δείχνουν διαφορετικά, ακόμα και στο ίδιο χρώμα.', 'Τα φθορίζοντα, διάφανα και μεταλλικά χρώματα δεν φαίνονται σωστά στις φωτογραφίες. Έλεγξέ τα πάντα στο κατάστημα.'],
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
+    details: 'Détails', lightLink: 'Les couleurs semblent fausses\u202f? Corriger l’éclairage', codesQ: 'Vous avez des codes couleur\u202f? Collez-les ici', codesGo: 'Trouver ces couleurs', estimateBtn: 'Quelle taille fait le mur\u202f? Estimer les bombes', testShort: 'Version de test\u202f: magasins fictifs avec des prix d’exemple.', gotIt: 'Commencer',
     homeMatchTitle: 'Trouver une couleur', homeMatchDesc: 'Photographiez n’importe quelle couleur et trouvez la bombe la plus proche.', homeDesignDesc: 'Importez un croquis et obtenez toutes les bombes nécessaires pour le mur.', homeDesignNote: 'Depuis Procreate, Photoshop ou Illustrator, en PNG ou JPG.', designPromptQ: 'Vous préparez toute une fresque\u202f?', designPromptBtn: 'Importez votre dessin', s5t: 'Toute une fresque\u202f? Utilisez Projet', s5d: 'Importez votre croquis. CanMatch trouve chaque couleur, l’associe à des bombes et calcule combien il en faut pour le mur.',
     autoDetected: 'détectées automatiquement', backToAuto: 'Détecter les couleurs automatiquement',
     tabDesign: 'Projet', designTitle: 'Préparer un projet', designIntro: 'Importez un croquis depuis Procreate, Photoshop ou Illustrator. CanMatch trouve ses couleurs, les associe à des bombes et calcule combien il vous en faut.', uploadDesign: 'Importer un dessin', designTip: 'Exportez en PNG ou JPG. Les couleurs exactes du fichier sont utilisées\u202f: pas besoin de corriger l’éclairage.', viewOriginal: 'Original', viewCans: 'Avec les bombes', numColours: 'Couleurs\u00a0: {n}', usingFilters: 'Les correspondances utilisent vos filtres de marque et de pression de l’onglet Trouver.', wallSize: 'Taille du mur', width: 'Largeur', height: 'Hauteur', coats: 'Couches', oneCoat: '1 couche', twoCoats: '2 couches', coverageNote: 'Estimation basée sur environ {c} m² par bombe de 400 ml et par couche. La couverture réelle dépend de la marque, du cap et du mur.', ofDesign: '{p}\u202f% du dessin', otherOptions: 'Autres choix', designTotal: 'Total pour ce mur', addAll: 'Tout ajouter au panier', addedAll: '{n} bombes ajoutées au panier.', dlTitle: 'Utilisez ces couleurs dans votre logiciel', dlProcreate: 'Palette Procreate', dlAdobe: 'Palette Adobe (.ase)', rangeTitle: 'Dessinez avec de vraies couleurs de bombes', rangeIntro: 'Téléchargez toute une gamme en palette\u202f: chaque couleur choisie existe en bombe.', nearRange: 'Tout ce qui est vendu près de chez moi', procreateNote: 'Une palette Procreate contient 30 couleurs\u202f: les grandes gammes sont téléchargées en .zip de plusieurs palettes.', hexLabel: 'Ou saisissez un code couleur', hexGo: 'Trouver', hexBad: 'Saisissez un code comme #E8432F.',
@@ -724,7 +728,7 @@ const T = {
     step1: 'Étape 1 sur 2', step2: 'Étape 2 sur 2', continue: 'Continuer', skip: 'Passer',
     whereAreYou: 'Où êtes-vous\u202f?', locationWhy: 'Nous l’utiliserons pour vous montrer les magasins proches. Ces informations restent sur votre téléphone.',
     country: 'Pays', city: 'Ville', cityPh: 'ex. Paris',
-    tipsTitle: 'Conseils pour de meilleurs résultats', gotIt: 'Commencer',
+    tipsTitle: 'Conseils pour de meilleurs résultats', 
     tips: ['Les bombes mates et brillantes paraissent différentes, même pour une même couleur.', 'Les couleurs fluo, transparentes et métallisées se photographient mal. Vérifiez-les toujours en magasin.'],
     badImage: 'Ce fichier ne peut pas être ouvert comme image. Essayez une photo JPG ou PNG.'
   }
@@ -775,7 +779,7 @@ $('citySelect').addEventListener('change', e => { $('otherCityField').hidden = e
 $('startNext').addEventListener('click', () => {
   store.lang = lang; store.city = $('citySelect').value;
   store.cityOther = store.city === 'other' ? $('otherCity').value.trim() : '';
-  save(); showStep('stepAbout');
+  store.setupDone = true; save(); $('setup').hidden = true;
 });
 $('aboutDone').addEventListener('click', () => { store.setupDone = true; save(); $('setup').hidden = true; });
 
@@ -887,7 +891,7 @@ function pickAt(x, y) {
     const spread = Math.max(...lin) / Math.max(1e-4, Math.min(...lin));
     if (Y < 0.03 || spread > 2.5) { setHint('bad'); return; }
     gains = lin.map(c => Y / Math.max(1e-4, c));
-    $('resetLight').hidden = false; $('fixLight').hidden = true; rebuildShown(); setHint('on');
+    $('resetLight').hidden = false; $('fixLight').hidden = true; $('lightCard').open = true; rebuildShown(); setHint('on');
     if (lastPoint) sampleAndShow(lastPoint.x, lastPoint.y);
     return;
   }
@@ -900,6 +904,7 @@ $('fixLight').addEventListener('click', () => {
 $('cancelLight').addEventListener('click', () => {
   pickingWhite = false; $('cancelLight').hidden = true; $('fixLight').hidden = false; setHint('tap');
 });
+$('fixLight').addEventListener('click', () => { $('lightCard').open = true; });
 $('resetLight').addEventListener('click', () => {
   gains = null; $('resetLight').hidden = true; $('fixLight').hidden = false; rebuildShown(); setHint('tap');
   if (lastPoint) sampleAndShow(lastPoint.x, lastPoint.y);
@@ -989,7 +994,11 @@ function showResults() {
     li.querySelector('.name').textContent = paintName(p);
     const PL = { low: 'pLow', medium: 'pMedium', high: 'pHigh', hardware: 'hardware' };
     const extra = [p.code, PL[p.pressure] ? t(PL[p.pressure]) : '', p.finish !== 'solid' ? t(p.finish) : ''];
-    li.querySelector('.meta').textContent = [p.brand, ...extra].filter(Boolean).join(', ');
+    li.querySelector('.meta').textContent = p.brand;
+    const det = document.createElement('button'); det.type = 'button'; det.className = 'details-btn'; det.textContent = t('details');
+    const detLine = document.createElement('div'); detLine.className = 'meta'; detLine.hidden = true; detLine.textContent = extra.filter(Boolean).join(' · ');
+    det.addEventListener('click', () => { detLine.hidden = !detLine.hidden; det.setAttribute('aria-expanded', !detLine.hidden); });
+    li.querySelector('.meta').after(det, detLine);
     const pt = priceTag(p.brand);
     if (pt) { const d = document.createElement('div'); d.className = 'price-tag' + (pt.na ? ' na' : ''); d.textContent = pt.text;
       li.querySelector('.meta').after(d); }
@@ -1138,6 +1147,9 @@ function renderList() {
   $('cartEmpty').hidden = !empty; $('cartFull').hidden = empty; $('listMsg').textContent = '';
   const box = $('cartGroups'); box.innerHTML = '';
   if (empty) return;
+  if (cityShops().length) {
+    const n = document.createElement('p'); n.className = 'note'; n.textContent = t('testShort'); box.appendChild(n);
+  }
   if (!cityShops().length) {
     const p = document.createElement('p'); p.className = 'note';
     p.textContent = store.city ? t('noShops') : t('noCity'); box.appendChild(p);
@@ -1146,9 +1158,8 @@ function renderList() {
     const items = itemsFor(shop); if (!items.length) return;
     const g = document.createElement('section'); g.className = 'shop-group';
     const head = document.createElement('div'); head.className = 'buy-from';
-    head.innerHTML = '<div class="shop-meta" style="color:var(--muted);font-size:0.85rem"></div><b></b><p class="note" style="margin:6px 0 0"></p>';
+    head.innerHTML = '<div class="shop-meta" style="color:var(--muted);font-size:0.85rem"></div><b></b>';
     head.querySelector('.shop-meta').textContent = t('buyingFrom'); head.querySelector('b').textContent = shop.name;
-    head.querySelector('.note').textContent = t('testNotice').replace('{shop}', shop.name);
     g.appendChild(head);
     items.forEach(i => g.appendChild(itemRow(i, shop)));
     const { sum, unpriced, count } = totalsFor(shop);
@@ -1268,7 +1279,6 @@ $('placeOrder').addEventListener('click', () => {
   note.textContent = [unpricedText(tt.sum, tt.unpriced), `${t('payLabel')}: ${t(coMethod === 'delivery' ? 'payOnDelivery' : 'payInShop')}`,
     coMethod === 'delivery' ? `${t('deliveryAddr')}: ${store.account.address}` : ''].filter(Boolean).join(' · ');
   body.appendChild(note);
-  const tn = document.createElement('p'); tn.className = 'note'; tn.textContent = t('testNotice').replace('{shop}', shop.name); body.appendChild(tn);
   const links = $('orderLinks'); links.innerHTML = '';
   const sh = document.createElement('button'); sh.type = 'button'; sh.className = 'secondary'; sh.textContent = t('shareOrder');
   sh.addEventListener('click', () => shareText(orderText(shop), t('orderHeader'))); links.appendChild(sh);
@@ -1302,13 +1312,13 @@ function parseHex(v) {
   let h = m[1]; if (h.length === 3) h = h.split('').map(c => c + c).join('');
   return hexToRgb('#' + h);
 }
-$('hexGo').addEventListener('click', () => {
-  const rgb = parseHex($('hexIn').value);
-  if (!rgb) { $('hexMsg').textContent = t('hexBad'); return; }
-  $('hexMsg').textContent = ''; lastSample = rgb; showAll = false; showResults();
-  $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+$('codesGo').addEventListener('click', () => {
+  const parts = $('codesIn').value.split(/[\s,;]+/).filter(Boolean);
+  const rgbs = parts.map(parseHex);
+  if (!parts.length || rgbs.some(x => !x)) { $('hexMsg').textContent = t('hexBad'); return; }
+  $('hexMsg').textContent = '';
+  runCodes(rgbs.map(c => rgbToHex(...c)));
 });
-$('hexIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('hexGo').click(); });
 
 /* ---------- Design mode ---------- */
 const COVERAGE_M2 = 2;            // m² per 400 ml can per coat (typical; varies by brand, cap and wall)
@@ -1330,7 +1340,7 @@ function loadDesignFile(file) {
     dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
     dCtx.drawImage(img, 0, 0, dCanvas.width, dCanvas.height);
     designOrig = dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height);
-    designImg = img; URL.revokeObjectURL(url); autoColours = true;
+    designImg = img; URL.revokeObjectURL(url); autoColours = true; estimateOn = false; setDesignMode(false);
     $('designBody').hidden = false; runDesign();
   };
   img.onerror = () => alert(t('badImage'));
@@ -1407,9 +1417,25 @@ function labToHex(lab) {
   const g = v => { v = Math.min(1, Math.max(0, v)); return 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055); };
   return rgbToHex(...lin.map(g));
 }
-let autoColours = true;
+let autoColours = true, estimateOn = false, codesMode = false;
+function setDesignMode(codes) {
+  codesMode = codes;
+  ['viewChips', 'designWrap', 'coloursField'].forEach(id => { $(id).hidden = codes; });
+  if (codes) $('autoColours').hidden = true;
+}
+function runCodes(hexes) {
+  setDesignMode(true); designOrig = null; estimateOn = false;
+  const cands = candidatePaints();
+  clusters = hexes.map(hex => { const lab = rgbToLab(...hexToRgb(hex));
+    return { lab, hex, share: 1 / hexes.length, options: cands.map(p => ({ p, d: deltaE2000(lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5) }; });
+  picks = clusters.map(() => 0);
+  $('designBody').hidden = false; renderPalette();
+}
+$('estimateBtn').addEventListener('click', () => { estimateOn = true; renderPalette(); $('estimateBox').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 function runDesign() {
+  if (codesMode && clusters.length && !designOrig) { runCodes(clusters.map(c => c.hex)); return; }
   if (!designOrig) return;
+  setDesignMode(false);
   if (autoColours) { clusters = detectPalette(designOrig); $('numColours').value = clusters.length; }
   else clusters = extractPalette(designOrig, +$('numColours').value);
   updateColoursLabel();
@@ -1438,7 +1464,7 @@ function runDesign() {
   drawDesign(); renderPalette();
 }
 function drawDesign() {
-  if (!designOrig) return;
+  if (!designOrig || codesMode) return;
   if (designView === 'orig' || !clusters.length) { dCtx.putImageData(designOrig, 0, 0); }
   else {
     const out = new ImageData(new Uint8ClampedArray(designOrig.data), designOrig.width, designOrig.height);
@@ -1475,8 +1501,10 @@ function renderPalette() {
       <div class="score"><b></b><span></span></div>
       <button type="button" class="add more-btn"></button><div class="alts" hidden></div>`;
     li.querySelector('.name').textContent = paintName(p);
-    li.querySelector('.meta').textContent = [p.brand, p.code, t('ofDesign').replace('{p}', Math.max(1, Math.round(c.share * 100)))].filter(Boolean).join(', ');
-    li.querySelector('.price-tag').textContent = [cansText(qty), shop && typeof price === 'number' ? money(price * qty, shop.currency) : '', shop ? shop.name : ''].filter(Boolean).join(' · ');
+    li.querySelector('.meta').textContent = [p.brand, codesMode ? c.hex : t('ofDesign').replace('{p}', Math.max(1, Math.round(c.share * 100)))].filter(Boolean).join(', ');
+    li.querySelector('.price-tag').textContent = estimateOn
+      ? [cansText(qty), shop && typeof price === 'number' ? money(price * qty, shop.currency) : '', shop ? shop.name : ''].filter(Boolean).join(' · ')
+      : [shop && typeof price === 'number' ? money(price, shop.currency) : (shop ? t('priceAtShop') : ''), shop ? shop.name : ''].filter(Boolean).join(' · ');
     li.querySelector('.score b').textContent = pct(m); li.querySelector('.score span').textContent = label(m);
     const btn = li.querySelector('.more-btn'), alts = li.querySelector('.alts');
     btn.textContent = t('otherOptions');
@@ -1491,6 +1519,7 @@ function renderPalette() {
     });
     ol.appendChild(li);
   });
+  $('estimateBox').hidden = !estimateOn; $('estimateBtn').hidden = estimateOn;
   const tot = $('designTotal'); tot.innerHTML = '';
   const row = document.createElement('div'); row.className = 'total-row';
   const l = document.createElement('span'); l.textContent = `${t('designTotal')} · ${cansText(totalCans)}`;
