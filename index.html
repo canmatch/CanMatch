@@ -196,8 +196,17 @@
   .filter-panel { background: var(--surface); border-radius: 14px; padding: 4px 14px 14px; margin-top: 12px; }
   .filter-panel .sub-h { margin-top: 14px; }
   .near-toggle { color: var(--ink); font-weight: 700; margin-top: 10px; }
+  .hex-row { display: flex; gap: 10px; align-items: flex-end; margin-top: 18px; }
+  .hex-row button { padding: 11px 16px; }
+  .wall-row { display: grid; grid-template-columns: 1fr 1fr 70px 104px; gap: 6px; }
+  .wall-row select, .wall-row input { padding: 12px 8px !important; }
+  .wall-row .field { margin-top: 8px; font-size: 0.9rem; }
+  .alts { grid-column: 1 / 4; display: flex; flex-wrap: wrap; gap: 6px; }
+  .alt-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; padding: 5px 10px; }
+  .alt-chip .dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line); display: inline-block; }
+  #designCanvas { display: block; max-width: 100%; max-height: 50vh; margin: 0 auto; }
   .show-more { width: 100%; margin-top: 12px; }
-  .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: grid; grid-template-columns: repeat(3, 1fr);
+  .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: grid; grid-template-columns: repeat(4, 1fr);
             background: var(--surface); border-top: 1px solid var(--line);
             padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px)); }
   .tab { font: inherit; font-size: 0.8rem; font-weight: 700; background: none; border: 0; color: var(--muted);
@@ -248,6 +257,12 @@
     </div>
   </section>
 
+  <div class="hex-row">
+    <label class="field" style="margin:0;flex:1"><span data-i18n="hexLabel"></span><input id="hexIn" type="text" placeholder="#E8432F" autocomplete="off" spellcheck="false"></label>
+    <button type="button" class="secondary" id="hexGo" data-i18n="hexGo"></button>
+  </div>
+  <p class="hint" id="hexMsg" aria-live="polite"></p>
+
   <section id="results" hidden>
     <div id="sample" class="sample" aria-live="polite">
       <div class="hex" data-i18n="yourColour"></div>
@@ -280,6 +295,7 @@
 
 <nav class="tabbar" aria-label="CanMatch">
   <button type="button" class="tab" id="tabMatch" aria-current="page"><span class="tab-ico" aria-hidden="true">◎</span><span data-i18n="tabMatch"></span></button>
+  <button type="button" class="tab" id="openDesign"><span class="tab-ico" aria-hidden="true">✎</span><span data-i18n="tabDesign"></span></button>
   <button type="button" class="tab" id="openList"><span class="tab-ico" aria-hidden="true">🛒<span class="badge" id="listCount">0</span></span><span data-i18n="list"></span></button>
   <button type="button" class="tab" id="openSettings"><span class="tab-ico" aria-hidden="true">⚙</span><span data-i18n="settings"></span></button>
 </nav>
@@ -324,6 +340,56 @@
   try { const st = JSON.parse(localStorage.getItem('canmatch:v1') || '{}');
         if (st.setupDone) document.getElementById('setup').hidden = true; } catch (e) {}
 </script>
+
+<!-- Design: plan a whole design -->
+<div class="sheet" id="designSheet" hidden role="dialog" aria-modal="true" aria-labelledby="designTitle">
+  <div class="sheet-inner">
+    <h2 id="designTitle" data-i18n="designTitle"></h2>
+    <p class="tagline" data-i18n="designIntro"></p>
+    <label class="primary"><span data-i18n="uploadDesign"></span><input id="designFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
+    <p class="note" data-i18n="designTip"></p>
+
+    <div id="designBody" hidden>
+      <div class="chips" style="margin-top:16px" role="group">
+        <button type="button" class="chip" id="viewOrig" aria-pressed="false" data-i18n="viewOriginal"></button>
+        <button type="button" class="chip" id="viewCans" aria-pressed="true" data-i18n="viewCans"></button>
+      </div>
+      <div class="photo-wrap" style="margin-top:10px"><canvas id="designCanvas"></canvas></div>
+      <label class="field"><span id="numColoursLabel"></span>
+        <input id="numColours" type="range" min="3" max="16" value="8" style="padding:0"></label>
+      <p class="note" data-i18n="usingFilters"></p>
+
+      <h3 class="sub-h" data-i18n="wallSize"></h3>
+      <div class="wall-row">
+        <label class="field"><span data-i18n="width"></span><input id="wallW" type="number" min="0" step="0.1" value="4" inputmode="decimal"></label>
+        <label class="field"><span data-i18n="height"></span><input id="wallH" type="number" min="0" step="0.1" value="2.5" inputmode="decimal"></label>
+        <label class="field"><span>&nbsp;</span><select id="wallUnit"><option value="m">m</option><option value="ft">ft</option></select></label>
+        <label class="field"><span data-i18n="coats"></span><select id="wallCoats"><option value="1" data-i18n="oneCoat"></option><option value="2" data-i18n="twoCoats"></option></select></label>
+      </div>
+      <p class="note" id="coverageNote"></p>
+
+      <ol class="matches" id="paletteList"></ol>
+      <div class="cart-total" id="designTotal"></div>
+      <button type="button" class="primary buy" id="addAll" data-i18n="addAll"></button>
+      <p class="hint ok" id="designMsg" aria-live="polite"></p>
+
+      <h3 class="sub-h" data-i18n="dlTitle"></h3>
+      <div class="sheet-actions" style="margin-top:10px">
+        <button type="button" class="secondary" id="dlDesignProcreate" data-i18n="dlProcreate"></button>
+        <button type="button" class="secondary" id="dlDesignAse" data-i18n="dlAdobe"></button>
+      </div>
+    </div>
+
+    <h3 class="sub-h" data-i18n="rangeTitle"></h3>
+    <p class="note" data-i18n="rangeIntro"></p>
+    <label class="field"><select id="rangeSelect"></select></label>
+    <div class="sheet-actions" style="margin-top:10px">
+      <button type="button" class="secondary" id="dlRangeProcreate" data-i18n="dlProcreate"></button>
+      <button type="button" class="secondary" id="dlRangeAse" data-i18n="dlAdobe"></button>
+    </div>
+    <p class="note" data-i18n="procreateNote"></p>
+  </div>
+</div>
 
 <!-- Settings -->
 <div class="sheet" id="settingsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
@@ -416,8 +482,8 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-11-delivery"></script>
-<script src="shops.js?v=2026-11-11-delivery"></script>
+<script src="colors.js?v=2026-11-11-design"></script>
+<script src="shops.js?v=2026-11-11-design"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -477,6 +543,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
+    tabDesign: 'Design', designTitle: 'Plan a design', designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. CanMatch finds its colours, matches cans and works out how many you need.', uploadDesign: 'Upload a design', designTip: 'Export as PNG or JPG. The file’s exact colours are used, so no lighting fix is needed.', viewOriginal: 'Original', viewCans: 'With cans', numColours: 'Colours: {n}', usingFilters: 'Matches use your brand and pressure filters from the Match tab.', wallSize: 'Wall size', width: 'Width', height: 'Height', coats: 'Coats', oneCoat: '1 coat', twoCoats: '2 coats', coverageNote: 'Estimate assumes about {c} m² per 400 ml can per coat. Real coverage depends on the brand, cap and wall.', ofDesign: '{p}% of design', otherOptions: 'Other options', designTotal: 'Total for this wall', addAll: 'Add all to cart', addedAll: 'Added {n} cans to your cart.', dlTitle: 'Use these colours in your design app', dlProcreate: 'Procreate palette', dlAdobe: 'Adobe palette (.ase)', rangeTitle: 'Design with real can colours', rangeIntro: 'Download a whole range as a palette, so every colour you pick exists as a can.', nearRange: 'Everything sold near me', procreateNote: 'Procreate palettes hold 30 colours, so large ranges download as a .zip of several palettes.', hexLabel: 'Or type a colour code', hexGo: 'Match', hexBad: 'Enter a code like #E8432F.',
     checkoutTitle: 'Checkout · {shop}', howGet: 'How do you want your cans?', pickup: 'Reserve for pickup', pickupDesc: 'The shop sets your cans aside. Pay when you collect them.', delivery: 'Delivery', deliveryDesc: '{fee} delivery', freeOver: 'free over {amount}', pickupOnly: 'This shop offers pickup only.', deliveryAddr: 'Delivery address', addrNeeded: 'Please enter a delivery address.', subtotal: 'Cans', deliveryFee: 'Delivery', free: 'Free', placeOrder: 'Place order', donePickup: 'Reserved for pickup at {shop}', doneDelivery: 'Delivery ordered from {shop}', methodLabel: 'Method', payOnDelivery: 'Pay on delivery',
     includeHardware: 'Include hardware store cans (Krylon)', nearOnly: 'Only show cans sold near me', nearNoShops: 'No partner shops in your city yet, so all cans are shown.',
     medium: 'Medium (variable output)', hardwareCans: 'Hardware store cans', pMedium: 'medium pressure', pairYou: 'Yours', pairCan: 'Can',
@@ -527,6 +594,7 @@ const T = {
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
+    tabDesign: 'Σχέδιο', designTitle: 'Σχεδίασε ένα έργο', designIntro: 'Ανέβασε ένα σχέδιο από Procreate, Photoshop ή Illustrator. Το CanMatch βρίσκει τα χρώματά του, τα ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι.', uploadDesign: 'Ανέβασε σχέδιο', designTip: 'Κάνε εξαγωγή σε PNG ή JPG. Χρησιμοποιούνται τα ακριβή χρώματα του αρχείου, οπότε δεν χρειάζεται διόρθωση φωτισμού.', viewOriginal: 'Αρχικό', viewCans: 'Με σπρέι', numColours: 'Χρώματα: {n}', usingFilters: 'Οι αντιστοιχίες χρησιμοποιούν τα φίλτρα μάρκας και πίεσης από την καρτέλα Ταίριασμα.', wallSize: 'Μέγεθος τοίχου', width: 'Πλάτος', height: 'Ύψος', coats: 'Στρώσεις', oneCoat: '1 στρώση', twoCoats: '2 στρώσεις', coverageNote: 'Ο υπολογισμός θεωρεί περίπου {c} m² ανά σπρέι 400 ml ανά στρώση. Η πραγματική κάλυψη εξαρτάται από τη μάρκα, το καπάκι και τον τοίχο.', ofDesign: '{p}% του σχεδίου', otherOptions: 'Άλλες επιλογές', designTotal: 'Σύνολο για αυτόν τον τοίχο', addAll: 'Όλα στο καλάθι', addedAll: 'Προστέθηκαν {n} σπρέι στο καλάθι σου.', dlTitle: 'Χρησιμοποίησε αυτά τα χρώματα στην εφαρμογή σχεδίασης', dlProcreate: 'Παλέτα Procreate', dlAdobe: 'Παλέτα Adobe (.ase)', rangeTitle: 'Σχεδίασε με πραγματικά χρώματα σπρέι', rangeIntro: 'Κατέβασε μια ολόκληρη σειρά ως παλέτα, ώστε κάθε χρώμα που διαλέγεις να υπάρχει σε σπρέι.', nearRange: 'Όλα όσα πωλούνται κοντά μου', procreateNote: 'Οι παλέτες του Procreate χωράνε 30 χρώματα, οπότε οι μεγάλες σειρές κατεβαίνουν ως .zip με πολλές παλέτες.', hexLabel: 'Ή γράψε κωδικό χρώματος', hexGo: 'Ταίριαξε', hexBad: 'Γράψε έναν κωδικό όπως #E8432F.',
     checkoutTitle: 'Ολοκλήρωση · {shop}', howGet: 'Πώς θέλεις να πάρεις τα σπρέι;', pickup: 'Κράτηση για παραλαβή', pickupDesc: 'Το κατάστημα σου κρατάει τα σπρέι. Πληρώνεις όταν τα παραλάβεις.', delivery: 'Παράδοση', deliveryDesc: 'Μεταφορικά {fee}', freeOver: 'δωρεάν άνω των {amount}', pickupOnly: 'Αυτό το κατάστημα προσφέρει μόνο παραλαβή.', deliveryAddr: 'Διεύθυνση παράδοσης', addrNeeded: 'Συμπλήρωσε διεύθυνση παράδοσης.', subtotal: 'Σπρέι', deliveryFee: 'Μεταφορικά', free: 'Δωρεάν', placeOrder: 'Ολοκλήρωση παραγγελίας', donePickup: 'Κράτηση για παραλαβή στο {shop}', doneDelivery: 'Παραγγελία με παράδοση από {shop}', methodLabel: 'Τρόπος', payOnDelivery: 'Πληρωμή κατά την παράδοση',
     includeHardware: 'Συμπερίληψη σπρέι σιδηροπωλείου (Krylon)', nearOnly: 'Μόνο σπρέι που πωλούνται κοντά μου', nearNoShops: 'Δεν υπάρχουν ακόμα συνεργαζόμενα καταστήματα στην πόλη σου, οπότε εμφανίζονται όλα τα σπρέι.',
     medium: 'Μεσαία (ρυθμιζόμενη ροή)', hardwareCans: 'Σπρέι σιδηροπωλείου', pMedium: 'μεσαία πίεση', pairYou: 'Δικό σου', pairCan: 'Σπρέι',
@@ -577,6 +645,7 @@ const T = {
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
+    tabDesign: 'Projet', designTitle: 'Préparer un projet', designIntro: 'Importez un croquis depuis Procreate, Photoshop ou Illustrator. CanMatch trouve ses couleurs, les associe à des bombes et calcule combien il vous en faut.', uploadDesign: 'Importer un dessin', designTip: 'Exportez en PNG ou JPG. Les couleurs exactes du fichier sont utilisées\u202f: pas besoin de corriger l’éclairage.', viewOriginal: 'Original', viewCans: 'Avec les bombes', numColours: 'Couleurs\u00a0: {n}', usingFilters: 'Les correspondances utilisent vos filtres de marque et de pression de l’onglet Trouver.', wallSize: 'Taille du mur', width: 'Largeur', height: 'Hauteur', coats: 'Couches', oneCoat: '1 couche', twoCoats: '2 couches', coverageNote: 'Estimation basée sur environ {c} m² par bombe de 400 ml et par couche. La couverture réelle dépend de la marque, du cap et du mur.', ofDesign: '{p}\u202f% du dessin', otherOptions: 'Autres choix', designTotal: 'Total pour ce mur', addAll: 'Tout ajouter au panier', addedAll: '{n} bombes ajoutées au panier.', dlTitle: 'Utilisez ces couleurs dans votre logiciel', dlProcreate: 'Palette Procreate', dlAdobe: 'Palette Adobe (.ase)', rangeTitle: 'Dessinez avec de vraies couleurs de bombes', rangeIntro: 'Téléchargez toute une gamme en palette\u202f: chaque couleur choisie existe en bombe.', nearRange: 'Tout ce qui est vendu près de chez moi', procreateNote: 'Une palette Procreate contient 30 couleurs\u202f: les grandes gammes sont téléchargées en .zip de plusieurs palettes.', hexLabel: 'Ou saisissez un code couleur', hexGo: 'Trouver', hexBad: 'Saisissez un code comme #E8432F.',
     checkoutTitle: 'Commande · {shop}', howGet: 'Comment voulez-vous recevoir vos bombes\u202f?', pickup: 'Réserver et retirer en magasin', pickupDesc: 'Le magasin met vos bombes de côté. Vous payez au retrait.', delivery: 'Livraison', deliveryDesc: 'Livraison {fee}', freeOver: 'offerte dès {amount}', pickupOnly: 'Ce magasin propose uniquement le retrait.', deliveryAddr: 'Adresse de livraison', addrNeeded: 'Veuillez saisir une adresse de livraison.', subtotal: 'Bombes', deliveryFee: 'Livraison', free: 'Offerte', placeOrder: 'Passer la commande', donePickup: 'Réservé pour retrait chez {shop}', doneDelivery: 'Livraison commandée chez {shop}', methodLabel: 'Mode', payOnDelivery: 'Paiement à la livraison',
     includeHardware: 'Inclure les bombes de quincaillerie (Krylon)', nearOnly: 'Seulement les bombes vendues près de chez moi', nearNoShops: 'Pas encore de magasin partenaire dans votre ville\u202f: toutes les bombes sont affichées.',
     medium: 'Moyenne (débit variable)', hardwareCans: 'Bombes de quincaillerie', pMedium: 'pression moyenne', pairYou: 'Vous', pairCan: 'Bombe',
@@ -1174,17 +1243,300 @@ $('placeOrder').addEventListener('click', () => {
 });
 $('orderClose').addEventListener('click', () => { $('orderSheet').hidden = true; });
 function setTab(id) {
-  ['tabMatch', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });
+  ['tabMatch', 'openDesign', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });
 }
 function goMatch() {
-  $('listSheet').hidden = true; $('settingsSheet').hidden = true; setTab('tabMatch');
+  $('listSheet').hidden = true; $('settingsSheet').hidden = true; $('designSheet').hidden = true; setTab('tabMatch');
   if (lastSample) showResults(); renderListCount();
 }
 $('tabMatch').addEventListener('click', goMatch);
-$('openList').addEventListener('click', () => { $('settingsSheet').hidden = true; renderList(); $('listSheet').hidden = false; setTab('openList'); });
+$('openList').addEventListener('click', () => { $('settingsSheet').hidden = true; $('designSheet').hidden = true; renderList(); $('listSheet').hidden = false; setTab('openList'); });
 $('closeList').addEventListener('click', goMatch);
 $('clearList').addEventListener('click', () => { store.list = []; save(); renderList(); renderListCount(); });
 $('shareList').addEventListener('click', () => shareText(listText(), t('listHeader'), $('listMsg')));
+
+/* ---------- Candidate cans (same filters as the Match tab) ---------- */
+function candidatePaints() {
+  return PAINTS.filter(p => activeBrands.has(p.brand) && (includeSpecial || p.finish === 'solid')
+    && (includeHardware || !isHardware(p))
+    && (!nearOnly || !cityShops().length || shopFor(p.brand)));
+}
+
+/* ---------- Type a colour code ---------- */
+function parseHex(v) {
+  const m = String(v).trim().replace(/^#/, '').match(/^([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!m) return null;
+  let h = m[1]; if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  return hexToRgb('#' + h);
+}
+$('hexGo').addEventListener('click', () => {
+  const rgb = parseHex($('hexIn').value);
+  if (!rgb) { $('hexMsg').textContent = t('hexBad'); return; }
+  $('hexMsg').textContent = ''; lastSample = rgb; showAll = false; showResults();
+  $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+$('hexIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('hexGo').click(); });
+
+/* ---------- Design mode ---------- */
+const COVERAGE_M2 = 2;            // m² per 400 ml can per coat (typical; varies by brand, cap and wall)
+let designImg = null, designPixels = null, clusters = [], picks = [], designView = 'cans';
+const dCanvas = $('designCanvas'), dCtx = dCanvas.getContext('2d', { willReadFrequently: true });
+let designOrig = null, designMap = null;
+
+$('designFile').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const url = URL.createObjectURL(file), img = new Image();
+  img.onload = () => {
+    const MAX = 900, sc = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+    dCanvas.width = Math.max(1, Math.round(img.naturalWidth * sc)); dCanvas.height = Math.max(1, Math.round(img.naturalHeight * sc));
+    dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
+    dCtx.drawImage(img, 0, 0, dCanvas.width, dCanvas.height);
+    designOrig = dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height);
+    designImg = img; URL.revokeObjectURL(url);
+    $('designBody').hidden = false; runDesign();
+  };
+  img.onerror = () => alert(t('badImage'));
+  img.src = url;
+});
+
+// Group the design's pixels into its main colours (k-means in Lab colour space)
+function extractPalette(data, k) {
+  const d = data.data, n = data.width * data.height;
+  const step = Math.max(1, Math.floor(n / 40000));
+  const pts = [];
+  for (let i = 0; i < n; i += step) {
+    const o = i * 4; if (d[o + 3] < 128) continue;          // skip transparent background
+    pts.push(rgbToLab(d[o], d[o + 1], d[o + 2]));
+  }
+  if (!pts.length) return [];
+  k = Math.min(k, pts.length);
+  const dist2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+  // k-means++ start (deterministic seed so results don't jump around)
+  let seed = 12345; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const cents = [pts[Math.floor(rnd() * pts.length)].slice()];
+  const best = pts.map(p => dist2(p, cents[0]));
+  while (cents.length < k) {
+    const total = best.reduce((a, b) => a + b, 0); if (!total) break;
+    let r = rnd() * total, idx = 0;
+    for (; idx < pts.length - 1; idx++) { r -= best[idx]; if (r <= 0) break; }
+    cents.push(pts[idx].slice());
+    for (let i = 0; i < pts.length; i++) best[i] = Math.min(best[i], dist2(pts[i], cents[cents.length - 1]));
+  }
+  const assign = new Int32Array(pts.length);
+  for (let it = 0; it < 15; it++) {
+    const sums = cents.map(() => [0, 0, 0, 0]);
+    for (let i = 0; i < pts.length; i++) {
+      let bi = 0, bd = Infinity;
+      for (let c = 0; c < cents.length; c++) { const dd = dist2(pts[i], cents[c]); if (dd < bd) { bd = dd; bi = c; } }
+      assign[i] = bi; const s = sums[bi]; s[0] += pts[i][0]; s[1] += pts[i][1]; s[2] += pts[i][2]; s[3]++;
+    }
+    cents.forEach((c, i) => { const s = sums[i]; if (s[3]) { c[0] = s[0] / s[3]; c[1] = s[1] / s[3]; c[2] = s[2] / s[3]; } });
+  }
+  const counts = cents.map(() => 0); for (let i = 0; i < pts.length; i++) counts[assign[i]]++;
+  return cents.map((lab, i) => ({ lab, share: counts[i] / pts.length }))
+    .filter(c => c.share > 0).sort((a, b) => b.share - a.share);
+}
+function labToHex(lab) {
+  // Lab -> sRGB (D65), for showing the design's own colours
+  const [L, a, b] = lab; const fy = (L + 16) / 116, fx = fy + a / 500, fz = fy - b / 200;
+  const inv = t3 => t3 ** 3 > 216 / 24389 ? t3 ** 3 : (116 * t3 - 16) / (24389 / 27);
+  const X = 0.95047 * inv(fx), Y = inv(fy), Z = 1.08883 * inv(fz);
+  const lin = [3.2404542 * X - 1.5371385 * Y - 0.4985314 * Z, -0.9692660 * X + 1.8760108 * Y + 0.0415560 * Z, 0.0556434 * X - 0.2040259 * Y + 1.0572252 * Z];
+  const g = v => { v = Math.min(1, Math.max(0, v)); return 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055); };
+  return rgbToHex(...lin.map(g));
+}
+function runDesign() {
+  if (!designOrig) return;
+  const k = +$('numColours').value;
+  $('numColoursLabel').textContent = t('numColours').replace('{n}', k);
+  clusters = extractPalette(designOrig, k);
+  const cands = candidatePaints();
+  clusters.forEach(c => {
+    c.hex = labToHex(c.lab);
+    c.options = cands.map(p => ({ p, d: deltaE2000(c.lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5);
+  });
+  picks = clusters.map(() => 0);
+  // Map every pixel to its colour group once, for the "with cans" preview
+  const d = designOrig.data, n = designOrig.width * designOrig.height;
+  designMap = new Int16Array(n).fill(-1);
+  const cl = clusters.map(c => c.lab);
+  const cache = new Map();
+  for (let i = 0; i < n; i++) {
+    const o = i * 4; if (d[o + 3] < 128) continue;
+    const key = (d[o] << 16) | (d[o + 1] << 8) | d[o + 2];
+    let bi = cache.get(key);
+    if (bi === undefined) {
+      const lab = rgbToLab(d[o], d[o + 1], d[o + 2]); let bd = Infinity; bi = 0;
+      for (let c = 0; c < cl.length; c++) { const dd = (lab[0] - cl[c][0]) ** 2 + (lab[1] - cl[c][1]) ** 2 + (lab[2] - cl[c][2]) ** 2; if (dd < bd) { bd = dd; bi = c; } }
+      if (cache.size < 200000) cache.set(key, bi);
+    }
+    designMap[i] = bi;
+  }
+  drawDesign(); renderPalette();
+}
+function drawDesign() {
+  if (!designOrig) return;
+  if (designView === 'orig' || !clusters.length) { dCtx.putImageData(designOrig, 0, 0); }
+  else {
+    const out = new ImageData(new Uint8ClampedArray(designOrig.data), designOrig.width, designOrig.height);
+    const cols = clusters.map((c, i) => { const o = c.options[picks[i]]; return hexToRgb(o ? o.p.hex : c.hex); });
+    const od = out.data;
+    for (let i = 0; i < designMap.length; i++) { const c = designMap[i]; if (c < 0) continue; const o = i * 4; od[o] = cols[c][0]; od[o + 1] = cols[c][1]; od[o + 2] = cols[c][2]; }
+    dCtx.putImageData(out, 0, 0);
+  }
+  $('viewOrig').setAttribute('aria-pressed', designView === 'orig'); $('viewCans').setAttribute('aria-pressed', designView === 'cans');
+}
+function wallArea() {
+  const w = parseFloat($('wallW').value) || 0, h = parseFloat($('wallH').value) || 0;
+  const a = w * h; return $('wallUnit').value === 'ft' ? a * 0.092903 : a;
+}
+function cansFor(share) {
+  const coats = +$('wallCoats').value;
+  return Math.max(1, Math.ceil(wallArea() * share * coats / COVERAGE_M2));
+}
+function renderPalette() {
+  const ol = $('paletteList'); ol.innerHTML = ''; $('designMsg').textContent = '';
+  $('coverageNote').textContent = t('coverageNote').replace('{c}', COVERAGE_M2);
+  const totals = {};  // per currency
+  let totalCans = 0;
+  clusters.forEach((c, i) => {
+    const li = document.createElement('li'); li.className = 'match';
+    const opt = c.options[picks[i]];
+    if (!opt) { li.textContent = t('noMatches'); ol.appendChild(li); return; }
+    const p = opt.p, m = matchPct(opt.d), qty = cansFor(c.share); totalCans += qty;
+    const shop = shopFor(p.brand), price = priceOf(shop, p.brand);
+    if (shop && typeof price === 'number') totals[shop.currency] = (totals[shop.currency] || 0) + price * qty;
+    li.innerHTML = `<div class="pair-wrap"><div class="pair" aria-hidden="true"><span style="background:${c.hex}"></span><span style="background:${p.hex}"></span></div>
+        <div class="pair-cap" aria-hidden="true"><span>${t('pairYou')}</span><span>${t('pairCan')}</span></div></div>
+      <div><div class="name"></div><div class="meta"></div><div class="price-tag"></div></div>
+      <div class="score"><b></b><span></span></div>
+      <button type="button" class="add more-btn"></button><div class="alts" hidden></div>`;
+    li.querySelector('.name').textContent = paintName(p);
+    li.querySelector('.meta').textContent = [p.brand, p.code, t('ofDesign').replace('{p}', Math.max(1, Math.round(c.share * 100)))].filter(Boolean).join(', ');
+    li.querySelector('.price-tag').textContent = [cansText(qty), shop && typeof price === 'number' ? money(price * qty, shop.currency) : '', shop ? shop.name : ''].filter(Boolean).join(' · ');
+    li.querySelector('.score b').textContent = pct(m); li.querySelector('.score span').textContent = label(m);
+    const btn = li.querySelector('.more-btn'), alts = li.querySelector('.alts');
+    btn.textContent = t('otherOptions');
+    btn.addEventListener('click', () => { alts.hidden = !alts.hidden; });
+    c.options.forEach((o, j) => {
+      if (j === picks[i]) return;
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip alt-chip';
+      b.innerHTML = `<span class="dot" style="background:${o.p.hex}"></span>`;
+      b.append(`${paintName(o.p)} · ${o.p.brand} · ${pct(matchPct(o.d))}`);
+      b.addEventListener('click', () => { picks[i] = j; drawDesign(); renderPalette(); });
+      alts.appendChild(b);
+    });
+    ol.appendChild(li);
+  });
+  const tot = $('designTotal'); tot.innerHTML = '';
+  const row = document.createElement('div'); row.className = 'total-row';
+  const l = document.createElement('span'); l.textContent = `${t('designTotal')} · ${cansText(totalCans)}`;
+  const v = document.createElement('b'); v.textContent = Object.entries(totals).map(([cur, val]) => money(val, cur)).join(' + ');
+  row.append(l, v); tot.appendChild(row);
+}
+$('numColours').addEventListener('input', () => { $('numColoursLabel').textContent = t('numColours').replace('{n}', $('numColours').value); });
+$('numColours').addEventListener('change', runDesign);
+['wallW', 'wallH', 'wallUnit', 'wallCoats'].forEach(id => $(id).addEventListener('input', renderPalette));
+$('viewOrig').addEventListener('click', () => { designView = 'orig'; drawDesign(); });
+$('viewCans').addEventListener('click', () => { designView = 'cans'; drawDesign(); });
+$('addAll').addEventListener('click', () => {
+  let n = 0;
+  clusters.forEach((c, i) => { const o = c.options[picks[i]]; if (!o) return; const q = cansFor(c.share); for (let k = 0; k < q; k++) addToList(o.p, c.hex); n += q; });
+  $('designMsg').textContent = t('addedAll').replace('{n}', n);
+});
+
+/* ---------- Palette files for design apps ---------- */
+function download(name, blob) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+const swatchName = p => `${p.brand} ${p.code ? p.code + ' ' : ''}${p.name}`.trim();
+// Adobe Swatch Exchange (.ase)
+function makeASE(title, paints) {
+  const blocks = [];
+  const nameBytes = s => { const b = new Uint8Array((s.length + 1) * 2); const v = new DataView(b.buffer); for (let i = 0; i < s.length; i++) v.setUint16(i * 2, s.charCodeAt(i)); return b; };
+  const groupStart = nb => { const len = 2 + nb.length; const b = new Uint8Array(6 + len); const v = new DataView(b.buffer); v.setUint16(0, 0xC001); v.setUint32(2, len); v.setUint16(6, nb.length / 2); b.set(nb, 8); return b; };
+  const tn = nameBytes(title); blocks.push(groupStart(tn));
+  paints.forEach(p => {
+    const nb = nameBytes(swatchName(p)); const len = 2 + nb.length + 4 + 12 + 2;
+    const b = new Uint8Array(6 + len); const v = new DataView(b.buffer);
+    v.setUint16(0, 0x0001); v.setUint32(2, len); v.setUint16(6, nb.length / 2); b.set(nb, 8);
+    let o = 8 + nb.length; 'RGB '.split('').forEach((ch, i) => b[o + i] = ch.charCodeAt(0)); o += 4;
+    const [r, g, bl] = hexToRgb(p.hex); v.setFloat32(o, r / 255); v.setFloat32(o + 4, g / 255); v.setFloat32(o + 8, bl / 255); v.setUint16(o + 12, 2);
+    blocks.push(b);
+  });
+  const end = new Uint8Array(6); new DataView(end.buffer).setUint16(0, 0xC002); blocks.push(end);
+  const head = new Uint8Array(12); const hv = new DataView(head.buffer);
+  'ASEF'.split('').forEach((ch, i) => head[i] = ch.charCodeAt(0)); hv.setUint16(4, 1); hv.setUint16(6, 0); hv.setUint32(8, blocks.length);
+  return new Blob([head, ...blocks], { type: 'application/octet-stream' });
+}
+// Minimal ZIP writer (stored, no compression)
+const CRC = (() => { const tb = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; tb[n] = c >>> 0; } return tb; })();
+function crc32(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function makeZip(files) {
+  const enc = new TextEncoder(), parts = [], central = []; let offset = 0;
+  files.forEach(f => {
+    const name = enc.encode(f.name), data = f.data, crc = crc32(data);
+    const lh = new Uint8Array(30 + name.length); const lv = new DataView(lh.buffer);
+    lv.setUint32(0, 0x04034b50, true); lv.setUint16(4, 20, true); lv.setUint16(8, 0, true);
+    lv.setUint32(14, crc, true); lv.setUint32(18, data.length, true); lv.setUint32(22, data.length, true); lv.setUint16(26, name.length, true);
+    lh.set(name, 30); parts.push(lh, data);
+    const ch = new Uint8Array(46 + name.length); const cv = new DataView(ch.buffer);
+    cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true);
+    cv.setUint32(16, crc, true); cv.setUint32(20, data.length, true); cv.setUint32(24, data.length, true); cv.setUint16(28, name.length, true);
+    cv.setUint32(42, offset, true); ch.set(name, 46); central.push(ch);
+    offset += lh.length + data.length;
+  });
+  const cSize = central.reduce((a, b) => a + b.length, 0);
+  const end = new Uint8Array(22); const ev = new DataView(end.buffer);
+  ev.setUint32(0, 0x06054b50, true); ev.setUint16(8, files.length, true); ev.setUint16(10, files.length, true);
+  ev.setUint32(12, cSize, true); ev.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, end], { type: 'application/zip' });
+}
+// Procreate palette (.swatches = zip with Swatches.json, max 30 colours)
+function rgbToHsb(r, g, b) {
+  r /= 255; g /= 255; b /= 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0; if (d) { h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h /= 6; if (h < 0) h += 1; }
+  return [h, mx ? d / mx : 0, mx];
+}
+async function procreateBytes(title, paints) {
+  const json = JSON.stringify([{ name: title, swatches: paints.slice(0, 30).map(p => { const [h, s, v] = rgbToHsb(...hexToRgb(p.hex)); return { hue: h, saturation: s, brightness: v, alpha: 1, colorSpace: 0 }; }) }]);
+  const zip = makeZip([{ name: 'Swatches.json', data: new TextEncoder().encode(json) }]);
+  return new Uint8Array(await zip.arrayBuffer());
+}
+async function downloadProcreate(title, paints) {
+  const safe = title.replace(/[\\/:*?"<>|]/g, '-');
+  if (paints.length <= 30) { download(`${safe}.swatches`, new Blob([await procreateBytes(title, paints)])); return; }
+  const files = [];
+  for (let i = 0, part = 1; i < paints.length; i += 30, part++) {
+    const name = `${title} ${part}`;
+    files.push({ name: `${name.replace(/[\\/:*?"<>|]/g, '-')}.swatches`, data: await procreateBytes(name, paints.slice(i, i + 30)) });
+  }
+  download(`${safe} (Procreate).zip`, makeZip(files));
+}
+const designPaints = () => { const seen = new Set(); return clusters.map((c, i) => c.options[picks[i]]).filter(Boolean).map(o => o.p).filter(p => !seen.has(p.id) && seen.add(p.id)); };
+$('dlDesignProcreate').addEventListener('click', () => downloadProcreate('CanMatch design', designPaints()));
+$('dlDesignAse').addEventListener('click', () => download('CanMatch design.ase', makeASE('CanMatch design', designPaints())));
+function fillRangeSelect() {
+  const sel = $('rangeSelect'), cur = sel.value;
+  const brands = BRANDS.filter(b => includeHardware || BRAND_PRESSURE[b] !== 'hardware');
+  sel.innerHTML = (cityShops().length ? `<option value="__near">${t('nearRange')}</option>` : '') + brands.map(b => `<option value="${b}">${b}</option>`).join('');
+  if (cur && [...sel.options].some(o => o.value === cur)) sel.value = cur;
+}
+function rangePaints() {
+  const v = $('rangeSelect').value;
+  const list = v === '__near' ? PAINTS.filter(p => shopFor(p.brand) && p.finish === 'solid' && (includeHardware || !isHardware(p))) : PAINTS.filter(p => p.brand === v);
+  return { title: v === '__near' ? `CanMatch ${t('nearRange')}` : v, list };
+}
+$('dlRangeProcreate').addEventListener('click', () => { const r = rangePaints(); downloadProcreate(r.title, r.list); });
+$('dlRangeAse').addEventListener('click', () => { const r = rangePaints(); download(`${r.title.replace(/[\\/:*?"<>|]/g, '-')}.ase`, makeASE(r.title, r.list)); });
+
+/* ---------- Design tab ---------- */
+$('openDesign').addEventListener('click', () => {
+  $('listSheet').hidden = true; $('settingsSheet').hidden = true;
+  fillRangeSelect(); if (designOrig) runDesign();
+  $('designSheet').hidden = false; setTab('openDesign');
+});
 
 /* ---------- Settings (no walkthrough) ---------- */
 function fillCitySelect(sel, value) {
@@ -1201,7 +1553,7 @@ function renderSettings() {
   const a = store.account || {};
   $('accName').value = a.name || ''; $('accEmail').value = a.email || ''; $('accPhone').value = a.phone || '';
 }
-$('openSettings').addEventListener('click', () => { $('listSheet').hidden = true; renderSettings(); $('setMsg').textContent = ''; $('settingsSheet').hidden = false; setTab('openSettings'); });
+$('openSettings').addEventListener('click', () => { $('listSheet').hidden = true; $('designSheet').hidden = true; renderSettings(); $('setMsg').textContent = ''; $('settingsSheet').hidden = false; setTab('openSettings'); });
 $('closeSettings').addEventListener('click', goMatch);
 document.querySelectorAll('.set-lang').forEach(b => b.addEventListener('click', () => {
   lang = b.dataset.lang; store.lang = lang; save(); applyLang(); renderSettings();
