@@ -156,6 +156,8 @@
   .stock-part { color: var(--muted); font-weight: 700; font-size: 0.85rem; }
   .unavail { opacity: 0.45; }
   .unavail-tag { font-size: 0.75rem; font-weight: 700; color: var(--muted); }
+  .shop-group { margin-bottom: 26px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .shop-group .cart-total { margin: 12px 0 10px; }
   .cart-bar { position: sticky; bottom: 0; background: var(--bg); padding: 14px 0 6px; margin-top: 12px;
               border-top: 1px solid var(--line); }
   .cart-total { font-weight: 700; margin-bottom: 10px; }
@@ -250,6 +252,7 @@
       <button type="button" class="secondary filter-btn" id="filterBtn" aria-expanded="false" aria-controls="filterPanel"></button>
     </div>
     <div id="filterPanel" class="filter-panel" hidden>
+    <div id="sprayFilters">
     <h3 class="sub-h" data-i18n="pressure"></h3>
     <div class="chips" id="pressureChips">
       <button type="button" class="chip" data-p="all" aria-pressed="true" data-i18n="all"></button>
@@ -259,6 +262,7 @@
     <h3 class="sub-h" data-i18n="brands"></h3>
     <div class="chips" id="brandChips"></div>
     <label class="toggle"><input type="checkbox" id="specialToggle"> <span data-i18n="includeSpecial"></span></label>
+    </div>
     </div>
     <ol class="matches" id="matchList"></ol>
     <button type="button" class="secondary show-more" id="showMore" hidden></button>
@@ -362,11 +366,8 @@
       <p data-i18n="listEmpty"></p>
     </div>
     <div id="cartFull">
-      <div id="shopsBox"></div>
-      <div id="listBody"></div>
-      <div class="cart-bar">
-        <div class="cart-total" id="cartTotal"></div>
-        <button type="button" class="primary buy" id="buyNow"></button>
+      <div id="cartGroups"></div>
+      <div class="cart-foot">
         <div class="cart-actions">
           <button type="button" class="link-btn" id="shareList" data-i18n="shareList"></button>
           <button type="button" class="link-btn" id="clearList" data-i18n="clearList"></button>
@@ -450,6 +451,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in three languages ---------- */
 const T = {
   en: {
+    notInCity: 'Not sold in your city', hardware: 'hardware store spray', yourShops: 'Shops in your city: {shops}',
     lightQ: 'Colours look off?', lightHow: 'Indoor bulbs, shade and evening light tint photos yellow or blue. Tap “Fix lighting”, then touch something in the photo that is white or light grey in real life, like paper or a white wall.', cancel: 'Cancel', fixLight: '☀ Fix lighting',
     howTitle: 'How to use CanMatch', goodToKnow: 'Good to know', s1t: 'Take or choose a photo', s1d: 'Photograph the colour in daylight, straight on, without flash.', s2t: 'Touch the colour', s2d: 'A magnifier shows exactly where you’re pointing. Slide to adjust, then let go.', s3t: 'Fix the lighting (optional)', s3d: 'If colours look yellow or blue, tap “☀ Fix lighting”, then touch something in the photo that’s white in real life, like paper.', s4t: 'Pick a can and buy', s4d: 'The best matches come first. Add cans to your cart and buy from your local shop.',
     tabMatch: 'Match', filters: 'Filters', filtersOn: 'Filters ({n})', showMore: 'Show more matches', showLess: 'Show fewer',
@@ -496,6 +498,7 @@ const T = {
     badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
   },
   el: {
+    notInCity: 'Δεν πωλείται στην πόλη σου', hardware: 'σπρέι καταστήματος σιδηρικών', yourShops: 'Καταστήματα στην πόλη σου: {shops}',
     lightQ: 'Τα χρώματα δεν φαίνονται σωστά;', lightHow: 'Οι λάμπες, η σκιά και το βραδινό φως κάνουν τις φωτογραφίες πιο κίτρινες ή πιο μπλε. Πάτα «Διόρθωση φωτισμού» και άγγιξε κάτι στη φωτογραφία που στην πραγματικότητα είναι λευκό ή ανοιχτό γκρι, όπως χαρτί ή λευκός τοίχος.', cancel: 'Ακύρωση', fixLight: '☀ Διόρθωση φωτισμού',
     howTitle: 'Πώς χρησιμοποιείς το CanMatch', goodToKnow: 'Καλό να ξέρεις', s1t: 'Τράβηξε ή διάλεξε φωτογραφία', s1d: 'Φωτογράφισε το χρώμα στο φως της ημέρας, κάθετα, χωρίς φλας.', s2t: 'Άγγιξε το χρώμα', s2d: 'Ένας μεγεθυντικός φακός δείχνει ακριβώς πού δείχνεις. Σύρε για να το ρυθμίσεις και άφησε το δάχτυλο.', s3t: 'Διόρθωσε τον φωτισμό (προαιρετικά)', s3d: 'Αν τα χρώματα φαίνονται κίτρινα ή μπλε, πάτα «☀ Διόρθωση φωτισμού» και άγγιξε κάτι στη φωτογραφία που στην πραγματικότητα είναι λευκό, όπως χαρτί.', s4t: 'Διάλεξε σπρέι και αγόρασε', s4d: 'Οι καλύτερες αντιστοιχίες εμφανίζονται πρώτες. Πρόσθεσε σπρέι στο καλάθι και αγόρασε από το κατάστημα της περιοχής σου.',
     tabMatch: 'Ταίριασμα', filters: 'Φίλτρα', filtersOn: 'Φίλτρα ({n})', showMore: 'Περισσότερα αποτελέσματα', showLess: 'Λιγότερα',
@@ -542,6 +545,7 @@ const T = {
     badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
   },
   fr: {
+    notInCity: 'Non vendu dans votre ville', hardware: 'bombe de quincaillerie', yourShops: 'Magasins dans votre ville\u00a0: {shops}',
     lightQ: 'Les couleurs semblent fausses\u202f?', lightHow: 'Les ampoules, l’ombre et la lumière du soir teintent les photos en jaune ou en bleu. Touchez «\u00a0Corriger l’éclairage\u00a0», puis quelque chose sur la photo qui est blanc ou gris clair en vrai, comme du papier ou un mur blanc.', cancel: 'Annuler', fixLight: '☀ Corriger l’éclairage',
     howTitle: 'Comment utiliser CanMatch', goodToKnow: 'Bon à savoir', s1t: 'Prenez ou choisissez une photo', s1d: 'Photographiez la couleur à la lumière du jour, bien en face, sans flash.', s2t: 'Touchez la couleur', s2d: 'Une loupe montre exactement où vous pointez. Glissez pour ajuster, puis relâchez.', s3t: 'Corrigez l’éclairage (facultatif)', s3d: 'Si les couleurs semblent jaunes ou bleues, touchez «\u00a0☀ Corriger l’éclairage\u00a0», puis quelque chose sur la photo qui est blanc en vrai, comme du papier.', s4t: 'Choisissez une bombe et achetez', s4d: 'Les meilleures correspondances s’affichent en premier. Ajoutez des bombes au panier et achetez dans votre magasin local.',
     tabMatch: 'Trouver', filters: 'Filtres', filtersOn: 'Filtres ({n})', showMore: 'Plus de résultats', showLess: 'Moins de résultats',
@@ -590,13 +594,14 @@ const T = {
 };
 const CITIES = [
   { key: 'athens', en: 'Athens & Attica', el: 'Αθήνα & Αττική', fr: 'Athènes et Attique' },
-  { key: 'toronto', en: 'Toronto', el: 'Τορόντο', fr: 'Toronto' }
+  { key: 'toronto', en: 'Toronto', el: 'Τορόντο', fr: 'Toronto' },
+  { key: 'newyork', en: 'New York', el: 'Νέα Υόρκη', fr: 'New York' }
 ];
 /* ---------- Saved settings and list (stay on this phone) ---------- */
 const STORE_KEY = 'canmatch:v1';
 let store = { lang: null, city: '', cityOther: '', setupDone: false, list: [], account: { name: '', email: '', phone: '' }, pay: 'shop' };
 try { const saved = localStorage.getItem(STORE_KEY); if (saved) store = Object.assign(store, JSON.parse(saved)); } catch (e) {}
-if (store.city && !['athens', 'toronto'].includes(store.city)) { store.city = ''; store.cityOther = ''; }
+if (store.city && !['athens', 'toronto', 'newyork'].includes(store.city)) { store.city = ''; store.cityOther = ''; }
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {} }
 
 const $ = id => document.getElementById(id);
@@ -643,7 +648,7 @@ const PAINTS = [];
   if (!c.hex) return;
   PAINTS.push({ id: b.brand + '|' + (c.code || c.name), brand: b.brand, pressure: b.pressure || '',
     code: c.code || '', name: c.name, name_fr: c.name_fr || '', hex: c.hex.toUpperCase(),
-    finish: c.finish || 'solid', lab: rgbToLab(...hexToRgb(c.hex)) });
+    finish: c.finish || 'solid', category: b.category || '', lab: rgbToLab(...hexToRgb(c.hex)) });
 }));
 const BRANDS = [...new Set(PAINTS.map(p => p.brand))];
 const activeBrands = new Set(BRANDS);
@@ -840,7 +845,7 @@ function showResults() {
       <div class="score"><b></b><span></span></div>
       <button type="button" class="add"></button>`;
     li.querySelector('.name').textContent = paintName(p);
-    const extra = [p.code, p.pressure ? t(p.pressure === 'low' ? 'pLow' : 'pHigh') : '', p.finish !== 'solid' ? t(p.finish) : ''];
+    const extra = [p.code, p.pressure ? t(p.pressure === 'low' ? 'pLow' : 'pHigh') : (p.category === 'hardware' ? t('hardware') : ''), p.finish !== 'solid' ? t(p.finish) : ''];
     li.querySelector('.meta').textContent = [p.brand, ...extra].filter(Boolean).join(', ');
     const pt = priceTag(p.brand);
     if (pt) { const d = document.createElement('div'); d.className = 'price-tag' + (pt.na ? ' na' : ''); d.textContent = pt.text;
@@ -911,13 +916,15 @@ function renderListCount() {
   const n = store.list.reduce((a, i) => a + i.qty, 0);
   $('listCount').textContent = n; $('listCount').hidden = n === 0;
 }
-/* ---------- Shop for the chosen city, prices ---------- */
+/* ---------- Shops in the chosen city, prices ---------- */
 const SHOPS_ALL = window.SHOPS || [];
-const myShop = () => SHOPS_ALL.find(sh => sh.city && sh.city === store.city) || null;
+const cityShops = () => SHOPS_ALL.filter(sh => sh.city && sh.city === store.city);
+// The shop a can is bought from: the first shop in the city that sells its line
+const shopFor = brand => cityShops().find(sh => sh.lines.includes(brand)) || null;
 const itemName = i => (lang === 'fr' && i.name_fr) ? cap(i.name_fr) : cap(i.name);
 const cansText = n => n === 1 ? t('oneCan') : t('cans').replace('{n}', n);
 function money(v, cur) {
-  const loc = { en: cur === 'CAD' ? 'en-CA' : 'en-IE', el: 'el-GR', fr: cur === 'CAD' ? 'fr-CA' : 'fr-FR' }[lang] || 'en';
+  const loc = { en: cur === 'EUR' ? 'en-IE' : 'en-US', el: 'el-GR', fr: cur === 'CAD' ? 'fr-CA' : 'fr-FR' }[lang] || 'en';
   try { return new Intl.NumberFormat(loc, { style: 'currency', currency: cur }).format(v); } catch (e) { return v.toFixed(2) + ' ' + cur; }
 }
 function priceOf(shop, brand) {
@@ -926,100 +933,95 @@ function priceOf(shop, brand) {
   return typeof p === 'number' ? p : null;                       // null = price at shop
 }
 function priceTag(brand) {
-  const shop = myShop(); if (!shop) return null;
+  const shops = cityShops(); if (!shops.length) return null;
+  const shop = shopFor(brand);
+  if (!shop) return { text: t('notInCity'), na: true };
   const p = priceOf(shop, brand);
-  if (p === undefined) return { text: t('unavailableAt').replace('{shop}', shop.name), na: true };
-  if (p === null) return { text: `${t('priceAtShop')} · ${shop.name}`, na: false };
-  return { text: `${money(p, shop.currency)} · ${shop.name}`, na: false };
+  return { text: `${p === null ? t('priceAtShop') : money(p, shop.currency)} · ${shop.name}`, na: false };
 }
-function cartTotals(shop) {
+function itemsFor(shop) { return store.list.filter(i => shopFor(i.brand) === shop); }
+function totalsFor(shop) {
   let sum = 0, unpriced = 0, count = 0;
-  store.list.forEach(i => {
-    const p = priceOf(shop, i.brand);
-    if (p === undefined) return;
-    count += i.qty;
-    if (p === null) unpriced += i.qty; else sum += p * i.qty;
-  });
+  itemsFor(shop).forEach(i => { const p = priceOf(shop, i.brand); count += i.qty; if (p === null) unpriced += i.qty; else sum += p * i.qty; });
   return { sum, unpriced, count };
 }
+const totalText = (shop, sum, unpriced) => (sum > 0 || unpriced === 0) ? money(sum, shop.currency) : t('priceAtShop');
+const unpricedText = (sum, unpriced) => (unpriced && sum > 0) ? t('plusUnpriced').replace('{n}', unpriced) : '';
 
-/* ---------- Cart ---------- */
+/* ---------- Cart: one checkout per shop ---------- */
+function itemRow(i, shop) {
+  const p = shop ? priceOf(shop, i.brand) : undefined;
+  const row = document.createElement('div'); row.className = 'list-item' + (shop ? '' : ' unavail');
+  row.innerHTML = `<div class="sw" style="background:${i.hex}"></div>
+    <div><div style="font-weight:700" class="nm"></div><div class="meta" style="color:var(--muted);font-size:0.85rem"></div>
+      <div class="targets" aria-hidden="true"></div><button type="button" class="remove"></button></div>
+    <div class="qty-wrap"><div class="price-col"><div class="line"></div><div class="unit"></div></div>
+      <div class="qty"><button type="button" class="minus" aria-label="−">−</button><span></span><button type="button" class="plus" aria-label="+">+</button></div></div>`;
+  row.querySelector('.nm').textContent = itemName(i);
+  row.querySelector('.meta').textContent = [i.brand, i.code].filter(Boolean).join(' · ');
+  i.targets.forEach(c => { const sp = document.createElement('span'); sp.style.background = c; row.querySelector('.targets').appendChild(sp); });
+  if (shop && typeof p === 'number') {
+    row.querySelector('.line').textContent = money(p * i.qty, shop.currency);
+    if (i.qty > 1) row.querySelector('.unit').textContent = `${money(p, shop.currency)} ${t('each')}`;
+  } else if (shop) row.querySelector('.unit').textContent = t('priceAtShop');
+  row.querySelector('.remove').textContent = t('remove');
+  row.querySelector('.qty span').textContent = i.qty;
+  row.querySelector('.plus').addEventListener('click', () => { i.qty++; save(); renderList(); renderListCount(); });
+  row.querySelector('.minus').addEventListener('click', () => {
+    i.qty--; if (i.qty <= 0) store.list = store.list.filter(x => x !== i); save(); renderList(); renderListCount();
+  });
+  row.querySelector('.remove').addEventListener('click', () => { store.list = store.list.filter(x => x !== i); save(); renderList(); renderListCount(); });
+  return row;
+}
 function renderList() {
   const empty = store.list.length === 0;
   $('cartEmpty').hidden = !empty; $('cartFull').hidden = empty; $('listMsg').textContent = '';
+  const box = $('cartGroups'); box.innerHTML = '';
   if (empty) return;
-  const shop = myShop();
-
-  const box = $('shopsBox'); box.innerHTML = '';
-  const bf = document.createElement('div'); bf.className = 'buy-from';
-  if (shop) {
-    bf.innerHTML = `<div class="shop-meta" style="color:var(--muted);font-size:0.85rem"></div><b></b><div class="shop-meta addr" style="color:var(--muted);font-size:0.85rem"></div>`;
-    bf.querySelector('.shop-meta').textContent = t('buyingFrom');
-    bf.querySelector('b').textContent = shop.name;
-    bf.querySelector('.addr').textContent = [shop.area, shop.address].filter(Boolean).join(' · ');
-    bf.querySelector('.addr').hidden = !shop.area && !shop.address;
-    const tn = document.createElement('p'); tn.className = 'note'; tn.style.margin = '8px 0 0';
-    tn.textContent = t('testNotice').replace('{shop}', shop.name); bf.appendChild(tn);
-  } else {
-    bf.textContent = (store.city && store.city !== 'other') || store.cityOther ? t('noShops') : t('noCity');
+  if (!cityShops().length) {
+    const p = document.createElement('p'); p.className = 'note';
+    p.textContent = store.city ? t('noShops') : t('noCity'); box.appendChild(p);
   }
-  box.appendChild(bf);
-
-  const body = $('listBody'); body.innerHTML = '';
-  store.list.forEach(i => {
-    const p = priceOf(shop, i.brand); const sold = p !== undefined;
-    const row = document.createElement('div'); row.className = 'list-item' + (shop && !sold ? ' unavail' : '');
-    row.innerHTML = `<div class="sw" style="background:${i.hex}"></div>
-      <div><div style="font-weight:700" class="nm"></div><div class="meta" style="color:var(--muted);font-size:0.85rem"></div>
-        <div class="targets" aria-hidden="true"></div><div class="unavail-tag"></div><button type="button" class="remove"></button></div>
-      <div class="qty-wrap"><div class="price-col"><div class="line"></div><div class="unit"></div></div>
-        <div class="qty"><button type="button" class="minus" aria-label="−">−</button><span></span><button type="button" class="plus" aria-label="+">+</button></div></div>`;
-    row.querySelector('.nm').textContent = itemName(i);
-    row.querySelector('.meta').textContent = [i.brand, i.code].filter(Boolean).join(' · ');
-    i.targets.forEach(c => { const sp = document.createElement('span'); sp.style.background = c; row.querySelector('.targets').appendChild(sp); });
-    if (shop && !sold) row.querySelector('.unavail-tag').textContent = t('unavailableAt').replace('{shop}', shop.name);
-    if (shop && typeof p === 'number') {
-      row.querySelector('.line').textContent = money(p * i.qty, shop.currency);
-      if (i.qty > 1) row.querySelector('.unit').textContent = `${money(p, shop.currency)} ${t('each')}`;
-    } else if (shop && p === null) row.querySelector('.unit').textContent = t('priceAtShop');
-    row.querySelector('.remove').textContent = t('remove');
-    row.querySelector('.qty span').textContent = i.qty;
-    row.querySelector('.plus').addEventListener('click', () => { i.qty++; save(); renderList(); renderListCount(); });
-    row.querySelector('.minus').addEventListener('click', () => {
-      i.qty--; if (i.qty <= 0) store.list = store.list.filter(x => x !== i);
-      save(); renderList(); renderListCount();
-    });
-    row.querySelector('.remove').addEventListener('click', () => { store.list = store.list.filter(x => x !== i); save(); renderList(); renderListCount(); });
-    body.appendChild(row);
+  cityShops().forEach(shop => {
+    const items = itemsFor(shop); if (!items.length) return;
+    const g = document.createElement('section'); g.className = 'shop-group';
+    const head = document.createElement('div'); head.className = 'buy-from';
+    head.innerHTML = '<div class="shop-meta" style="color:var(--muted);font-size:0.85rem"></div><b></b><p class="note" style="margin:6px 0 0"></p>';
+    head.querySelector('.shop-meta').textContent = t('buyingFrom'); head.querySelector('b').textContent = shop.name;
+    head.querySelector('.note').textContent = t('testNotice').replace('{shop}', shop.name);
+    g.appendChild(head);
+    items.forEach(i => g.appendChild(itemRow(i, shop)));
+    const { sum, unpriced, count } = totalsFor(shop);
+    const tot = document.createElement('div'); tot.className = 'cart-total';
+    tot.innerHTML = '<div class="total-row"><span></span><b></b></div><small></small>';
+    tot.querySelector('span').textContent = `${t('total')} · ${cansText(count)}`;
+    tot.querySelector('b').textContent = totalText(shop, sum, unpriced);
+    tot.querySelector('small').textContent = [unpricedText(sum, unpriced), t('priceNote')].filter(Boolean).join(' · ');
+    g.appendChild(tot);
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'primary buy';
+    btn.textContent = t('buyNow').replace('{shop}', shop.name);
+    btn.addEventListener('click', () => openOrder(shop));
+    g.appendChild(btn);
+    box.appendChild(g);
   });
-
-  const tot = $('cartTotal'); tot.innerHTML = '';
-  const btn = $('buyNow');
-  if (shop) {
-    const { sum, unpriced, count } = cartTotals(shop);
-    const r = document.createElement('div'); r.className = 'total-row';
-    const l = document.createElement('span'); l.textContent = `${t('total')} · ${cansText(count)}`;
-    const v = document.createElement('b'); v.textContent = totalText(shop, sum, unpriced);
-    r.append(l, v); tot.appendChild(r);
-    const sm = document.createElement('small');
-    sm.textContent = [unpricedText(sum, unpriced), t('priceNote')].filter(Boolean).join(' · ');
-    tot.appendChild(sm);
-    btn.textContent = t('buyNow').replace('{shop}', shop.name); btn.disabled = count === 0;
-  } else { btn.textContent = t('chooseShop'); btn.disabled = true; }
+  const missing = store.list.filter(i => !shopFor(i.brand));
+  if (missing.length) {
+    const g = document.createElement('section'); g.className = 'shop-group';
+    const h = document.createElement('h3'); h.className = 'sub-h'; h.textContent = t('notInCity'); g.appendChild(h);
+    missing.forEach(i => g.appendChild(itemRow(i, null)));
+    box.appendChild(g);
+  }
 }
-// Total shown as a price only if at least one can is priced
-const totalText = (shop, sum, unpriced) => (sum > 0 || unpriced === 0) ? money(sum, shop.currency) : t('priceAtShop');
-const unpricedText = (sum, unpriced) => (unpriced && sum > 0) ? t('plusUnpriced').replace('{n}', unpriced) : '';
 function orderLines(shop) {
-  return store.list.filter(i => priceOf(shop, i.brand) !== undefined).map(i => {
+  return itemsFor(shop).map(i => {
     const p = priceOf(shop, i.brand);
     return { label: `${i.qty} × ${i.brand} ${[i.code, itemName(i)].filter(Boolean).join(' ')}`,
              price: typeof p === 'number' ? money(p * i.qty, shop.currency) : t('priceAtShop') };
   });
 }
 function orderText(shop) {
-  const { sum, unpriced } = cartTotals(shop);
-  const lines = [`${t('orderHeader')} · ${shop.name}`, ...(shop.address ? [shop.address] : []), ''];
+  const { sum, unpriced } = totalsFor(shop);
+  const lines = [`${t('orderHeader')} · ${shop.name}`, ''];
   orderLines(shop).forEach(l => lines.push(`${l.label}: ${l.price}`));
   lines.push('', `${t('total')}: ${totalText(shop, sum, unpriced)} ${unpricedText(sum, unpriced)}`.trim());
   lines.push(`${t('payLabel')}: ${t('payInShop')}`);
@@ -1040,8 +1042,7 @@ async function shareText(text, title, msgEl) {
     await navigator.clipboard.writeText(text); done();
   } catch (e) { try { await navigator.clipboard.writeText(text); done(); } catch (e2) {} }
 }
-$('buyNow').addEventListener('click', () => {
-  const shop = myShop(); if (!shop) return;
+function openOrder(shop) {
   $('orderTitle').textContent = t('orderTitle').replace('{shop}', shop.name);
   const body = $('orderBody'); body.innerHTML = '';
   orderLines(shop).forEach(l => {
@@ -1049,7 +1050,7 @@ $('buyNow').addEventListener('click', () => {
     const a = document.createElement('span'); a.textContent = l.label;
     const b = document.createElement('b'); b.textContent = l.price; d.append(a, b); body.appendChild(d);
   });
-  const { sum, unpriced } = cartTotals(shop);
+  const { sum, unpriced } = totalsFor(shop);
   const tr = document.createElement('div'); tr.className = 'order-line total-row';
   const tl = document.createElement('span'); tl.textContent = t('total');
   const tv = document.createElement('b'); tv.textContent = totalText(shop, sum, unpriced); tr.append(tl, tv); body.appendChild(tr);
@@ -1058,14 +1059,10 @@ $('buyNow').addEventListener('click', () => {
   body.appendChild(note);
   const tn = document.createElement('p'); tn.className = 'note'; tn.textContent = t('testNotice').replace('{shop}', shop.name); body.appendChild(tn);
   const links = $('orderLinks'); links.innerHTML = '';
-  const add = (href, text, primary) => { const a = document.createElement('a'); a.href = href; a.textContent = text;
-    a.className = primary ? 'primary' : 'secondary'; a.style.textDecoration = 'none';
-    if (!href.startsWith('tel:')) { a.target = '_blank'; a.rel = 'noopener'; } links.appendChild(a); };
-  if (shop.maps) add(shop.maps, t('directions'), false);
   const sh = document.createElement('button'); sh.type = 'button'; sh.className = 'secondary'; sh.textContent = t('shareOrder');
   sh.addEventListener('click', () => shareText(orderText(shop), t('orderHeader'))); links.appendChild(sh);
   $('orderSheet').hidden = false;
-});
+}
 $('orderClose').addEventListener('click', () => { $('orderSheet').hidden = true; });
 function setTab(id) {
   ['tabMatch', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });
@@ -1090,8 +1087,8 @@ function renderSettings() {
   fillCitySelect($('setCity'), store.city);
   $('setOtherField').hidden = store.city !== 'other'; $('setOther').value = store.cityOther || '';
   $('setOther').placeholder = t('otherCityPh');
-  const shop = myShop();
-  $('setShop').textContent = shop ? t('yourShop').replace('{shop}', shop.name).replace(', {area}', shop.area ? ', ' + shop.area : '') : (store.city ? t('noShopSet') : '');
+  const shops = cityShops();
+  $('setShop').textContent = shops.length ? t('yourShops').replace('{shops}', shops.map(x => x.name).join(', ')) : (store.city ? t('noShopSet') : '');
   const a = store.account || {};
   $('accName').value = a.name || ''; $('accEmail').value = a.email || ''; $('accPhone').value = a.phone || '';
 }
