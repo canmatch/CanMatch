@@ -56,6 +56,24 @@ window.SHOPS = [
     }
   },
   {
+    name: "Graffiti Shop New York",
+    city: "newyork",
+    demo: true,
+    currency: "USD",
+    lines: ["MTN 94", "MTN Hardcore", "Montana GOLD", "Montana BLACK", "Molotow Premium", "Flame Blue", "Flame Orange", "Ironlak", "Ironlak Sugar"],
+    prices: {
+      "MTN 94": 9.35,           // Flax Art (US art store), November 2026
+      "MTN Hardcore": 10.50,    // Flax Art (US art store), November 2026
+      "Montana GOLD": 8.95,     // Art Primo (US graffiti shop), most colours
+      "Montana BLACK": 7.95,    // Art Primo (US graffiti shop)
+      "Molotow Premium": 8.95,  // Bombing Science (US/Canada graffiti shop), summer 2026
+      "Flame Blue": 6.19,       // Bombing Science, summer 2026
+      "Flame Orange": 6.19,     // Bombing Science, summer 2026
+      "Ironlak": 5.99,          // Hobby Lobby (US), Lak Gloss Acrylic
+      "Ironlak Sugar": null     // no US price found yet
+    }
+  },
+  {
     name: "American Hardware Store",
     city: "newyork",
     demo: true,
