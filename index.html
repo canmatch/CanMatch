@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CanMatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E9E8E4; --surface: #F7F7F5; --ink: #161616; --muted: #5E5F61;
+    --line: #C9C8C3; --focus: #1F6FB2; --ok: #1E7A44; --sample: #8E9092;
+    color-scheme: light; box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1E1F20; --surface: #2A2B2D; --ink: #F1F0EC; --muted: #A6A7A9;
+            --line: #3D3E41; --focus: #7EC3E8; --ok: #6FD39A; color-scheme: dark; }
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-size: 16px; line-height: 1.45;
+         font-family: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 16px 16px 48px; }
+  [hidden] { display: none !important; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  h1 { font-stretch: 125%; font-weight: 900; font-size: 2.1rem; line-height: 1; letter-spacing: -0.01em; margin: 6px 0; }
+  .tagline { margin: 4px 0 20px; color: var(--muted); }
+  .icon-btns { display: flex; gap: 6px; }
+  .icon-btn { font: inherit; font-size: 0.85rem; font-weight: 700; background: transparent; color: var(--ink);
+              border: 2px solid var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; position: relative; }
+  .badge { display: inline-block; min-width: 1.4em; padding: 0 5px; margin-left: 4px; border-radius: 999px;
+           background: var(--ink); color: var(--bg); font-size: 0.75rem; text-align: center; }
+
+  button.primary, label.primary, a.primary { font: inherit; font-weight: 700; border: 2px solid var(--ink); background: var(--ink);
+    color: var(--bg); padding: 14px 18px; border-radius: 999px; cursor: pointer; display: inline-block; text-align: center; }
+  button.secondary, label.secondary, a.secondary { font: inherit; font-weight: 700; border: 2px solid var(--ink); background: transparent;
+    color: var(--ink); padding: 10px 16px; border-radius: 999px; cursor: pointer; display: inline-block; }
+  button:focus-visible, label:focus-within, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  input[type=file] { position: absolute; opacity: 0; width: 1px; height: 1px; }
+
+  .empty { border: 2px dashed var(--line); border-radius: 18px; padding: 40px 20px; text-align: center; background: var(--surface); }
+  .empty p { color: var(--muted); margin: 14px 0 0; }
+
+  .photo-wrap { border-radius: 18px; overflow: hidden; background: var(--surface); }
+  canvas#photo { display: block; width: 100%; height: auto; touch-action: manipulation; cursor: crosshair; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 8px 2px 0; }
+  .hint.active { color: var(--ink); font-weight: 700; }
+  .hint.ok { color: var(--ok); font-weight: 700; }
+  .row-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+  .sample { margin-top: 22px; border-radius: 18px; background: var(--sample); min-height: 150px; padding: 18px;
+            display: flex; flex-direction: column; justify-content: flex-end; transition: background-color 0.25s ease; }
+  .sample .hex { font-stretch: 125%; font-weight: 900; font-size: 2rem; line-height: 1; }
+  .sample .sub { font-size: 0.9rem; opacity: 0.85; }
+  .sample.light-text { color: #FFFFFF; } .sample.dark-text { color: #161616; }
+
+  h2 { font-stretch: 110%; font-weight: 800; font-size: 1.2rem; margin: 26px 0 10px; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font: inherit; font-size: 0.9rem; font-weight: 600; padding: 7px 14px; border-radius: 999px;
+          border: 2px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .toggle { display: flex; gap: 10px; align-items: center; margin-top: 14px; font-size: 0.9rem; color: var(--muted); }
+  .toggle input { width: 20px; height: 20px; accent-color: var(--ink); }
+
+  ol.matches { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 10px; }
+  .match { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center;
+           background: var(--surface); border-radius: 14px; padding: 10px; }
+  .pair { display: flex; height: 56px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+  .pair span { flex: 1; }
+  .match .name { font-weight: 700; }
+  .match .meta { color: var(--muted); font-size: 0.85rem; }
+  .score { text-align: right; font-size: 0.8rem; }
+  .score b { display: block; font-size: 1.25rem; font-stretch: 110%; }
+  .add { grid-column: 2 / 4; justify-self: start; font: inherit; font-size: 0.85rem; font-weight: 700;
+         border: 2px solid var(--ink); background: transparent; color: var(--ink); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+  .add[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .note { color: var(--muted); font-size: 0.85rem; margin-top: 18px; }
+
+  /* Sheets: onboarding, tips, shopping list */
+  .sheet { position: fixed; inset: 0; z-index: 20; background: var(--bg); overflow-y: auto;
+           padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .sheet-inner { max-width: 560px; margin: 0 auto; }
+  .sheet h2 { font-size: 1.6rem; margin-top: 12px; }
+  .step-count { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0; }
+  .lang-list { display: grid; gap: 10px; margin-top: 18px; }
+  .lang-btn { font: inherit; font-size: 1.15rem; font-weight: 700; text-align: left; padding: 16px 18px; border-radius: 14px;
+              border: 2px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .lang-btn[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  label.field { display: block; margin-top: 16px; font-weight: 700; }
+  label.field select, label.field input { display: block; width: 100%; margin-top: 6px; font: inherit; font-weight: 400;
+    padding: 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); }
+  .sheet-actions { display: flex; gap: 10px; margin-top: 26px; flex-wrap: wrap; }
+  .tips { padding-left: 1.2em; margin: 16px 0 0; } .tips li { margin-bottom: 12px; }
+
+  .list-group h3 { font-size: 1rem; margin: 22px 0 8px; }
+  .list-item { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center;
+               background: var(--surface); border-radius: 12px; padding: 8px 10px; margin-bottom: 8px; }
+  .list-item .sw { height: 44px; border-radius: 8px; border: 1px solid var(--line); }
+  .qty { display: flex; align-items: center; gap: 6px; }
+  .qty button { font: inherit; font-weight: 800; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--ink);
+                background: transparent; color: var(--ink); cursor: pointer; }
+  .targets { display: flex; gap: 4px; margin-top: 4px; }
+  .targets span { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--line); }
+
+  .sub-h { font-size: 1.1rem; margin: 22px 0 0; }
+  .shop { background: var(--surface); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+  .shop .shop-name { font-weight: 800; }
+  .shop .shop-meta { color: var(--muted); font-size: 0.85rem; }
+  .shop .bar { height: 6px; border-radius: 3px; background: var(--line); margin: 8px 0; overflow: hidden; }
+  .shop .bar span { display: block; height: 100%; background: var(--ink); }
+  .shop-links { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.9rem; font-weight: 700; }
+  .shop-links a { color: var(--ink); }
+  .where { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .cart .list-item { grid-template-columns: 52px 1fr auto; }
+  .cart .list-item .sw { height: 52px; }
+  .remove { font: inherit; font-size: 0.8rem; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
+  .shop-opt { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; background: var(--surface);
+              border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
+  .shop-opt:has(input:checked) { border-color: var(--ink); }
+  .shop-opt input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--ink); }
+  .stock-ok { color: var(--ok); font-weight: 700; font-size: 0.85rem; }
+  .stock-part { color: var(--muted); font-weight: 700; font-size: 0.85rem; }
+  .unavail { opacity: 0.45; }
+  .unavail-tag { font-size: 0.75rem; font-weight: 700; color: var(--muted); }
+  .cart-bar { position: sticky; bottom: 0; background: var(--bg); padding: 14px 0 6px; margin-top: 12px;
+              border-top: 1px solid var(--line); }
+  .cart-total { font-weight: 700; margin-bottom: 10px; }
+  .cart-total small { display: block; font-weight: 400; color: var(--muted); }
+  .buy { width: 100%; font-size: 1.05rem; }
+  .buy:disabled { opacity: 0.4; cursor: not-allowed; }
+  .cart-actions { display: flex; gap: 18px; justify-content: center; margin-top: 10px; }
+  .link-btn { font: inherit; font-size: 0.9rem; font-weight: 700; color: var(--ink); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 4px; }
+  .order-check { width: 64px; height: 64px; border-radius: 50%; background: var(--ink); color: var(--bg);
+                 display: grid; place-items: center; font-size: 2rem; font-weight: 900; margin-top: 24px; }
+  .demo-note { background: var(--surface); border-left: 4px solid var(--ink); padding: 10px 12px; border-radius: 6px; font-size: 0.9rem; }
+  .order-line { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .buy-from { background: var(--surface); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; }
+  .buy-from b { font-size: 1.05rem; }
+  .price-col { text-align: right; min-width: 92px; }
+  .price-col .line { font-weight: 800; }
+  .price-col .unit { font-size: 0.8rem; color: var(--muted); }
+  .price-tag { font-size: 0.85rem; font-weight: 700; margin-top: 2px; }
+  .price-tag.na { color: var(--muted); font-weight: 600; }
+  .total-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 1.15rem; }
+  .total-row b { font-size: 1.4rem; font-stretch: 110%; }
+  .cart .list-item { grid-template-columns: 52px 1fr auto; }
+  .cart .qty-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  main { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  h1 { margin-top: 10px; }
+  .sample .hex { font-size: 1.6rem; }
+  .sample .sub { font-size: 0.8rem; opacity: 0.75; letter-spacing: 0.02em; }
+  .results-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 22px; }
+  .results-head h2 { margin: 0; }
+  .filter-btn { padding: 8px 14px; font-size: 0.9rem; white-space: nowrap; }
+  .filter-panel { background: var(--surface); border-radius: 14px; padding: 4px 14px 14px; margin-top: 12px; }
+  .filter-panel .sub-h { margin-top: 14px; }
+  .show-more { width: 100%; margin-top: 12px; }
+  .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: grid; grid-template-columns: repeat(3, 1fr);
+            background: var(--surface); border-top: 1px solid var(--line);
+            padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px)); }
+  .tab { font: inherit; font-size: 0.8rem; font-weight: 700; background: none; border: 0; color: var(--muted);
+         display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; cursor: pointer; }
+  .tab[aria-current="page"] { color: var(--ink); }
+  .tab-ico { font-size: 1.35rem; line-height: 1; position: relative; }
+  .tab .badge { position: absolute; top: -6px; right: -14px; font-size: 0.7rem; }
+  .sheet { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  #setup, #orderSheet { z-index: 30; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+    @media (prefers-reduced-motion: reduce) { .sample { transition: none; } }
+</style>
+</head>
+<body>
+<main id="app">
+  <h1>CanMatch</h1>
+  <p class="tagline" data-i18n="tagline"></p>
+
+  <section id="empty" class="empty">
+    <label class="primary"><span data-i18n="takePhoto"></span><input id="file" type="file" accept="image/*"></label>
+    <p data-i18n="shootHint"></p>
+  </section>
+
+  <section id="viewer" hidden>
+    <div class="photo-wrap"><canvas id="photo"></canvas></div>
+    <p class="hint" id="hint"></p>
+    <div class="row-actions">
+      <button type="button" class="secondary" id="fixLight" data-i18n="fixLight"></button>
+      <button type="button" class="secondary" id="resetLight" data-i18n="resetLight" hidden></button>
+      <label class="secondary"><span data-i18n="newPhoto"></span><input id="file2" type="file" accept="image/*"></label>
+    </div>
+  </section>
+
+  <section id="results" hidden>
+    <div id="sample" class="sample" aria-live="polite">
+      <div class="hex" data-i18n="yourColour"></div>
+      <div class="sub" id="sampleHex">#000000</div>
+    </div>
+    <div class="results-head">
+      <h2 data-i18n="closest"></h2>
+      <button type="button" class="secondary filter-btn" id="filterBtn" aria-expanded="false" aria-controls="filterPanel"></button>
+    </div>
+    <div id="filterPanel" class="filter-panel" hidden>
+    <h3 class="sub-h" data-i18n="pressure"></h3>
+    <div class="chips" id="pressureChips">
+      <button type="button" class="chip" data-p="all" aria-pressed="true" data-i18n="all"></button>
+      <button type="button" class="chip" data-p="low" aria-pressed="false" data-i18n="low"></button>
+      <button type="button" class="chip" data-p="high" aria-pressed="false" data-i18n="high"></button>
+    </div>
+    <h3 class="sub-h" data-i18n="brands"></h3>
+    <div class="chips" id="brandChips"></div>
+    <label class="toggle"><input type="checkbox" id="specialToggle"> <span data-i18n="includeSpecial"></span></label>
+    </div>
+    <ol class="matches" id="matchList"></ol>
+    <button type="button" class="secondary show-more" id="showMore" hidden></button>
+    <p class="note" data-i18n="note"></p>
+  </section>
+</main>
+
+<nav class="tabbar" aria-label="CanMatch">
+  <button type="button" class="tab" id="tabMatch" aria-current="page"><span class="tab-ico" aria-hidden="true">◎</span><span data-i18n="tabMatch"></span></button>
+  <button type="button" class="tab" id="openList"><span class="tab-ico" aria-hidden="true">🛒<span class="badge" id="listCount">0</span></span><span data-i18n="list"></span></button>
+  <button type="button" class="tab" id="openSettings"><span class="tab-ico" aria-hidden="true">⚙</span><span data-i18n="settings"></span></button>
+</nav>
+
+<!-- Setup: language and city, then how it works + tips -->
+<div class="sheet" id="setup" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+  <div class="sheet-inner">
+    <div id="stepStart">
+      <p class="step-count" data-i18n="step1"></p>
+      <h2 id="setupTitle" data-i18n="startTitle"></h2>
+      <div class="lang-list" role="group" aria-label="Language · Γλώσσα · Langue">
+        <button type="button" class="lang-btn" data-lang="en">English</button>
+        <button type="button" class="lang-btn" data-lang="el">Ελληνικά</button>
+        <button type="button" class="lang-btn" data-lang="fr">Français</button>
+      </div>
+      <label class="field"><span data-i18n="cityLabel"></span><select id="citySelect"></select></label>
+      <label class="field" id="otherCityField" hidden><span data-i18n="otherCity"></span><input id="otherCity" type="text" autocomplete="address-level2"></label>
+      <p class="tagline" style="margin-top:10px" data-i18n="locationWhy"></p>
+      <div class="sheet-actions"><button type="button" class="primary" id="startNext" data-i18n="continue"></button></div>
+    </div>
+    <div id="stepAbout" hidden>
+      <p class="step-count" data-i18n="step2"></p>
+      <h2 data-i18n="aboutTitle"></h2>
+      <p data-i18n="about"></p>
+      <h3 class="sub-h" data-i18n="tipsTitle"></h3>
+      <ol class="tips" id="tipsList"></ol>
+      <div class="sheet-actions"><button type="button" class="primary" id="aboutDone" data-i18n="gotIt"></button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  try { const st = JSON.parse(localStorage.getItem('canmatch:v1') || '{}');
+        if (st.setupDone) document.getElementById('setup').hidden = true; } catch (e) {}
+</script>
+
+<!-- Settings -->
+<div class="sheet" id="settingsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="sheet-inner">
+    <div class="topbar">
+      <h2 id="settingsTitle" data-i18n="settings"></h2>
+      <button type="button" class="icon-btn" id="closeSettings" data-i18n="done"></button>
+    </div>
+    <h3 class="sub-h" data-i18n="language"></h3>
+    <div class="chips" style="margin-top:10px">
+      <button type="button" class="chip set-lang" data-lang="en">English</button>
+      <button type="button" class="chip set-lang" data-lang="el">Ελληνικά</button>
+      <button type="button" class="chip set-lang" data-lang="fr">Français</button>
+    </div>
+    <h3 class="sub-h" data-i18n="cityLabel"></h3>
+    <label class="field" style="margin-top:6px"><select id="setCity"></select></label>
+    <label class="field" id="setOtherField" hidden><span data-i18n="otherCity"></span><input id="setOther" type="text" autocomplete="address-level2"></label>
+    <p class="note" id="setShop"></p>
+
+    <h3 class="sub-h" data-i18n="account"></h3>
+    <label class="field"><span data-i18n="name"></span><input id="accName" type="text" autocomplete="name"></label>
+    <label class="field"><span data-i18n="email"></span><input id="accEmail" type="email" autocomplete="email"></label>
+    <label class="field"><span data-i18n="phoneL"></span><input id="accPhone" type="tel" autocomplete="tel"></label>
+    <p class="note" data-i18n="accountNote"></p>
+
+    <h3 class="sub-h" data-i18n="payment"></h3>
+    <label class="shop-opt" style="margin-top:10px"><input type="radio" name="pay" value="shop" checked><div><b data-i18n="payInShop"></b></div></label>
+    <label class="shop-opt unavail"><input type="radio" name="pay" value="card" disabled><div><b data-i18n="payCard"></b> · <span data-i18n="comingSoon"></span></div></label>
+    <p class="note" data-i18n="paymentNote"></p>
+
+    <h3 class="sub-h" data-i18n="help"></h3>
+    <div class="sheet-actions" style="margin-top:10px">
+      <button type="button" class="secondary" id="setAbout" data-i18n="aboutTitle"></button>
+      <button type="button" class="secondary" id="setEmpty" data-i18n="clearList"></button>
+    </div>
+    <p class="hint ok" id="setMsg" aria-live="polite"></p>
+  </div>
+</div>
+
+<!-- Cart -->
+<div class="sheet" id="listSheet" hidden role="dialog" aria-modal="true" aria-labelledby="listTitle">
+  <div class="sheet-inner cart">
+    <div class="topbar">
+      <h2 id="listTitle" data-i18n="listTitle"></h2>
+      <button type="button" class="icon-btn" id="closeList" data-i18n="done"></button>
+    </div>
+    <div id="cartEmpty" class="empty" hidden>
+      <p data-i18n="listEmpty"></p>
+    </div>
+    <div id="cartFull">
+      <div id="shopsBox"></div>
+      <div id="listBody"></div>
+      <div class="cart-bar">
+        <div class="cart-total" id="cartTotal"></div>
+        <button type="button" class="primary buy" id="buyNow"></button>
+        <div class="cart-actions">
+          <button type="button" class="link-btn" id="shareList" data-i18n="shareList"></button>
+          <button type="button" class="link-btn" id="clearList" data-i18n="clearList"></button>
+        </div>
+        <p class="hint ok" id="listMsg" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Order confirmation (ordering not connected yet) -->
+<div class="sheet" id="orderSheet" hidden role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+  <div class="sheet-inner">
+    <div class="order-check" aria-hidden="true">✓</div>
+    <h2 id="orderTitle"></h2>
+    <p class="demo-note" data-i18n="demoNote"></p>
+    <div id="orderBody"></div>
+    <div class="sheet-actions" id="orderLinks"></div>
+    <div class="sheet-actions"><button type="button" class="secondary" id="orderClose" data-i18n="backToCart"></button></div>
+  </div>
+</div>
+
+<script src="colors.js"></script>
+<script src="shops.js"></script>
+<script>
+/* ---------- Colour maths ---------- */
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(v => Math.round(v).toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+// sRGB (0-255) -> CIE Lab (D65)
+function rgbToLab(r, g, b) {
+  const lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const R = lin(r), G = lin(g), B = lin(b);
+  const X = (0.4124564 * R + 0.3575761 * G + 0.1804375 * B) / 0.95047;
+  const Y = (0.2126729 * R + 0.7151522 * G + 0.0721750 * B) / 1.0;
+  const Z = (0.0193339 * R + 0.1191920 * G + 0.9503041 * B) / 1.08883;
+  const f = t => t > 216 / 24389 ? Math.cbrt(t) : (24389 / 27 * t + 16) / 116;
+  const fx = f(X), fy = f(Y), fz = f(Z);
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+}
+// CIEDE2000 colour difference
+function deltaE2000(lab1, lab2) {
+  const [L1, a1, b1] = lab1, [L2, a2, b2] = lab2;
+  const rad = Math.PI / 180, deg = 180 / Math.PI;
+  const C1 = Math.hypot(a1, b1), C2 = Math.hypot(a2, b2);
+  const Cbar = (C1 + C2) / 2;
+  const G = 0.5 * (1 - Math.sqrt(Math.pow(Cbar, 7) / (Math.pow(Cbar, 7) + Math.pow(25, 7))));
+  const a1p = (1 + G) * a1, a2p = (1 + G) * a2;
+  const C1p = Math.hypot(a1p, b1), C2p = Math.hypot(a2p, b2);
+  const hp = (b, a) => { if (b === 0 && a === 0) return 0; const h = Math.atan2(b, a) * deg; return h < 0 ? h + 360 : h; };
+  const h1p = hp(b1, a1p), h2p = hp(b2, a2p);
+  const dLp = L2 - L1, dCp = C2p - C1p;
+  let dhp = 0;
+  if (C1p * C2p !== 0) {
+    dhp = h2p - h1p;
+    if (dhp > 180) dhp -= 360; else if (dhp < -180) dhp += 360;
+  }
+  const dHp = 2 * Math.sqrt(C1p * C2p) * Math.sin(dhp * rad / 2);
+  const Lbp = (L1 + L2) / 2, Cbp = (C1p + C2p) / 2;
+  let hbp = h1p + h2p;
+  if (C1p * C2p !== 0) {
+    if (Math.abs(h1p - h2p) > 180) hbp += (hbp < 360 ? 360 : -360);
+    hbp /= 2;
+  }
+  const T = 1 - 0.17 * Math.cos((hbp - 30) * rad) + 0.24 * Math.cos(2 * hbp * rad)
+          + 0.32 * Math.cos((3 * hbp + 6) * rad) - 0.20 * Math.cos((4 * hbp - 63) * rad);
+  const dTheta = 30 * Math.exp(-Math.pow((hbp - 275) / 25, 2));
+  const Rc = 2 * Math.sqrt(Math.pow(Cbp, 7) / (Math.pow(Cbp, 7) + Math.pow(25, 7)));
+  const Sl = 1 + (0.015 * Math.pow(Lbp - 50, 2)) / Math.sqrt(20 + Math.pow(Lbp - 50, 2));
+  const Sc = 1 + 0.045 * Cbp, Sh = 1 + 0.015 * Cbp * T;
+  const Rt = -Math.sin(2 * dTheta * rad) * Rc;
+  return Math.sqrt(Math.pow(dLp / Sl, 2) + Math.pow(dCp / Sc, 2) + Math.pow(dHp / Sh, 2)
+                   + Rt * (dCp / Sc) * (dHp / Sh));
+}
+
+/* ---------- Text in three languages ---------- */
+const T = {
+  en: {
+    tabMatch: 'Match', filters: 'Filters', filtersOn: 'Filters ({n})', showMore: 'Show more matches', showLess: 'Show fewer',
+    low: 'Fine detail (low pressure)', high: 'Fast coverage (high pressure)', all: 'All cans',
+    testNotice: 'Test version. CanMatch isn’t affiliated with {shop}. Prices come from the shop’s website (November 2026) and can vary by colour.',
+    language: 'Language', account: 'Account', name: 'Name', email: 'Email', phoneL: 'Phone',
+    accountNote: 'Accounts aren’t connected yet. Your details stay on this phone and are added to your orders.',
+    payment: 'Payment method', payInShop: 'Pay in the shop', payCard: 'Card', comingSoon: 'coming soon',
+    paymentNote: 'Online payment isn’t connected yet. You pay when you collect your order.', help: 'Help',
+    buyingFrom: 'Buying from', yourShop: 'Your shop: {shop}, {area}', noShopSet: 'No shop in CanMatch for this city yet.',
+    each: 'each', priceAtShop: 'Price at shop', unavailableAt: 'Not available at {shop}', total: 'Total',
+    plusUnpriced: '+ {n} priced in the shop', saved: 'Saved.', payLabel: 'Payment', customer: 'Customer', cartEmptied: 'Cart emptied.',
+    buyFrom: 'Buy from', hasAll: 'Has all {m} cans', hasSome: 'Has {n} of {m} cans', notHere: 'Not sold here', cans: '{n} cans', oneCan: '1 can', priceNote: 'Prices are confirmed by the shop.', buyNow: 'Purchase now from {shop}', chooseShop: 'Choose a shop to buy from', orderTitle: 'Order ready for {shop}', demoNote: 'Online ordering isn’t connected yet. Show this order in the shop, or call ahead so they can set the cans aside.', backToCart: 'Back to cart', shareOrder: 'Share order', orderHeader: 'CanMatch order',
+    startTitle: 'Choose your language and city', cityLabel: 'Your city', otherCity: 'Your city name', otherCityPh: 'Type your city',
+    aboutTitle: 'How CanMatch works',
+    about: 'Take a photo of any colour (a wall, a sticker, a piece of fabric) and tap it. CanMatch compares it with over 1,200 spray paint colours from MTN, Montana, Molotow and Flame and shows the closest cans, best match first. Add the cans you want to your shopping list and see which shops in your city carry them.',
+    shopsTitle: 'Where to buy in your city', carries: 'Carries {n} of {m} cans on your list',
+    noShops: 'No shops are listed for your city yet.', noCity: 'Choose your city in Settings to see shops near you.',
+    checkStock: 'Stock changes, so call ahead to check the colours you need.', directions: 'Directions', call: 'Call', site: 'Website',
+    availableAt: 'At', notNearby: 'Not listed at shops near you', listShops: 'Where to buy',
+    tagline: 'Photograph any colour and find the closest spray paints.',
+    takePhoto: 'Take or choose a photo', shootHint: 'Shoot in daylight, straight on, without flash.',
+    tapHint: 'Tap the spot you want to match.', newPhoto: 'New photo',
+    fixLight: 'Fix lighting', fixLightPrompt: 'Now tap something white or grey in the photo.',
+    lightOn: 'Lighting corrected. Tap the spot you want to match.', resetLight: 'Undo lighting fix',
+    lightBad: 'That spot is too dark or too colourful. Tap something white or light grey.',
+    yourColour: 'Your colour', pressure: 'Pressure', 
+    brands: 'Brands', includeSpecial: 'Include fluorescent, transparent and metallic cans',
+    closest: 'Best matches', matchWord: 'match',
+    l1: 'Near-identical', l2: 'Close', l3: 'Similar', l4: 'Different',
+    pLow: 'low pressure', pHigh: 'high pressure', fluorescent: 'fluorescent', transparent: 'transparent', metallic: 'metallic',
+    addToList: '+ Add to cart', inList: '✓ In cart',
+    noMatches: 'No cans match these filters. Select more brands or change the pressure.',
+    note: 'Each result shows your colour on the left and the can on the right. Above 95% is near-identical, above 87% is close. Phone cameras shift colours with the light, so test-spray before you paint.',
+    list: 'Cart', tipsBtn: 'Tips', settings: 'Settings', done: 'Done',
+    listTitle: 'Your cart', listEmpty: 'Your cart is empty. Tap “Add to cart” on any can.',
+    shareList: 'Share cart', clearList: 'Empty cart', copied: 'List copied.', remove: 'Remove', forColours: 'For',
+    listHeader: 'CanMatch shopping list',
+    step1: 'Step 1 of 2', step2: 'Step 2 of 2', continue: 'Continue', skip: 'Skip',
+    whereAreYou: 'Where are you?', locationWhy: 'We’ll use this to show you shops nearby. It stays on your phone.',
+    country: 'Country', city: 'City', cityPh: 'e.g. Athens',
+    tipsTitle: 'Tips for better matches', gotIt: 'Start matching',
+    tips: ['Shoot in daylight, not under yellow indoor bulbs.',
+           'Turn off the flash and hold the phone straight on to the surface.',
+           'Use “Fix lighting”: tap something white or grey in the same photo.',
+           'Matte and gloss cans look different, even with the same colour.',
+           'Fluorescent, transparent and metallic paints don’t photograph well. Always check them in the shop.'],
+    badImage: 'That file could not be opened as an image. Try a JPG or PNG photo.'
+  },
+  el: {
+    tabMatch: 'Ταίριασμα', filters: 'Φίλτρα', filtersOn: 'Φίλτρα ({n})', showMore: 'Περισσότερα αποτελέσματα', showLess: 'Λιγότερα',
+    low: 'Λεπτομέρεια (χαμηλή πίεση)', high: 'Γρήγορη κάλυψη (υψηλή πίεση)', all: 'Όλα τα σπρέι',
+    testNotice: 'Δοκιμαστική έκδοση. Το CanMatch δεν συνεργάζεται με το {shop}. Οι τιμές είναι από την ιστοσελίδα του καταστήματος (Νοέμβριος 2026) και μπορεί να διαφέρουν ανά χρώμα.',
+    language: 'Γλώσσα', account: 'Λογαριασμός', name: 'Όνομα', email: 'Email', phoneL: 'Τηλέφωνο',
+    accountNote: 'Οι λογαριασμοί δεν έχουν συνδεθεί ακόμα. Τα στοιχεία σου μένουν σε αυτό το κινητό και προστίθενται στις παραγγελίες σου.',
+    payment: 'Τρόπος πληρωμής', payInShop: 'Πληρωμή στο κατάστημα', payCard: 'Κάρτα', comingSoon: 'σύντομα',
+    paymentNote: 'Η online πληρωμή δεν έχει συνδεθεί ακόμα. Πληρώνεις όταν παραλαμβάνεις την παραγγελία σου.', help: 'Βοήθεια',
+    buyingFrom: 'Αγορά από', yourShop: 'Το κατάστημά σου: {shop}, {area}', noShopSet: 'Δεν υπάρχει ακόμα κατάστημα στο CanMatch για αυτή την πόλη.',
+    each: 'το τεμ.', priceAtShop: 'Τιμή στο κατάστημα', unavailableAt: 'Δεν διατίθεται στο {shop}', total: 'Σύνολο',
+    plusUnpriced: '+ {n} με τιμή στο κατάστημα', saved: 'Αποθηκεύτηκε.', payLabel: 'Πληρωμή', customer: 'Πελάτης', cartEmptied: 'Το καλάθι άδειασε.',
+    buyFrom: 'Αγορά από', hasAll: 'Έχει και τα {m} σπρέι', hasSome: 'Έχει {n} από τα {m} σπρέι', notHere: 'Δεν πωλείται εδώ', cans: '{n} σπρέι', oneCan: '1 σπρέι', priceNote: 'Οι τιμές επιβεβαιώνονται από το κατάστημα.', buyNow: 'Αγορά τώρα από {shop}', chooseShop: 'Διάλεξε κατάστημα για αγορά', orderTitle: 'Η παραγγελία για {shop} είναι έτοιμη', demoNote: 'Η online παραγγελία δεν έχει συνδεθεί ακόμα. Δείξε αυτή την παραγγελία στο κατάστημα ή πάρε τηλέφωνο για να σου κρατήσουν τα σπρέι.', backToCart: 'Πίσω στο καλάθι', shareOrder: 'Κοινοποίηση παραγγελίας', orderHeader: 'Παραγγελία CanMatch',
+    startTitle: 'Διάλεξε γλώσσα και πόλη', cityLabel: 'Η πόλη σου', otherCity: 'Όνομα πόλης', otherCityPh: 'Γράψε την πόλη σου',
+    aboutTitle: 'Πώς λειτουργεί το CanMatch',
+    about: 'Φωτογράφισε οποιοδήποτε χρώμα (έναν τοίχο, ένα αυτοκόλλητο, ένα ύφασμα) και πάτα πάνω του. Το CanMatch το συγκρίνει με πάνω από 1.200 χρώματα σπρέι από MTN, Montana, Molotow και Flame και σου δείχνει τα πιο κοντινά, πρώτα το καλύτερο. Πρόσθεσε τα σπρέι που θέλεις στη λίστα αγορών σου και δες ποια καταστήματα στην πόλη σου τα έχουν.',
+    shopsTitle: 'Πού θα τα βρεις στην πόλη σου', carries: 'Έχει {n} από τα {m} σπρέι της λίστας σου',
+    noShops: 'Δεν υπάρχουν ακόμα καταστήματα για την πόλη σου.', noCity: 'Διάλεξε την πόλη σου στις Ρυθμίσεις για να δεις καταστήματα κοντά σου.',
+    checkStock: 'Το απόθεμα αλλάζει, γι’ αυτό πάρε τηλέφωνο πριν πας για να ελέγξεις τα χρώματα.', directions: 'Οδηγίες', call: 'Κλήση', site: 'Ιστοσελίδα',
+    availableAt: 'Σε', notNearby: 'Δεν υπάρχει σε κατάστημα κοντά σου', listShops: 'Πού θα τα βρεις',
+    tagline: 'Φωτογράφισε οποιοδήποτε χρώμα και βρες τα πιο κοντινά σπρέι.',
+    takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία', shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
+    tapHint: 'Πάτα το σημείο που θέλεις να ταιριάξεις.', newPhoto: 'Νέα φωτογραφία',
+    fixLight: 'Διόρθωση φωτισμού', fixLightPrompt: 'Τώρα πάτα κάτι λευκό ή γκρι στη φωτογραφία.',
+    lightOn: 'Ο φωτισμός διορθώθηκε. Πάτα το σημείο που θέλεις να ταιριάξεις.', resetLight: 'Αναίρεση διόρθωσης',
+    lightBad: 'Το σημείο είναι πολύ σκούρο ή πολύ χρωματιστό. Πάτα κάτι λευκό ή ανοιχτό γκρι.',
+    yourColour: 'Το χρώμα σου', pressure: 'Πίεση', 
+    brands: 'Μάρκες', includeSpecial: 'Συμπερίληψη φθοριζόντων, διάφανων και μεταλλικών σπρέι',
+    closest: 'Καλύτερες αντιστοιχίες', matchWord: 'ταίριασμα',
+    l1: 'Σχεδόν ίδιο', l2: 'Κοντινό', l3: 'Παρόμοιο', l4: 'Διαφορετικό',
+    pLow: 'χαμηλή πίεση', pHigh: 'υψηλή πίεση', fluorescent: 'φθορίζον', transparent: 'διάφανο', metallic: 'μεταλλικό',
+    addToList: '+ Στο καλάθι', inList: '✓ Στο καλάθι',
+    noMatches: 'Κανένα σπρέι δεν ταιριάζει με αυτά τα φίλτρα. Επίλεξε περισσότερες μάρκες ή άλλαξε την πίεση.',
+    note: 'Κάθε αποτέλεσμα δείχνει το χρώμα σου αριστερά και το σπρέι δεξιά. Πάνω από 95% είναι σχεδόν ίδιο, πάνω από 87% κοντινό. Οι κάμερες των κινητών αλλάζουν τα χρώματα ανάλογα με το φως, γι’ αυτό κάνε μια δοκιμή πριν βάψεις.',
+    list: 'Καλάθι', tipsBtn: 'Συμβουλές', settings: 'Ρυθμίσεις', done: 'Τέλος',
+    listTitle: 'Το καλάθι σου', listEmpty: 'Το καλάθι σου είναι άδειο. Πάτα «Στο καλάθι» σε οποιοδήποτε σπρέι.',
+    shareList: 'Κοινοποίηση καλαθιού', clearList: 'Άδειασμα καλαθιού', copied: 'Η λίστα αντιγράφηκε.', remove: 'Αφαίρεση', forColours: 'Για',
+    listHeader: 'Λίστα αγορών CanMatch',
+    step1: 'Βήμα 1 από 2', step2: 'Βήμα 2 από 2', continue: 'Συνέχεια', skip: 'Παράλειψη',
+    whereAreYou: 'Πού βρίσκεσαι;', locationWhy: 'Θα το χρησιμοποιήσουμε για να σου δείχνουμε καταστήματα κοντά σου. Μένει μόνο στο κινητό σου.',
+    country: 'Χώρα', city: 'Πόλη', cityPh: 'π.χ. Αθήνα',
+    tipsTitle: 'Συμβουλές για καλύτερα αποτελέσματα', gotIt: 'Ξεκίνα',
+    tips: ['Φωτογράφισε στο φως της ημέρας, όχι κάτω από κίτρινες λάμπες.',
+           'Κλείσε το φλας και κράτα το κινητό κάθετα στην επιφάνεια.',
+           'Χρησιμοποίησε τη «Διόρθωση φωτισμού»: πάτα κάτι λευκό ή γκρι στην ίδια φωτογραφία.',
+           'Τα ματ και τα γυαλιστερά σπρέι δείχνουν διαφορετικά, ακόμα και στο ίδιο χρώμα.',
+           'Τα φθορίζοντα, διάφανα και μεταλλικά χρώματα δεν φαίνονται σωστά στις φωτογραφίες. Έλεγξέ τα πάντα στο κατάστημα.'],
+    badImage: 'Το αρχείο δεν ανοίγει ως εικόνα. Δοκίμασε μια φωτογραφία JPG ή PNG.'
+  },
+  fr: {
+    tabMatch: 'Trouver', filters: 'Filtres', filtersOn: 'Filtres ({n})', showMore: 'Plus de résultats', showLess: 'Moins de résultats',
+    low: 'Détails fins (basse pression)', high: 'Couverture rapide (haute pression)', all: 'Toutes les bombes',
+    testNotice: 'Version de test. CanMatch n’est pas affilié à {shop}. Les prix viennent du site du magasin (novembre 2026) et peuvent varier selon la couleur.',
+    language: 'Langue', account: 'Compte', name: 'Nom', email: 'E-mail', phoneL: 'Téléphone',
+    accountNote: 'Les comptes ne sont pas encore connectés. Vos informations restent sur ce téléphone et sont ajoutées à vos commandes.',
+    payment: 'Moyen de paiement', payInShop: 'Payer en magasin', payCard: 'Carte', comingSoon: 'bientôt',
+    paymentNote: 'Le paiement en ligne n’est pas encore connecté. Vous payez en récupérant votre commande.', help: 'Aide',
+    buyingFrom: 'Achat chez', yourShop: 'Votre magasin\u00a0: {shop}, {area}', noShopSet: 'Pas encore de magasin CanMatch dans cette ville.',
+    each: 'l’unité', priceAtShop: 'Prix en magasin', unavailableAt: 'Indisponible chez {shop}', total: 'Total',
+    plusUnpriced: '+ {n} au prix du magasin', saved: 'Enregistré.', payLabel: 'Paiement', customer: 'Client', cartEmptied: 'Panier vidé.',
+    buyFrom: 'Acheter chez', hasAll: 'A les {m} bombes', hasSome: 'A {n} bombes sur {m}', notHere: 'Pas vendu ici', cans: '{n} bombes', oneCan: '1 bombe', priceNote: 'Les prix sont confirmés par le magasin.', buyNow: 'Acheter maintenant chez {shop}', chooseShop: 'Choisissez un magasin', orderTitle: 'Commande prête pour {shop}', demoNote: 'La commande en ligne n’est pas encore connectée. Montrez cette commande en magasin ou appelez pour qu’on vous mette les bombes de côté.', backToCart: 'Retour au panier', shareOrder: 'Partager la commande', orderHeader: 'Commande CanMatch',
+    startTitle: 'Choisissez votre langue et votre ville', cityLabel: 'Votre ville', otherCity: 'Nom de votre ville', otherCityPh: 'Saisissez votre ville',
+    aboutTitle: 'Comment fonctionne CanMatch',
+    about: 'Photographiez n’importe quelle couleur (un mur, un autocollant, un tissu), puis touchez-la. CanMatch la compare à plus de 1\u202f200 couleurs de bombes MTN, Montana, Molotow et Flame et affiche les plus proches, la meilleure en premier. Ajoutez les bombes voulues à votre liste d’achats et voyez quels magasins de votre ville les proposent.',
+    shopsTitle: 'Où acheter dans votre ville', carries: 'Propose {n} des {m} bombes de votre liste',
+    noShops: 'Aucun magasin n’est encore référencé pour votre ville.', noCity: 'Choisissez votre ville dans Réglages pour voir les magasins proches.',
+    checkStock: 'Les stocks changent\u202f: appelez avant de passer pour vérifier les couleurs.', directions: 'Itinéraire', call: 'Appeler', site: 'Site web',
+    availableAt: 'Chez', notNearby: 'Pas référencé près de chez vous', listShops: 'Où acheter',
+    tagline: 'Photographiez n’importe quelle couleur et trouvez les bombes les plus proches.',
+    takePhoto: 'Prendre ou choisir une photo', shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
+    tapHint: 'Touchez l’endroit à faire correspondre.', newPhoto: 'Nouvelle photo',
+    fixLight: 'Corriger l’éclairage', fixLightPrompt: 'Touchez maintenant quelque chose de blanc ou de gris sur la photo.',
+    lightOn: 'Éclairage corrigé. Touchez l’endroit à faire correspondre.', resetLight: 'Annuler la correction',
+    lightBad: 'Cet endroit est trop sombre ou trop coloré. Touchez quelque chose de blanc ou de gris clair.',
+    yourColour: 'Votre couleur', pressure: 'Pression', 
+    brands: 'Marques', includeSpecial: 'Inclure les bombes fluo, transparentes et métallisées',
+    closest: 'Meilleures correspondances', matchWord: 'de correspondance',
+    l1: 'Presque identique', l2: 'Proche', l3: 'Similaire', l4: 'Différent',
+    pLow: 'basse pression', pHigh: 'haute pression', fluorescent: 'fluo', transparent: 'transparent', metallic: 'métallisé',
+    addToList: '+ Ajouter au panier', inList: '✓ Dans le panier',
+    noMatches: 'Aucune bombe ne correspond à ces filtres. Sélectionnez plus de marques ou changez la pression.',
+    note: 'Chaque résultat montre votre couleur à gauche et la bombe à droite. Au-dessus de 95\u202f%, c’est presque identique\u202f; au-dessus de 87\u202f%, c’est proche. Les appareils photo des téléphones modifient les couleurs selon la lumière\u202f: faites un essai avant de peindre.',
+    list: 'Panier', tipsBtn: 'Conseils', settings: 'Réglages', done: 'Terminé',
+    listTitle: 'Votre panier', listEmpty: 'Votre panier est vide. Touchez «\u00a0Ajouter au panier\u00a0» sur une bombe.',
+    shareList: 'Partager le panier', clearList: 'Vider le panier', copied: 'Liste copiée.', remove: 'Retirer', forColours: 'Pour',
+    listHeader: 'Liste d’achats CanMatch',
+    step1: 'Étape 1 sur 2', step2: 'Étape 2 sur 2', continue: 'Continuer', skip: 'Passer',
+    whereAreYou: 'Où êtes-vous\u202f?', locationWhy: 'Nous l’utiliserons pour vous montrer les magasins proches. Ces informations restent sur votre téléphone.',
+    country: 'Pays', city: 'Ville', cityPh: 'ex. Paris',
+    tipsTitle: 'Conseils pour de meilleurs résultats', gotIt: 'Commencer',
+    tips: ['Photographiez à la lumière du jour, pas sous des ampoules jaunes.',
+           'Coupez le flash et tenez le téléphone bien en face de la surface.',
+           'Utilisez «\u00a0Corriger l’éclairage\u00a0»\u202f: touchez quelque chose de blanc ou de gris sur la même photo.',
+           'Les bombes mates et brillantes paraissent différentes, même pour une même couleur.',
+           'Les couleurs fluo, transparentes et métallisées se photographient mal. Vérifiez-les toujours en magasin.'],
+    badImage: 'Ce fichier ne peut pas être ouvert comme image. Essayez une photo JPG ou PNG.'
+  }
+};
+const CITIES = [
+  { key: 'athens', en: 'Athens & Attica', el: 'Αθήνα & Αττική', fr: 'Athènes et Attique' },
+  { key: 'toronto', en: 'Toronto', el: 'Τορόντο', fr: 'Toronto' }
+];
+/* ---------- Saved settings and list (stay on this phone) ---------- */
+const STORE_KEY = 'canmatch:v1';
+let store = { lang: null, city: '', cityOther: '', setupDone: false, list: [], account: { name: '', email: '', phone: '' }, pay: 'shop' };
+try { const saved = localStorage.getItem(STORE_KEY); if (saved) store = Object.assign(store, JSON.parse(saved)); } catch (e) {}
+if (store.city && !['athens', 'toronto'].includes(store.city)) { store.city = ''; store.cityOther = ''; }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {} }
+
+const $ = id => document.getElementById(id);
+let lang = store.lang || (navigator.language || 'en').slice(0, 2);
+if (!T[lang]) lang = 'en';
+const t = key => (T[lang] && T[lang][key] !== undefined) ? T[lang][key] : T.en[key];
+const pct = n => lang === 'fr' ? `${n}\u202f%` : `${n}%`;
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  $('otherCity').placeholder = t('otherCityPh');
+  const sel = $('citySelect'); const current = sel.value || store.city;
+  sel.innerHTML = '<option value="">—</option>' + CITIES.map(c => `<option value="${c.key}">${c[lang] || c.en}</option>`).join('');
+  sel.value = current; $('otherCityField').hidden = sel.value !== 'other';
+  $('tipsList').innerHTML = '';
+  t('tips').forEach(tip => { const li = document.createElement('li'); li.textContent = tip; $('tipsList').appendChild(li); });
+  document.querySelectorAll('.lang-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
+  setHint(hintState);
+  renderListCount();
+  if (lastSample) showResults();
+}
+
+/* ---------- Setup: language → location → tips ---------- */
+function showStep(step) {
+  $('setup').hidden = false;
+  ['stepStart', 'stepAbout'].forEach(id => { $(id).hidden = id !== step; });
+  $('otherCity').value = store.cityOther || '';
+}
+document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', () => {
+  lang = b.dataset.lang; store.lang = lang; save(); applyLang();
+}));
+$('citySelect').addEventListener('change', e => { $('otherCityField').hidden = e.target.value !== 'other'; });
+$('startNext').addEventListener('click', () => {
+  store.lang = lang; store.city = $('citySelect').value;
+  store.cityOther = store.city === 'other' ? $('otherCity').value.trim() : '';
+  save(); showStep('stepAbout');
+});
+$('aboutDone').addEventListener('click', () => { store.setupDone = true; save(); $('setup').hidden = true; });
+
+/* ---------- Paint list ---------- */
+const PAINTS = [];
+(window.PAINT_DATA || []).forEach(b => b.colors.forEach(c => {
+  if (!c.hex) return;
+  PAINTS.push({ id: b.brand + '|' + (c.code || c.name), brand: b.brand, pressure: b.pressure || '',
+    code: c.code || '', name: c.name, name_fr: c.name_fr || '', hex: c.hex.toUpperCase(),
+    finish: c.finish || 'solid', lab: rgbToLab(...hexToRgb(c.hex)) });
+}));
+const BRANDS = [...new Set(PAINTS.map(p => p.brand))];
+const activeBrands = new Set(BRANDS);
+let includeSpecial = false;
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const paintName = p => (lang === 'fr' && p.name_fr) ? cap(p.name_fr) : cap(p.name);
+
+/* ---------- Photo, lighting correction, sampling ---------- */
+const canvas = $('photo'), ctx = canvas.getContext('2d', { willReadFrequently: true });
+let originalData = null, shownData = null, marker = null, lastSample = null, lastPoint = null;
+let gains = null, pickingWhite = false, hintState = 'tap';
+
+function setHint(state) {
+  hintState = state;
+  const el = $('hint');
+  el.className = 'hint' + (state === 'pick' ? ' active' : state === 'on' ? ' ok' : '');
+  el.textContent = t({ tap: 'tapHint', pick: 'fixLightPrompt', on: 'lightOn', bad: 'lightBad' }[state]);
+}
+
+function loadFile(file) {
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    const MAX = 1600, scale = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+    canvas.width = Math.round(img.naturalWidth * scale); canvas.height = Math.round(img.naturalHeight * scale);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    gains = null; marker = null; lastSample = null; pickingWhite = false;
+    $('resetLight').hidden = true; $('results').hidden = true;
+    rebuildShown(); setHint('tap');
+    URL.revokeObjectURL(url);
+    $('empty').hidden = true; $('viewer').hidden = false;
+  };
+  img.onerror = () => alert(t('badImage'));
+  img.src = url;
+}
+$('file').addEventListener('change', e => loadFile(e.target.files[0]));
+$('file2').addEventListener('change', e => loadFile(e.target.files[0]));
+
+const toLin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+const toSrgb = v => { v = Math.min(1, Math.max(0, v)); return 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055); };
+
+// Apply white balance (per-channel gains in linear light) to the whole photo
+function rebuildShown() {
+  if (!gains) { shownData = originalData; }
+  else {
+    const luts = gains.map(g => { const l = new Uint8ClampedArray(256); for (let v = 0; v < 256; v++) l[v] = toSrgb(toLin(v) * g); return l; });
+    shownData = new ImageData(new Uint8ClampedArray(originalData.data), originalData.width, originalData.height);
+    const d = shownData.data;
+    for (let i = 0; i < d.length; i += 4) { d[i] = luts[0][d[i]]; d[i + 1] = luts[1][d[i + 1]]; d[i + 2] = luts[2][d[i + 2]]; }
+  }
+  draw();
+}
+function draw() {
+  ctx.putImageData(shownData, 0, 0);
+  if (marker) {
+    const r = Math.max(14, canvas.width / 40);
+    ctx.lineWidth = Math.max(3, canvas.width / 300);
+    ctx.strokeStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(marker.x, marker.y, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = '#000000'; ctx.beginPath(); ctx.arc(marker.x, marker.y, r + ctx.lineWidth, 0, Math.PI * 2); ctx.stroke();
+  }
+}
+// Average a small square so one noisy pixel doesn't decide the colour
+function averageAt(data, x, y) {
+  const half = Math.max(3, Math.round(data.width / 200));
+  const x0 = Math.max(0, Math.round(x) - half), y0 = Math.max(0, Math.round(y) - half);
+  const x1 = Math.min(data.width, x0 + half * 2 + 1), y1 = Math.min(data.height, y0 + half * 2 + 1);
+  let r = 0, g = 0, b = 0, n = 0;
+  for (let yy = y0; yy < y1; yy++) for (let xx = x0; xx < x1; xx++) {
+    const i = (yy * data.width + xx) * 4; r += data.data[i]; g += data.data[i + 1]; b += data.data[i + 2]; n++;
+  }
+  return [r / n, g / n, b / n];
+}
+
+$('fixLight').addEventListener('click', () => { pickingWhite = true; setHint('pick'); });
+$('resetLight').addEventListener('click', () => {
+  gains = null; $('resetLight').hidden = true; rebuildShown(); setHint('tap');
+  if (lastPoint) sampleAndShow(lastPoint.x, lastPoint.y);
+});
+
+canvas.addEventListener('click', e => {
+  if (!originalData) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+  if (pickingWhite) {
+    pickingWhite = false;
+    const lin = averageAt(originalData, x, y).map(toLin);
+    const Y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+    const spread = Math.max(...lin) / Math.max(1e-4, Math.min(...lin));
+    if (Y < 0.03 || spread > 2.5) { setHint('bad'); return; }
+    gains = lin.map(c => Y / Math.max(1e-4, c));
+    $('resetLight').hidden = false; rebuildShown(); setHint('on');
+    if (lastPoint) sampleAndShow(lastPoint.x, lastPoint.y);
+    return;
+  }
+  sampleAndShow(x, y);
+});
+function sampleAndShow(x, y) {
+  lastPoint = { x, y }; marker = { x, y };
+  lastSample = averageAt(shownData, x, y);
+  draw(); showResults();
+}
+
+/* ---------- Results ---------- */
+const matchPct = d => Math.max(0, Math.round(100 - d * 2.5)); // ΔE 2 → 95%, 5 → 88%, 10 → 75%
+function label(p) { return p >= 95 ? t('l1') : p >= 87 ? t('l2') : p >= 75 ? t('l3') : t('l4'); }
+function inList(id) { return store.list.some(i => i.id === id); }
+
+function showResults() {
+  if (!lastSample) return;
+  const [r, g, b] = lastSample, hex = rgbToHex(r, g, b), lab = rgbToLab(r, g, b);
+  const sample = $('sample');
+  sample.style.setProperty('--sample', hex);
+  sample.className = 'sample ' + (lab[0] > 60 ? 'dark-text' : 'light-text');
+  $('sampleHex').textContent = hex;
+
+  const list = PAINTS
+    .filter(p => activeBrands.has(p.brand) && (includeSpecial || p.finish === 'solid'))
+    .map(p => ({ ...p, d: deltaE2000(lab, p.lab) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, showAll ? 12 : 3);
+
+  const ol = $('matchList'); ol.innerHTML = '';
+  if (!list.length) { const li = document.createElement('li'); li.className = 'note'; li.textContent = t('noMatches'); ol.appendChild(li); }
+  list.forEach(p => {
+    const m = matchPct(p.d);
+    const li = document.createElement('li'); li.className = 'match';
+    li.innerHTML = `<div class="pair" aria-hidden="true"><span style="background:${hex}"></span><span style="background:${p.hex}"></span></div>
+      <div><div class="name"></div><div class="meta"></div></div>
+      <div class="score"><b></b><span></span></div>
+      <button type="button" class="add"></button>`;
+    li.querySelector('.name').textContent = paintName(p);
+    const extra = [p.code, p.pressure ? t(p.pressure === 'low' ? 'pLow' : 'pHigh') : '', p.finish !== 'solid' ? t(p.finish) : ''];
+    li.querySelector('.meta').textContent = [p.brand, ...extra].filter(Boolean).join(', ');
+    const pt = priceTag(p.brand);
+    if (pt) { const d = document.createElement('div'); d.className = 'price-tag' + (pt.na ? ' na' : ''); d.textContent = pt.text;
+      li.querySelector('.meta').after(d); }
+    li.querySelector('.score b').textContent = pct(m);
+    li.querySelector('.score span').textContent = label(m);
+    const btn = li.querySelector('.add');
+    const sync = () => { const on = inList(p.id); btn.setAttribute('aria-pressed', on); btn.textContent = on ? t('inList') : t('addToList'); };
+    btn.addEventListener('click', () => { addToList(p, hex); sync(); });
+    sync();
+    ol.appendChild(li);
+  });
+  $('results').hidden = false;
+  $('showMore').hidden = !list.length;
+  $('showMore').textContent = showAll ? t('showLess') : t('showMore');
+  updateFilterBtn();
+}
+let showAll = false;
+$('showMore').addEventListener('click', () => { showAll = !showAll; showResults(); });
+function updateFilterBtn() {
+  // Count how many filters differ from the defaults (all brands on, special finishes off)
+  const n = (activeBrands.size < BRANDS.length ? 1 : 0) + (includeSpecial ? 1 : 0);
+  $('filterBtn').textContent = n ? t('filtersOn').replace('{n}', n) : t('filters');
+}
+$('filterBtn').addEventListener('click', () => {
+  const open = $('filterPanel').hidden; $('filterPanel').hidden = !open;
+  $('filterBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+
+const BRAND_PRESSURE = {};
+PAINTS.forEach(p => { BRAND_PRESSURE[p.brand] = p.pressure; });
+function setPressure(p) {
+  // Low pressure selects only low-pressure lines, high only high, all selects everything
+  activeBrands.clear();
+  BRANDS.forEach(b => { if (p === 'all' || BRAND_PRESSURE[b] === p) activeBrands.add(b); });
+  document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
+  document.querySelectorAll('#brandChips .chip').forEach(c => c.setAttribute('aria-pressed', activeBrands.has(c.dataset.brand) ? 'true' : 'false'));
+  showResults();
+}
+document.querySelectorAll('#pressureChips .chip').forEach(btn => btn.addEventListener('click', () => setPressure(btn.dataset.p)));
+$('specialToggle').addEventListener('change', e => { includeSpecial = e.target.checked; showResults(); });
+BRANDS.forEach(brand => {
+  const btn = document.createElement('button');
+  btn.className = 'chip'; btn.type = 'button'; btn.textContent = brand; btn.setAttribute('aria-pressed', 'true');
+  btn.dataset.brand = brand;
+  btn.addEventListener('click', () => {
+    if (activeBrands.has(brand)) activeBrands.delete(brand); else activeBrands.add(brand);
+    btn.setAttribute('aria-pressed', activeBrands.has(brand) ? 'true' : 'false');
+    // A manual brand choice no longer matches a single pressure setting
+    const sel = [...activeBrands];
+    const p = sel.length === BRANDS.length ? 'all'
+      : sel.length && sel.every(b => BRAND_PRESSURE[b] === 'low') && BRANDS.filter(b => BRAND_PRESSURE[b] === 'low').every(b => activeBrands.has(b)) ? 'low'
+      : sel.length && sel.every(b => BRAND_PRESSURE[b] === 'high') && BRANDS.filter(b => BRAND_PRESSURE[b] === 'high').every(b => activeBrands.has(b)) ? 'high' : '';
+    document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
+    showResults();
+  });
+  $('brandChips').appendChild(btn);
+});
+
+/* ---------- Shopping list (several colours, several cans) ---------- */
+function addToList(p, target) {
+  const item = store.list.find(i => i.id === p.id);
+  if (item) { item.qty += 1; if (!item.targets.includes(target)) item.targets.push(target); }
+  else store.list.push({ id: p.id, brand: p.brand, code: p.code, name: p.name, name_fr: p.name_fr, hex: p.hex, qty: 1, targets: [target] });
+  save(); renderListCount();
+}
+function renderListCount() {
+  const n = store.list.reduce((a, i) => a + i.qty, 0);
+  $('listCount').textContent = n; $('listCount').hidden = n === 0;
+}
+/* ---------- Shop for the chosen city, prices ---------- */
+const SHOPS_ALL = window.SHOPS || [];
+const myShop = () => SHOPS_ALL.find(sh => sh.city && sh.city === store.city) || null;
+const itemName = i => (lang === 'fr' && i.name_fr) ? cap(i.name_fr) : cap(i.name);
+const cansText = n => n === 1 ? t('oneCan') : t('cans').replace('{n}', n);
+function money(v, cur) {
+  const loc = { en: cur === 'CAD' ? 'en-CA' : 'en-IE', el: 'el-GR', fr: cur === 'CAD' ? 'fr-CA' : 'fr-FR' }[lang] || 'en';
+  try { return new Intl.NumberFormat(loc, { style: 'currency', currency: cur }).format(v); } catch (e) { return v.toFixed(2) + ' ' + cur; }
+}
+function priceOf(shop, brand) {
+  if (!shop || !shop.lines.includes(brand)) return undefined;   // not sold
+  const p = shop.prices ? shop.prices[brand] : null;
+  return typeof p === 'number' ? p : null;                       // null = price at shop
+}
+function priceTag(brand) {
+  const shop = myShop(); if (!shop) return null;
+  const p = priceOf(shop, brand);
+  if (p === undefined) return { text: t('unavailableAt').replace('{shop}', shop.name), na: true };
+  if (p === null) return { text: `${t('priceAtShop')} · ${shop.name}`, na: false };
+  return { text: `${money(p, shop.currency)} · ${shop.name}`, na: false };
+}
+function cartTotals(shop) {
+  let sum = 0, unpriced = 0, count = 0;
+  store.list.forEach(i => {
+    const p = priceOf(shop, i.brand);
+    if (p === undefined) return;
+    count += i.qty;
+    if (p === null) unpriced += i.qty; else sum += p * i.qty;
+  });
+  return { sum, unpriced, count };
+}
+
+/* ---------- Cart ---------- */
+function renderList() {
+  const empty = store.list.length === 0;
+  $('cartEmpty').hidden = !empty; $('cartFull').hidden = empty; $('listMsg').textContent = '';
+  if (empty) return;
+  const shop = myShop();
+
+  const box = $('shopsBox'); box.innerHTML = '';
+  const bf = document.createElement('div'); bf.className = 'buy-from';
+  if (shop) {
+    bf.innerHTML = `<div class="shop-meta" style="color:var(--muted);font-size:0.85rem"></div><b></b><div class="shop-meta addr" style="color:var(--muted);font-size:0.85rem"></div>`;
+    bf.querySelector('.shop-meta').textContent = t('buyingFrom');
+    bf.querySelector('b').textContent = shop.name;
+    bf.querySelector('.addr').textContent = [shop.area, shop.address].filter(Boolean).join(' · ');
+    const tn = document.createElement('p'); tn.className = 'note'; tn.style.margin = '8px 0 0';
+    tn.textContent = t('testNotice').replace('{shop}', shop.name); bf.appendChild(tn);
+  } else {
+    bf.textContent = (store.city && store.city !== 'other') || store.cityOther ? t('noShops') : t('noCity');
+  }
+  box.appendChild(bf);
+
+  const body = $('listBody'); body.innerHTML = '';
+  store.list.forEach(i => {
+    const p = priceOf(shop, i.brand); const sold = p !== undefined;
+    const row = document.createElement('div'); row.className = 'list-item' + (shop && !sold ? ' unavail' : '');
+    row.innerHTML = `<div class="sw" style="background:${i.hex}"></div>
+      <div><div style="font-weight:700" class="nm"></div><div class="meta" style="color:var(--muted);font-size:0.85rem"></div>
+        <div class="targets" aria-hidden="true"></div><div class="unavail-tag"></div><button type="button" class="remove"></button></div>
+      <div class="qty-wrap"><div class="price-col"><div class="line"></div><div class="unit"></div></div>
+        <div class="qty"><button type="button" class="minus" aria-label="−">−</button><span></span><button type="button" class="plus" aria-label="+">+</button></div></div>`;
+    row.querySelector('.nm').textContent = itemName(i);
+    row.querySelector('.meta').textContent = [i.brand, i.code].filter(Boolean).join(' · ');
+    i.targets.forEach(c => { const sp = document.createElement('span'); sp.style.background = c; row.querySelector('.targets').appendChild(sp); });
+    if (shop && !sold) row.querySelector('.unavail-tag').textContent = t('unavailableAt').replace('{shop}', shop.name);
+    if (shop && typeof p === 'number') {
+      row.querySelector('.line').textContent = money(p * i.qty, shop.currency);
+      if (i.qty > 1) row.querySelector('.unit').textContent = `${money(p, shop.currency)} ${t('each')}`;
+    } else if (shop && p === null) row.querySelector('.unit').textContent = t('priceAtShop');
+    row.querySelector('.remove').textContent = t('remove');
+    row.querySelector('.qty span').textContent = i.qty;
+    row.querySelector('.plus').addEventListener('click', () => { i.qty++; save(); renderList(); renderListCount(); });
+    row.querySelector('.minus').addEventListener('click', () => {
+      i.qty--; if (i.qty <= 0) store.list = store.list.filter(x => x !== i);
+      save(); renderList(); renderListCount();
+    });
+    row.querySelector('.remove').addEventListener('click', () => { store.list = store.list.filter(x => x !== i); save(); renderList(); renderListCount(); });
+    body.appendChild(row);
+  });
+
+  const tot = $('cartTotal'); tot.innerHTML = '';
+  const btn = $('buyNow');
+  if (shop) {
+    const { sum, unpriced, count } = cartTotals(shop);
+    const r = document.createElement('div'); r.className = 'total-row';
+    const l = document.createElement('span'); l.textContent = `${t('total')} · ${cansText(count)}`;
+    const v = document.createElement('b'); v.textContent = totalText(shop, sum, unpriced);
+    r.append(l, v); tot.appendChild(r);
+    const sm = document.createElement('small');
+    sm.textContent = [unpricedText(sum, unpriced), t('priceNote')].filter(Boolean).join(' · ');
+    tot.appendChild(sm);
+    btn.textContent = t('buyNow').replace('{shop}', shop.name); btn.disabled = count === 0;
+  } else { btn.textContent = t('chooseShop'); btn.disabled = true; }
+}
+// Total shown as a price only if at least one can is priced
+const totalText = (shop, sum, unpriced) => (sum > 0 || unpriced === 0) ? money(sum, shop.currency) : t('priceAtShop');
+const unpricedText = (sum, unpriced) => (unpriced && sum > 0) ? t('plusUnpriced').replace('{n}', unpriced) : '';
+function orderLines(shop) {
+  return store.list.filter(i => priceOf(shop, i.brand) !== undefined).map(i => {
+    const p = priceOf(shop, i.brand);
+    return { label: `${i.qty} × ${i.brand} ${[i.code, itemName(i)].filter(Boolean).join(' ')}`,
+             price: typeof p === 'number' ? money(p * i.qty, shop.currency) : t('priceAtShop') };
+  });
+}
+function orderText(shop) {
+  const { sum, unpriced } = cartTotals(shop);
+  const lines = [`${t('orderHeader')} · ${shop.name}`, shop.address + (shop.phone ? ', ' + shop.phone : ''), ''];
+  orderLines(shop).forEach(l => lines.push(`${l.label}: ${l.price}`));
+  lines.push('', `${t('total')}: ${totalText(shop, sum, unpriced)} ${unpricedText(sum, unpriced)}`.trim());
+  lines.push(`${t('payLabel')}: ${t('payInShop')}`);
+  const a = store.account || {};
+  const who = [a.name, a.phone, a.email].filter(Boolean).join(', ');
+  if (who) lines.push(`${t('customer')}: ${who}`);
+  return lines.join('\n');
+}
+function listText() {
+  const lines = [t('listHeader')];
+  store.list.forEach(i => lines.push(`${i.qty} × ${i.brand} ${[i.code, itemName(i)].filter(Boolean).join(' ')}`));
+  return lines.join('\n');
+}
+async function shareText(text, title, msgEl) {
+  const done = () => { if (msgEl) msgEl.textContent = t('copied'); };
+  try {
+    if (navigator.share) { await navigator.share({ title, text }); return; }
+    await navigator.clipboard.writeText(text); done();
+  } catch (e) { try { await navigator.clipboard.writeText(text); done(); } catch (e2) {} }
+}
+$('buyNow').addEventListener('click', () => {
+  const shop = myShop(); if (!shop) return;
+  $('orderTitle').textContent = t('orderTitle').replace('{shop}', shop.name);
+  const body = $('orderBody'); body.innerHTML = '';
+  orderLines(shop).forEach(l => {
+    const d = document.createElement('div'); d.className = 'order-line';
+    const a = document.createElement('span'); a.textContent = l.label;
+    const b = document.createElement('b'); b.textContent = l.price; d.append(a, b); body.appendChild(d);
+  });
+  const { sum, unpriced } = cartTotals(shop);
+  const tr = document.createElement('div'); tr.className = 'order-line total-row';
+  const tl = document.createElement('span'); tl.textContent = t('total');
+  const tv = document.createElement('b'); tv.textContent = totalText(shop, sum, unpriced); tr.append(tl, tv); body.appendChild(tr);
+  const note = document.createElement('p'); note.className = 'note';
+  note.textContent = [unpricedText(sum, unpriced), `${t('payLabel')}: ${t('payInShop')}`].filter(Boolean).join(' · ');
+  body.appendChild(note);
+  const tn = document.createElement('p'); tn.className = 'note'; tn.textContent = t('testNotice').replace('{shop}', shop.name); body.appendChild(tn);
+  const links = $('orderLinks'); links.innerHTML = '';
+  const add = (href, text, primary) => { const a = document.createElement('a'); a.href = href; a.textContent = text;
+    a.className = primary ? 'primary' : 'secondary'; a.style.textDecoration = 'none';
+    if (!href.startsWith('tel:')) { a.target = '_blank'; a.rel = 'noopener'; } links.appendChild(a); };
+  if (shop.phone) add('tel:' + shop.phone.replace(/[^+\d]/g, ''), t('call') + ' ' + shop.name, true);
+  if (shop.maps) add(shop.maps, t('directions'), !shop.phone);
+  const sh = document.createElement('button'); sh.type = 'button'; sh.className = 'secondary'; sh.textContent = t('shareOrder');
+  sh.addEventListener('click', () => shareText(orderText(shop), t('orderHeader'))); links.appendChild(sh);
+  $('orderSheet').hidden = false;
+});
+$('orderClose').addEventListener('click', () => { $('orderSheet').hidden = true; });
+function setTab(id) {
+  ['tabMatch', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });
+}
+function goMatch() {
+  $('listSheet').hidden = true; $('settingsSheet').hidden = true; setTab('tabMatch');
+  if (lastSample) showResults(); renderListCount();
+}
+$('tabMatch').addEventListener('click', goMatch);
+$('openList').addEventListener('click', () => { $('settingsSheet').hidden = true; renderList(); $('listSheet').hidden = false; setTab('openList'); });
+$('closeList').addEventListener('click', goMatch);
+$('clearList').addEventListener('click', () => { store.list = []; save(); renderList(); renderListCount(); });
+$('shareList').addEventListener('click', () => shareText(listText(), t('listHeader'), $('listMsg')));
+
+/* ---------- Settings (no walkthrough) ---------- */
+function fillCitySelect(sel, value) {
+  sel.innerHTML = '<option value="">—</option>' + CITIES.map(c => `<option value="${c.key}">${c[lang] || c.en}</option>`).join('');
+  sel.value = value || '';
+}
+function renderSettings() {
+  document.querySelectorAll('.set-lang').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
+  fillCitySelect($('setCity'), store.city);
+  $('setOtherField').hidden = store.city !== 'other'; $('setOther').value = store.cityOther || '';
+  $('setOther').placeholder = t('otherCityPh');
+  const shop = myShop();
+  $('setShop').textContent = shop ? t('yourShop').replace('{shop}', shop.name).replace('{area}', shop.area) : (store.city ? t('noShopSet') : '');
+  const a = store.account || {};
+  $('accName').value = a.name || ''; $('accEmail').value = a.email || ''; $('accPhone').value = a.phone || '';
+}
+$('openSettings').addEventListener('click', () => { $('listSheet').hidden = true; renderSettings(); $('setMsg').textContent = ''; $('settingsSheet').hidden = false; setTab('openSettings'); });
+$('closeSettings').addEventListener('click', goMatch);
+document.querySelectorAll('.set-lang').forEach(b => b.addEventListener('click', () => {
+  lang = b.dataset.lang; store.lang = lang; save(); applyLang(); renderSettings();
+}));
+$('setCity').addEventListener('change', e => {
+  store.city = e.target.value; if (store.city !== 'other') store.cityOther = '';
+  save(); renderSettings();
+});
+$('setOther').addEventListener('input', e => { store.cityOther = e.target.value.trim(); save(); });
+['accName', 'accEmail', 'accPhone'].forEach(id => $(id).addEventListener('input', () => {
+  store.account = { name: $('accName').value.trim(), email: $('accEmail').value.trim(), phone: $('accPhone').value.trim() };
+  save(); $('setMsg').textContent = t('saved');
+}));
+$('setEmpty').addEventListener('click', () => { store.list = []; save(); renderListCount(); $('setMsg').textContent = t('cartEmptied'); });
+$('setAbout').addEventListener('click', () => { showStep('stepAbout'); });
+
+/* ---------- Start ---------- */
+applyLang();
+if (!store.setupDone) showStep('stepStart'); else $('setup').hidden = true;
+</script>
+</body>
+</html>
