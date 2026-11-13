@@ -5,11 +5,11 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kromatch</title>
-<meta name="description" content="Find the right can for any colour, or plan a whole wall.">
+<meta name="description" content="Find the right can for any colour, or plan a whole mural.">
 <!-- Link preview (WhatsApp, Messages, Instagram, Facebook...) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Kromatch">
-<meta property="og:description" content="Find the right can for any colour, or plan a whole wall.">
+<meta property="og:description" content="Find the right can for any colour, or plan a whole mural.">
 <meta property="og:url" content="https://kromatch.netlify.app/">
 <meta property="og:image" content="https://kromatch.netlify.app/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -376,8 +376,8 @@
     <h1 id="welcomeTitle">Kromatch</h1>
     <p class="welcome-tag" data-i18n="tagline"></p>
     <ul class="welcome-points">
-      <li><span aria-hidden="true">📷</span><span data-i18n="welcomeP1"></span></li>
       <li><span aria-hidden="true">🎨</span><span data-i18n="welcomeP2"></span></li>
+      <li><span aria-hidden="true">📷</span><span data-i18n="welcomeP1"></span></li>
       <li><span aria-hidden="true">🛒</span><span data-i18n="welcomeP3"></span></li>
     </ul>
     <button type="button" class="primary buy" id="welcomeStart" data-i18n="welcomeStart"></button>
@@ -620,9 +620,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-14-nav2"></script>
-<script src="shops.js?v=2026-11-14-nav2"></script>
-<script src="config.js?v=2026-11-14-nav2"></script>
+<script src="colors.js?v=2026-11-14-focus"></script>
+<script src="shops.js?v=2026-11-14-focus"></script>
+<script src="config.js?v=2026-11-14-focus"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -685,7 +685,7 @@ const T = {
   en: {
     addedOne: 'Added 1 can to your cart.',
     back: 'Back',
-    welcomeP1: 'Match a colour from any photo', welcomeP2: 'Plan a whole wall from your sketch', welcomeP3: 'Reserve the cans at a shop near you', welcomeStart: 'Start', privacyLink: 'Privacy policy', rememberMe: 'Remember my details on this phone', accPromptTitle: 'Keep your orders and designs', accPromptText: 'Create a free account to track orders and save designs on any device.', accCreate: 'Create free account', notNow: 'Not now', accTitle: 'Your Kromatch account', accBenefits: 'Free. Track your orders and save your designs on any phone or computer.', continueEmail: 'Continue with email', continueGoogle: 'Continue with Google', continueApple: 'Continue with Apple', accLinkSent: 'Check your email and tap the link to sign in.', accError: 'Couldn’t send the link: {m}', accNoPassword: 'No password needed. We’ll email you a sign-in link.', signedInAs: 'Signed in as {email}', signOut: 'Sign out', deleteAccount: 'Delete account', deleteConfirm: 'Delete your account, saved designs and profile? Orders already sent to shops stay with the shops. This can’t be undone.', accDeleted: 'Your account was deleted.', accOrSignIn: 'Create account or sign in', accLocalNote: 'Without an account, your details stay only on this phone.', accSyncedNote: 'Your details are saved to your account.', saveDesign: 'Save design', designNamePrompt: 'Name this design', myDesigns: 'My designs', openDesign: 'Open', designSaved: 'Design saved.', signInToSave: 'Create a free account to save designs.', noDesigns: 'No saved designs yet.',
+    welcomeP1: 'Match a colour from any photo', welcomeP2: 'Plan a whole mural from your sketch', welcomeP3: 'Reserve the cans at a shop near you', welcomeStart: 'Start', privacyLink: 'Privacy policy', rememberMe: 'Remember my details on this phone', accPromptTitle: 'Keep your orders and designs', accPromptText: 'Create a free account to track orders and save designs on any device.', accCreate: 'Create free account', notNow: 'Not now', accTitle: 'Your Kromatch account', accBenefits: 'Free. Track your orders and save your designs on any phone or computer.', continueEmail: 'Continue with email', continueGoogle: 'Continue with Google', continueApple: 'Continue with Apple', accLinkSent: 'Check your email and tap the link to sign in.', accError: 'Couldn’t send the link: {m}', accNoPassword: 'No password needed. We’ll email you a sign-in link.', signedInAs: 'Signed in as {email}', signOut: 'Sign out', deleteAccount: 'Delete account', deleteConfirm: 'Delete your account, saved designs and profile? Orders already sent to shops stay with the shops. This can’t be undone.', accDeleted: 'Your account was deleted.', accOrSignIn: 'Create account or sign in', accLocalNote: 'Without an account, your details stay only on this phone.', accSyncedNote: 'Your details are saved to your account.', saveDesign: 'Save design', designNamePrompt: 'Name this design', myDesigns: 'My designs', openDesign: 'Open', designSaved: 'Design saved.', signInToSave: 'Create a free account to save designs.', noDesigns: 'No saved designs yet.',
     yourDetails: 'Your details', consentL: 'I agree to share my name and contact details with {shop} for this order.', needName: 'Please enter your name.', needContact: 'Please enter a phone number or email.', needConsent: 'Please tick the box to share your details with the shop.', sending: 'Sending your order…', sendFail: 'Couldn’t send the order: {m}', orderSent: 'Order sent to {shop}', orderNo: 'Order #{n}', pickupCodeL: 'Pickup code', showCode: 'Show this code in the shop when you collect your cans. You pay in the shop.', deliveryInfo: 'The shop will deliver your cans. You pay on delivery.', emailSentTo: 'A confirmation was sent to {email}.', myOrders: 'My orders', checkStatus: 'Check status', offline: 'no connection, please try again', st_new: 'Sent to shop', st_ready: 'Ready to collect', st_picked_up: 'Collected', st_not_available: 'Not available', st_cancelled: 'Cancelled',
     wallQ: 'How big is the wall?',
     wallWhy: 'Optional. Fill it in to see how many cans of each colour you need.',
@@ -697,7 +697,7 @@ const T = {
     gotIt: 'Start',
     homeMatchTitle: 'Match a colour',
     homeMatchDesc: 'Photograph any colour and find the closest can.',
-    homeDesignDesc: 'Upload a sketch and get every can you need for the wall.',
+    homeDesignDesc: 'Upload a sketch and get every can you need for the mural.',
     homeDesignNote: 'From Procreate, Photoshop or Illustrator, as PNG or JPG.',
     designPromptQ: 'Planning a whole piece?',
     designPromptBtn: 'Upload your design',
@@ -706,7 +706,7 @@ const T = {
     autoDetected: 'detected automatically',
     backToAuto: 'Detect colours automatically',
     tabDesign: 'Design',
-    designTitle: 'Plan a design',
+    designTitle: 'Plan a whole mural',
     designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. Kromatch finds its colours, matches cans and works out how many you need.',
     uploadDesign: 'Upload a design',
     designTip: 'Export as PNG or JPG. The file’s exact colours are used, so no lighting fix is needed.',
@@ -814,7 +814,7 @@ const T = {
     otherCityPh: 'Type your city',
     noShops: 'No shops are listed for your city yet.',
     noCity: 'Choose your city in Settings to see shops near you.',
-    tagline: 'Find the right can for any colour, or plan a whole wall.',
+    tagline: 'Find the right can for any colour, or plan a whole mural.',
     takePhoto: 'Take or choose a photo',
     shootHint: 'Shoot in daylight, straight on, without flash.',
     tapHint: 'Touch the colour you want to match. Slide your finger to adjust, then let go.',
@@ -871,7 +871,7 @@ const T = {
   el: {
     addedOne: 'Προστέθηκε 1 σπρέι στο καλάθι σου.',
     back: 'Πίσω',
-    welcomeP1: 'Ταίριαξε ένα χρώμα από οποιαδήποτε φωτογραφία', welcomeP2: 'Σχεδίασε ολόκληρο τοίχο από το σκίτσο σου', welcomeP3: 'Κράτησε τα σπρέι σε κατάστημα κοντά σου', welcomeStart: 'Ξεκίνα', privacyLink: 'Πολιτική απορρήτου', rememberMe: 'Να θυμάται τα στοιχεία μου σε αυτό το κινητό', accPromptTitle: 'Κράτα τις παραγγελίες και τα σχέδιά σου', accPromptText: 'Φτιάξε δωρεάν λογαριασμό για να βλέπεις τις παραγγελίες σου και να αποθηκεύεις σχέδια σε κάθε συσκευή.', accCreate: 'Δωρεάν λογαριασμός', notNow: 'Όχι τώρα', accTitle: 'Ο λογαριασμός σου στο Kromatch', accBenefits: 'Δωρεάν. Παρακολούθησε τις παραγγελίες σου και αποθήκευσε τα σχέδιά σου σε κάθε κινητό ή υπολογιστή.', continueEmail: 'Συνέχεια με email', continueGoogle: 'Συνέχεια με Google', continueApple: 'Συνέχεια με Apple', accLinkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.', accError: 'Ο σύνδεσμος δεν στάλθηκε: {m}', accNoPassword: 'Χωρίς κωδικό. Θα σου στείλουμε σύνδεσμο σύνδεσης στο email.', signedInAs: 'Συνδεδεμένος ως {email}', signOut: 'Αποσύνδεση', deleteAccount: 'Διαγραφή λογαριασμού', deleteConfirm: 'Να διαγραφούν ο λογαριασμός, τα σχέδια και το προφίλ σου; Οι παραγγελίες που έχουν ήδη σταλεί μένουν στα καταστήματα. Δεν αναιρείται.', accDeleted: 'Ο λογαριασμός σου διαγράφηκε.', accOrSignIn: 'Δημιουργία λογαριασμού ή σύνδεση', accLocalNote: 'Χωρίς λογαριασμό, τα στοιχεία σου μένουν μόνο σε αυτό το κινητό.', accSyncedNote: 'Τα στοιχεία σου αποθηκεύονται στον λογαριασμό σου.', saveDesign: 'Αποθήκευση σχεδίου', designNamePrompt: 'Δώσε όνομα στο σχέδιο', myDesigns: 'Τα σχέδιά μου', openDesign: 'Άνοιγμα', designSaved: 'Το σχέδιο αποθηκεύτηκε.', signInToSave: 'Φτιάξε δωρεάν λογαριασμό για να αποθηκεύεις σχέδια.', noDesigns: 'Δεν υπάρχουν ακόμα αποθηκευμένα σχέδια.',
+    welcomeP1: 'Ταίριαξε ένα χρώμα από οποιαδήποτε φωτογραφία', welcomeP2: 'Σχεδίασε ολόκληρη τοιχογραφία από το σκίτσο σου', welcomeP3: 'Κράτησε τα σπρέι σε κατάστημα κοντά σου', welcomeStart: 'Ξεκίνα', privacyLink: 'Πολιτική απορρήτου', rememberMe: 'Να θυμάται τα στοιχεία μου σε αυτό το κινητό', accPromptTitle: 'Κράτα τις παραγγελίες και τα σχέδιά σου', accPromptText: 'Φτιάξε δωρεάν λογαριασμό για να βλέπεις τις παραγγελίες σου και να αποθηκεύεις σχέδια σε κάθε συσκευή.', accCreate: 'Δωρεάν λογαριασμός', notNow: 'Όχι τώρα', accTitle: 'Ο λογαριασμός σου στο Kromatch', accBenefits: 'Δωρεάν. Παρακολούθησε τις παραγγελίες σου και αποθήκευσε τα σχέδιά σου σε κάθε κινητό ή υπολογιστή.', continueEmail: 'Συνέχεια με email', continueGoogle: 'Συνέχεια με Google', continueApple: 'Συνέχεια με Apple', accLinkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.', accError: 'Ο σύνδεσμος δεν στάλθηκε: {m}', accNoPassword: 'Χωρίς κωδικό. Θα σου στείλουμε σύνδεσμο σύνδεσης στο email.', signedInAs: 'Συνδεδεμένος ως {email}', signOut: 'Αποσύνδεση', deleteAccount: 'Διαγραφή λογαριασμού', deleteConfirm: 'Να διαγραφούν ο λογαριασμός, τα σχέδια και το προφίλ σου; Οι παραγγελίες που έχουν ήδη σταλεί μένουν στα καταστήματα. Δεν αναιρείται.', accDeleted: 'Ο λογαριασμός σου διαγράφηκε.', accOrSignIn: 'Δημιουργία λογαριασμού ή σύνδεση', accLocalNote: 'Χωρίς λογαριασμό, τα στοιχεία σου μένουν μόνο σε αυτό το κινητό.', accSyncedNote: 'Τα στοιχεία σου αποθηκεύονται στον λογαριασμό σου.', saveDesign: 'Αποθήκευση σχεδίου', designNamePrompt: 'Δώσε όνομα στο σχέδιο', myDesigns: 'Τα σχέδιά μου', openDesign: 'Άνοιγμα', designSaved: 'Το σχέδιο αποθηκεύτηκε.', signInToSave: 'Φτιάξε δωρεάν λογαριασμό για να αποθηκεύεις σχέδια.', noDesigns: 'Δεν υπάρχουν ακόμα αποθηκευμένα σχέδια.',
     yourDetails: 'Τα στοιχεία σου', consentL: 'Συμφωνώ να μοιραστώ το όνομα και τα στοιχεία επικοινωνίας μου με το {shop} για αυτή την παραγγελία.', needName: 'Γράψε το όνομά σου.', needContact: 'Γράψε τηλέφωνο ή email.', needConsent: 'Τσέκαρε το κουτάκι για να μοιραστείς τα στοιχεία σου με το κατάστημα.', sending: 'Αποστολή παραγγελίας…', sendFail: 'Η παραγγελία δεν στάλθηκε: {m}', orderSent: 'Η παραγγελία στάλθηκε στο {shop}', orderNo: 'Παραγγελία #{n}', pickupCodeL: 'Κωδικός παραλαβής', showCode: 'Δείξε αυτόν τον κωδικό στο κατάστημα όταν παραλάβεις τα σπρέι. Πληρώνεις στο κατάστημα.', deliveryInfo: 'Το κατάστημα θα σου στείλει τα σπρέι. Πληρώνεις κατά την παράδοση.', emailSentTo: 'Στάλθηκε επιβεβαίωση στο {email}.', myOrders: 'Οι παραγγελίες μου', checkStatus: 'Έλεγχος κατάστασης', offline: 'δεν υπάρχει σύνδεση, δοκίμασε ξανά', st_new: 'Στάλθηκε στο κατάστημα', st_ready: 'Έτοιμη για παραλαβή', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
     wallQ: 'Πόσο μεγάλος είναι ο τοίχος;',
     wallWhy: 'Προαιρετικό. Συμπλήρωσέ το για να δεις πόσα σπρέι από κάθε χρώμα χρειάζεσαι.',
@@ -883,7 +883,7 @@ const T = {
     gotIt: 'Ξεκίνα',
     homeMatchTitle: 'Ταίριαξε ένα χρώμα',
     homeMatchDesc: 'Φωτογράφισε οποιοδήποτε χρώμα και βρες το πιο κοντινό σπρέι.',
-    homeDesignDesc: 'Ανέβασε ένα σχέδιο και πάρε κάθε σπρέι που χρειάζεσαι για τον τοίχο.',
+    homeDesignDesc: 'Ανέβασε ένα σκίτσο και πάρε κάθε σπρέι που χρειάζεσαι για την τοιχογραφία.',
     homeDesignNote: 'Από Procreate, Photoshop ή Illustrator, σε PNG ή JPG.',
     designPromptQ: 'Σχεδιάζεις ολόκληρο έργο;',
     designPromptBtn: 'Ανέβασε το σχέδιό σου',
@@ -892,7 +892,7 @@ const T = {
     autoDetected: 'εντοπίστηκαν αυτόματα',
     backToAuto: 'Αυτόματος εντοπισμός χρωμάτων',
     tabDesign: 'Σχέδιο',
-    designTitle: 'Σχεδίασε ένα έργο',
+    designTitle: 'Σχεδίασε ολόκληρη τοιχογραφία',
     designIntro: 'Ανέβασε ένα σχέδιο από Procreate, Photoshop ή Illustrator. Το Kromatch βρίσκει τα χρώματά του, τα ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι.',
     uploadDesign: 'Ανέβασε σχέδιο',
     designTip: 'Κάνε εξαγωγή σε PNG ή JPG. Χρησιμοποιούνται τα ακριβή χρώματα του αρχείου, οπότε δεν χρειάζεται διόρθωση φωτισμού.',
@@ -1000,7 +1000,7 @@ const T = {
     otherCityPh: 'Γράψε την πόλη σου',
     noShops: 'Δεν υπάρχουν ακόμα καταστήματα για την πόλη σου.',
     noCity: 'Διάλεξε την πόλη σου στις Ρυθμίσεις για να δεις καταστήματα κοντά σου.',
-    tagline: 'Βρες το σωστό σπρέι για κάθε χρώμα ή σχεδίασε ολόκληρο τοίχο.',
+    tagline: 'Βρες το σωστό σπρέι για κάθε χρώμα ή σχεδίασε ολόκληρη τοιχογραφία.',
     takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία',
     shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
     tapHint: 'Άγγιξε το χρώμα που θέλεις. Σύρε το δάχτυλο για να το ρυθμίσεις και μετά άφησέ το.',
@@ -1057,7 +1057,7 @@ const T = {
   fr: {
     addedOne: '1 bombe ajoutée au panier.',
     back: 'Retour',
-    welcomeP1: 'Trouvez une couleur à partir de n’importe quelle photo', welcomeP2: 'Préparez tout un mur à partir de votre croquis', welcomeP3: 'Réservez les bombes dans un magasin près de chez vous', welcomeStart: 'Commencer', privacyLink: 'Politique de confidentialité', rememberMe: 'Mémoriser mes coordonnées sur ce téléphone', accPromptTitle: 'Gardez vos commandes et vos projets', accPromptText: 'Créez un compte gratuit pour suivre vos commandes et enregistrer vos projets sur tous vos appareils.', accCreate: 'Créer un compte gratuit', notNow: 'Pas maintenant', accTitle: 'Votre compte Kromatch', accBenefits: 'Gratuit. Suivez vos commandes et enregistrez vos projets sur n’importe quel téléphone ou ordinateur.', continueEmail: 'Continuer avec un e-mail', continueGoogle: 'Continuer avec Google', continueApple: 'Continuer avec Apple', accLinkSent: 'Consultez vos e-mails et touchez le lien pour vous connecter.', accError: 'Le lien n’a pas pu être envoyé\u00a0: {m}', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un lien de connexion par e-mail.', signedInAs: 'Connecté en tant que {email}', signOut: 'Se déconnecter', deleteAccount: 'Supprimer le compte', deleteConfirm: 'Supprimer votre compte, vos projets et votre profil\u202f? Les commandes déjà envoyées restent chez les magasins. Action irréversible.', accDeleted: 'Votre compte a été supprimé.', accOrSignIn: 'Créer un compte ou se connecter', accLocalNote: 'Sans compte, vos coordonnées restent uniquement sur ce téléphone.', accSyncedNote: 'Vos coordonnées sont enregistrées dans votre compte.', saveDesign: 'Enregistrer le projet', designNamePrompt: 'Nommez ce projet', myDesigns: 'Mes projets', openDesign: 'Ouvrir', designSaved: 'Projet enregistré.', signInToSave: 'Créez un compte gratuit pour enregistrer vos projets.', noDesigns: 'Aucun projet enregistré.',
+    welcomeP1: 'Trouvez une couleur à partir de n’importe quelle photo', welcomeP2: 'Préparez toute une fresque à partir de votre croquis', welcomeP3: 'Réservez les bombes dans un magasin près de chez vous', welcomeStart: 'Commencer', privacyLink: 'Politique de confidentialité', rememberMe: 'Mémoriser mes coordonnées sur ce téléphone', accPromptTitle: 'Gardez vos commandes et vos projets', accPromptText: 'Créez un compte gratuit pour suivre vos commandes et enregistrer vos projets sur tous vos appareils.', accCreate: 'Créer un compte gratuit', notNow: 'Pas maintenant', accTitle: 'Votre compte Kromatch', accBenefits: 'Gratuit. Suivez vos commandes et enregistrez vos projets sur n’importe quel téléphone ou ordinateur.', continueEmail: 'Continuer avec un e-mail', continueGoogle: 'Continuer avec Google', continueApple: 'Continuer avec Apple', accLinkSent: 'Consultez vos e-mails et touchez le lien pour vous connecter.', accError: 'Le lien n’a pas pu être envoyé\u00a0: {m}', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un lien de connexion par e-mail.', signedInAs: 'Connecté en tant que {email}', signOut: 'Se déconnecter', deleteAccount: 'Supprimer le compte', deleteConfirm: 'Supprimer votre compte, vos projets et votre profil\u202f? Les commandes déjà envoyées restent chez les magasins. Action irréversible.', accDeleted: 'Votre compte a été supprimé.', accOrSignIn: 'Créer un compte ou se connecter', accLocalNote: 'Sans compte, vos coordonnées restent uniquement sur ce téléphone.', accSyncedNote: 'Vos coordonnées sont enregistrées dans votre compte.', saveDesign: 'Enregistrer le projet', designNamePrompt: 'Nommez ce projet', myDesigns: 'Mes projets', openDesign: 'Ouvrir', designSaved: 'Projet enregistré.', signInToSave: 'Créez un compte gratuit pour enregistrer vos projets.', noDesigns: 'Aucun projet enregistré.',
     yourDetails: 'Vos coordonnées', consentL: 'J’accepte de partager mon nom et mes coordonnées avec {shop} pour cette commande.', needName: 'Veuillez saisir votre nom.', needContact: 'Veuillez saisir un téléphone ou un e-mail.', needConsent: 'Cochez la case pour partager vos coordonnées avec le magasin.', sending: 'Envoi de la commande…', sendFail: 'La commande n’a pas pu être envoyée\u00a0: {m}', orderSent: 'Commande envoyée à {shop}', orderNo: 'Commande n°{n}', pickupCodeL: 'Code de retrait', showCode: 'Montrez ce code en magasin pour récupérer vos bombes. Vous payez en magasin.', deliveryInfo: 'Le magasin vous livrera. Vous payez à la livraison.', emailSentTo: 'Une confirmation a été envoyée à {email}.', myOrders: 'Mes commandes', checkStatus: 'Voir le statut', offline: 'pas de connexion, réessayez', st_new: 'Envoyée au magasin', st_ready: 'Prête à retirer', st_picked_up: 'Retirée', st_not_available: 'Indisponible', st_cancelled: 'Annulée',
     wallQ: 'Quelle taille fait le mur ?',
     wallWhy: 'Facultatif. Renseignez-le pour voir combien de bombes de chaque couleur il vous faut.',
@@ -1069,7 +1069,7 @@ const T = {
     gotIt: 'Commencer',
     homeMatchTitle: 'Trouver une couleur',
     homeMatchDesc: 'Photographiez n’importe quelle couleur et trouvez la bombe la plus proche.',
-    homeDesignDesc: 'Importez un croquis et obtenez toutes les bombes nécessaires pour le mur.',
+    homeDesignDesc: 'Importez un croquis et obtenez toutes les bombes nécessaires pour la fresque.',
     homeDesignNote: 'Depuis Procreate, Photoshop ou Illustrator, en PNG ou JPG.',
     designPromptQ: 'Vous préparez toute une fresque ?',
     designPromptBtn: 'Importez votre dessin',
@@ -1078,7 +1078,7 @@ const T = {
     autoDetected: 'détectées automatiquement',
     backToAuto: 'Détecter les couleurs automatiquement',
     tabDesign: 'Projet',
-    designTitle: 'Préparer un projet',
+    designTitle: 'Préparer toute une fresque',
     designIntro: 'Importez un croquis depuis Procreate, Photoshop ou Illustrator. Kromatch trouve ses couleurs, les associe à des bombes et calcule combien il vous en faut.',
     uploadDesign: 'Importer un dessin',
     designTip: 'Exportez en PNG ou JPG. Les couleurs exactes du fichier sont utilisées : pas besoin de corriger l’éclairage.',
@@ -1186,7 +1186,7 @@ const T = {
     otherCityPh: 'Saisissez votre ville',
     noShops: 'Aucun magasin n’est encore référencé pour votre ville.',
     noCity: 'Choisissez votre ville dans Réglages pour voir les magasins proches.',
-    tagline: 'Trouvez la bonne bombe pour chaque couleur, ou préparez tout un mur.',
+    tagline: 'Trouvez la bonne bombe pour chaque couleur, ou préparez toute une fresque.',
     takePhoto: 'Prendre ou choisir une photo',
     shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
     tapHint: 'Touchez la couleur voulue. Glissez le doigt pour ajuster, puis relâchez.',
@@ -1243,7 +1243,7 @@ const T = {
   de: {
     addedOne: '1 Dose zum Warenkorb hinzugefügt.',
     back: 'Zurück',
-    welcomeP1: 'Eine Farbe aus jedem Foto abgleichen', welcomeP2: 'Eine ganze Wand aus deiner Skizze planen', welcomeP3: 'Die Dosen in einem Shop in deiner Nähe reservieren', welcomeStart: 'Los geht’s', privacyLink: 'Datenschutzerklärung', rememberMe: 'Meine Angaben auf diesem Handy merken', accPromptTitle: 'Behalte deine Bestellungen und Designs', accPromptText: 'Erstelle ein kostenloses Konto, um Bestellungen zu verfolgen und Designs auf jedem Gerät zu speichern.', accCreate: 'Kostenloses Konto erstellen', notNow: 'Nicht jetzt', accTitle: 'Dein Kromatch-Konto', accBenefits: 'Kostenlos. Verfolge deine Bestellungen und speichere deine Designs auf jedem Handy oder Computer.', continueEmail: 'Weiter mit E-Mail', continueGoogle: 'Weiter mit Google', continueApple: 'Weiter mit Apple', accLinkSent: 'Sieh in deinen E-Mails nach und tippe auf den Link, um dich anzumelden.', accError: 'Link konnte nicht gesendet werden: {m}', accNoPassword: 'Kein Passwort nötig. Wir schicken dir einen Anmeldelink per E-Mail.', signedInAs: 'Angemeldet als {email}', signOut: 'Abmelden', deleteAccount: 'Konto löschen', deleteConfirm: 'Konto, gespeicherte Designs und Profil löschen? Bereits gesendete Bestellungen bleiben bei den Shops. Das lässt sich nicht rückgängig machen.', accDeleted: 'Dein Konto wurde gelöscht.', accOrSignIn: 'Konto erstellen oder anmelden', accLocalNote: 'Ohne Konto bleiben deine Angaben nur auf diesem Handy.', accSyncedNote: 'Deine Angaben sind in deinem Konto gespeichert.', saveDesign: 'Design speichern', designNamePrompt: 'Gib diesem Design einen Namen', myDesigns: 'Meine Designs', openDesign: 'Öffnen', designSaved: 'Design gespeichert.', signInToSave: 'Erstelle ein kostenloses Konto, um Designs zu speichern.', noDesigns: 'Noch keine gespeicherten Designs.',
+    welcomeP1: 'Eine Farbe aus jedem Foto abgleichen', welcomeP2: 'Plane ein ganzes Wandbild aus deiner Skizze', welcomeP3: 'Die Dosen in einem Shop in deiner Nähe reservieren', welcomeStart: 'Los geht’s', privacyLink: 'Datenschutzerklärung', rememberMe: 'Meine Angaben auf diesem Handy merken', accPromptTitle: 'Behalte deine Bestellungen und Designs', accPromptText: 'Erstelle ein kostenloses Konto, um Bestellungen zu verfolgen und Designs auf jedem Gerät zu speichern.', accCreate: 'Kostenloses Konto erstellen', notNow: 'Nicht jetzt', accTitle: 'Dein Kromatch-Konto', accBenefits: 'Kostenlos. Verfolge deine Bestellungen und speichere deine Designs auf jedem Handy oder Computer.', continueEmail: 'Weiter mit E-Mail', continueGoogle: 'Weiter mit Google', continueApple: 'Weiter mit Apple', accLinkSent: 'Sieh in deinen E-Mails nach und tippe auf den Link, um dich anzumelden.', accError: 'Link konnte nicht gesendet werden: {m}', accNoPassword: 'Kein Passwort nötig. Wir schicken dir einen Anmeldelink per E-Mail.', signedInAs: 'Angemeldet als {email}', signOut: 'Abmelden', deleteAccount: 'Konto löschen', deleteConfirm: 'Konto, gespeicherte Designs und Profil löschen? Bereits gesendete Bestellungen bleiben bei den Shops. Das lässt sich nicht rückgängig machen.', accDeleted: 'Dein Konto wurde gelöscht.', accOrSignIn: 'Konto erstellen oder anmelden', accLocalNote: 'Ohne Konto bleiben deine Angaben nur auf diesem Handy.', accSyncedNote: 'Deine Angaben sind in deinem Konto gespeichert.', saveDesign: 'Design speichern', designNamePrompt: 'Gib diesem Design einen Namen', myDesigns: 'Meine Designs', openDesign: 'Öffnen', designSaved: 'Design gespeichert.', signInToSave: 'Erstelle ein kostenloses Konto, um Designs zu speichern.', noDesigns: 'Noch keine gespeicherten Designs.',
     yourDetails: 'Deine Angaben', consentL: 'Ich bin einverstanden, meinen Namen und meine Kontaktdaten für diese Bestellung mit {shop} zu teilen.', needName: 'Bitte gib deinen Namen ein.', needContact: 'Bitte gib eine Telefonnummer oder E-Mail ein.', needConsent: 'Bitte setz das Häkchen, um deine Angaben mit dem Shop zu teilen.', sending: 'Bestellung wird gesendet…', sendFail: 'Bestellung konnte nicht gesendet werden: {m}', orderSent: 'Bestellung an {shop} gesendet', orderNo: 'Bestellung #{n}', pickupCodeL: 'Abholcode', showCode: 'Zeig diesen Code bei der Abholung im Shop. Du bezahlst im Shop.', deliveryInfo: 'Der Shop liefert deine Dosen. Du bezahlst bei Lieferung.', emailSentTo: 'Eine Bestätigung wurde an {email} gesendet.', myOrders: 'Meine Bestellungen', checkStatus: 'Status prüfen', offline: 'keine Verbindung, bitte erneut versuchen', st_new: 'An den Shop gesendet', st_ready: 'Abholbereit', st_picked_up: 'Abgeholt', st_not_available: 'Nicht verfügbar', st_cancelled: 'Storniert',
     wallQ: 'Wie groß ist die Wand?',
     wallWhy: 'Optional. Trag die Maße ein, um zu sehen, wie viele Dosen du von jeder Farbe brauchst.',
@@ -1255,7 +1255,7 @@ const T = {
     gotIt: 'Los geht’s',
     homeMatchTitle: 'Farbe abgleichen',
     homeMatchDesc: 'Fotografiere eine beliebige Farbe und finde die passendste Dose.',
-    homeDesignDesc: 'Lade eine Skizze hoch und erhalte alle Dosen, die du für die Wand brauchst.',
+    homeDesignDesc: 'Lade eine Skizze hoch und erhalte alle Dosen, die du für das Wandbild brauchst.',
     homeDesignNote: 'Aus Procreate, Photoshop oder Illustrator, als PNG oder JPG.',
     designPromptQ: 'Planst du ein ganzes Piece?',
     designPromptBtn: 'Design hochladen',
@@ -1264,7 +1264,7 @@ const T = {
     autoDetected: 'automatisch erkannt',
     backToAuto: 'Farben automatisch erkennen',
     tabDesign: 'Design',
-    designTitle: 'Design planen',
+    designTitle: 'Ein ganzes Wandbild planen',
     designIntro: 'Lade eine Skizze aus Procreate, Photoshop oder Illustrator hoch. Kromatch findet ihre Farben, ordnet Dosen zu und berechnet, wie viele du brauchst.',
     uploadDesign: 'Design hochladen',
     designTip: 'Als PNG oder JPG exportieren. Es werden die exakten Farben der Datei verwendet, eine Lichtkorrektur ist nicht nötig.',
@@ -1372,7 +1372,7 @@ const T = {
     otherCityPh: 'Stadt eingeben',
     noShops: 'Für deine Stadt sind noch keine Shops eingetragen.',
     noCity: 'Wähle in den Einstellungen deine Stadt, um Shops in der Nähe zu sehen.',
-    tagline: 'Finde die richtige Dose für jede Farbe oder plane eine ganze Wand.',
+    tagline: 'Finde die richtige Dose für jede Farbe oder plane ein ganzes Wandbild.',
     takePhoto: 'Foto aufnehmen oder auswählen',
     shootHint: 'Bei Tageslicht, gerade von vorn, ohne Blitz fotografieren.',
     tapHint: 'Berühre die Farbe, die du abgleichen willst. Zum Anpassen den Finger schieben, dann loslassen.',
@@ -1429,7 +1429,7 @@ const T = {
   es: {
     addedOne: 'Se añadió 1 spray al carrito.',
     back: 'Atrás',
-    welcomeP1: 'Encuentra un color en cualquier foto', welcomeP2: 'Planifica una pared entera desde tu boceto', welcomeP3: 'Reserva los sprays en una tienda cerca de ti', welcomeStart: 'Empezar', privacyLink: 'Política de privacidad', rememberMe: 'Recordar mis datos en este móvil', accPromptTitle: 'Guarda tus pedidos y diseños', accPromptText: 'Crea una cuenta gratuita para seguir tus pedidos y guardar diseños en cualquier dispositivo.', accCreate: 'Crear cuenta gratuita', notNow: 'Ahora no', accTitle: 'Tu cuenta de Kromatch', accBenefits: 'Gratis. Sigue tus pedidos y guarda tus diseños en cualquier móvil u ordenador.', continueEmail: 'Continuar con correo', continueGoogle: 'Continuar con Google', continueApple: 'Continuar con Apple', accLinkSent: 'Revisa tu correo y toca el enlace para iniciar sesión.', accError: 'No se pudo enviar el enlace: {m}', accNoPassword: 'Sin contraseña. Te enviamos un enlace de acceso por correo.', signedInAs: 'Sesión iniciada como {email}', signOut: 'Cerrar sesión', deleteAccount: 'Eliminar cuenta', deleteConfirm: '¿Eliminar tu cuenta, tus diseños y tu perfil? Los pedidos ya enviados se quedan en las tiendas. No se puede deshacer.', accDeleted: 'Tu cuenta se ha eliminado.', accOrSignIn: 'Crear cuenta o iniciar sesión', accLocalNote: 'Sin cuenta, tus datos se quedan solo en este móvil.', accSyncedNote: 'Tus datos se guardan en tu cuenta.', saveDesign: 'Guardar diseño', designNamePrompt: 'Ponle nombre a este diseño', myDesigns: 'Mis diseños', openDesign: 'Abrir', designSaved: 'Diseño guardado.', signInToSave: 'Crea una cuenta gratuita para guardar diseños.', noDesigns: 'Aún no hay diseños guardados.',
+    welcomeP1: 'Encuentra un color en cualquier foto', welcomeP2: 'Planifica un mural entero desde tu boceto', welcomeP3: 'Reserva los sprays en una tienda cerca de ti', welcomeStart: 'Empezar', privacyLink: 'Política de privacidad', rememberMe: 'Recordar mis datos en este móvil', accPromptTitle: 'Guarda tus pedidos y diseños', accPromptText: 'Crea una cuenta gratuita para seguir tus pedidos y guardar diseños en cualquier dispositivo.', accCreate: 'Crear cuenta gratuita', notNow: 'Ahora no', accTitle: 'Tu cuenta de Kromatch', accBenefits: 'Gratis. Sigue tus pedidos y guarda tus diseños en cualquier móvil u ordenador.', continueEmail: 'Continuar con correo', continueGoogle: 'Continuar con Google', continueApple: 'Continuar con Apple', accLinkSent: 'Revisa tu correo y toca el enlace para iniciar sesión.', accError: 'No se pudo enviar el enlace: {m}', accNoPassword: 'Sin contraseña. Te enviamos un enlace de acceso por correo.', signedInAs: 'Sesión iniciada como {email}', signOut: 'Cerrar sesión', deleteAccount: 'Eliminar cuenta', deleteConfirm: '¿Eliminar tu cuenta, tus diseños y tu perfil? Los pedidos ya enviados se quedan en las tiendas. No se puede deshacer.', accDeleted: 'Tu cuenta se ha eliminado.', accOrSignIn: 'Crear cuenta o iniciar sesión', accLocalNote: 'Sin cuenta, tus datos se quedan solo en este móvil.', accSyncedNote: 'Tus datos se guardan en tu cuenta.', saveDesign: 'Guardar diseño', designNamePrompt: 'Ponle nombre a este diseño', myDesigns: 'Mis diseños', openDesign: 'Abrir', designSaved: 'Diseño guardado.', signInToSave: 'Crea una cuenta gratuita para guardar diseños.', noDesigns: 'Aún no hay diseños guardados.',
     yourDetails: 'Tus datos', consentL: 'Acepto compartir mi nombre y mis datos de contacto con {shop} para este pedido.', needName: 'Escribe tu nombre.', needContact: 'Escribe un teléfono o un correo.', needConsent: 'Marca la casilla para compartir tus datos con la tienda.', sending: 'Enviando tu pedido…', sendFail: 'No se pudo enviar el pedido: {m}', orderSent: 'Pedido enviado a {shop}', orderNo: 'Pedido n.º {n}', pickupCodeL: 'Código de recogida', showCode: 'Muestra este código en la tienda al recoger tus sprays. Pagas en la tienda.', deliveryInfo: 'La tienda te enviará los sprays. Pagas a la entrega.', emailSentTo: 'Se envió una confirmación a {email}.', myOrders: 'Mis pedidos', checkStatus: 'Ver estado', offline: 'sin conexión, inténtalo de nuevo', st_new: 'Enviado a la tienda', st_ready: 'Listo para recoger', st_picked_up: 'Recogido', st_not_available: 'No disponible', st_cancelled: 'Cancelado',
     wallQ: '¿Qué tamaño tiene la pared?',
     wallWhy: 'Opcional. Rellénalo para ver cuántos sprays de cada color necesitas.',
@@ -1441,7 +1441,7 @@ const T = {
     gotIt: 'Empezar',
     homeMatchTitle: 'Encontrar un color',
     homeMatchDesc: 'Fotografía cualquier color y encuentra el spray más parecido.',
-    homeDesignDesc: 'Sube un boceto y obtén todos los sprays que necesitas para la pared.',
+    homeDesignDesc: 'Sube un boceto y obtén todos los sprays que necesitas para el mural.',
     homeDesignNote: 'Desde Procreate, Photoshop o Illustrator, en PNG o JPG.',
     designPromptQ: '¿Planeas una pieza completa?',
     designPromptBtn: 'Sube tu diseño',
@@ -1450,7 +1450,7 @@ const T = {
     autoDetected: 'detectados automáticamente',
     backToAuto: 'Detectar colores automáticamente',
     tabDesign: 'Diseño',
-    designTitle: 'Planificar un diseño',
+    designTitle: 'Planifica un mural entero',
     designIntro: 'Sube un boceto desde Procreate, Photoshop o Illustrator. Kromatch encuentra sus colores, los asocia a sprays y calcula cuántos necesitas.',
     uploadDesign: 'Subir un diseño',
     designTip: 'Expórtalo en PNG o JPG. Se usan los colores exactos del archivo, así que no hace falta corregir la luz.',
@@ -1558,7 +1558,7 @@ const T = {
     otherCityPh: 'Escribe tu ciudad',
     noShops: 'Todavía no hay tiendas para tu ciudad.',
     noCity: 'Elige tu ciudad en Ajustes para ver tiendas cerca de ti.',
-    tagline: 'Encuentra el spray adecuado para cada color o planifica una pared entera.',
+    tagline: 'Encuentra el spray adecuado para cada color o planifica un mural entero.',
     takePhoto: 'Haz o elige una foto',
     shootHint: 'Con luz de día, de frente y sin flash.',
     tapHint: 'Toca el color que quieres encontrar. Desliza el dedo para ajustar y luego suelta.',
@@ -1615,7 +1615,7 @@ const T = {
   it: {
     addedOne: '1 bomboletta aggiunta al carrello.',
     back: 'Indietro',
-    welcomeP1: 'Abbina un colore da qualsiasi foto', welcomeP2: 'Pianifica un intero muro dal tuo schizzo', welcomeP3: 'Prenota le bombolette in un negozio vicino a te', welcomeStart: 'Inizia', privacyLink: 'Informativa sulla privacy', rememberMe: 'Ricorda i miei dati su questo telefono', accPromptTitle: 'Conserva ordini e progetti', accPromptText: 'Crea un account gratuito per seguire gli ordini e salvare i progetti su qualsiasi dispositivo.', accCreate: 'Crea account gratuito', notNow: 'Non ora', accTitle: 'Il tuo account Kromatch', accBenefits: 'Gratis. Segui i tuoi ordini e salva i tuoi progetti su qualsiasi telefono o computer.', continueEmail: 'Continua con email', continueGoogle: 'Continua con Google', continueApple: 'Continua con Apple', accLinkSent: 'Controlla la tua email e tocca il link per accedere.', accError: 'Impossibile inviare il link: {m}', accNoPassword: 'Nessuna password. Ti inviamo un link di accesso via email.', signedInAs: 'Accesso effettuato come {email}', signOut: 'Esci', deleteAccount: 'Elimina account', deleteConfirm: 'Eliminare account, progetti salvati e profilo? Gli ordini già inviati restano ai negozi. Non si può annullare.', accDeleted: 'Il tuo account è stato eliminato.', accOrSignIn: 'Crea un account o accedi', accLocalNote: 'Senza account, i tuoi dati restano solo su questo telefono.', accSyncedNote: 'I tuoi dati sono salvati nel tuo account.', saveDesign: 'Salva progetto', designNamePrompt: 'Dai un nome a questo progetto', myDesigns: 'I miei progetti', openDesign: 'Apri', designSaved: 'Progetto salvato.', signInToSave: 'Crea un account gratuito per salvare i progetti.', noDesigns: 'Nessun progetto salvato.',
+    welcomeP1: 'Abbina un colore da qualsiasi foto', welcomeP2: 'Pianifica un intero murale dal tuo schizzo', welcomeP3: 'Prenota le bombolette in un negozio vicino a te', welcomeStart: 'Inizia', privacyLink: 'Informativa sulla privacy', rememberMe: 'Ricorda i miei dati su questo telefono', accPromptTitle: 'Conserva ordini e progetti', accPromptText: 'Crea un account gratuito per seguire gli ordini e salvare i progetti su qualsiasi dispositivo.', accCreate: 'Crea account gratuito', notNow: 'Non ora', accTitle: 'Il tuo account Kromatch', accBenefits: 'Gratis. Segui i tuoi ordini e salva i tuoi progetti su qualsiasi telefono o computer.', continueEmail: 'Continua con email', continueGoogle: 'Continua con Google', continueApple: 'Continua con Apple', accLinkSent: 'Controlla la tua email e tocca il link per accedere.', accError: 'Impossibile inviare il link: {m}', accNoPassword: 'Nessuna password. Ti inviamo un link di accesso via email.', signedInAs: 'Accesso effettuato come {email}', signOut: 'Esci', deleteAccount: 'Elimina account', deleteConfirm: 'Eliminare account, progetti salvati e profilo? Gli ordini già inviati restano ai negozi. Non si può annullare.', accDeleted: 'Il tuo account è stato eliminato.', accOrSignIn: 'Crea un account o accedi', accLocalNote: 'Senza account, i tuoi dati restano solo su questo telefono.', accSyncedNote: 'I tuoi dati sono salvati nel tuo account.', saveDesign: 'Salva progetto', designNamePrompt: 'Dai un nome a questo progetto', myDesigns: 'I miei progetti', openDesign: 'Apri', designSaved: 'Progetto salvato.', signInToSave: 'Crea un account gratuito per salvare i progetti.', noDesigns: 'Nessun progetto salvato.',
     yourDetails: 'I tuoi dati', consentL: 'Accetto di condividere il mio nome e i miei contatti con {shop} per questo ordine.', needName: 'Inserisci il tuo nome.', needContact: 'Inserisci un telefono o un’email.', needConsent: 'Spunta la casella per condividere i tuoi dati con il negozio.', sending: 'Invio dell’ordine…', sendFail: 'Impossibile inviare l’ordine: {m}', orderSent: 'Ordine inviato a {shop}', orderNo: 'Ordine n. {n}', pickupCodeL: 'Codice di ritiro', showCode: 'Mostra questo codice in negozio quando ritiri le bombolette. Paghi in negozio.', deliveryInfo: 'Il negozio ti consegnerà le bombolette. Paghi alla consegna.', emailSentTo: 'È stata inviata una conferma a {email}.', myOrders: 'I miei ordini', checkStatus: 'Controlla lo stato', offline: 'nessuna connessione, riprova', st_new: 'Inviato al negozio', st_ready: 'Pronto per il ritiro', st_picked_up: 'Ritirato', st_not_available: 'Non disponibile', st_cancelled: 'Annullato',
     wallQ: 'Quanto è grande il muro?',
     wallWhy: 'Facoltativo. Compilalo per vedere quante bombolette di ogni colore ti servono.',
@@ -1627,7 +1627,7 @@ const T = {
     gotIt: 'Inizia',
     homeMatchTitle: 'Abbina un colore',
     homeMatchDesc: 'Fotografa qualsiasi colore e trova la bomboletta più simile.',
-    homeDesignDesc: 'Carica uno schizzo e ottieni tutte le bombolette che ti servono per il muro.',
+    homeDesignDesc: 'Carica uno schizzo e ottieni tutte le bombolette che ti servono per il murale.',
     homeDesignNote: 'Da Procreate, Photoshop o Illustrator, in PNG o JPG.',
     designPromptQ: 'Stai progettando un pezzo intero?',
     designPromptBtn: 'Carica il tuo progetto',
@@ -1636,7 +1636,7 @@ const T = {
     autoDetected: 'rilevati automaticamente',
     backToAuto: 'Rileva i colori automaticamente',
     tabDesign: 'Progetto',
-    designTitle: 'Pianifica un progetto',
+    designTitle: 'Pianifica un intero murale',
     designIntro: 'Carica uno schizzo da Procreate, Photoshop o Illustrator. Kromatch trova i suoi colori, li abbina alle bombolette e calcola quante te ne servono.',
     uploadDesign: 'Carica un progetto',
     designTip: 'Esporta in PNG o JPG. Vengono usati i colori esatti del file, quindi non serve correggere la luce.',
@@ -1744,7 +1744,7 @@ const T = {
     otherCityPh: 'Scrivi la tua città',
     noShops: 'Non ci sono ancora negozi per la tua città.',
     noCity: 'Scegli la tua città nelle Impostazioni per vedere i negozi vicini.',
-    tagline: 'Trova la bomboletta giusta per ogni colore o pianifica un intero muro.',
+    tagline: 'Trova la bomboletta giusta per ogni colore o pianifica un intero murale.',
     takePhoto: 'Scatta o scegli una foto',
     shootHint: 'Alla luce del giorno, di fronte, senza flash.',
     tapHint: 'Tocca il colore da abbinare. Scorri il dito per regolare, poi rilascia.',
@@ -1801,7 +1801,7 @@ const T = {
   pt: {
     addedOne: '1 spray adicionado ao carrinho.',
     back: 'Voltar',
-    welcomeP1: 'Encontre uma cor em qualquer foto', welcomeP2: 'Planeje uma parede inteira a partir do seu esboço', welcomeP3: 'Reserve os sprays numa loja perto de você', welcomeStart: 'Começar', privacyLink: 'Política de privacidade', rememberMe: 'Lembrar meus dados neste telefone', accPromptTitle: 'Guarde seus pedidos e projetos', accPromptText: 'Crie uma conta grátis para acompanhar pedidos e salvar projetos em qualquer dispositivo.', accCreate: 'Criar conta grátis', notNow: 'Agora não', accTitle: 'Sua conta Kromatch', accBenefits: 'Grátis. Acompanhe seus pedidos e salve seus projetos em qualquer telefone ou computador.', continueEmail: 'Continuar com e-mail', continueGoogle: 'Continuar com Google', continueApple: 'Continuar com Apple', accLinkSent: 'Confira seu e-mail e toque no link para entrar.', accError: 'Não foi possível enviar o link: {m}', accNoPassword: 'Sem senha. Enviamos um link de acesso por e-mail.', signedInAs: 'Conectado como {email}', signOut: 'Sair', deleteAccount: 'Excluir conta', deleteConfirm: 'Excluir sua conta, projetos salvos e perfil? Pedidos já enviados ficam com as lojas. Não dá para desfazer.', accDeleted: 'Sua conta foi excluída.', accOrSignIn: 'Criar conta ou entrar', accLocalNote: 'Sem conta, seus dados ficam só neste telefone.', accSyncedNote: 'Seus dados são salvos na sua conta.', saveDesign: 'Salvar projeto', designNamePrompt: 'Dê um nome a este projeto', myDesigns: 'Meus projetos', openDesign: 'Abrir', designSaved: 'Projeto salvo.', signInToSave: 'Crie uma conta grátis para salvar projetos.', noDesigns: 'Nenhum projeto salvo ainda.',
+    welcomeP1: 'Encontre uma cor em qualquer foto', welcomeP2: 'Planeje um mural inteiro a partir do seu esboço', welcomeP3: 'Reserve os sprays numa loja perto de você', welcomeStart: 'Começar', privacyLink: 'Política de privacidade', rememberMe: 'Lembrar meus dados neste telefone', accPromptTitle: 'Guarde seus pedidos e projetos', accPromptText: 'Crie uma conta grátis para acompanhar pedidos e salvar projetos em qualquer dispositivo.', accCreate: 'Criar conta grátis', notNow: 'Agora não', accTitle: 'Sua conta Kromatch', accBenefits: 'Grátis. Acompanhe seus pedidos e salve seus projetos em qualquer telefone ou computador.', continueEmail: 'Continuar com e-mail', continueGoogle: 'Continuar com Google', continueApple: 'Continuar com Apple', accLinkSent: 'Confira seu e-mail e toque no link para entrar.', accError: 'Não foi possível enviar o link: {m}', accNoPassword: 'Sem senha. Enviamos um link de acesso por e-mail.', signedInAs: 'Conectado como {email}', signOut: 'Sair', deleteAccount: 'Excluir conta', deleteConfirm: 'Excluir sua conta, projetos salvos e perfil? Pedidos já enviados ficam com as lojas. Não dá para desfazer.', accDeleted: 'Sua conta foi excluída.', accOrSignIn: 'Criar conta ou entrar', accLocalNote: 'Sem conta, seus dados ficam só neste telefone.', accSyncedNote: 'Seus dados são salvos na sua conta.', saveDesign: 'Salvar projeto', designNamePrompt: 'Dê um nome a este projeto', myDesigns: 'Meus projetos', openDesign: 'Abrir', designSaved: 'Projeto salvo.', signInToSave: 'Crie uma conta grátis para salvar projetos.', noDesigns: 'Nenhum projeto salvo ainda.',
     yourDetails: 'Seus dados', consentL: 'Concordo em compartilhar meu nome e meus contatos com {shop} para este pedido.', needName: 'Digite seu nome.', needContact: 'Digite um telefone ou e-mail.', needConsent: 'Marque a caixa para compartilhar seus dados com a loja.', sending: 'Enviando seu pedido…', sendFail: 'Não foi possível enviar o pedido: {m}', orderSent: 'Pedido enviado para {shop}', orderNo: 'Pedido nº {n}', pickupCodeL: 'Código de retirada', showCode: 'Mostre este código na loja ao retirar seus sprays. Você paga na loja.', deliveryInfo: 'A loja vai entregar seus sprays. Você paga na entrega.', emailSentTo: 'Uma confirmação foi enviada para {email}.', myOrders: 'Meus pedidos', checkStatus: 'Ver status', offline: 'sem conexão, tente novamente', st_new: 'Enviado à loja', st_ready: 'Pronto para retirar', st_picked_up: 'Retirado', st_not_available: 'Indisponível', st_cancelled: 'Cancelado',
     wallQ: 'Qual o tamanho da parede?',
     wallWhy: 'Opcional. Preencha para ver quantos sprays de cada cor você precisa.',
@@ -1813,7 +1813,7 @@ const T = {
     gotIt: 'Começar',
     homeMatchTitle: 'Encontrar uma cor',
     homeMatchDesc: 'Fotografe qualquer cor e encontre o spray mais parecido.',
-    homeDesignDesc: 'Envie um esboço e receba todos os sprays de que precisa para a parede.',
+    homeDesignDesc: 'Envie um esboço e receba todos os sprays de que precisa para o mural.',
     homeDesignNote: 'Do Procreate, Photoshop ou Illustrator, em PNG ou JPG.',
     designPromptQ: 'Planejando uma peça inteira?',
     designPromptBtn: 'Envie seu projeto',
@@ -1822,7 +1822,7 @@ const T = {
     autoDetected: 'detectadas automaticamente',
     backToAuto: 'Detectar cores automaticamente',
     tabDesign: 'Projeto',
-    designTitle: 'Planejar um projeto',
+    designTitle: 'Planeje um mural inteiro',
     designIntro: 'Envie um esboço do Procreate, Photoshop ou Illustrator. O Kromatch encontra as cores, combina com sprays e calcula quantos você precisa.',
     uploadDesign: 'Enviar um projeto',
     designTip: 'Exporte em PNG ou JPG. São usadas as cores exatas do arquivo, então não é preciso corrigir a luz.',
@@ -1930,7 +1930,7 @@ const T = {
     otherCityPh: 'Digite sua cidade',
     noShops: 'Ainda não há lojas para a sua cidade.',
     noCity: 'Escolha sua cidade nos Ajustes para ver lojas perto de você.',
-    tagline: 'Encontre o spray certo para cada cor ou planeje uma parede inteira.',
+    tagline: 'Encontre o spray certo para cada cor ou planeje um mural inteiro.',
     takePhoto: 'Tire ou escolha uma foto',
     shootHint: 'Com luz do dia, de frente e sem flash.',
     tapHint: 'Toque na cor que quer encontrar. Deslize o dedo para ajustar e solte.',
@@ -1997,6 +1997,7 @@ const CITIES = [
   { key: 'london', tz: 'Europe/London', lat: 51.507, lng: -0.128, en: "London", el: "Λονδίνο", fr: "Londres", de: "London", es: "Londres", it: "Londra", pt: "Londres" },
   { key: 'toronto', tz: 'America/Toronto', lat: 43.653, lng: -79.383, en: "Toronto", el: "Τορόντο", fr: "Toronto", de: "Toronto", es: "Toronto", it: "Toronto", pt: "Toronto" },
   { key: 'montreal', tz: 'America/Montreal', lat: 45.502, lng: -73.567, en: "Montreal", el: "Μόντρεαλ", fr: "Montréal", de: "Montreal", es: "Montreal", it: "Montréal", pt: "Montreal" },
+  { key: 'halifax', tz: 'America/Halifax', lat: 44.649, lng: -63.575, en: "Halifax", el: "Χάλιφαξ", fr: "Halifax", de: "Halifax", es: "Halifax", it: "Halifax", pt: "Halifax" },
   { key: 'newyork', tz: 'America/New_York', lat: 40.713, lng: -74.006, en: "New York", el: "Νέα Υόρκη", fr: "New York", de: "New York", es: "Nueva York", it: "New York", pt: "Nova York" },
   { key: 'losangeles', tz: 'America/Los_Angeles', lat: 34.052, lng: -118.244, en: "Los Angeles", el: "Λος Άντζελες", fr: "Los Angeles", de: "Los Angeles", es: "Los Ángeles", it: "Los Angeles", pt: "Los Angeles" },
   { key: 'mexicocity', tz: 'America/Mexico_City', lat: 19.433, lng: -99.133, en: "Mexico City", el: "Πόλη του Μεξικού", fr: "Mexico", de: "Mexiko-Stadt", es: "Ciudad de México", it: "Città del Messico", pt: "Cidade do México" },
@@ -2007,12 +2008,16 @@ const cityName = key => { const c = CITIES.find(x => x.key === key); return c ? 
 const STORE_KEY = 'canmatch:v1';
 let store = { lang: null, city: '', cityOther: '', setupDone: false, list: [], account: { name: '', email: '', phone: '' }, pay: 'shop' };
 try { const saved = localStorage.getItem(STORE_KEY); if (saved) store = Object.assign(store, JSON.parse(saved)); } catch (e) {}
-if (store.city && !['athens','thessaloniki','paris','berlin','barcelona','lisbon','milan','amsterdam','london','toronto','montreal','newyork','losangeles','mexicocity','saopaulo'].includes(store.city)) { store.city = ''; store.cityOther = ''; }
+const KCFG = window.KROMATCH_CONFIG || {};
+const ACTIVE_CITIES = Array.isArray(KCFG.cities) && KCFG.cities.length ? KCFG.cities : null;   // null = all cities
+const ACTIVE_LANGS = Array.isArray(KCFG.languages) && KCFG.languages.length ? KCFG.languages : null;
+const cityOn = key => !ACTIVE_CITIES || ACTIVE_CITIES.includes(key);
+if (store.city && (!['athens','thessaloniki','paris','berlin','barcelona','lisbon','milan','amsterdam','london','toronto','montreal','halifax','newyork','losangeles','mexicocity','saopaulo'].includes(store.city) || !cityOn(store.city))) { store.city = ''; store.cityOther = ''; }
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {} }
 
 const $ = id => document.getElementById(id);
 let lang = store.lang || (navigator.language || 'en').slice(0, 2);
-if (!T[lang]) lang = 'en';
+if (!T[lang] || (ACTIVE_LANGS && !ACTIVE_LANGS.includes(lang))) lang = 'en';
 const t = key => (T[lang] && T[lang][key] !== undefined) ? T[lang][key] : T.en[key];
 const pct = n => lang === 'fr' ? `${n}\u202f%` : (lang === 'de' || lang === 'es') ? `${n}\u00a0%` : `${n}%`;
 
@@ -2021,7 +2026,7 @@ function applyLang() {
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   $('otherCity').placeholder = t('otherCityPh');
   const sel = $('citySelect'); const current = sel.value || store.city;
-  sel.innerHTML = '<option value="">—</option>' + CITIES.map(c => `<option value="${c.key}">${c[lang] || c.en}</option>`).join('');
+  sel.innerHTML = '<option value="">—</option>' + CITIES.filter(c => cityOn(c.key)).map(c => `<option value="${c.key}">${c[lang] || c.en}</option>`).join('');
   sel.value = current; $('otherCityField').hidden = sel.value !== 'other';
   $('tipsList').innerHTML = '';
   t('tips').forEach(tip => { const li = document.createElement('li'); li.textContent = tip; $('tipsList').appendChild(li); });
@@ -3196,10 +3201,11 @@ $('welcomeStart').addEventListener('click', () => { store.welcomed = true; save(
 
 /* ---------- Settings (no walkthrough) ---------- */
 function fillCitySelect(sel, value) {
-  sel.innerHTML = '<option value="">—</option>' + CITIES.map(c => `<option value="${c.key}">${c[lang] || c.en}</option>`).join('');
+  sel.innerHTML = '<option value="">—</option>' + CITIES.filter(c => cityOn(c.key)).map(c => `<option value="${c.key}">${c[lang] || c.en}</option>`).join('');
   sel.value = value || '';
 }
 function renderSettings() {
+  document.querySelectorAll('.set-lang').forEach(b => { b.hidden = !!ACTIVE_LANGS && !ACTIVE_LANGS.includes(b.dataset.lang); });
   renderAccountSection();
   document.querySelectorAll('.set-lang').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
   fillCitySelect($('setCity'), store.city);
@@ -3233,9 +3239,9 @@ $('setAbout').addEventListener('click', () => { showStep('stepAbout'); });
 // The city is guessed from the phone's time zone, which needs no permission and reveals nothing precise.
 // Precise location is only used if the person taps "Use my location", and only to pick the nearest city on this phone.
 const tzCity = (() => { try { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const c = CITIES.find(x => x.tz && x.tz === tz);
+  const c = CITIES.find(x => x.tz && x.tz === tz && cityOn(x.key));
   // Montreal shares Toronto's time zone: French-speaking phones in that zone are most likely in Montreal
-  if (c && c.key === 'toronto' && /^fr/i.test(navigator.language || '')) return 'montreal';
+  if (c && c.key === 'toronto' && cityOn('montreal') && /^fr/i.test(navigator.language || '')) return 'montreal';
   return c ? c.key : ''; } catch (e) { return ''; } })();
 function distKm(a1, o1, a2, o2) {
   const r = Math.PI / 180, dA = (a2 - a1) * r, dO = (o2 - o1) * r;
@@ -3264,7 +3270,7 @@ $('useLocation').addEventListener('click', () => {
   navigator.geolocation.getCurrentPosition(pos => {
     const la = pos.coords.latitude, lo = pos.coords.longitude;   // used here only, never stored
     let best = null, bd = Infinity;
-    CITIES.forEach(c => { const d = distKm(la, lo, c.lat, c.lng); if (d < bd) { bd = d; best = c; } });
+    CITIES.filter(c => cityOn(c.key)).forEach(c => { const d = distKm(la, lo, c.lat, c.lng); if (d < bd) { bd = d; best = c; } });
     if (best && bd <= 150) { store.city = best.key; $('locMsg').textContent = t('locNear').replace('{city}', cityName(best.key)); }
     else { store.city = ''; $('locMsg').textContent = t('locFar'); }
     store.cityAuto = false; save(); renderSettings(); updateLocBar(); if (lastSample) showResults();

@@ -1,7 +1,7 @@
 {
   "name": "Kromatch",
   "short_name": "Kromatch",
-  "description": "Find the right can for any colour, or plan a whole wall.",
+  "description": "Find the right can for any colour, or plan a whole mural.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

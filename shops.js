@@ -88,6 +88,20 @@ window.SHOPS = [
               "Molotow Premium": 12.49 } // Canadian graffiti shop (online)
   },
   {
+    name: "Graffiti Shop Halifax", city: "halifax", demo: true, currency: "CAD",
+    delivery: { fee: 15.00, freeOver: 150, note: "ground shipping, within Canada" },
+    lines: ["MTN 94", "MTN Hardcore", "Montana GOLD", "Montana BLACK", "Molotow Premium", "Flame Blue", "Flame Orange", "Ironlak"],
+    prices: { "MTN 94": 8.30,          // Canadian graffiti shop (Montreal)
+              "MTN Hardcore": 8.20,    // Canadian graffiti shop (Montreal)
+              "Montana GOLD": 9.00,    // Canadian graffiti shop (Toronto)
+              "Montana BLACK": 8.99,   // Canadian graffiti shop (Toronto)
+              "Molotow Premium": 12.09, // Canadian graffiti shop (online)
+              "Flame Blue": 8.99,      // Canadian graffiti shop (online)
+              "Flame Orange": 9.09,    // Canadian graffiti shop (online)
+              "Ironlak": null }
+    // No Halifax shop lists prices online yet; based on Canadian graffiti shop prices.
+  },
+  {
     name: "Graffiti Shop New York", city: "newyork", demo: true, currency: "USD",
     delivery: { fee: 12.00, freeOver: 125, note: "ground shipping, within the US" },
     lines: ["MTN 94", "MTN Hardcore", "Montana GOLD", "Montana BLACK", "Molotow Premium", "Flame Blue", "Flame Orange", "Ironlak", "Ironlak Sugar"],
