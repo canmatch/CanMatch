@@ -348,7 +348,7 @@
     </div>
     <div class="results-head">
       <h2 data-i18n="closest"></h2>
-      <button type="button" class="secondary filter-btn" id="filterBtn" aria-expanded="false" aria-controls="filterPanel"></button>
+      <button type="button" class="secondary filter-btn" id="filterBtn" aria-expanded="false" aria-controls="filterPanel" data-i18n="filters"></button>
     </div>
     <p class="note" id="nearNote" hidden></p>
     <div id="filterSlotMatch"></div>
@@ -475,7 +475,7 @@
         <input id="numColours" type="range" min="2" max="40" value="8" style="padding:0"></label>
       <button type="button" class="link-btn" id="autoColours" data-i18n="backToAuto" hidden></button>
       <p class="note" data-i18n="usingFilters"></p>
-      <button type="button" class="secondary filter-btn" id="dFilterBtn" aria-expanded="false" style="margin:6px 0 4px"></button>
+      <button type="button" class="secondary filter-btn" id="dFilterBtn" aria-expanded="false" style="margin:6px 0 4px" data-i18n="filters"></button>
       <div id="filterSlotDesign"></div>
 
       <ol class="matches" id="paletteList"></ol>
@@ -2347,8 +2347,9 @@ function updateFilterBtn() {
   // Count how many filters differ from the defaults (all brands on, special finishes off)
   const graffiti = BRANDS.filter(b => BRAND_PRESSURE[b] !== 'hardware');
   const n = (graffiti.some(b => !activeBrands.has(b)) ? 1 : 0) + (includeSpecial ? 1 : 0) + (includeHardware ? 1 : 0);
-  $('filterBtn').textContent = n ? t('filtersOn').replace('{n}', n) : t('filters');
-  if ($('dFilterBtn')) $('dFilterBtn').textContent = $('filterBtn').textContent;
+  const label = n ? t('filtersOn').replace('{n}', n) : t('filters');
+  $('filterBtn').textContent = label;
+  if ($('dFilterBtn')) $('dFilterBtn').textContent = label;
 }
 function toggleFilters(btn, where) {
   placeFilters(where);
@@ -2814,7 +2815,7 @@ function placeFilters(where) {
   if ($('filterPanel').previousElementSibling !== slot) slot.after($('filterPanel'));
 }
 function openDesignTab() {
-  placeFilters('design');
+  placeFilters('design'); updateFilterBtn();
   $('listSheet').hidden = true; $('settingsSheet').hidden = true;
   fillRangeSelect(); $('designSheet').hidden = false; setTab('openDesign');
 }
