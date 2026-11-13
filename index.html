@@ -193,6 +193,13 @@
   .buy:disabled { opacity: 0.4; cursor: not-allowed; }
   .cart-actions { display: flex; gap: 18px; justify-content: center; margin-top: 10px; }
   .link-btn { font: inherit; font-size: 0.9rem; font-weight: 700; color: var(--ink); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 4px; }
+  .consent { color: var(--ink); align-items: flex-start; }
+  .consent input { margin-top: 2px; flex: none; }
+  .code-box { background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; padding: 12px 14px; margin: 12px 0;
+              display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+  .code-box b { font-stretch: 125%; font-weight: 900; font-size: 1.8rem; letter-spacing: 0.03em; }
+  .my-order { background: var(--surface); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+  .my-order .row-actions { margin-top: 6px; }
   .order-check { width: 64px; height: 64px; border-radius: 50%; background: var(--ink); color: var(--bg);
                  display: grid; place-items: center; font-size: 2rem; font-weight: 900; margin-top: 24px; }
   .demo-note { background: var(--surface); border-left: 4px solid var(--ink); padding: 10px 12px; border-radius: 6px; font-size: 0.9rem; }
@@ -486,6 +493,10 @@
       <h2 id="listTitle" data-i18n="listTitle"></h2>
       <button type="button" class="icon-btn" id="closeList" data-i18n="done"></button>
     </div>
+    <section id="myOrders" hidden>
+      <h3 class="sub-h" data-i18n="myOrders"></h3>
+      <div id="myOrdersList"></div>
+    </section>
     <div id="cartEmpty" class="empty" hidden>
       <p data-i18n="listEmpty"></p>
     </div>
@@ -516,6 +527,13 @@
       <p class="note" id="pickupOnly" data-i18n="pickupOnly" hidden></p>
       <label class="field" id="addrField" hidden><span data-i18n="deliveryAddr"></span>
         <input id="coAddr" type="text" autocomplete="street-address"></label>
+      <div id="coDetails" hidden>
+        <h3 class="sub-h" data-i18n="yourDetails"></h3>
+        <label class="field"><span data-i18n="name"></span><input id="coName" type="text" autocomplete="name"></label>
+        <label class="field"><span data-i18n="phoneL"></span><input id="coPhone" type="tel" autocomplete="tel"></label>
+        <label class="field"><span data-i18n="email"></span><input id="coEmail" type="email" autocomplete="email"></label>
+        <label class="toggle consent"><input type="checkbox" id="coConsent"> <span id="coConsentText"></span></label>
+      </div>
       <div id="coTotals" class="cart-total"></div>
       <p class="hint" id="coMsg" aria-live="polite"></p>
       <button type="button" class="primary buy" id="placeOrder" data-i18n="placeOrder"></button>
@@ -524,7 +542,13 @@
     <div id="doneView" hidden>
       <div class="order-check" aria-hidden="true">✓</div>
       <h2 id="orderTitle"></h2>
-      <p class="demo-note" data-i18n="demoNote"></p>
+      <p class="demo-note" id="demoNoteEl" data-i18n="demoNote"></p>
+      <div id="realDone" hidden>
+        <p class="muted" id="rdNo"></p>
+        <div class="code-box"><span data-i18n="pickupCodeL"></span><b id="rdCode"></b></div>
+        <p id="rdInfo"></p>
+        <p class="note" id="rdEmail"></p>
+      </div>
       <div id="orderBody"></div>
       <div class="sheet-actions" id="orderLinks"></div>
       <div class="sheet-actions"><button type="button" class="secondary" id="orderClose" data-i18n="backToCart"></button></div>
@@ -532,8 +556,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-13-kromatch"></script>
-<script src="shops.js?v=2026-11-13-kromatch"></script>
+<script src="colors.js?v=2026-11-13-live"></script>
+<script src="shops.js?v=2026-11-13-live"></script>
+<script src="config.js?v=2026-11-13-live"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -593,6 +618,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    yourDetails: 'Your details', consentL: 'I agree to share my name and contact details with {shop} for this order.', needName: 'Please enter your name.', needContact: 'Please enter a phone number or email.', needConsent: 'Please tick the box to share your details with the shop.', sending: 'Sending your order…', sendFail: 'Couldn’t send the order: {m}', orderSent: 'Order sent to {shop}', orderNo: 'Order #{n}', pickupCodeL: 'Pickup code', showCode: 'Show this code in the shop when you collect your cans. You pay in the shop.', deliveryInfo: 'The shop will deliver your cans. You pay on delivery.', emailSentTo: 'A confirmation was sent to {email}.', myOrders: 'My orders', checkStatus: 'Check status', offline: 'no connection, please try again', st_new: 'Sent to shop', st_ready: 'Ready to collect', st_picked_up: 'Collected', st_not_available: 'Not available', st_cancelled: 'Cancelled',
     wallQ: 'How big is the wall?',
     wallWhy: 'Optional. Fill it in to see how many cans of each colour you need.',
     details: 'Details',
@@ -775,6 +801,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    yourDetails: 'Τα στοιχεία σου', consentL: 'Συμφωνώ να μοιραστώ το όνομα και τα στοιχεία επικοινωνίας μου με το {shop} για αυτή την παραγγελία.', needName: 'Γράψε το όνομά σου.', needContact: 'Γράψε τηλέφωνο ή email.', needConsent: 'Τσέκαρε το κουτάκι για να μοιραστείς τα στοιχεία σου με το κατάστημα.', sending: 'Αποστολή παραγγελίας…', sendFail: 'Η παραγγελία δεν στάλθηκε: {m}', orderSent: 'Η παραγγελία στάλθηκε στο {shop}', orderNo: 'Παραγγελία #{n}', pickupCodeL: 'Κωδικός παραλαβής', showCode: 'Δείξε αυτόν τον κωδικό στο κατάστημα όταν παραλάβεις τα σπρέι. Πληρώνεις στο κατάστημα.', deliveryInfo: 'Το κατάστημα θα σου στείλει τα σπρέι. Πληρώνεις κατά την παράδοση.', emailSentTo: 'Στάλθηκε επιβεβαίωση στο {email}.', myOrders: 'Οι παραγγελίες μου', checkStatus: 'Έλεγχος κατάστασης', offline: 'δεν υπάρχει σύνδεση, δοκίμασε ξανά', st_new: 'Στάλθηκε στο κατάστημα', st_ready: 'Έτοιμη για παραλαβή', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
     wallQ: 'Πόσο μεγάλος είναι ο τοίχος;',
     wallWhy: 'Προαιρετικό. Συμπλήρωσέ το για να δεις πόσα σπρέι από κάθε χρώμα χρειάζεσαι.',
     details: 'Λεπτομέρειες',
@@ -957,6 +984,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    yourDetails: 'Vos coordonnées', consentL: 'J’accepte de partager mon nom et mes coordonnées avec {shop} pour cette commande.', needName: 'Veuillez saisir votre nom.', needContact: 'Veuillez saisir un téléphone ou un e-mail.', needConsent: 'Cochez la case pour partager vos coordonnées avec le magasin.', sending: 'Envoi de la commande…', sendFail: 'La commande n’a pas pu être envoyée\u00a0: {m}', orderSent: 'Commande envoyée à {shop}', orderNo: 'Commande n°{n}', pickupCodeL: 'Code de retrait', showCode: 'Montrez ce code en magasin pour récupérer vos bombes. Vous payez en magasin.', deliveryInfo: 'Le magasin vous livrera. Vous payez à la livraison.', emailSentTo: 'Une confirmation a été envoyée à {email}.', myOrders: 'Mes commandes', checkStatus: 'Voir le statut', offline: 'pas de connexion, réessayez', st_new: 'Envoyée au magasin', st_ready: 'Prête à retirer', st_picked_up: 'Retirée', st_not_available: 'Indisponible', st_cancelled: 'Annulée',
     wallQ: 'Quelle taille fait le mur ?',
     wallWhy: 'Facultatif. Renseignez-le pour voir combien de bombes de chaque couleur il vous faut.',
     details: 'Détails',
@@ -1139,6 +1167,7 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    yourDetails: 'Deine Angaben', consentL: 'Ich bin einverstanden, meinen Namen und meine Kontaktdaten für diese Bestellung mit {shop} zu teilen.', needName: 'Bitte gib deinen Namen ein.', needContact: 'Bitte gib eine Telefonnummer oder E-Mail ein.', needConsent: 'Bitte setz das Häkchen, um deine Angaben mit dem Shop zu teilen.', sending: 'Bestellung wird gesendet…', sendFail: 'Bestellung konnte nicht gesendet werden: {m}', orderSent: 'Bestellung an {shop} gesendet', orderNo: 'Bestellung #{n}', pickupCodeL: 'Abholcode', showCode: 'Zeig diesen Code bei der Abholung im Shop. Du bezahlst im Shop.', deliveryInfo: 'Der Shop liefert deine Dosen. Du bezahlst bei Lieferung.', emailSentTo: 'Eine Bestätigung wurde an {email} gesendet.', myOrders: 'Meine Bestellungen', checkStatus: 'Status prüfen', offline: 'keine Verbindung, bitte erneut versuchen', st_new: 'An den Shop gesendet', st_ready: 'Abholbereit', st_picked_up: 'Abgeholt', st_not_available: 'Nicht verfügbar', st_cancelled: 'Storniert',
     wallQ: 'Wie groß ist die Wand?',
     wallWhy: 'Optional. Trag die Maße ein, um zu sehen, wie viele Dosen du von jeder Farbe brauchst.',
     details: 'Details',
@@ -1321,6 +1350,7 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    yourDetails: 'Tus datos', consentL: 'Acepto compartir mi nombre y mis datos de contacto con {shop} para este pedido.', needName: 'Escribe tu nombre.', needContact: 'Escribe un teléfono o un correo.', needConsent: 'Marca la casilla para compartir tus datos con la tienda.', sending: 'Enviando tu pedido…', sendFail: 'No se pudo enviar el pedido: {m}', orderSent: 'Pedido enviado a {shop}', orderNo: 'Pedido n.º {n}', pickupCodeL: 'Código de recogida', showCode: 'Muestra este código en la tienda al recoger tus sprays. Pagas en la tienda.', deliveryInfo: 'La tienda te enviará los sprays. Pagas a la entrega.', emailSentTo: 'Se envió una confirmación a {email}.', myOrders: 'Mis pedidos', checkStatus: 'Ver estado', offline: 'sin conexión, inténtalo de nuevo', st_new: 'Enviado a la tienda', st_ready: 'Listo para recoger', st_picked_up: 'Recogido', st_not_available: 'No disponible', st_cancelled: 'Cancelado',
     wallQ: '¿Qué tamaño tiene la pared?',
     wallWhy: 'Opcional. Rellénalo para ver cuántos sprays de cada color necesitas.',
     details: 'Detalles',
@@ -1503,6 +1533,7 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    yourDetails: 'I tuoi dati', consentL: 'Accetto di condividere il mio nome e i miei contatti con {shop} per questo ordine.', needName: 'Inserisci il tuo nome.', needContact: 'Inserisci un telefono o un’email.', needConsent: 'Spunta la casella per condividere i tuoi dati con il negozio.', sending: 'Invio dell’ordine…', sendFail: 'Impossibile inviare l’ordine: {m}', orderSent: 'Ordine inviato a {shop}', orderNo: 'Ordine n. {n}', pickupCodeL: 'Codice di ritiro', showCode: 'Mostra questo codice in negozio quando ritiri le bombolette. Paghi in negozio.', deliveryInfo: 'Il negozio ti consegnerà le bombolette. Paghi alla consegna.', emailSentTo: 'È stata inviata una conferma a {email}.', myOrders: 'I miei ordini', checkStatus: 'Controlla lo stato', offline: 'nessuna connessione, riprova', st_new: 'Inviato al negozio', st_ready: 'Pronto per il ritiro', st_picked_up: 'Ritirato', st_not_available: 'Non disponibile', st_cancelled: 'Annullato',
     wallQ: 'Quanto è grande il muro?',
     wallWhy: 'Facoltativo. Compilalo per vedere quante bombolette di ogni colore ti servono.',
     details: 'Dettagli',
@@ -1685,6 +1716,7 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    yourDetails: 'Seus dados', consentL: 'Concordo em compartilhar meu nome e meus contatos com {shop} para este pedido.', needName: 'Digite seu nome.', needContact: 'Digite um telefone ou e-mail.', needConsent: 'Marque a caixa para compartilhar seus dados com a loja.', sending: 'Enviando seu pedido…', sendFail: 'Não foi possível enviar o pedido: {m}', orderSent: 'Pedido enviado para {shop}', orderNo: 'Pedido nº {n}', pickupCodeL: 'Código de retirada', showCode: 'Mostre este código na loja ao retirar seus sprays. Você paga na loja.', deliveryInfo: 'A loja vai entregar seus sprays. Você paga na entrega.', emailSentTo: 'Uma confirmação foi enviada para {email}.', myOrders: 'Meus pedidos', checkStatus: 'Ver status', offline: 'sem conexão, tente novamente', st_new: 'Enviado à loja', st_ready: 'Pronto para retirar', st_picked_up: 'Retirado', st_not_available: 'Indisponível', st_cancelled: 'Cancelado',
     wallQ: 'Qual o tamanho da parede?',
     wallWhy: 'Opcional. Preencha para ver quantos sprays de cada cor você precisa.',
     details: 'Detalhes',
@@ -2124,7 +2156,7 @@ function showResults() {
   const list = PAINTS
     .filter(p => activeBrands.has(p.brand) && (includeSpecial || p.finish === 'solid')
               && (includeHardware || !isHardware(p))
-              && (!nearOnly || !cityShops().length || shopFor(p.brand)))
+              && (!nearOnly || !cityShops().length || shopFor(p.brand, p.code)))
     .map(p => ({ ...p, d: deltaE2000(lab, p.lab) }))
     .sort((a, b) => a.d - b.d)
     .slice(0, showAll ? 12 : 3);
@@ -2147,7 +2179,7 @@ function showResults() {
     const detLine = document.createElement('div'); detLine.className = 'meta'; detLine.hidden = true; detLine.textContent = extra.filter(Boolean).join(' · ');
     det.addEventListener('click', () => { detLine.hidden = !detLine.hidden; det.setAttribute('aria-expanded', !detLine.hidden); });
     li.querySelector('.meta').after(det, detLine);
-    const pt = priceTag(p.brand);
+    const pt = priceTag(p.brand, p.code);
     if (pt) { const d = document.createElement('div'); d.className = 'price-tag' + (pt.na ? ' na' : ''); d.textContent = pt.text;
       li.querySelector('.meta').after(d); }
     li.querySelector('.score b').textContent = pct(m);
@@ -2233,10 +2265,40 @@ function renderListCount() {
   $('listCount').textContent = n; $('listCount').hidden = n === 0;
 }
 /* ---------- Shops in the chosen city, prices ---------- */
-const SHOPS_ALL = window.SHOPS || [];
+// Shops come from the live database when online; shops.js (or the last saved copy) is the fallback
+const normShop = sh => ({ id: sh.id || null, name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery || null,
+  demo: sh.demo !== false && sh.is_demo !== false, live: !!(sh.live || sh.is_live), lines: sh.lines || [], prices: sh.prices || {},
+  overrides: sh.overrides || {}, out: new Set(sh.out || []) });
+let SHOPS_ALL = (store.shopsCache && store.shopsCache.length ? store.shopsCache : (window.SHOPS || [])).map(normShop);
 const cityShops = () => SHOPS_ALL.filter(sh => sh.city && sh.city === store.city);
-// The shop a can is bought from: the first shop in the city that sells its line
-const shopFor = brand => cityShops().find(sh => sh.lines.includes(brand)) || null;
+// The shop a can is bought from: the first shop in the city that sells its line and has that colour in stock
+const shopFor = (brand, code) => cityShops().find(sh => sh.lines.includes(brand) && !(code && sh.out.has(brand + '|' + code))) || null;
+const CFG = window.KROMATCH_CONFIG || null;
+async function loadLiveShops() {
+  if (!CFG) return false;
+  const get = async path => {
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/${path}`, { headers: { apikey: CFG.supabaseKey } });
+    if (!r.ok) throw new Error(r.status); return r.json();
+  };
+  try {
+    const [shops, lines, outs, ovs] = await Promise.all([
+      get('shops?select=id,name,city,currency,delivery,is_demo,is_live,sort_order&order=sort_order'),
+      get('shop_lines?select=shop_id,line,price'), get('stock_out?select=shop_id,line,code'),
+      get('price_overrides?select=shop_id,line,code,price')]);
+    const list = shops.filter(sh => sh.is_demo || sh.is_live).map(sh => ({
+      id: sh.id, name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery, demo: sh.is_demo, live: sh.is_live,
+      lines: lines.filter(l => l.shop_id === sh.id).map(l => l.line),
+      prices: Object.fromEntries(lines.filter(l => l.shop_id === sh.id).map(l => [l.line, l.price == null ? null : Number(l.price)])),
+      overrides: Object.fromEntries(ovs.filter(o => o.shop_id === sh.id).map(o => [o.line + '|' + o.code, Number(o.price)])),
+      out: outs.filter(o => o.shop_id === sh.id).map(o => o.line + '|' + o.code) }));
+    // a city with a live shop shows only real shops there
+    const liveCities = new Set(list.filter(sh => sh.live && !sh.demo).map(sh => sh.city));
+    const shown = list.filter(sh => !(sh.demo && liveCities.has(sh.city)));
+    store.shopsCache = shown; save();
+    SHOPS_ALL = shown.map(normShop);
+    return true;
+  } catch (e) { console.warn('Live shops unavailable, using saved copy', e); return false; }
+}
 const itemName = i => (lang === 'fr' && i.name_fr) ? cap(i.name_fr) : cap(i.name);
 const cansText = n => n === 1 ? t('oneCan') : t('cans').replace('{n}', n);
 function money(v, cur) {
@@ -2244,22 +2306,24 @@ function money(v, cur) {
     es: cur === 'MXN' ? 'es-MX' : 'es-ES', it: 'it-IT', pt: cur === 'BRL' ? 'pt-BR' : 'pt-PT' }[lang] || 'en';
   try { return new Intl.NumberFormat(loc, { style: 'currency', currency: cur }).format(v); } catch (e) { return v.toFixed(2) + ' ' + cur; }
 }
-function priceOf(shop, brand) {
+function priceOf(shop, brand, code) {
   if (!shop || !shop.lines.includes(brand)) return undefined;   // not sold
+  const o = code && shop.overrides ? shop.overrides[brand + '|' + code] : undefined;
+  if (typeof o === 'number') return o;
   const p = shop.prices ? shop.prices[brand] : null;
   return typeof p === 'number' ? p : null;                       // null = price at shop
 }
-function priceTag(brand) {
+function priceTag(brand, code) {
   const shops = cityShops(); if (!shops.length) return null;
-  const shop = shopFor(brand);
+  const shop = shopFor(brand, code);
   if (!shop) return { text: t('notInCity'), na: true };
-  const p = priceOf(shop, brand);
+  const p = priceOf(shop, brand, code);
   return { text: `${p === null ? t('priceAtShop') : money(p, shop.currency)} · ${shop.name}`, na: false };
 }
-function itemsFor(shop) { return store.list.filter(i => shopFor(i.brand) === shop); }
+function itemsFor(shop) { return store.list.filter(i => shopFor(i.brand, i.code) === shop); }
 function totalsFor(shop) {
   let sum = 0, unpriced = 0, count = 0;
-  itemsFor(shop).forEach(i => { const p = priceOf(shop, i.brand); count += i.qty; if (p === null) unpriced += i.qty; else sum += p * i.qty; });
+  itemsFor(shop).forEach(i => { const p = priceOf(shop, i.brand, i.code); count += i.qty; if (p === null) unpriced += i.qty; else sum += p * i.qty; });
   return { sum, unpriced, count };
 }
 const totalText = (shop, sum, unpriced) => (sum > 0 || unpriced === 0) ? money(sum, shop.currency) : t('priceAtShop');
@@ -2267,7 +2331,7 @@ const unpricedText = (sum, unpriced) => (unpriced && sum > 0) ? t('plusUnpriced'
 
 /* ---------- Cart: one checkout per shop ---------- */
 function itemRow(i, shop) {
-  const p = shop ? priceOf(shop, i.brand) : undefined;
+  const p = shop ? priceOf(shop, i.brand, i.code) : undefined;
   const row = document.createElement('div'); row.className = 'list-item' + (shop ? '' : ' unavail');
   row.innerHTML = `<div class="pair-wrap"><div class="pair" aria-hidden="true"><span style="background:${i.targets[i.targets.length - 1] || i.hex}"></span><span style="background:${i.hex}"></span></div>
       <div class="pair-cap" aria-hidden="true"><span>${t('pairYou')}</span><span>${t('pairCan')}</span></div></div>
@@ -2292,11 +2356,12 @@ function itemRow(i, shop) {
   return row;
 }
 function renderList() {
+  renderMyOrders();
   const empty = store.list.length === 0;
   $('cartEmpty').hidden = !empty; $('cartFull').hidden = empty; $('listMsg').textContent = '';
   const box = $('cartGroups'); box.innerHTML = '';
   if (empty) return;
-  if (cityShops().length) {
+  if (cityShops().some(sh => sh.demo)) {
     const n = document.createElement('p'); n.className = 'note'; n.textContent = t('testShort'); box.appendChild(n);
   }
   if (!cityShops().length) {
@@ -2324,7 +2389,7 @@ function renderList() {
     g.appendChild(btn);
     box.appendChild(g);
   });
-  const missing = store.list.filter(i => !shopFor(i.brand));
+  const missing = store.list.filter(i => !shopFor(i.brand, i.code));
   if (missing.length) {
     const g = document.createElement('section'); g.className = 'shop-group';
     const h = document.createElement('h3'); h.className = 'sub-h'; h.textContent = t('notInCity'); g.appendChild(h);
@@ -2334,7 +2399,7 @@ function renderList() {
 }
 function orderLines(shop) {
   return itemsFor(shop).map(i => {
-    const p = priceOf(shop, i.brand);
+    const p = priceOf(shop, i.brand, i.code);
     return { label: `${i.qty} × ${i.brand} ${[i.code, itemName(i)].filter(Boolean).join(' ')}`,
              price: typeof p === 'number' ? money(p * i.qty, shop.currency) : t('priceAtShop') };
   });
@@ -2396,6 +2461,15 @@ function renderCheckout() {
     $('deliveryDesc').textContent = parts.join(' · ');
   }
   $('addrField').hidden = coMethod !== 'delivery';
+  const real = !shop.demo;
+  $('coDetails').hidden = !real;
+  if (real) {
+    const a = store.account || {};
+    if (!$('coName').value) $('coName').value = a.name || '';
+    if (!$('coPhone').value) $('coPhone').value = a.phone || '';
+    if (!$('coEmail').value) $('coEmail').value = a.email || '';
+    $('coConsentText').textContent = t('consentL').replace('{shop}', shop.name);
+  }
   $('coAddr').value = (store.account && store.account.address) || $('coAddr').value || '';
   const tt = checkoutTotals(shop), box = $('coTotals'); box.innerHTML = '';
   box.appendChild(lineEl(t('subtotal'), totalText(shop, tt.sum, tt.unpriced)));
@@ -2411,13 +2485,15 @@ function openOrder(shop) {
 }
 document.querySelectorAll('input[name=method]').forEach(r => r.addEventListener('change', () => { coMethod = r.value; renderCheckout(); }));
 $('coBack').addEventListener('click', () => { $('orderSheet').hidden = true; });
-$('placeOrder').addEventListener('click', () => {
+$('placeOrder').addEventListener('click', async () => {
   const shop = coShop;
   if (coMethod === 'delivery') {
     const addr = $('coAddr').value.trim();
     if (!addr) { $('coMsg').textContent = t('addrNeeded'); $('coAddr').focus(); return; }
     store.account = Object.assign(store.account || {}, { address: addr }); save();
   }
+  if (!shop.demo) { await placeRealOrder(shop); return; }
+  $('demoNoteEl').hidden = false; $('realDone').hidden = true;
   const tt = checkoutTotals(shop);
   $('orderTitle').textContent = t(coMethod === 'delivery' ? 'doneDelivery' : 'donePickup').replace('{shop}', shop.name);
   const body = $('orderBody'); body.innerHTML = '';
@@ -2433,7 +2509,76 @@ $('placeOrder').addEventListener('click', () => {
   sh.addEventListener('click', () => shareText(orderText(shop), t('orderHeader'))); links.appendChild(sh);
   $('checkoutView').hidden = true; $('doneView').hidden = false; $('orderSheet').scrollTop = 0;
 });
-$('orderClose').addEventListener('click', () => { $('orderSheet').hidden = true; });
+$('orderClose').addEventListener('click', () => { $('orderSheet').hidden = true; renderList(); });
+
+/* ---------- Real orders (live shops) ---------- */
+async function placeRealOrder(shop) {
+  const name = $('coName').value.trim(), phone = $('coPhone').value.trim(), email = $('coEmail').value.trim();
+  if (!name) { $('coMsg').textContent = t('needName'); $('coName').focus(); return; }
+  if (!phone && !email) { $('coMsg').textContent = t('needContact'); $('coPhone').focus(); return; }
+  if (!$('coConsent').checked) { $('coMsg').textContent = t('needConsent'); return; }
+  store.account = Object.assign(store.account || {}, { name, phone, email }); save();
+  const items = itemsFor(shop);
+  const btn = $('placeOrder'); btn.disabled = true; $('coMsg').textContent = t('sending');
+  try {
+    const r = await fetch(`${CFG.functionsUrl}/create-order`, { method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey },
+      body: JSON.stringify({ shop_id: shop.id, method: coMethod, consent: true, lang,
+        customer: { name, phone, email, address: coMethod === 'delivery' ? store.account.address : '' },
+        items: items.map(i => ({ line: i.brand, code: i.code, name: i.name, hex: i.hex, target_hex: i.targets[i.targets.length - 1], qty: i.qty })) }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      $('coMsg').textContent = t('sendFail').replace('{m}', j.error || r.status);
+      if (r.status === 409) { await loadLiveShops(); renderList(); }
+      return;
+    }
+    // Remember the order on this phone and take its cans out of the cart
+    store.orders = [{ id: j.order_id, token: j.public_token, no: j.order_no, code: j.pickup_code, shop: shop.name,
+                      created: new Date().toISOString(), status: 'new' }].concat(store.orders || []).slice(0, 30);
+    store.list = store.list.filter(i => !items.includes(i)); save(); renderListCount();
+    $('orderTitle').textContent = t('orderSent').replace('{shop}', shop.name);
+    $('demoNoteEl').hidden = true; $('realDone').hidden = false;
+    $('rdNo').textContent = t('orderNo').replace('{n}', j.order_no);
+    $('rdCode').textContent = j.pickup_code;
+    $('rdInfo').textContent = coMethod === 'delivery' ? t('deliveryInfo') : t('showCode');
+    $('rdEmail').textContent = email ? t('emailSentTo').replace('{email}', email) : '';
+    const body = $('orderBody'); body.innerHTML = '';
+    items.forEach(i => { const p = priceOf(shop, i.brand, i.code);
+      body.appendChild(lineEl(`${i.qty} × ${i.brand} ${[i.code, itemName(i)].filter(Boolean).join(' ')}`, typeof p === 'number' ? money(p * i.qty, shop.currency) : t('priceAtShop'))); });
+    if (coMethod === 'delivery') body.appendChild(lineEl(t('deliveryFee'), j.delivery_fee ? money(j.delivery_fee, shop.currency) : t('free')));
+    body.appendChild(lineEl(t('total'), (j.subtotal > 0 || !j.unpriced_cans) ? money(j.total, shop.currency) : t('priceAtShop'), true));
+    $('orderLinks').innerHTML = '';
+    $('checkoutView').hidden = true; $('doneView').hidden = false; $('orderSheet').scrollTop = 0;
+    $('coMsg').textContent = '';
+  } catch (e) {
+    $('coMsg').textContent = t('sendFail').replace('{m}', t('offline'));
+  } finally { btn.disabled = false; }
+}
+
+/* ---------- My orders (saved on this phone) ---------- */
+function renderMyOrders() {
+  const list = store.orders || [];
+  $('myOrders').hidden = !list.length;
+  const box = $('myOrdersList'); box.innerHTML = '';
+  list.slice(0, 10).forEach(o => {
+    const d = document.createElement('div'); d.className = 'my-order';
+    d.innerHTML = `<div class="row-actions" style="margin:0;justify-content:space-between"><b></b><span class="status-txt"></span></div>
+      <div class="note"></div><div class="row-actions"><button type="button" class="link-btn chk"></button></div>`;
+    d.querySelector('b').textContent = `${o.shop} · #${o.no}`;
+    d.querySelector('.status-txt').textContent = t('st_' + (o.status || 'new'));
+    d.querySelector('.note').textContent = `${t('pickupCodeL')}: ${o.code}`;
+    const btn = d.querySelector('.chk'); btn.textContent = t('checkStatus');
+    btn.addEventListener('click', async () => {
+      try {
+        const r = await fetch(`${CFG.functionsUrl}/get-order`, { method: 'POST',
+          headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey }, body: JSON.stringify({ order_id: o.id, token: o.token }) });
+        const j = await r.json();
+        if (j.ok) { o.status = j.order.status; save(); d.querySelector('.status-txt').textContent = t('st_' + o.status); }
+      } catch (e) { d.querySelector('.status-txt').textContent = t('offline'); }
+    });
+    box.appendChild(d);
+  });
+}
 function setTab(id) {
   ['tabMatch', 'openDesign', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });
 }
@@ -2451,7 +2596,7 @@ $('shareList').addEventListener('click', () => shareText(listText(), t('listHead
 function candidatePaints() {
   return PAINTS.filter(p => activeBrands.has(p.brand) && (includeSpecial || p.finish === 'solid')
     && (includeHardware || !isHardware(p))
-    && (!nearOnly || !cityShops().length || shopFor(p.brand)));
+    && (!nearOnly || !cityShops().length || shopFor(p.brand, p.code)));
 }
 
 /* ---------- Type a colour code ---------- */
@@ -2643,7 +2788,7 @@ function renderPalette() {
     const opt = c.options[picks[i]];
     if (!opt) { li.textContent = t('noMatches'); ol.appendChild(li); return; }
     const p = opt.p, m = matchPct(opt.d), qty = cansFor(c.share); totalCans += qty;
-    const shop = shopFor(p.brand), price = priceOf(shop, p.brand);
+    const shop = shopFor(p.brand, p.code), price = priceOf(shop, p.brand, p.code);
     if (shop && typeof price === 'number') totals[shop.currency] = (totals[shop.currency] || 0) + price * qty;
     li.innerHTML = `<div class="pair-wrap"><div class="pair" aria-hidden="true"><span style="background:${c.hex}"></span><span style="background:${p.hex}"></span></div>
         <div class="pair-cap" aria-hidden="true"><span>${t('pairYou')}</span><span>${t('pairCan')}</span></div></div>
@@ -2772,7 +2917,7 @@ function fillRangeSelect() {
 }
 function rangePaints() {
   const v = $('rangeSelect').value;
-  const list = v === '__near' ? PAINTS.filter(p => shopFor(p.brand) && p.finish === 'solid' && (includeHardware || !isHardware(p))) : PAINTS.filter(p => p.brand === v);
+  const list = v === '__near' ? PAINTS.filter(p => shopFor(p.brand, p.code) && p.finish === 'solid' && (includeHardware || !isHardware(p))) : PAINTS.filter(p => p.brand === v);
   return { title: v === '__near' ? `Kromatch ${t('nearRange')}` : v, list };
 }
 $('dlRangeProcreate').addEventListener('click', () => { const r = rangePaints(); downloadProcreate(r.title, r.list); });
@@ -2871,11 +3016,28 @@ $('setup').hidden = true;
 applyLang();
 updateLocBar();
 if (pendingSuggest) showSuggest(pendingSuggest);
+loadLiveShops().then(ok => { if (ok) { if (lastSample) showResults(); renderListCount(); } });
+// Link from a confirmation email: #order-<id>-<token>
+(() => {
+  const m = location.hash.match(/^#order-([0-9a-f-]{36})-([0-9a-f-]{36})$/i);
+  if (!m) return;
+  store.orders = store.orders || [];
+  if (!store.orders.some(o => o.id === m[1])) store.orders.unshift({ id: m[1], token: m[2], no: '…', code: '…', shop: '', status: 'new' });
+  save(); history.replaceState(null, '', location.pathname);
+  $('openList').click();
+  fetch(`${CFG.functionsUrl}/get-order`, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey },
+    body: JSON.stringify({ order_id: m[1], token: m[2] }) }).then(r => r.json()).then(j => {
+      if (!j.ok) return; const o = store.orders.find(x => x.id === m[1]);
+      Object.assign(o, { no: j.order.order_no, code: j.order.pickup_code, shop: j.order.shops?.name || '', status: j.order.status });
+      save(); renderMyOrders(); }).catch(() => {});
+})();
 </script>
 <script>
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    // Reload once when an updated version takes over (not on the very first install)
+    const hadController = !!navigator.serviceWorker.controller;
     let reloaded = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloaded) { reloaded = true; location.reload(); } });
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !reloaded) { reloaded = true; location.reload(); } });
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').then(r => r.update()).catch(() => {});
     });
