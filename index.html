@@ -64,6 +64,9 @@
 
   .loc-bar { display: flex; align-items: center; gap: 8px; margin: -8px 0 14px; font-weight: 700; font-size: 0.95rem; }
   .loc-bar .link-btn { margin-left: auto; }
+  .shop-pick { display: flex; align-items: center; gap: 8px; margin: -6px 0 14px; font-size: 0.9rem; font-weight: 700; }
+  .shop-pick select { flex: 1; font: inherit; font-weight: 400; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line);
+                      background: var(--surface); color: var(--ink); min-width: 0; }
   .loc-suggest { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-weight: 700; }
   .loc-suggest .secondary { color: var(--bg); border-color: var(--bg); }
   .loc-suggest .primary { background: var(--bg); color: var(--ink); border-color: var(--bg); }
@@ -261,8 +264,13 @@
   .match.d-skip { opacity: 0.5; }
   .alt-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; padding: 5px 10px; }
   .alt-chip .dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line); display: inline-block; }
-  #designCanvas { display: block; max-width: 100%; max-height: 50vh; margin: 0 auto; }
+  #designCanvas { touch-action: none; -webkit-user-select: none; user-select: none; display: block; max-width: 100%; max-height: 50vh; margin: 0 auto; }
   .show-more { width: 100%; margin-top: 12px; }
+  .go-cart { position: fixed; left: 50%; transform: translateX(-50%); z-index: 26;
+             bottom: calc(76px + env(safe-area-inset-bottom, 0px)); font: inherit; font-weight: 800; font-size: 0.95rem;
+             background: var(--ink); color: var(--bg); border: 0; border-radius: 999px; padding: 12px 20px;
+             box-shadow: 0 6px 18px rgba(0,0,0,0.25); cursor: pointer; white-space: nowrap; }
+  body.has-go-cart main, body.has-go-cart #designSheet { padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px)); }
   .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: grid; grid-template-columns: repeat(4, 1fr);
             background: var(--surface); border-top: 1px solid var(--line);
             padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px)); }
@@ -287,9 +295,11 @@
 <body>
 <main id="app">
   <h1>Kromatch</h1>
-  <p class="tagline" data-i18n="tagline"></p>
+  <p class="tagline" data-i18n="taglineMatch"></p>
   <div class="loc-bar"><span aria-hidden="true">📍</span><span id="locText"></span>
     <button type="button" class="link-btn" id="locChange" data-i18n="locChange"></button></div>
+  <label class="shop-pick" id="shopPick" hidden><span data-i18n="shopLabel"></span>
+    <select id="shopPickSel"></select></label>
   <div class="loc-suggest" id="locSuggest" hidden><span id="locSuggestText"></span>
     <div class="row-actions" style="margin-top:8px">
       <button type="button" class="primary small" id="locSwitch" data-i18n="locSwitch"></button>
@@ -316,7 +326,7 @@
     <p class="instruction" id="hint" aria-live="polite"></p>
     <div class="photo-wrap"><canvas id="photo"></canvas></div>
     <div id="loupe" aria-hidden="true" hidden><canvas id="loupeCanvas" width="240" height="240"></canvas></div>
-    <details class="light-card" id="lightCard">
+    <details class="light-card" id="lightCard" hidden>
       <summary data-i18n="lightLink"></summary>
       <p data-i18n="lightHow"></p>
       <div class="row-actions" style="margin-top:8px">
@@ -341,6 +351,7 @@
       <button type="button" class="secondary filter-btn" id="filterBtn" aria-expanded="false" aria-controls="filterPanel"></button>
     </div>
     <p class="note" id="nearNote" hidden></p>
+    <div id="filterSlotMatch"></div>
     <div id="filterPanel" class="filter-panel" hidden>
     <div id="sprayFilters">
     <h3 class="sub-h" data-i18n="pressure"></h3>
@@ -362,9 +373,10 @@
   </section>
 </main>
 
+<button type="button" class="go-cart" id="goCart" hidden></button>
 <nav class="tabbar" aria-label="Kromatch">
-  <button type="button" class="tab" id="tabMatch" aria-current="page"><span class="tab-ico" aria-hidden="true">◎</span><span data-i18n="tabMatch"></span></button>
   <button type="button" class="tab" id="openDesign"><span class="tab-ico" aria-hidden="true">✎</span><span data-i18n="tabDesign"></span></button>
+  <button type="button" class="tab" id="tabMatch" aria-current="page"><span class="tab-ico" aria-hidden="true">◎</span><span data-i18n="tabMatch"></span></button>
   <button type="button" class="tab" id="openList"><span class="tab-ico" aria-hidden="true">🛒<span class="badge" id="listCount">0</span></span><span data-i18n="list"></span></button>
   <button type="button" class="tab" id="openSettings"><span class="tab-ico" aria-hidden="true">⚙</span><span data-i18n="settings"></span></button>
 </nav>
@@ -422,12 +434,10 @@
           <div><div class="how-num">1</div><h3 data-i18n="s1t"></h3><p data-i18n="s1d"></p></div></li>
         <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="20" y="8" width="120" height="94" rx="10" fill="#E9DFC0"/><rect x="80" y="8" width="60" height="94" fill="#C8463A"/><circle cx="104" cy="34" r="20" fill="#C8463A" stroke="#fff" stroke-width="4"/><circle cx="104" cy="34" r="22" fill="none" stroke="#161616" stroke-width="1.5"/><circle cx="104" cy="34" r="6" fill="none" stroke="#fff" stroke-width="2"/><path d="M104 66c-6 0-10 5-10 10v22h22V76c0-5-6-10-12-10z" fill="#F7F7F5" stroke="#161616" stroke-width="3"/></svg></div>
           <div><div class="how-num">2</div><h3 data-i18n="s2t"></h3><p data-i18n="s2d"></p></div></li>
-        <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="20" y="8" width="120" height="94" rx="10" fill="#D9C27A"/><rect x="34" y="22" width="34" height="26" rx="3" fill="#FFF6D8" stroke="#161616" stroke-width="1.5"/><path d="M51 54c-6 0-10 5-10 10v34h22V64c0-5-6-10-12-10z" fill="#F7F7F5" stroke="#161616" stroke-width="3"/><circle cx="112" cy="42" r="11" fill="#F5C400"/><g stroke="#F5C400" stroke-width="3" stroke-linecap="round"><path d="M112 22v-6M112 68v-6M92 42h-6M138 42h-6M98 28l-4-4M130 60l-4-4M126 28l4-4M94 60l4-4"/></g></svg></div>
-          <div><div class="how-num">3</div><h3 data-i18n="s3t"></h3><p data-i18n="s3d"></p></div></li>
         <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="10" y="10" width="140" height="26" rx="6" fill="#F7F7F5" stroke="#C9C8C3"/><rect x="16" y="15" width="10" height="16" fill="#C8463A"/><rect x="26" y="15" width="10" height="16" fill="#C2402F"/><rect x="42" y="18" width="50" height="5" rx="2" fill="#161616"/><rect x="42" y="26" width="34" height="3" rx="1.5" fill="#5E5F61"/><text x="142" y="28" text-anchor="end" font-size="11" font-weight="800" fill="#161616" font-family="Archivo, sans-serif">98%</text><rect x="10" y="42" width="140" height="26" rx="6" fill="#F7F7F5" stroke="#C9C8C3"/><rect x="16" y="47" width="10" height="16" fill="#C8463A"/><rect x="26" y="47" width="10" height="16" fill="#B8372E"/><rect x="42" y="50" width="44" height="5" rx="2" fill="#161616"/><rect x="42" y="58" width="30" height="3" rx="1.5" fill="#5E5F61"/><text x="142" y="60" text-anchor="end" font-size="11" font-weight="800" fill="#161616" font-family="Archivo, sans-serif">95%</text><rect x="30" y="78" width="100" height="24" rx="12" fill="#161616"/><text x="80" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#F7F7F5" font-family="Archivo, sans-serif">🛒 + 1</text></svg></div>
-          <div><div class="how-num">4</div><h3 data-i18n="s4t"></h3><p data-i18n="s4d"></p></div></li>
+          <div><div class="how-num">3</div><h3 data-i18n="s4t"></h3><p data-i18n="s4d"></p></div></li>
         <li class="how-step"><div class="how-art"><svg viewBox="0 0 160 110" aria-hidden="true"><rect x="6" y="10" width="78" height="90" rx="8" fill="#161616"/><rect x="12" y="16" width="66" height="78" rx="4" fill="#F7F7F5"/><circle cx="34" cy="46" r="14" fill="#C8463A"/><rect x="48" y="58" width="24" height="26" fill="#F5C400"/><rect x="18" y="74" width="26" height="12" fill="#1F6FB2"/><g font-family="Archivo, sans-serif" font-size="9" font-weight="700" fill="#161616"><rect x="94" y="18" width="12" height="12" rx="2" fill="#C8463A"/><text x="110" y="28">× 3</text><rect x="94" y="40" width="12" height="12" rx="2" fill="#F5C400"/><text x="110" y="50">× 2</text><rect x="94" y="62" width="12" height="12" rx="2" fill="#1F6FB2"/><text x="110" y="72">× 1</text><rect x="94" y="84" width="58" height="16" rx="8" fill="#161616"/><text x="123" y="95" text-anchor="middle" fill="#F7F7F5" font-size="8">🛒 6</text></g></svg></div>
-          <div><div class="how-num">5</div><h3 data-i18n="s5t"></h3><p data-i18n="s5d"></p></div></li>
+          <div><div class="how-num">4</div><h3 data-i18n="s5t"></h3><p data-i18n="s5d"></p></div></li>
       </ol>
       <h3 class="sub-h" data-i18n="goodToKnow"></h3>
       <ul class="tips" id="tipsList"></ul>
@@ -458,15 +468,15 @@
     </div>
 
     <div id="designBody" hidden>
-      <div class="chips" id="viewChips" style="margin-top:16px" role="group">
-        <button type="button" class="chip" id="viewOrig" aria-pressed="false" data-i18n="viewOriginal"></button>
-        <button type="button" class="chip" id="viewCans" aria-pressed="true" data-i18n="viewCans"></button>
-      </div>
+      <div id="viewChips" hidden><button type="button" id="viewOrig"></button><button type="button" id="viewCans"></button></div>
+      <p class="note" data-i18n="holdOriginal" style="margin:14px 0 0"></p>
       <div class="photo-wrap" id="designWrap" style="margin-top:10px"><canvas id="designCanvas"></canvas></div>
       <label class="field" id="coloursField"><span id="numColoursLabel"></span>
         <input id="numColours" type="range" min="2" max="40" value="8" style="padding:0"></label>
       <button type="button" class="link-btn" id="autoColours" data-i18n="backToAuto" hidden></button>
       <p class="note" data-i18n="usingFilters"></p>
+      <button type="button" class="secondary filter-btn" id="dFilterBtn" aria-expanded="false" style="margin:6px 0 4px"></button>
+      <div id="filterSlotDesign"></div>
 
       <ol class="matches" id="paletteList"></ol>
       <div id="estimateBox">
@@ -620,9 +630,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-14-focus"></script>
-<script src="shops.js?v=2026-11-14-focus"></script>
-<script src="config.js?v=2026-11-14-focus"></script>
+<script src="colors.js?v=2026-11-15-ux3"></script>
+<script src="shops.js?v=2026-11-15-ux3"></script>
+<script src="config.js?v=2026-11-15-ux3"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -683,6 +693,11 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    goToCart: 'Go to cart · {n}',
+    holdOriginal: 'This is your design painted with the cans below. Touch and hold it to see your original.',
+    taglineMatch: 'Find the right can for any colour.',
+    allShopsIn: 'All shops in {city}',
+    shopLabel: 'Shop',
     addedOne: 'Added 1 can to your cart.',
     back: 'Back',
     welcomeP1: 'Match a colour from any photo', welcomeP2: 'Plan a whole mural from your sketch', welcomeP3: 'Reserve the cans at a shop near you', welcomeStart: 'Start', privacyLink: 'Privacy policy', rememberMe: 'Remember my details on this phone', accPromptTitle: 'Keep your orders and designs', accPromptText: 'Create a free account to track orders and save designs on any device.', accCreate: 'Create free account', notNow: 'Not now', accTitle: 'Your Kromatch account', accBenefits: 'Free. Track your orders and save your designs on any phone or computer.', continueEmail: 'Continue with email', continueGoogle: 'Continue with Google', continueApple: 'Continue with Apple', accLinkSent: 'Check your email and tap the link to sign in.', accError: 'Couldn’t send the link: {m}', accNoPassword: 'No password needed. We’ll email you a sign-in link.', signedInAs: 'Signed in as {email}', signOut: 'Sign out', deleteAccount: 'Delete account', deleteConfirm: 'Delete your account, saved designs and profile? Orders already sent to shops stay with the shops. This can’t be undone.', accDeleted: 'Your account was deleted.', accOrSignIn: 'Create account or sign in', accLocalNote: 'Without an account, your details stay only on this phone.', accSyncedNote: 'Your details are saved to your account.', saveDesign: 'Save design', designNamePrompt: 'Name this design', myDesigns: 'My designs', openDesign: 'Open', designSaved: 'Design saved.', signInToSave: 'Create a free account to save designs.', noDesigns: 'No saved designs yet.',
@@ -713,7 +728,7 @@ const T = {
     viewOriginal: 'Original',
     viewCans: 'With cans',
     numColours: 'Colours: {n}',
-    usingFilters: 'Kromatch finds the colours automatically. Move the slider to merge or split colours. Matches use your brand and pressure filters from the Match tab.',
+    usingFilters: 'Kromatch finds the colours automatically. Move the slider to merge or split colours.',
     width: 'Width',
     height: 'Height',
     coats: 'Coats',
@@ -869,6 +884,11 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    goToCart: 'Στο καλάθι · {n}',
+    holdOriginal: 'Αυτό είναι το σχέδιό σου με τα σπρέι παρακάτω. Άγγιξε και κράτα για να δεις το αρχικό.',
+    taglineMatch: 'Βρες το σωστό σπρέι για κάθε χρώμα.',
+    allShopsIn: 'Όλα τα καταστήματα ({city})',
+    shopLabel: 'Κατάστημα',
     addedOne: 'Προστέθηκε 1 σπρέι στο καλάθι σου.',
     back: 'Πίσω',
     welcomeP1: 'Ταίριαξε ένα χρώμα από οποιαδήποτε φωτογραφία', welcomeP2: 'Σχεδίασε ολόκληρη τοιχογραφία από το σκίτσο σου', welcomeP3: 'Κράτησε τα σπρέι σε κατάστημα κοντά σου', welcomeStart: 'Ξεκίνα', privacyLink: 'Πολιτική απορρήτου', rememberMe: 'Να θυμάται τα στοιχεία μου σε αυτό το κινητό', accPromptTitle: 'Κράτα τις παραγγελίες και τα σχέδιά σου', accPromptText: 'Φτιάξε δωρεάν λογαριασμό για να βλέπεις τις παραγγελίες σου και να αποθηκεύεις σχέδια σε κάθε συσκευή.', accCreate: 'Δωρεάν λογαριασμός', notNow: 'Όχι τώρα', accTitle: 'Ο λογαριασμός σου στο Kromatch', accBenefits: 'Δωρεάν. Παρακολούθησε τις παραγγελίες σου και αποθήκευσε τα σχέδιά σου σε κάθε κινητό ή υπολογιστή.', continueEmail: 'Συνέχεια με email', continueGoogle: 'Συνέχεια με Google', continueApple: 'Συνέχεια με Apple', accLinkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.', accError: 'Ο σύνδεσμος δεν στάλθηκε: {m}', accNoPassword: 'Χωρίς κωδικό. Θα σου στείλουμε σύνδεσμο σύνδεσης στο email.', signedInAs: 'Συνδεδεμένος ως {email}', signOut: 'Αποσύνδεση', deleteAccount: 'Διαγραφή λογαριασμού', deleteConfirm: 'Να διαγραφούν ο λογαριασμός, τα σχέδια και το προφίλ σου; Οι παραγγελίες που έχουν ήδη σταλεί μένουν στα καταστήματα. Δεν αναιρείται.', accDeleted: 'Ο λογαριασμός σου διαγράφηκε.', accOrSignIn: 'Δημιουργία λογαριασμού ή σύνδεση', accLocalNote: 'Χωρίς λογαριασμό, τα στοιχεία σου μένουν μόνο σε αυτό το κινητό.', accSyncedNote: 'Τα στοιχεία σου αποθηκεύονται στον λογαριασμό σου.', saveDesign: 'Αποθήκευση σχεδίου', designNamePrompt: 'Δώσε όνομα στο σχέδιο', myDesigns: 'Τα σχέδιά μου', openDesign: 'Άνοιγμα', designSaved: 'Το σχέδιο αποθηκεύτηκε.', signInToSave: 'Φτιάξε δωρεάν λογαριασμό για να αποθηκεύεις σχέδια.', noDesigns: 'Δεν υπάρχουν ακόμα αποθηκευμένα σχέδια.',
@@ -899,7 +919,7 @@ const T = {
     viewOriginal: 'Αρχικό',
     viewCans: 'Με σπρέι',
     numColours: 'Χρώματα: {n}',
-    usingFilters: 'Οι αντιστοιχίες χρησιμοποιούν τα φίλτρα μάρκας και πίεσης από την καρτέλα Ταίριασμα.',
+    usingFilters: 'Το Kromatch βρίσκει τα χρώματα αυτόματα. Μετακίνησε τον δείκτη για να ενώσεις ή να χωρίσεις χρώματα.',
     width: 'Πλάτος',
     height: 'Ύψος',
     coats: 'Στρώσεις',
@@ -1055,6 +1075,11 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    goToCart: 'Voir le panier · {n}',
+    holdOriginal: 'Voici votre dessin avec les bombes ci-dessous. Touchez et maintenez pour voir l’original.',
+    taglineMatch: 'Trouvez la bonne bombe pour chaque couleur.',
+    allShopsIn: 'Tous les magasins à {city}',
+    shopLabel: 'Magasin',
     addedOne: '1 bombe ajoutée au panier.',
     back: 'Retour',
     welcomeP1: 'Trouvez une couleur à partir de n’importe quelle photo', welcomeP2: 'Préparez toute une fresque à partir de votre croquis', welcomeP3: 'Réservez les bombes dans un magasin près de chez vous', welcomeStart: 'Commencer', privacyLink: 'Politique de confidentialité', rememberMe: 'Mémoriser mes coordonnées sur ce téléphone', accPromptTitle: 'Gardez vos commandes et vos projets', accPromptText: 'Créez un compte gratuit pour suivre vos commandes et enregistrer vos projets sur tous vos appareils.', accCreate: 'Créer un compte gratuit', notNow: 'Pas maintenant', accTitle: 'Votre compte Kromatch', accBenefits: 'Gratuit. Suivez vos commandes et enregistrez vos projets sur n’importe quel téléphone ou ordinateur.', continueEmail: 'Continuer avec un e-mail', continueGoogle: 'Continuer avec Google', continueApple: 'Continuer avec Apple', accLinkSent: 'Consultez vos e-mails et touchez le lien pour vous connecter.', accError: 'Le lien n’a pas pu être envoyé\u00a0: {m}', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un lien de connexion par e-mail.', signedInAs: 'Connecté en tant que {email}', signOut: 'Se déconnecter', deleteAccount: 'Supprimer le compte', deleteConfirm: 'Supprimer votre compte, vos projets et votre profil\u202f? Les commandes déjà envoyées restent chez les magasins. Action irréversible.', accDeleted: 'Votre compte a été supprimé.', accOrSignIn: 'Créer un compte ou se connecter', accLocalNote: 'Sans compte, vos coordonnées restent uniquement sur ce téléphone.', accSyncedNote: 'Vos coordonnées sont enregistrées dans votre compte.', saveDesign: 'Enregistrer le projet', designNamePrompt: 'Nommez ce projet', myDesigns: 'Mes projets', openDesign: 'Ouvrir', designSaved: 'Projet enregistré.', signInToSave: 'Créez un compte gratuit pour enregistrer vos projets.', noDesigns: 'Aucun projet enregistré.',
@@ -1085,7 +1110,7 @@ const T = {
     viewOriginal: 'Original',
     viewCans: 'Avec les bombes',
     numColours: 'Couleurs : {n}',
-    usingFilters: 'Les correspondances utilisent vos filtres de marque et de pression de l’onglet Trouver.',
+    usingFilters: 'Kromatch trouve les couleurs automatiquement. Déplacez le curseur pour fusionner ou séparer des couleurs.',
     width: 'Largeur',
     height: 'Hauteur',
     coats: 'Couches',
@@ -1241,6 +1266,11 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    goToCart: 'Zum Warenkorb · {n}',
+    holdOriginal: 'Das ist dein Design mit den Dosen unten. Halte es gedrückt, um das Original zu sehen.',
+    taglineMatch: 'Finde die richtige Dose für jede Farbe.',
+    allShopsIn: 'Alle Shops in {city}',
+    shopLabel: 'Shop',
     addedOne: '1 Dose zum Warenkorb hinzugefügt.',
     back: 'Zurück',
     welcomeP1: 'Eine Farbe aus jedem Foto abgleichen', welcomeP2: 'Plane ein ganzes Wandbild aus deiner Skizze', welcomeP3: 'Die Dosen in einem Shop in deiner Nähe reservieren', welcomeStart: 'Los geht’s', privacyLink: 'Datenschutzerklärung', rememberMe: 'Meine Angaben auf diesem Handy merken', accPromptTitle: 'Behalte deine Bestellungen und Designs', accPromptText: 'Erstelle ein kostenloses Konto, um Bestellungen zu verfolgen und Designs auf jedem Gerät zu speichern.', accCreate: 'Kostenloses Konto erstellen', notNow: 'Nicht jetzt', accTitle: 'Dein Kromatch-Konto', accBenefits: 'Kostenlos. Verfolge deine Bestellungen und speichere deine Designs auf jedem Handy oder Computer.', continueEmail: 'Weiter mit E-Mail', continueGoogle: 'Weiter mit Google', continueApple: 'Weiter mit Apple', accLinkSent: 'Sieh in deinen E-Mails nach und tippe auf den Link, um dich anzumelden.', accError: 'Link konnte nicht gesendet werden: {m}', accNoPassword: 'Kein Passwort nötig. Wir schicken dir einen Anmeldelink per E-Mail.', signedInAs: 'Angemeldet als {email}', signOut: 'Abmelden', deleteAccount: 'Konto löschen', deleteConfirm: 'Konto, gespeicherte Designs und Profil löschen? Bereits gesendete Bestellungen bleiben bei den Shops. Das lässt sich nicht rückgängig machen.', accDeleted: 'Dein Konto wurde gelöscht.', accOrSignIn: 'Konto erstellen oder anmelden', accLocalNote: 'Ohne Konto bleiben deine Angaben nur auf diesem Handy.', accSyncedNote: 'Deine Angaben sind in deinem Konto gespeichert.', saveDesign: 'Design speichern', designNamePrompt: 'Gib diesem Design einen Namen', myDesigns: 'Meine Designs', openDesign: 'Öffnen', designSaved: 'Design gespeichert.', signInToSave: 'Erstelle ein kostenloses Konto, um Designs zu speichern.', noDesigns: 'Noch keine gespeicherten Designs.',
@@ -1271,7 +1301,7 @@ const T = {
     viewOriginal: 'Original',
     viewCans: 'Mit Dosen',
     numColours: 'Farben: {n}',
-    usingFilters: 'Kromatch erkennt die Farben automatisch. Mit dem Regler kannst du Farben zusammenfassen oder aufteilen. Die Treffer nutzen deine Marken- und Druckfilter aus dem Tab „Abgleich“.',
+    usingFilters: 'Kromatch erkennt die Farben automatisch. Mit dem Regler kannst du Farben zusammenfassen oder aufteilen.',
     width: 'Breite',
     height: 'Höhe',
     coats: 'Schichten',
@@ -1427,6 +1457,11 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    goToCart: 'Ir al carrito · {n}',
+    holdOriginal: 'Este es tu diseño pintado con los sprays de abajo. Mantén pulsado para ver el original.',
+    taglineMatch: 'Encuentra el spray adecuado para cada color.',
+    allShopsIn: 'Todas las tiendas de {city}',
+    shopLabel: 'Tienda',
     addedOne: 'Se añadió 1 spray al carrito.',
     back: 'Atrás',
     welcomeP1: 'Encuentra un color en cualquier foto', welcomeP2: 'Planifica un mural entero desde tu boceto', welcomeP3: 'Reserva los sprays en una tienda cerca de ti', welcomeStart: 'Empezar', privacyLink: 'Política de privacidad', rememberMe: 'Recordar mis datos en este móvil', accPromptTitle: 'Guarda tus pedidos y diseños', accPromptText: 'Crea una cuenta gratuita para seguir tus pedidos y guardar diseños en cualquier dispositivo.', accCreate: 'Crear cuenta gratuita', notNow: 'Ahora no', accTitle: 'Tu cuenta de Kromatch', accBenefits: 'Gratis. Sigue tus pedidos y guarda tus diseños en cualquier móvil u ordenador.', continueEmail: 'Continuar con correo', continueGoogle: 'Continuar con Google', continueApple: 'Continuar con Apple', accLinkSent: 'Revisa tu correo y toca el enlace para iniciar sesión.', accError: 'No se pudo enviar el enlace: {m}', accNoPassword: 'Sin contraseña. Te enviamos un enlace de acceso por correo.', signedInAs: 'Sesión iniciada como {email}', signOut: 'Cerrar sesión', deleteAccount: 'Eliminar cuenta', deleteConfirm: '¿Eliminar tu cuenta, tus diseños y tu perfil? Los pedidos ya enviados se quedan en las tiendas. No se puede deshacer.', accDeleted: 'Tu cuenta se ha eliminado.', accOrSignIn: 'Crear cuenta o iniciar sesión', accLocalNote: 'Sin cuenta, tus datos se quedan solo en este móvil.', accSyncedNote: 'Tus datos se guardan en tu cuenta.', saveDesign: 'Guardar diseño', designNamePrompt: 'Ponle nombre a este diseño', myDesigns: 'Mis diseños', openDesign: 'Abrir', designSaved: 'Diseño guardado.', signInToSave: 'Crea una cuenta gratuita para guardar diseños.', noDesigns: 'Aún no hay diseños guardados.',
@@ -1457,7 +1492,7 @@ const T = {
     viewOriginal: 'Original',
     viewCans: 'Con sprays',
     numColours: 'Colores: {n}',
-    usingFilters: 'Kromatch detecta los colores automáticamente. Mueve el control para unir o separar colores. Las coincidencias usan tus filtros de marca y presión de la pestaña Buscar.',
+    usingFilters: 'Kromatch detecta los colores automáticamente. Mueve el control para unir o separar colores.',
     width: 'Ancho',
     height: 'Alto',
     coats: 'Capas',
@@ -1613,6 +1648,11 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    goToCart: 'Vai al carrello · {n}',
+    holdOriginal: 'Questo è il tuo progetto con le bombolette qui sotto. Tieni premuto per vedere l’originale.',
+    taglineMatch: 'Trova la bomboletta giusta per ogni colore.',
+    allShopsIn: 'Tutti i negozi a {city}',
+    shopLabel: 'Negozio',
     addedOne: '1 bomboletta aggiunta al carrello.',
     back: 'Indietro',
     welcomeP1: 'Abbina un colore da qualsiasi foto', welcomeP2: 'Pianifica un intero murale dal tuo schizzo', welcomeP3: 'Prenota le bombolette in un negozio vicino a te', welcomeStart: 'Inizia', privacyLink: 'Informativa sulla privacy', rememberMe: 'Ricorda i miei dati su questo telefono', accPromptTitle: 'Conserva ordini e progetti', accPromptText: 'Crea un account gratuito per seguire gli ordini e salvare i progetti su qualsiasi dispositivo.', accCreate: 'Crea account gratuito', notNow: 'Non ora', accTitle: 'Il tuo account Kromatch', accBenefits: 'Gratis. Segui i tuoi ordini e salva i tuoi progetti su qualsiasi telefono o computer.', continueEmail: 'Continua con email', continueGoogle: 'Continua con Google', continueApple: 'Continua con Apple', accLinkSent: 'Controlla la tua email e tocca il link per accedere.', accError: 'Impossibile inviare il link: {m}', accNoPassword: 'Nessuna password. Ti inviamo un link di accesso via email.', signedInAs: 'Accesso effettuato come {email}', signOut: 'Esci', deleteAccount: 'Elimina account', deleteConfirm: 'Eliminare account, progetti salvati e profilo? Gli ordini già inviati restano ai negozi. Non si può annullare.', accDeleted: 'Il tuo account è stato eliminato.', accOrSignIn: 'Crea un account o accedi', accLocalNote: 'Senza account, i tuoi dati restano solo su questo telefono.', accSyncedNote: 'I tuoi dati sono salvati nel tuo account.', saveDesign: 'Salva progetto', designNamePrompt: 'Dai un nome a questo progetto', myDesigns: 'I miei progetti', openDesign: 'Apri', designSaved: 'Progetto salvato.', signInToSave: 'Crea un account gratuito per salvare i progetti.', noDesigns: 'Nessun progetto salvato.',
@@ -1643,7 +1683,7 @@ const T = {
     viewOriginal: 'Originale',
     viewCans: 'Con le bombolette',
     numColours: 'Colori: {n}',
-    usingFilters: 'Kromatch trova i colori automaticamente. Sposta il cursore per unire o separare i colori. Gli abbinamenti usano i filtri di marca e pressione della scheda Abbina.',
+    usingFilters: 'Kromatch trova i colori automaticamente. Sposta il cursore per unire o separare i colori.',
     width: 'Larghezza',
     height: 'Altezza',
     coats: 'Mani',
@@ -1799,6 +1839,11 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    goToCart: 'Ir ao carrinho · {n}',
+    holdOriginal: 'Este é o seu projeto pintado com os sprays abaixo. Toque e segure para ver o original.',
+    taglineMatch: 'Encontre o spray certo para cada cor.',
+    allShopsIn: 'Todas as lojas em {city}',
+    shopLabel: 'Loja',
     addedOne: '1 spray adicionado ao carrinho.',
     back: 'Voltar',
     welcomeP1: 'Encontre uma cor em qualquer foto', welcomeP2: 'Planeje um mural inteiro a partir do seu esboço', welcomeP3: 'Reserve os sprays numa loja perto de você', welcomeStart: 'Começar', privacyLink: 'Política de privacidade', rememberMe: 'Lembrar meus dados neste telefone', accPromptTitle: 'Guarde seus pedidos e projetos', accPromptText: 'Crie uma conta grátis para acompanhar pedidos e salvar projetos em qualquer dispositivo.', accCreate: 'Criar conta grátis', notNow: 'Agora não', accTitle: 'Sua conta Kromatch', accBenefits: 'Grátis. Acompanhe seus pedidos e salve seus projetos em qualquer telefone ou computador.', continueEmail: 'Continuar com e-mail', continueGoogle: 'Continuar com Google', continueApple: 'Continuar com Apple', accLinkSent: 'Confira seu e-mail e toque no link para entrar.', accError: 'Não foi possível enviar o link: {m}', accNoPassword: 'Sem senha. Enviamos um link de acesso por e-mail.', signedInAs: 'Conectado como {email}', signOut: 'Sair', deleteAccount: 'Excluir conta', deleteConfirm: 'Excluir sua conta, projetos salvos e perfil? Pedidos já enviados ficam com as lojas. Não dá para desfazer.', accDeleted: 'Sua conta foi excluída.', accOrSignIn: 'Criar conta ou entrar', accLocalNote: 'Sem conta, seus dados ficam só neste telefone.', accSyncedNote: 'Seus dados são salvos na sua conta.', saveDesign: 'Salvar projeto', designNamePrompt: 'Dê um nome a este projeto', myDesigns: 'Meus projetos', openDesign: 'Abrir', designSaved: 'Projeto salvo.', signInToSave: 'Crie uma conta grátis para salvar projetos.', noDesigns: 'Nenhum projeto salvo ainda.',
@@ -1829,7 +1874,7 @@ const T = {
     viewOriginal: 'Original',
     viewCans: 'Com os sprays',
     numColours: 'Cores: {n}',
-    usingFilters: 'O Kromatch encontra as cores automaticamente. Mova o controle para juntar ou separar cores. As combinações usam seus filtros de marca e pressão da aba Encontrar.',
+    usingFilters: 'O Kromatch encontra as cores automaticamente. Mova o controle para juntar ou separar cores.',
     width: 'Largura',
     height: 'Altura',
     coats: 'Demãos',
@@ -2236,6 +2281,7 @@ const matchPct = d => Math.max(0, Math.round(100 - d * 2.5)); // ΔE 2 → 95%, 
 function label(p) { return p >= 95 ? t('l1') : p >= 87 ? t('l2') : p >= 75 ? t('l3') : t('l4'); }
 function inList(id) { return store.list.some(i => i.id === id); }
 
+const matchQty = {};
 function showResults() {
   if (!lastSample) return;
   const [r, g, b] = lastSample, hex = rgbToHex(r, g, b), lab = rgbToLab(r, g, b);
@@ -2261,7 +2307,10 @@ function showResults() {
         <div class="pair-cap" aria-hidden="true"><span>${t('pairYou')}</span><span>${t('pairCan')}</span></div></div>
       <div><div class="name"></div><div class="meta"></div></div>
       <div class="score"><b></b><span></span></div>
-      <button type="button" class="add"></button>`;
+      <div class="d-actions">
+        <div class="qty"><button type="button" class="minus" aria-label="−">−</button><span></span><button type="button" class="plus" aria-label="+">+</button></div>
+        <button type="button" class="add"></button>
+      </div>`;
     li.querySelector('.name').textContent = paintName(p);
     const PL = { low: 'pLow', medium: 'pMedium', high: 'pHigh', hardware: 'hardware' };
     const extra = [p.code, PL[p.pressure] ? t(PL[p.pressure]) : '', p.finish !== 'solid' ? t(p.finish) : ''];
@@ -2276,8 +2325,12 @@ function showResults() {
     li.querySelector('.score b').textContent = pct(m);
     li.querySelector('.score span').textContent = label(m);
     const btn = li.querySelector('.add');
-    const sync = () => { const on = inList(p.id); btn.setAttribute('aria-pressed', on); btn.textContent = on ? t('inList') : t('addToList'); };
-    btn.addEventListener('click', () => { addToList(p, hex); sync(); });
+    const q = () => matchQty[p.id] || 1;
+    const sync = () => { const on = inList(p.id); btn.setAttribute('aria-pressed', on); btn.textContent = on ? t('inList') : t('addToList');
+                         li.querySelector('.qty span').textContent = q(); };
+    li.querySelector('.minus').addEventListener('click', () => { matchQty[p.id] = Math.max(1, q() - 1); sync(); });
+    li.querySelector('.plus').addEventListener('click', () => { matchQty[p.id] = Math.min(99, q() + 1); sync(); });
+    btn.addEventListener('click', () => { for (let k = 0; k < q(); k++) addToList(p, hex); sync(); });
     sync();
     ol.appendChild(li);
   });
@@ -2295,11 +2348,23 @@ function updateFilterBtn() {
   const graffiti = BRANDS.filter(b => BRAND_PRESSURE[b] !== 'hardware');
   const n = (graffiti.some(b => !activeBrands.has(b)) ? 1 : 0) + (includeSpecial ? 1 : 0) + (includeHardware ? 1 : 0);
   $('filterBtn').textContent = n ? t('filtersOn').replace('{n}', n) : t('filters');
+  if ($('dFilterBtn')) $('dFilterBtn').textContent = $('filterBtn').textContent;
 }
-$('filterBtn').addEventListener('click', () => {
+function toggleFilters(btn, where) {
+  placeFilters(where);
   const open = $('filterPanel').hidden; $('filterPanel').hidden = !open;
-  $('filterBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
-});
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+$('filterBtn').addEventListener('click', () => toggleFilters($('filterBtn'), 'match'));
+$('dFilterBtn').addEventListener('click', () => toggleFilters($('dFilterBtn'), 'design'));
+// When filters change, re-match the open design with the cans now allowed (keeps its colours)
+function rematchDesign() {
+  if ($('designSheet').hidden || typeof clusters === 'undefined' || !clusters.length) return;
+  const cands = candidatePaints();
+  clusters.forEach(c => { c.options = cands.map(p => ({ p, d: deltaE2000(c.lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5); });
+  picks = clusters.map(() => 0); qtyOverride = {};
+  drawDesign(); renderPalette(); updateFilterBtn();
+}
 
 const BRAND_PRESSURE = {};
 PAINTS.forEach(p => { BRAND_PRESSURE[p.brand] = p.pressure; });
@@ -2309,10 +2374,10 @@ function setPressure(p) {
   BRANDS.forEach(b => { if (BRAND_PRESSURE[b] === 'hardware' ? includeHardware : (p === 'all' || BRAND_PRESSURE[b] === p)) activeBrands.add(b); });
   document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
   document.querySelectorAll('#brandChips .chip').forEach(c => c.setAttribute('aria-pressed', activeBrands.has(c.dataset.brand) ? 'true' : 'false'));
-  showResults();
+  showResults(); rematchDesign(); updateFilterBtn();
 }
 document.querySelectorAll('#pressureChips .chip').forEach(btn => btn.addEventListener('click', () => setPressure(btn.dataset.p)));
-$('specialToggle').addEventListener('change', e => { includeSpecial = e.target.checked; showResults(); });
+$('specialToggle').addEventListener('change', e => { includeSpecial = e.target.checked; showResults(); rematchDesign(); updateFilterBtn(); });
 function syncHardwareChips() {
   document.querySelectorAll('#brandChips .chip').forEach(c => {
     if (BRAND_PRESSURE[c.dataset.brand] !== 'hardware') return;
@@ -2337,7 +2402,7 @@ BRANDS.forEach(brand => {
     const p = graffiti.every(b => activeBrands.has(b)) ? 'all'
       : groups.find(g => sel.length && sel.every(b => BRAND_PRESSURE[b] === g) && BRANDS.filter(b => BRAND_PRESSURE[b] === g).every(b => activeBrands.has(b))) || '';
     document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
-    showResults();
+    showResults(); rematchDesign(); updateFilterBtn();
   });
   $('brandChips').appendChild(btn);
 });
@@ -2354,14 +2419,35 @@ function addToList(p, target) {
 function renderListCount() {
   const n = store.list.reduce((a, i) => a + i.qty, 0);
   $('listCount').textContent = n; $('listCount').hidden = n === 0;
+  updateGoCart();
 }
+function updateGoCart() {
+  const n = store.list.reduce((a, i) => a + i.qty, 0);
+  const onPage = $('listSheet').hidden && $('settingsSheet').hidden && $('orderSheet').hidden && $('accountSheet').hidden && $('setup').hidden;
+  const show = n > 0 && onPage;
+  $('goCart').hidden = !show; document.body.classList.toggle('has-go-cart', show);
+  $('goCart').textContent = '🛒 ' + t('goToCart').replace('{n}', n === 1 ? t('oneCan') : t('cans').replace('{n}', n));
+}
+$('goCart').addEventListener('click', () => $('openList').click());
 /* ---------- Shops in the chosen city, prices ---------- */
 // Shops come from the live database when online; shops.js (or the last saved copy) is the fallback
 const normShop = sh => ({ id: sh.id || null, name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery || null,
   demo: sh.demo !== false && sh.is_demo !== false, live: !!(sh.live || sh.is_live), lines: sh.lines || [], prices: sh.prices || {},
   overrides: sh.overrides || {}, out: new Set(sh.out || []) });
 let SHOPS_ALL = (store.shopsCache && store.shopsCache.length ? store.shopsCache : (window.SHOPS || [])).map(normShop);
-const cityShops = () => SHOPS_ALL.filter(sh => sh.city && sh.city === store.city);
+const allCityShops = () => SHOPS_ALL.filter(sh => sh.city && sh.city === store.city);
+const shopKey = sh => sh.id || sh.name;
+// Everyone sees all shops in their city, unless they picked one shop
+const cityShops = () => { const all = allCityShops(); const pref = store.shopPref && all.find(sh => shopKey(sh) === store.shopPref); return pref ? [pref] : all; };
+function renderShopPick() {
+  const all = allCityShops(), sel = $('shopPickSel');
+  $('shopPick').hidden = all.length < 2;
+  if (store.shopPref && !all.some(sh => shopKey(sh) === store.shopPref)) { store.shopPref = ''; save(); }
+  if (all.length < 2) return;
+  sel.innerHTML = `<option value="">${t('allShopsIn').replace('{city}', cityName(store.city))}</option>` +
+    all.map(sh => `<option value="${shopKey(sh)}">${sh.name}</option>`).join('');
+  sel.value = store.shopPref || '';
+}
 // The shop a can is bought from: the first shop in the city that sells its line and has that colour in stock
 const shopFor = (brand, code) => cityShops().find(sh => sh.lines.includes(brand) && !(code && sh.out.has(brand + '|' + code))) || null;
 const CFG = window.KROMATCH_CONFIG || null;
@@ -2684,6 +2770,7 @@ function setTab(id) {
   ['tabMatch', 'openDesign', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });
 }
 function goMatch() {
+  placeFilters('match');
   $('listSheet').hidden = true; $('settingsSheet').hidden = true; $('designSheet').hidden = true; setTab('tabMatch');
   if (lastSample) showResults(); renderListCount();
 }
@@ -2722,7 +2809,12 @@ const dCanvas = $('designCanvas'), dCtx = dCanvas.getContext('2d', { willReadFre
 let designOrig = null, designMap = null;
 
 $('designFile').addEventListener('change', e => loadDesignFile(e.target.files[0]));
+function placeFilters(where) {
+  const slot = $(where === 'design' ? 'filterSlotDesign' : 'filterSlotMatch');
+  if ($('filterPanel').previousElementSibling !== slot) slot.after($('filterPanel'));
+}
 function openDesignTab() {
+  placeFilters('design');
   $('listSheet').hidden = true; $('settingsSheet').hidden = true;
   fillRangeSelect(); $('designSheet').hidden = false; setTab('openDesign');
 }
@@ -2946,6 +3038,11 @@ $('numColours').addEventListener('change', () => { autoColours = false; runDesig
 $('autoColours').addEventListener('click', () => { autoColours = true; runDesign(); });
 ['wallW', 'wallH', 'wallUnit', 'wallCoats'].forEach(id => { const f = () => { qtyOverride = {}; renderPalette(); }; $(id).addEventListener('input', f); $(id).addEventListener('change', f); });
 $('viewOrig').addEventListener('click', () => { designView = 'orig'; drawDesign(); });
+// Touch and hold the preview to compare with the original
+const showOrig = on => { designView = on ? 'orig' : 'cans'; drawDesign(); };
+dCanvas.addEventListener('pointerdown', e => { e.preventDefault(); showOrig(true); });
+['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => dCanvas.addEventListener(ev, () => { if (designView === 'orig') showOrig(false); }));
+dCanvas.addEventListener('contextmenu', e => e.preventDefault());
 $('viewCans').addEventListener('click', () => { designView = 'cans'; drawDesign(); });
 $('addAll').addEventListener('click', () => {
   let n = 0;
@@ -3250,7 +3347,12 @@ function distKm(a1, o1, a2, o2) {
 }
 function updateLocBar() {
   $('locText').textContent = store.city ? t('locNear').replace('{city}', cityName(store.city)) : t('locNoCity');
+  renderShopPick();
 }
+$('shopPickSel').addEventListener('change', e => {
+  store.shopPref = e.target.value; save();
+  if (lastSample) showResults(); rematchDesign(); if (!$('listSheet').hidden) renderList(); renderListCount();
+});
 let suggestCity = '';
 function showSuggest(key) {
   suggestCity = key;
@@ -3296,7 +3398,7 @@ async function refreshLive(force) {
   if (refreshing || (!force && Date.now() - lastRefresh < 30000)) return;
   refreshing = true;
   const before = JSON.stringify(store.shopsCache || null);
-  const ok = await loadLiveShops();
+  const ok = await loadLiveShops(); renderShopPick();
   refreshing = false; lastRefresh = Date.now();
   if (!ok || (!force && JSON.stringify(store.shopsCache || null) === before)) return;   // nothing changed
   if (lastSample && !$('results').hidden) showResults();
@@ -3349,6 +3451,7 @@ function navBack() {
 }
 history.replaceState({ nav: navSnap(), depth: 0 }, '');
 const navObserver = new MutationObserver(() => {
+  updateGoCart();
   if (navRestoring) return;
   clearTimeout(navTimer);
   navTimer = setTimeout(() => {
