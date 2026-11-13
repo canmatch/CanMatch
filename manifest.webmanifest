@@ -1,6 +1,6 @@
 {
-  "name": "CanMatch",
-  "short_name": "CanMatch",
+  "name": "Kromatch",
+  "short_name": "Kromatch",
   "description": "Match any colour or plan a whole mural with real spray cans.",
   "start_url": "./index.html",
   "scope": "./",

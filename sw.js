@@ -1,7 +1,7 @@
-// CanMatch offline support.
+// Kromatch offline support.
 // Online: always fetch the newest files from the server (so updates reach people right away),
 // and keep a copy. Offline: use the saved copy so matching still works.
-const CACHE = 'canmatch-v2';
+const CACHE = 'kromatch-v1';
 const CORE = ['./', './index.html', './colors.js', './shops.js', './manifest.webmanifest',
               './icon-192.png', './icon-512.png', './apple-touch-icon.png', './favicon-32.png'];
 

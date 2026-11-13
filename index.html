@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>CanMatch</title>
-<meta name="description" content="Snap any colour. Find the spray paint that matches it.">
+<title>Kromatch</title>
+<meta name="description" content="Match any colour or plan a whole mural with real spray cans.">
 <!-- Link preview (WhatsApp, Messages, Instagram, Facebook...) -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="CanMatch">
-<meta property="og:description" content="Snap any colour. Find the spray paint that matches it.">
+<meta property="og:title" content="Kromatch">
+<meta property="og:description" content="Match any colour or plan a whole mural with real spray cans.">
 <meta property="og:url" content="https://kromatch.netlify.app/">
 <meta property="og:image" content="https://kromatch.netlify.app/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="CanMatch logo: a spray can with two matching reds">
+<meta property="og:image:alt" content="Kromatch logo: a spray can with two matching reds">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Browser tab and home-screen icons -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -24,7 +24,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#161616">
-<meta name="apple-mobile-web-app-title" content="CanMatch">
+<meta name="apple-mobile-web-app-title" content="Kromatch">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
@@ -255,7 +255,7 @@
 </head>
 <body>
 <main id="app">
-  <h1>CanMatch</h1>
+  <h1>Kromatch</h1>
   <p class="tagline" data-i18n="tagline"></p>
   <div class="loc-bar"><span aria-hidden="true">📍</span><span id="locText"></span>
     <button type="button" class="link-btn" id="locChange" data-i18n="locChange"></button></div>
@@ -331,7 +331,7 @@
   </section>
 </main>
 
-<nav class="tabbar" aria-label="CanMatch">
+<nav class="tabbar" aria-label="Kromatch">
   <button type="button" class="tab" id="tabMatch" aria-current="page"><span class="tab-ico" aria-hidden="true">◎</span><span data-i18n="tabMatch"></span></button>
   <button type="button" class="tab" id="openDesign"><span class="tab-ico" aria-hidden="true">✎</span><span data-i18n="tabDesign"></span></button>
   <button type="button" class="tab" id="openList"><span class="tab-ico" aria-hidden="true">🛒<span class="badge" id="listCount">0</span></span><span data-i18n="list"></span></button>
@@ -532,8 +532,8 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-13-app"></script>
-<script src="shops.js?v=2026-11-13-app"></script>
+<script src="colors.js?v=2026-11-13-kromatch"></script>
+<script src="shops.js?v=2026-11-13-kromatch"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -608,18 +608,18 @@ const T = {
     designPromptQ: 'Planning a whole piece?',
     designPromptBtn: 'Upload your design',
     s5t: 'Planning a whole piece? Use Design',
-    s5d: 'Upload your sketch. CanMatch finds every colour, matches cans and works out how many you need for the wall.',
+    s5d: 'Upload your sketch. Kromatch finds every colour, matches cans and works out how many you need for the wall.',
     autoDetected: 'detected automatically',
     backToAuto: 'Detect colours automatically',
     tabDesign: 'Design',
     designTitle: 'Plan a design',
-    designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. CanMatch finds its colours, matches cans and works out how many you need.',
+    designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. Kromatch finds its colours, matches cans and works out how many you need.',
     uploadDesign: 'Upload a design',
     designTip: 'Export as PNG or JPG. The file’s exact colours are used, so no lighting fix is needed.',
     viewOriginal: 'Original',
     viewCans: 'With cans',
     numColours: 'Colours: {n}',
-    usingFilters: 'CanMatch finds the colours automatically. Move the slider to merge or split colours. Matches use your brand and pressure filters from the Match tab.',
+    usingFilters: 'Kromatch finds the colours automatically. Move the slider to merge or split colours. Matches use your brand and pressure filters from the Match tab.',
     width: 'Width',
     height: 'Height',
     coats: 'Coats',
@@ -666,7 +666,7 @@ const T = {
     lightHow: 'Indoor bulbs, shade and evening light tint photos yellow or blue. Tap “Fix lighting”, then touch something in the photo that is white or light grey in real life, like paper or a white wall.',
     cancel: 'Cancel',
     fixLight: '☀ Fix lighting',
-    howTitle: 'How to use CanMatch',
+    howTitle: 'How to use Kromatch',
     goodToKnow: 'Good to know',
     s1t: 'Take or choose a photo',
     s1d: 'Photograph the colour in daylight, straight on, without flash.',
@@ -697,7 +697,7 @@ const T = {
     paymentNote: 'Online payment isn’t connected yet. You pay when you collect your order.',
     help: 'Help',
     buyingFrom: 'Buying from',
-    noShopSet: 'No shop in CanMatch for this city yet.',
+    noShopSet: 'No shop in Kromatch for this city yet.',
     each: 'each',
     priceAtShop: 'Price at shop',
     total: 'Total',
@@ -714,7 +714,7 @@ const T = {
     demoNote: 'This is a test. No order was sent and the shop has not been contacted. Please don’t contact the shop about this order.',
     backToCart: 'Back to cart',
     shareOrder: 'Share order',
-    orderHeader: 'CanMatch order',
+    orderHeader: 'Kromatch order',
     cityLabel: 'Your city',
     otherCity: 'Your city name',
     otherCityPh: 'Type your city',
@@ -753,7 +753,7 @@ const T = {
     clearList: 'Empty cart',
     copied: 'List copied.',
     remove: 'Remove',
-    listHeader: 'CanMatch shopping list',
+    listHeader: 'Kromatch shopping list',
     whereAreYou: 'Where are you?',
     locationWhy: 'We’ll use this to show you shops nearby. It stays on your phone.',
     tips: ['Matte and gloss cans look different, even with the same colour.', 'Fluorescent, transparent and metallic paints don’t photograph well. Always check them in the shop.'],
@@ -765,9 +765,9 @@ const T = {
     locChange: 'Change',
     locUse: 'Use my location',
     locFinding: 'Finding the nearest city…',
-    locPrivacy: 'Your location is only used on this phone to find the nearest CanMatch city. It isn’t saved or sent anywhere.',
-    locDenied: 'Location is off for CanMatch. You can choose your city instead.',
-    locFar: 'No CanMatch city near you yet. Showing all cans.',
+    locPrivacy: 'Your location is only used on this phone to find the nearest Kromatch city. It isn’t saved or sent anywhere.',
+    locDenied: 'Location is off for Kromatch. You can choose your city instead.',
+    locFar: 'No Kromatch city near you yet. Showing all cans.',
     locSuggest: 'Looks like you’re in {city}. Switch to shops there?',
     locSwitch: 'Switch',
     locKeep: 'Keep {city}',
@@ -790,12 +790,12 @@ const T = {
     designPromptQ: 'Σχεδιάζεις ολόκληρο έργο;',
     designPromptBtn: 'Ανέβασε το σχέδιό σου',
     s5t: 'Ολόκληρο έργο; Χρησιμοποίησε το Σχέδιο',
-    s5d: 'Ανέβασε το σχέδιό σου. Το CanMatch βρίσκει κάθε χρώμα, το ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι για τον τοίχο.',
+    s5d: 'Ανέβασε το σχέδιό σου. Το Kromatch βρίσκει κάθε χρώμα, το ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι για τον τοίχο.',
     autoDetected: 'εντοπίστηκαν αυτόματα',
     backToAuto: 'Αυτόματος εντοπισμός χρωμάτων',
     tabDesign: 'Σχέδιο',
     designTitle: 'Σχεδίασε ένα έργο',
-    designIntro: 'Ανέβασε ένα σχέδιο από Procreate, Photoshop ή Illustrator. Το CanMatch βρίσκει τα χρώματά του, τα ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι.',
+    designIntro: 'Ανέβασε ένα σχέδιο από Procreate, Photoshop ή Illustrator. Το Kromatch βρίσκει τα χρώματά του, τα ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι.',
     uploadDesign: 'Ανέβασε σχέδιο',
     designTip: 'Κάνε εξαγωγή σε PNG ή JPG. Χρησιμοποιούνται τα ακριβή χρώματα του αρχείου, οπότε δεν χρειάζεται διόρθωση φωτισμού.',
     viewOriginal: 'Αρχικό',
@@ -848,7 +848,7 @@ const T = {
     lightHow: 'Οι λάμπες, η σκιά και το βραδινό φως κάνουν τις φωτογραφίες πιο κίτρινες ή πιο μπλε. Πάτα «Διόρθωση φωτισμού» και άγγιξε κάτι στη φωτογραφία που στην πραγματικότητα είναι λευκό ή ανοιχτό γκρι, όπως χαρτί ή λευκός τοίχος.',
     cancel: 'Ακύρωση',
     fixLight: '☀ Διόρθωση φωτισμού',
-    howTitle: 'Πώς χρησιμοποιείς το CanMatch',
+    howTitle: 'Πώς χρησιμοποιείς το Kromatch',
     goodToKnow: 'Καλό να ξέρεις',
     s1t: 'Τράβηξε ή διάλεξε φωτογραφία',
     s1d: 'Φωτογράφισε το χρώμα στο φως της ημέρας, κάθετα, χωρίς φλας.',
@@ -879,7 +879,7 @@ const T = {
     paymentNote: 'Η online πληρωμή δεν έχει συνδεθεί ακόμα. Πληρώνεις όταν παραλαμβάνεις την παραγγελία σου.',
     help: 'Βοήθεια',
     buyingFrom: 'Αγορά από',
-    noShopSet: 'Δεν υπάρχει ακόμα κατάστημα στο CanMatch για αυτή την πόλη.',
+    noShopSet: 'Δεν υπάρχει ακόμα κατάστημα στο Kromatch για αυτή την πόλη.',
     each: 'το τεμ.',
     priceAtShop: 'Τιμή στο κατάστημα',
     total: 'Σύνολο',
@@ -896,7 +896,7 @@ const T = {
     demoNote: 'Αυτό είναι δοκιμή. Δεν στάλθηκε καμία παραγγελία και το κατάστημα δεν ειδοποιήθηκε. Μην επικοινωνήσεις με το κατάστημα για αυτή την παραγγελία.',
     backToCart: 'Πίσω στο καλάθι',
     shareOrder: 'Κοινοποίηση παραγγελίας',
-    orderHeader: 'Παραγγελία CanMatch',
+    orderHeader: 'Παραγγελία Kromatch',
     cityLabel: 'Η πόλη σου',
     otherCity: 'Όνομα πόλης',
     otherCityPh: 'Γράψε την πόλη σου',
@@ -935,7 +935,7 @@ const T = {
     clearList: 'Άδειασμα καλαθιού',
     copied: 'Η λίστα αντιγράφηκε.',
     remove: 'Αφαίρεση',
-    listHeader: 'Λίστα αγορών CanMatch',
+    listHeader: 'Λίστα αγορών Kromatch',
     whereAreYou: 'Πού βρίσκεσαι;',
     locationWhy: 'Θα το χρησιμοποιήσουμε για να σου δείχνουμε καταστήματα κοντά σου. Μένει μόνο στο κινητό σου.',
     tips: ['Τα ματ και τα γυαλιστερά σπρέι δείχνουν διαφορετικά, ακόμα και στο ίδιο χρώμα.', 'Τα φθορίζοντα, διάφανα και μεταλλικά χρώματα δεν φαίνονται σωστά στις φωτογραφίες. Έλεγξέ τα πάντα στο κατάστημα.'],
@@ -947,9 +947,9 @@ const T = {
     locChange: 'Αλλαγή',
     locUse: 'Χρήση της τοποθεσίας μου',
     locFinding: 'Αναζήτηση της πλησιέστερης πόλης…',
-    locPrivacy: 'Η τοποθεσία σου χρησιμοποιείται μόνο σε αυτό το κινητό για να βρεθεί η πλησιέστερη πόλη του CanMatch. Δεν αποθηκεύεται και δεν στέλνεται πουθενά.',
-    locDenied: 'Η τοποθεσία είναι απενεργοποιημένη για το CanMatch. Μπορείς να διαλέξεις πόλη.',
-    locFar: 'Δεν υπάρχει ακόμα πόλη του CanMatch κοντά σου. Εμφανίζονται όλα τα σπρέι.',
+    locPrivacy: 'Η τοποθεσία σου χρησιμοποιείται μόνο σε αυτό το κινητό για να βρεθεί η πλησιέστερη πόλη του Kromatch. Δεν αποθηκεύεται και δεν στέλνεται πουθενά.',
+    locDenied: 'Η τοποθεσία είναι απενεργοποιημένη για το Kromatch. Μπορείς να διαλέξεις πόλη.',
+    locFar: 'Δεν υπάρχει ακόμα πόλη του Kromatch κοντά σου. Εμφανίζονται όλα τα σπρέι.',
     locSuggest: 'Φαίνεται ότι είσαι στην πόλη {city}. Αλλαγή στα καταστήματα εκεί;',
     locSwitch: 'Αλλαγή',
     locKeep: 'Μείνε στην πόλη {city}',
@@ -972,12 +972,12 @@ const T = {
     designPromptQ: 'Vous préparez toute une fresque ?',
     designPromptBtn: 'Importez votre dessin',
     s5t: 'Toute une fresque ? Utilisez Projet',
-    s5d: 'Importez votre croquis. CanMatch trouve chaque couleur, l’associe à des bombes et calcule combien il en faut pour le mur.',
+    s5d: 'Importez votre croquis. Kromatch trouve chaque couleur, l’associe à des bombes et calcule combien il en faut pour le mur.',
     autoDetected: 'détectées automatiquement',
     backToAuto: 'Détecter les couleurs automatiquement',
     tabDesign: 'Projet',
     designTitle: 'Préparer un projet',
-    designIntro: 'Importez un croquis depuis Procreate, Photoshop ou Illustrator. CanMatch trouve ses couleurs, les associe à des bombes et calcule combien il vous en faut.',
+    designIntro: 'Importez un croquis depuis Procreate, Photoshop ou Illustrator. Kromatch trouve ses couleurs, les associe à des bombes et calcule combien il vous en faut.',
     uploadDesign: 'Importer un dessin',
     designTip: 'Exportez en PNG ou JPG. Les couleurs exactes du fichier sont utilisées : pas besoin de corriger l’éclairage.',
     viewOriginal: 'Original',
@@ -1030,7 +1030,7 @@ const T = {
     lightHow: 'Les ampoules, l’ombre et la lumière du soir teintent les photos en jaune ou en bleu. Touchez « Corriger l’éclairage », puis quelque chose sur la photo qui est blanc ou gris clair en vrai, comme du papier ou un mur blanc.',
     cancel: 'Annuler',
     fixLight: '☀ Corriger l’éclairage',
-    howTitle: 'Comment utiliser CanMatch',
+    howTitle: 'Comment utiliser Kromatch',
     goodToKnow: 'Bon à savoir',
     s1t: 'Prenez ou choisissez une photo',
     s1d: 'Photographiez la couleur à la lumière du jour, bien en face, sans flash.',
@@ -1061,7 +1061,7 @@ const T = {
     paymentNote: 'Le paiement en ligne n’est pas encore connecté. Vous payez en récupérant votre commande.',
     help: 'Aide',
     buyingFrom: 'Achat chez',
-    noShopSet: 'Pas encore de magasin CanMatch dans cette ville.',
+    noShopSet: 'Pas encore de magasin Kromatch dans cette ville.',
     each: 'l’unité',
     priceAtShop: 'Prix en magasin',
     total: 'Total',
@@ -1078,7 +1078,7 @@ const T = {
     demoNote: 'Ceci est un test. Aucune commande n’a été envoyée et le magasin n’a pas été contacté. Merci de ne pas contacter le magasin au sujet de cette commande.',
     backToCart: 'Retour au panier',
     shareOrder: 'Partager la commande',
-    orderHeader: 'Commande CanMatch',
+    orderHeader: 'Commande Kromatch',
     cityLabel: 'Votre ville',
     otherCity: 'Nom de votre ville',
     otherCityPh: 'Saisissez votre ville',
@@ -1117,7 +1117,7 @@ const T = {
     clearList: 'Vider le panier',
     copied: 'Liste copiée.',
     remove: 'Retirer',
-    listHeader: 'Liste d’achats CanMatch',
+    listHeader: 'Liste d’achats Kromatch',
     whereAreYou: 'Où êtes-vous ?',
     locationWhy: 'Nous l’utiliserons pour vous montrer les magasins proches. Ces informations restent sur votre téléphone.',
     tips: ['Les bombes mates et brillantes paraissent différentes, même pour une même couleur.', 'Les couleurs fluo, transparentes et métallisées se photographient mal. Vérifiez-les toujours en magasin.'],
@@ -1129,9 +1129,9 @@ const T = {
     locChange: 'Changer',
     locUse: 'Utiliser ma position',
     locFinding: 'Recherche de la ville la plus proche…',
-    locPrivacy: 'Votre position sert uniquement sur ce téléphone à trouver la ville CanMatch la plus proche. Elle n’est ni enregistrée ni envoyée.',
-    locDenied: 'La localisation est désactivée pour CanMatch. Vous pouvez choisir votre ville.',
-    locFar: 'Pas encore de ville CanMatch près de chez vous. Toutes les bombes sont affichées.',
+    locPrivacy: 'Votre position sert uniquement sur ce téléphone à trouver la ville Kromatch la plus proche. Elle n’est ni enregistrée ni envoyée.',
+    locDenied: 'La localisation est désactivée pour Kromatch. Vous pouvez choisir votre ville.',
+    locFar: 'Pas encore de ville Kromatch près de chez vous. Toutes les bombes sont affichées.',
     locSuggest: 'Vous semblez être à {city}. Afficher les magasins de cette ville\u202f?',
     locSwitch: 'Changer',
     locKeep: 'Garder {city}',
@@ -1154,18 +1154,18 @@ const T = {
     designPromptQ: 'Planst du ein ganzes Piece?',
     designPromptBtn: 'Design hochladen',
     s5t: 'Ein ganzes Piece? Nutze „Design“',
-    s5d: 'Lade deine Skizze hoch. CanMatch findet jede Farbe, ordnet Dosen zu und berechnet, wie viele du für die Wand brauchst.',
+    s5d: 'Lade deine Skizze hoch. Kromatch findet jede Farbe, ordnet Dosen zu und berechnet, wie viele du für die Wand brauchst.',
     autoDetected: 'automatisch erkannt',
     backToAuto: 'Farben automatisch erkennen',
     tabDesign: 'Design',
     designTitle: 'Design planen',
-    designIntro: 'Lade eine Skizze aus Procreate, Photoshop oder Illustrator hoch. CanMatch findet ihre Farben, ordnet Dosen zu und berechnet, wie viele du brauchst.',
+    designIntro: 'Lade eine Skizze aus Procreate, Photoshop oder Illustrator hoch. Kromatch findet ihre Farben, ordnet Dosen zu und berechnet, wie viele du brauchst.',
     uploadDesign: 'Design hochladen',
     designTip: 'Als PNG oder JPG exportieren. Es werden die exakten Farben der Datei verwendet, eine Lichtkorrektur ist nicht nötig.',
     viewOriginal: 'Original',
     viewCans: 'Mit Dosen',
     numColours: 'Farben: {n}',
-    usingFilters: 'CanMatch erkennt die Farben automatisch. Mit dem Regler kannst du Farben zusammenfassen oder aufteilen. Die Treffer nutzen deine Marken- und Druckfilter aus dem Tab „Abgleich“.',
+    usingFilters: 'Kromatch erkennt die Farben automatisch. Mit dem Regler kannst du Farben zusammenfassen oder aufteilen. Die Treffer nutzen deine Marken- und Druckfilter aus dem Tab „Abgleich“.',
     width: 'Breite',
     height: 'Höhe',
     coats: 'Schichten',
@@ -1212,7 +1212,7 @@ const T = {
     lightHow: 'Innenbeleuchtung, Schatten und Abendlicht färben Fotos gelb oder blau. Tippe auf „Licht korrigieren“ und berühre dann etwas auf dem Foto, das in Wirklichkeit weiß oder hellgrau ist, zum Beispiel Papier oder eine weiße Wand.',
     cancel: 'Abbrechen',
     fixLight: '☀ Licht korrigieren',
-    howTitle: 'So nutzt du CanMatch',
+    howTitle: 'So nutzt du Kromatch',
     goodToKnow: 'Gut zu wissen',
     s1t: 'Foto aufnehmen oder auswählen',
     s1d: 'Fotografiere die Farbe bei Tageslicht, gerade von vorn, ohne Blitz.',
@@ -1243,7 +1243,7 @@ const T = {
     paymentNote: 'Online-Zahlung ist noch nicht verbunden. Du bezahlst bei der Abholung deiner Bestellung.',
     help: 'Hilfe',
     buyingFrom: 'Kauf bei',
-    noShopSet: 'Für diese Stadt gibt es noch keinen Shop in CanMatch.',
+    noShopSet: 'Für diese Stadt gibt es noch keinen Shop in Kromatch.',
     each: 'pro Stück',
     priceAtShop: 'Preis im Shop',
     total: 'Summe',
@@ -1260,7 +1260,7 @@ const T = {
     demoNote: 'Das ist ein Test. Es wurde keine Bestellung gesendet und der Shop wurde nicht kontaktiert. Bitte kontaktiere den Shop nicht wegen dieser Bestellung.',
     backToCart: 'Zurück zum Warenkorb',
     shareOrder: 'Bestellung teilen',
-    orderHeader: 'CanMatch-Bestellung',
+    orderHeader: 'Kromatch-Bestellung',
     cityLabel: 'Deine Stadt',
     otherCity: 'Name deiner Stadt',
     otherCityPh: 'Stadt eingeben',
@@ -1299,7 +1299,7 @@ const T = {
     clearList: 'Warenkorb leeren',
     copied: 'Liste kopiert.',
     remove: 'Entfernen',
-    listHeader: 'CanMatch-Einkaufsliste',
+    listHeader: 'Kromatch-Einkaufsliste',
     whereAreYou: 'Wo bist du?',
     locationWhy: 'Damit zeigen wir dir Shops in der Nähe. Die Angabe bleibt auf deinem Handy.',
     tips: ['Matte und glänzende Dosen wirken unterschiedlich, selbst bei derselben Farbe.', 'Fluoreszierende, transparente und metallische Farben lassen sich schlecht fotografieren. Prüfe sie immer im Shop.'],
@@ -1311,9 +1311,9 @@ const T = {
     locChange: 'Ändern',
     locUse: 'Meinen Standort verwenden',
     locFinding: 'Nächste Stadt wird gesucht…',
-    locPrivacy: 'Dein Standort wird nur auf diesem Handy genutzt, um die nächste CanMatch-Stadt zu finden. Er wird weder gespeichert noch gesendet.',
-    locDenied: 'Standortzugriff ist für CanMatch aus. Du kannst stattdessen deine Stadt wählen.',
-    locFar: 'In deiner Nähe gibt es noch keine CanMatch-Stadt. Alle Dosen werden angezeigt.',
+    locPrivacy: 'Dein Standort wird nur auf diesem Handy genutzt, um die nächste Kromatch-Stadt zu finden. Er wird weder gespeichert noch gesendet.',
+    locDenied: 'Standortzugriff ist für Kromatch aus. Du kannst stattdessen deine Stadt wählen.',
+    locFar: 'In deiner Nähe gibt es noch keine Kromatch-Stadt. Alle Dosen werden angezeigt.',
     locSuggest: 'Du scheinst in {city} zu sein. Zu den Shops dort wechseln?',
     locSwitch: 'Wechseln',
     locKeep: '{city} behalten',
@@ -1336,18 +1336,18 @@ const T = {
     designPromptQ: '¿Planeas una pieza completa?',
     designPromptBtn: 'Sube tu diseño',
     s5t: '¿Una pieza completa? Usa Diseño',
-    s5d: 'Sube tu boceto. CanMatch encuentra cada color, lo asocia a sprays y calcula cuántos necesitas para la pared.',
+    s5d: 'Sube tu boceto. Kromatch encuentra cada color, lo asocia a sprays y calcula cuántos necesitas para la pared.',
     autoDetected: 'detectados automáticamente',
     backToAuto: 'Detectar colores automáticamente',
     tabDesign: 'Diseño',
     designTitle: 'Planificar un diseño',
-    designIntro: 'Sube un boceto desde Procreate, Photoshop o Illustrator. CanMatch encuentra sus colores, los asocia a sprays y calcula cuántos necesitas.',
+    designIntro: 'Sube un boceto desde Procreate, Photoshop o Illustrator. Kromatch encuentra sus colores, los asocia a sprays y calcula cuántos necesitas.',
     uploadDesign: 'Subir un diseño',
     designTip: 'Expórtalo en PNG o JPG. Se usan los colores exactos del archivo, así que no hace falta corregir la luz.',
     viewOriginal: 'Original',
     viewCans: 'Con sprays',
     numColours: 'Colores: {n}',
-    usingFilters: 'CanMatch detecta los colores automáticamente. Mueve el control para unir o separar colores. Las coincidencias usan tus filtros de marca y presión de la pestaña Buscar.',
+    usingFilters: 'Kromatch detecta los colores automáticamente. Mueve el control para unir o separar colores. Las coincidencias usan tus filtros de marca y presión de la pestaña Buscar.',
     width: 'Ancho',
     height: 'Alto',
     coats: 'Capas',
@@ -1394,7 +1394,7 @@ const T = {
     lightHow: 'Las bombillas, la sombra y la luz de la tarde tiñen las fotos de amarillo o azul. Toca «Corregir la luz» y luego algo de la foto que en realidad sea blanco o gris claro, como un papel o una pared blanca.',
     cancel: 'Cancelar',
     fixLight: '☀ Corregir la luz',
-    howTitle: 'Cómo usar CanMatch',
+    howTitle: 'Cómo usar Kromatch',
     goodToKnow: 'Conviene saber',
     s1t: 'Haz o elige una foto',
     s1d: 'Fotografía el color con luz de día, de frente y sin flash.',
@@ -1425,7 +1425,7 @@ const T = {
     paymentNote: 'El pago en línea aún no está conectado. Pagas al recoger tu pedido.',
     help: 'Ayuda',
     buyingFrom: 'Comprando en',
-    noShopSet: 'Todavía no hay tiendas de CanMatch en esta ciudad.',
+    noShopSet: 'Todavía no hay tiendas de Kromatch en esta ciudad.',
     each: 'cada uno',
     priceAtShop: 'Precio en tienda',
     total: 'Total',
@@ -1442,7 +1442,7 @@ const T = {
     demoNote: 'Esto es una prueba. No se ha enviado ningún pedido ni se ha contactado con la tienda. No contactes con la tienda por este pedido.',
     backToCart: 'Volver al carrito',
     shareOrder: 'Compartir pedido',
-    orderHeader: 'Pedido de CanMatch',
+    orderHeader: 'Pedido de Kromatch',
     cityLabel: 'Tu ciudad',
     otherCity: 'Nombre de tu ciudad',
     otherCityPh: 'Escribe tu ciudad',
@@ -1481,7 +1481,7 @@ const T = {
     clearList: 'Vaciar carrito',
     copied: 'Lista copiada.',
     remove: 'Quitar',
-    listHeader: 'Lista de compra de CanMatch',
+    listHeader: 'Lista de compra de Kromatch',
     whereAreYou: '¿Dónde estás?',
     locationWhy: 'Lo usamos para mostrarte tiendas cercanas. Se queda en tu móvil.',
     tips: ['Los sprays mates y brillantes se ven distintos, aunque sean del mismo color.', 'Los colores fluorescentes, transparentes y metalizados no se fotografían bien. Compruébalos siempre en la tienda.'],
@@ -1493,9 +1493,9 @@ const T = {
     locChange: 'Cambiar',
     locUse: 'Usar mi ubicación',
     locFinding: 'Buscando la ciudad más cercana…',
-    locPrivacy: 'Tu ubicación solo se usa en este móvil para encontrar la ciudad de CanMatch más cercana. No se guarda ni se envía a ningún sitio.',
-    locDenied: 'La ubicación está desactivada para CanMatch. Puedes elegir tu ciudad.',
-    locFar: 'Todavía no hay ninguna ciudad de CanMatch cerca de ti. Se muestran todos los sprays.',
+    locPrivacy: 'Tu ubicación solo se usa en este móvil para encontrar la ciudad de Kromatch más cercana. No se guarda ni se envía a ningún sitio.',
+    locDenied: 'La ubicación está desactivada para Kromatch. Puedes elegir tu ciudad.',
+    locFar: 'Todavía no hay ninguna ciudad de Kromatch cerca de ti. Se muestran todos los sprays.',
     locSuggest: 'Parece que estás en {city}. ¿Cambiar a las tiendas de allí?',
     locSwitch: 'Cambiar',
     locKeep: 'Seguir con {city}',
@@ -1518,18 +1518,18 @@ const T = {
     designPromptQ: 'Stai progettando un pezzo intero?',
     designPromptBtn: 'Carica il tuo progetto',
     s5t: 'Un pezzo intero? Usa Progetto',
-    s5d: 'Carica il tuo schizzo. CanMatch trova ogni colore, lo abbina alle bombolette e calcola quante te ne servono per il muro.',
+    s5d: 'Carica il tuo schizzo. Kromatch trova ogni colore, lo abbina alle bombolette e calcola quante te ne servono per il muro.',
     autoDetected: 'rilevati automaticamente',
     backToAuto: 'Rileva i colori automaticamente',
     tabDesign: 'Progetto',
     designTitle: 'Pianifica un progetto',
-    designIntro: 'Carica uno schizzo da Procreate, Photoshop o Illustrator. CanMatch trova i suoi colori, li abbina alle bombolette e calcola quante te ne servono.',
+    designIntro: 'Carica uno schizzo da Procreate, Photoshop o Illustrator. Kromatch trova i suoi colori, li abbina alle bombolette e calcola quante te ne servono.',
     uploadDesign: 'Carica un progetto',
     designTip: 'Esporta in PNG o JPG. Vengono usati i colori esatti del file, quindi non serve correggere la luce.',
     viewOriginal: 'Originale',
     viewCans: 'Con le bombolette',
     numColours: 'Colori: {n}',
-    usingFilters: 'CanMatch trova i colori automaticamente. Sposta il cursore per unire o separare i colori. Gli abbinamenti usano i filtri di marca e pressione della scheda Abbina.',
+    usingFilters: 'Kromatch trova i colori automaticamente. Sposta il cursore per unire o separare i colori. Gli abbinamenti usano i filtri di marca e pressione della scheda Abbina.',
     width: 'Larghezza',
     height: 'Altezza',
     coats: 'Mani',
@@ -1576,7 +1576,7 @@ const T = {
     lightHow: 'Lampadine, ombra e luce della sera tingono le foto di giallo o di blu. Tocca «Correggi la luce», poi tocca nella foto qualcosa che nella realtà è bianco o grigio chiaro, come un foglio o un muro bianco.',
     cancel: 'Annulla',
     fixLight: '☀ Correggi la luce',
-    howTitle: 'Come usare CanMatch',
+    howTitle: 'Come usare Kromatch',
     goodToKnow: 'Buono a sapersi',
     s1t: 'Scatta o scegli una foto',
     s1d: 'Fotografa il colore alla luce del giorno, di fronte, senza flash.',
@@ -1607,7 +1607,7 @@ const T = {
     paymentNote: 'Il pagamento online non è ancora collegato. Paghi al ritiro dell\'ordine.',
     help: 'Aiuto',
     buyingFrom: 'Acquisto da',
-    noShopSet: 'Non c\'è ancora un negozio CanMatch in questa città.',
+    noShopSet: 'Non c\'è ancora un negozio Kromatch in questa città.',
     each: 'cad.',
     priceAtShop: 'Prezzo in negozio',
     total: 'Totale',
@@ -1624,7 +1624,7 @@ const T = {
     demoNote: 'Questa è una prova. Nessun ordine è stato inviato e il negozio non è stato contattato. Non contattare il negozio per questo ordine.',
     backToCart: 'Torna al carrello',
     shareOrder: 'Condividi l\'ordine',
-    orderHeader: 'Ordine CanMatch',
+    orderHeader: 'Ordine Kromatch',
     cityLabel: 'La tua città',
     otherCity: 'Nome della tua città',
     otherCityPh: 'Scrivi la tua città',
@@ -1663,7 +1663,7 @@ const T = {
     clearList: 'Svuota il carrello',
     copied: 'Lista copiata.',
     remove: 'Rimuovi',
-    listHeader: 'Lista della spesa CanMatch',
+    listHeader: 'Lista della spesa Kromatch',
     whereAreYou: 'Dove ti trovi?',
     locationWhy: 'Lo usiamo per mostrarti i negozi vicini. Resta sul tuo telefono.',
     tips: ['Le bombolette opache e lucide sembrano diverse, anche con lo stesso colore.', 'I colori fluorescenti, trasparenti e metallizzati non si fotografano bene. Controllali sempre in negozio.'],
@@ -1675,9 +1675,9 @@ const T = {
     locChange: 'Cambia',
     locUse: 'Usa la mia posizione',
     locFinding: 'Ricerca della città più vicina…',
-    locPrivacy: 'La tua posizione viene usata solo su questo telefono per trovare la città CanMatch più vicina. Non viene salvata né inviata.',
-    locDenied: 'La posizione è disattivata per CanMatch. Puoi scegliere la tua città.',
-    locFar: 'Non c\'è ancora una città CanMatch vicino a te. Vengono mostrate tutte le bombolette.',
+    locPrivacy: 'La tua posizione viene usata solo su questo telefono per trovare la città Kromatch più vicina. Non viene salvata né inviata.',
+    locDenied: 'La posizione è disattivata per Kromatch. Puoi scegliere la tua città.',
+    locFar: 'Non c\'è ancora una città Kromatch vicino a te. Vengono mostrate tutte le bombolette.',
     locSuggest: 'Sembra che tu sia a {city}. Passare ai negozi di lì?',
     locSwitch: 'Cambia',
     locKeep: 'Resta su {city}',
@@ -1700,18 +1700,18 @@ const T = {
     designPromptQ: 'Planejando uma peça inteira?',
     designPromptBtn: 'Envie seu projeto',
     s5t: 'Uma peça inteira? Use Projeto',
-    s5d: 'Envie seu esboço. O CanMatch encontra cada cor, combina com sprays e calcula quantos você precisa para a parede.',
+    s5d: 'Envie seu esboço. O Kromatch encontra cada cor, combina com sprays e calcula quantos você precisa para a parede.',
     autoDetected: 'detectadas automaticamente',
     backToAuto: 'Detectar cores automaticamente',
     tabDesign: 'Projeto',
     designTitle: 'Planejar um projeto',
-    designIntro: 'Envie um esboço do Procreate, Photoshop ou Illustrator. O CanMatch encontra as cores, combina com sprays e calcula quantos você precisa.',
+    designIntro: 'Envie um esboço do Procreate, Photoshop ou Illustrator. O Kromatch encontra as cores, combina com sprays e calcula quantos você precisa.',
     uploadDesign: 'Enviar um projeto',
     designTip: 'Exporte em PNG ou JPG. São usadas as cores exatas do arquivo, então não é preciso corrigir a luz.',
     viewOriginal: 'Original',
     viewCans: 'Com os sprays',
     numColours: 'Cores: {n}',
-    usingFilters: 'O CanMatch encontra as cores automaticamente. Mova o controle para juntar ou separar cores. As combinações usam seus filtros de marca e pressão da aba Encontrar.',
+    usingFilters: 'O Kromatch encontra as cores automaticamente. Mova o controle para juntar ou separar cores. As combinações usam seus filtros de marca e pressão da aba Encontrar.',
     width: 'Largura',
     height: 'Altura',
     coats: 'Demãos',
@@ -1758,7 +1758,7 @@ const T = {
     lightHow: 'Lâmpadas, sombra e luz do fim da tarde deixam as fotos amareladas ou azuladas. Toque em «Corrigir a luz» e depois em algo na foto que na realidade é branco ou cinza-claro, como um papel ou uma parede branca.',
     cancel: 'Cancelar',
     fixLight: '☀ Corrigir a luz',
-    howTitle: 'Como usar o CanMatch',
+    howTitle: 'Como usar o Kromatch',
     goodToKnow: 'Bom saber',
     s1t: 'Tire ou escolha uma foto',
     s1d: 'Fotografe a cor com luz do dia, de frente e sem flash.',
@@ -1789,7 +1789,7 @@ const T = {
     paymentNote: 'O pagamento online ainda não está conectado. Você paga ao retirar seu pedido.',
     help: 'Ajuda',
     buyingFrom: 'Comprando em',
-    noShopSet: 'Ainda não há loja do CanMatch nesta cidade.',
+    noShopSet: 'Ainda não há loja do Kromatch nesta cidade.',
     each: 'cada',
     priceAtShop: 'Preço na loja',
     total: 'Total',
@@ -1806,7 +1806,7 @@ const T = {
     demoNote: 'Isto é um teste. Nenhum pedido foi enviado e a loja não foi contatada. Não entre em contato com a loja sobre este pedido.',
     backToCart: 'Voltar ao carrinho',
     shareOrder: 'Compartilhar pedido',
-    orderHeader: 'Pedido CanMatch',
+    orderHeader: 'Pedido Kromatch',
     cityLabel: 'Sua cidade',
     otherCity: 'Nome da sua cidade',
     otherCityPh: 'Digite sua cidade',
@@ -1845,7 +1845,7 @@ const T = {
     clearList: 'Esvaziar carrinho',
     copied: 'Lista copiada.',
     remove: 'Remover',
-    listHeader: 'Lista de compras CanMatch',
+    listHeader: 'Lista de compras Kromatch',
     whereAreYou: 'Onde você está?',
     locationWhy: 'Usamos isso para mostrar lojas próximas. Fica no seu telefone.',
     tips: ['Sprays foscos e brilhantes parecem diferentes, mesmo na mesma cor.', 'Cores fluorescentes, transparentes e metálicas não aparecem bem em fotos. Confira sempre na loja.'],
@@ -1857,9 +1857,9 @@ const T = {
     locChange: 'Mudar',
     locUse: 'Usar minha localização',
     locFinding: 'Procurando a cidade mais próxima…',
-    locPrivacy: 'Sua localização é usada só neste telefone para encontrar a cidade do CanMatch mais próxima. Ela não é salva nem enviada.',
-    locDenied: 'A localização está desativada para o CanMatch. Você pode escolher sua cidade.',
-    locFar: 'Ainda não há cidade do CanMatch perto de você. Todos os sprays são mostrados.',
+    locPrivacy: 'Sua localização é usada só neste telefone para encontrar a cidade do Kromatch mais próxima. Ela não é salva nem enviada.',
+    locDenied: 'A localização está desativada para o Kromatch. Você pode escolher sua cidade.',
+    locFar: 'Ainda não há cidade do Kromatch perto de você. Todos os sprays são mostrados.',
     locSuggest: 'Parece que você está em {city}. Mudar para as lojas de lá?',
     locSwitch: 'Mudar',
     locKeep: 'Continuar em {city}',
@@ -2762,8 +2762,8 @@ async function downloadProcreate(title, paints) {
   download(`${safe} (Procreate).zip`, makeZip(files));
 }
 const designPaints = () => { const seen = new Set(); return clusters.map((c, i) => c.options[picks[i]]).filter(Boolean).map(o => o.p).filter(p => !seen.has(p.id) && seen.add(p.id)); };
-$('dlDesignProcreate').addEventListener('click', () => downloadProcreate('CanMatch design', designPaints()));
-$('dlDesignAse').addEventListener('click', () => download('CanMatch design.ase', makeASE('CanMatch design', designPaints())));
+$('dlDesignProcreate').addEventListener('click', () => downloadProcreate('Kromatch design', designPaints()));
+$('dlDesignAse').addEventListener('click', () => download('Kromatch design.ase', makeASE('Kromatch design', designPaints())));
 function fillRangeSelect() {
   const sel = $('rangeSelect'), cur = sel.value;
   const brands = BRANDS.filter(b => includeHardware || BRAND_PRESSURE[b] !== 'hardware');
@@ -2773,7 +2773,7 @@ function fillRangeSelect() {
 function rangePaints() {
   const v = $('rangeSelect').value;
   const list = v === '__near' ? PAINTS.filter(p => shopFor(p.brand) && p.finish === 'solid' && (includeHardware || !isHardware(p))) : PAINTS.filter(p => p.brand === v);
-  return { title: v === '__near' ? `CanMatch ${t('nearRange')}` : v, list };
+  return { title: v === '__near' ? `Kromatch ${t('nearRange')}` : v, list };
 }
 $('dlRangeProcreate').addEventListener('click', () => { const r = rangePaints(); downloadProcreate(r.title, r.list); });
 $('dlRangeAse').addEventListener('click', () => { const r = rangePaints(); download(`${r.title.replace(/[\\/:*?"<>|]/g, '-')}.ase`, makeASE(r.title, r.list)); });
