@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Kromatch for shops</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#161616">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E9E8E4; --surface: #F7F7F5; --ink: #161616; --muted: #5E5F61; --line: #C9C8C3;
+    --focus: #1F6FB2; --ok: #1E7A44; --warn: #B3261E; --new: #1F6FB2;
+    color-scheme: light; box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1E1F20; --surface: #2A2B2D; --ink: #F1F0EC; --muted: #A6A7A9; --line: #3D3E41;
+            --focus: #7EC3E8; --ok: #6FD39A; --warn: #FF8A80; --new: #7EC3E8; color-scheme: dark; }
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.45 "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 16px 16px 60px; }
+  [hidden] { display: none !important; }
+  h1 { font-stretch: 125%; font-weight: 900; font-size: 1.8rem; line-height: 1; margin: 8px 0 4px; }
+  h2 { font-stretch: 110%; font-weight: 800; font-size: 1.2rem; margin: 22px 0 10px; }
+  h3 { font-size: 1rem; margin: 16px 0 8px; }
+  .muted { color: var(--muted); }
+  .note { color: var(--muted); font-size: 0.85rem; }
+  .card { background: var(--surface); border-radius: 14px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--line); }
+  button, .btn { font: inherit; font-weight: 700; border-radius: 999px; padding: 10px 16px; cursor: pointer;
+                 border: 2px solid var(--ink); background: var(--ink); color: var(--bg); }
+  button.secondary { background: transparent; color: var(--ink); }
+  button.small { padding: 6px 12px; font-size: 0.85rem; }
+  button.danger { background: transparent; color: var(--warn); border-color: var(--warn); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  label.field { display: block; margin: 10px 0; font-weight: 700; font-size: 0.9rem; }
+  input, select, textarea { display: block; width: 100%; margin-top: 4px; font: inherit; font-weight: 400; padding: 10px;
+    border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .grow { flex: 1; min-width: 0; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 6px; }
+  .tab { font: inherit; font-weight: 700; font-size: 0.9rem; padding: 8px 14px; border-radius: 999px; border: 2px solid var(--ink);
+         background: transparent; color: var(--ink); cursor: pointer; }
+  .tab[aria-current="page"] { background: var(--ink); color: var(--bg); }
+  .badge { display: inline-block; min-width: 1.4em; padding: 0 6px; border-radius: 999px; background: var(--new); color: #fff;
+           font-size: 0.75rem; text-align: center; margin-left: 4px; }
+  .status { display: inline-block; font-size: 0.75rem; font-weight: 800; padding: 3px 9px; border-radius: 999px; border: 2px solid currentColor; }
+  .st-new { color: var(--new); } .st-ready { color: var(--ok); } .st-picked_up { color: var(--muted); }
+  .st-not_available, .st-cancelled { color: var(--warn); }
+  .code { font-stretch: 125%; font-weight: 900; font-size: 1.3rem; letter-spacing: 0.02em; }
+  .items { list-style: none; padding: 0; margin: 8px 0; }
+  .items li { display: flex; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); font-size: 0.92rem; }
+  .sw { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--line); flex: none; }
+  .colours { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .colour { display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: 10px; border: 2px solid var(--line);
+            background: var(--surface); cursor: pointer; text-align: left; font: inherit; color: var(--ink); }
+  .colour .sw { width: 26px; height: 26px; }
+  .colour small { display: block; color: var(--muted); font-size: 0.75rem; }
+  .colour.out { border-color: var(--warn); background: transparent; }
+  .colour.out .nm { text-decoration: line-through; }
+  .out-tag { font-size: 0.7rem; font-weight: 800; color: var(--warn); }
+  table.prices { width: 100%; border-collapse: collapse; }
+  table.prices td { padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  table.prices input { margin: 0; max-width: 120px; }
+  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+           background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 14px; font-weight: 700; z-index: 50; max-width: 90vw; text-align: center; }
+  .toast.err { background: var(--warn); color: #fff; }
+  .ov-grid { display: grid; grid-template-columns: 1fr 1fr 90px auto; gap: 8px; align-items: center; }
+  .ov-grid select { grid-column: 1 / -1; }
+  .pill { font-size: 0.75rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: var(--line); }
+</style>
+</head>
+<body>
+<main>
+  <div class="topbar">
+    <div><h1>Kromatch</h1><div class="muted" data-t="forShops"></div></div>
+    <div class="row">
+      <select id="langSel" aria-label="Language" style="width:auto;margin:0">
+        <option value="en">English</option><option value="el">Ελληνικά</option>
+      </select>
+      <button class="secondary small" id="logoutBtn" hidden data-t="logout"></button>
+    </div>
+  </div>
+
+  <!-- Login -->
+  <section id="loginView" hidden>
+    <div class="card" style="margin-top:20px">
+      <h2 style="margin-top:0" data-t="loginTitle"></h2>
+      <p class="muted" data-t="loginIntro"></p>
+      <label class="field"><span data-t="email"></span><input id="loginEmail" type="email" autocomplete="email"></label>
+      <button id="loginBtn" data-t="sendLink"></button>
+      <p id="loginMsg" class="note" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- No shop linked -->
+  <section id="noShopView" hidden>
+    <div class="card" style="margin-top:20px"><p data-t="noShop"></p></div>
+  </section>
+
+  <!-- Main -->
+  <section id="appView" hidden>
+    <div class="row" style="margin-top:14px">
+      <label class="field grow" style="margin:0"><span data-t="shop"></span><select id="shopSel"></select></label>
+    </div>
+    <div class="tabs">
+      <button class="tab" data-tab="orders" aria-current="page"><span data-t="tabOrders"></span><span class="badge" id="newCount" hidden></span></button>
+      <button class="tab" data-tab="stock" data-t="tabStock"></button>
+      <button class="tab" data-tab="prices" data-t="tabPrices"></button>
+      <button class="tab" data-tab="shop" data-t="tabShop"></button>
+      <button class="tab" data-tab="admin" id="adminTab" hidden data-t="tabAdmin"></button>
+    </div>
+
+    <!-- Orders -->
+    <div id="tab-orders">
+      <div class="row"><h2 class="grow" data-t="openOrders"></h2><button class="secondary small" id="refreshBtn" data-t="refresh"></button></div>
+      <div id="openOrders"></div>
+      <h2 data-t="recentOrders"></h2>
+      <div id="doneOrders"></div>
+    </div>
+
+    <!-- Stock -->
+    <div id="tab-stock" hidden>
+      <p class="note" data-t="stockIntro"></p>
+      <div class="row">
+        <label class="field grow"><span data-t="line"></span><select id="stockLine"></select></label>
+        <label class="field grow"><span data-t="search"></span><input id="stockSearch" type="search"></label>
+      </div>
+      <div class="row"><label class="row" style="font-weight:700;font-size:0.9rem"><input type="checkbox" id="onlyOut" style="width:auto;margin:0"> <span data-t="onlyOut"></span></label>
+        <span class="grow"></span><span class="note" id="outCount"></span></div>
+      <div class="colours" id="colourGrid" style="margin-top:10px"></div>
+    </div>
+
+    <!-- Prices -->
+    <div id="tab-prices" hidden>
+      <p class="note" data-t="pricesIntro"></p>
+      <table class="prices" id="priceTable"></table>
+      <div class="row" style="margin-top:10px">
+        <select id="addLineSel" class="grow" style="margin:0"></select>
+        <button class="secondary small" id="addLineBtn" data-t="addLine"></button>
+      </div>
+      <h3 data-t="colourPrices"></h3>
+      <p class="note" data-t="colourPricesIntro"></p>
+      <div class="ov-grid">
+        <select id="ovLine" style="margin:0"></select>
+        <input id="ovCode" style="margin:0" list="ovCodes">
+        <datalist id="ovCodes"></datalist>
+        <input id="ovPrice" type="number" step="0.01" min="0" style="margin:0">
+        <button class="secondary small" id="ovAdd" data-t="add"></button>
+      </div>
+      <table class="prices" id="ovTable" style="margin-top:8px"></table>
+    </div>
+
+    <!-- Shop details -->
+    <div id="tab-shop" hidden>
+      <div class="card">
+        <label class="field"><span data-t="shopName"></span><input id="fName"></label>
+        <label class="field"><span data-t="area"></span><input id="fArea"></label>
+        <label class="field"><span data-t="address"></span><input id="fAddress"></label>
+        <label class="field"><span data-t="website"></span><input id="fWebsite" type="url"></label>
+        <label class="field"><span data-t="mapsLink"></span><input id="fMaps" type="url"></label>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0" data-t="orderContact"></h3>
+        <label class="field"><span data-t="orderEmail"></span><input id="fOrderEmail" type="email"></label>
+        <label class="field"><span data-t="contactName"></span><input id="fContact"></label>
+        <label class="field"><span data-t="contactPhone"></span><input id="fPhone" type="tel"></label>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0" data-t="deliveryTitle"></h3>
+        <label class="row" style="font-weight:700"><input type="checkbox" id="fDelivers" style="width:auto;margin:0"> <span data-t="weDeliver"></span></label>
+        <div id="deliveryFields">
+          <label class="field"><span data-t="deliveryFee"></span><input id="fFee" type="number" step="0.01" min="0"></label>
+          <label class="field"><span data-t="freeOver"></span><input id="fFreeOver" type="number" step="0.01" min="0"></label>
+          <label class="field"><span data-t="deliveryNote"></span><input id="fNote"></label>
+        </div>
+      </div>
+      <p class="note" id="lockedNote"></p>
+      <button id="saveShop" data-t="save"></button>
+    </div>
+
+    <!-- Admin -->
+    <div id="tab-admin" hidden>
+      <h2 data-t="allShops"></h2>
+      <div id="adminShops"></div>
+      <h2 data-t="newShop"></h2>
+      <div class="card">
+        <label class="field"><span data-t="shopName"></span><input id="nName"></label>
+        <div class="row">
+          <label class="field grow"><span data-t="cityKey"></span><select id="nCity"></select></label>
+          <label class="field grow"><span data-t="currency"></span><select id="nCur"><option>EUR</option><option>GBP</option><option>USD</option><option>CAD</option><option>MXN</option><option>BRL</option></select></label>
+        </div>
+        <label class="field"><span data-t="orderEmail"></span><input id="nEmail" type="email"></label>
+        <button id="createShop" data-t="createShop"></button>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+<script src="config.js?v=2026-11-13-dash"></script>
+<script src="colors.js?v=2026-11-13-dash"></script>
+<script>
+/* ---------- Text (English and Greek) ---------- */
+const TX = {
+  en: {
+    forShops: 'for shops', logout: 'Log out', loginTitle: 'Shop login',
+    loginIntro: 'Enter the email Kromatch invited. We’ll send you a login link, no password needed.',
+    email: 'Email', sendLink: 'Send login link', linkSent: 'Check your email and tap the link to log in.',
+    loginError: 'That email doesn’t have a shop login yet. Ask Kromatch to invite you.',
+    noShop: 'You’re logged in, but no shop is linked to this email yet. Ask Kromatch to add you to your shop.',
+    shop: 'Shop', tabOrders: 'Orders', tabStock: 'Stock', tabPrices: 'Prices', tabShop: 'Shop details', tabAdmin: 'Admin',
+    openOrders: 'Open orders', recentOrders: 'Completed recently', refresh: 'Refresh', noOrders: 'No open orders right now.',
+    noRecent: 'Nothing yet.', pickup: 'Pickup', delivery: 'Delivery', code: 'Pickup code', customer: 'Customer',
+    total: 'Total', priceAtShop: 'price at shop', markReady: 'Ready', markPicked: 'Picked up', notAvail: 'Not available',
+    cancel: 'Cancel order', enterCode: 'Enter the customer’s pickup code', codeWrong: 'That code doesn’t match.',
+    confirmNotAvail: 'Mark this order as not available? The customer will be told.', confirmCancel: 'Cancel this order?',
+    st_new: 'New', st_ready: 'Ready', st_picked_up: 'Picked up', st_not_available: 'Not available', st_cancelled: 'Cancelled',
+    yourFee: 'Kromatch fee', stockIntro: 'Everything is shown as in stock unless you mark it. Tap a colour when it runs out, tap again when it’s back.',
+    line: 'Paint line', search: 'Search colour', onlyOut: 'Show only out of stock', outOf: '{n} out of stock',
+    outTag: 'OUT', pricesIntro: 'Price per can for each line you sell. Leave empty to show “Price at shop”.',
+    remove: 'Remove', addLine: 'Add line', colourPrices: 'Single-colour prices', colourPricesIntro: 'Optional: a different price for specific colours (e.g. fluorescent or chrome).',
+    add: 'Add', codePh: 'Colour code', shopName: 'Shop name', area: 'Area / neighbourhood', address: 'Address', website: 'Website',
+    mapsLink: 'Google Maps link', orderContact: 'Orders', orderEmail: 'Email for new orders', contactName: 'Contact person',
+    contactPhone: 'Contact phone', deliveryTitle: 'Delivery', weDeliver: 'We deliver', deliveryFee: 'Delivery fee',
+    freeOver: 'Free delivery over (leave empty for never)', deliveryNote: 'Note (e.g. courier, within Greece)', save: 'Save',
+    saved: 'Saved.', error: 'Something went wrong: {m}', lockedNote: 'City and currency are set by Kromatch. Ask us to change them.',
+    allShops: 'All shops', newShop: 'Add a shop', cityKey: 'City', currency: 'Currency', createShop: 'Create shop',
+    demo: 'Demo', live: 'Live', off: 'Off', feePerCan: 'Fee per can', trialEnds: 'Free until', inviteEmail: 'Invite staff (email)',
+    invite: 'Invite', invited: 'Invitation sent.', linked: 'Existing login linked to this shop.', makeLive: 'Make live',
+    makeDemo: 'Make demo', switchOff: 'Switch off', created: 'Shop created. Invite its staff below.'
+  },
+  el: {
+    forShops: 'για καταστήματα', logout: 'Αποσύνδεση', loginTitle: 'Σύνδεση καταστήματος',
+    loginIntro: 'Γράψε το email που προσκάλεσε το Kromatch. Θα σου στείλουμε σύνδεσμο σύνδεσης, χωρίς κωδικό.',
+    email: 'Email', sendLink: 'Αποστολή συνδέσμου', linkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.',
+    loginError: 'Αυτό το email δεν έχει ακόμα σύνδεση καταστήματος. Ζήτα από το Kromatch να σε προσκαλέσει.',
+    noShop: 'Συνδέθηκες, αλλά δεν υπάρχει ακόμα κατάστημα συνδεδεμένο με αυτό το email. Ζήτα από το Kromatch να σε προσθέσει.',
+    shop: 'Κατάστημα', tabOrders: 'Παραγγελίες', tabStock: 'Απόθεμα', tabPrices: 'Τιμές', tabShop: 'Στοιχεία καταστήματος', tabAdmin: 'Διαχείριση',
+    openOrders: 'Ανοιχτές παραγγελίες', recentOrders: 'Ολοκληρωμένες πρόσφατα', refresh: 'Ανανέωση', noOrders: 'Δεν υπάρχουν ανοιχτές παραγγελίες.',
+    noRecent: 'Τίποτα ακόμα.', pickup: 'Παραλαβή', delivery: 'Παράδοση', code: 'Κωδικός παραλαβής', customer: 'Πελάτης',
+    total: 'Σύνολο', priceAtShop: 'τιμή στο κατάστημα', markReady: 'Έτοιμη', markPicked: 'Παραλήφθηκε', notAvail: 'Μη διαθέσιμη',
+    cancel: 'Ακύρωση παραγγελίας', enterCode: 'Γράψε τον κωδικό παραλαβής του πελάτη', codeWrong: 'Ο κωδικός δεν ταιριάζει.',
+    confirmNotAvail: 'Να σημειωθεί η παραγγελία ως μη διαθέσιμη; Ο πελάτης θα ενημερωθεί.', confirmCancel: 'Ακύρωση αυτής της παραγγελίας;',
+    st_new: 'Νέα', st_ready: 'Έτοιμη', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
+    yourFee: 'Χρέωση Kromatch', stockIntro: 'Όλα εμφανίζονται διαθέσιμα εκτός αν τα σημειώσεις. Πάτα ένα χρώμα όταν τελειώσει και ξανά όταν έρθει.',
+    line: 'Σειρά χρωμάτων', search: 'Αναζήτηση χρώματος', onlyOut: 'Μόνο όσα έχουν τελειώσει', outOf: '{n} εκτός αποθέματος',
+    outTag: 'ΤΕΛΟΣ', pricesIntro: 'Τιμή ανά σπρέι για κάθε σειρά που πουλάς. Άφησέ το κενό για «Τιμή στο κατάστημα».',
+    remove: 'Αφαίρεση', addLine: 'Προσθήκη σειράς', colourPrices: 'Τιμές για μεμονωμένα χρώματα', colourPricesIntro: 'Προαιρετικά: διαφορετική τιμή για συγκεκριμένα χρώματα (π.χ. φθορίζοντα ή χρώμια).',
+    add: 'Προσθήκη', codePh: 'Κωδικός χρώματος', shopName: 'Όνομα καταστήματος', area: 'Περιοχή', address: 'Διεύθυνση', website: 'Ιστοσελίδα',
+    mapsLink: 'Σύνδεσμος Google Maps', orderContact: 'Παραγγελίες', orderEmail: 'Email για νέες παραγγελίες', contactName: 'Υπεύθυνος επικοινωνίας',
+    contactPhone: 'Τηλέφωνο επικοινωνίας', deliveryTitle: 'Παράδοση', weDeliver: 'Κάνουμε παράδοση', deliveryFee: 'Μεταφορικά',
+    freeOver: 'Δωρεάν παράδοση άνω των (κενό για ποτέ)', deliveryNote: 'Σημείωση (π.χ. courier, εντός Ελλάδας)', save: 'Αποθήκευση',
+    saved: 'Αποθηκεύτηκε.', error: 'Κάτι πήγε στραβά: {m}', lockedNote: 'Την πόλη και το νόμισμα τα ορίζει το Kromatch. Ζήτησέ μας να τα αλλάξουμε.',
+    allShops: 'Όλα τα καταστήματα', newShop: 'Προσθήκη καταστήματος', cityKey: 'Πόλη', currency: 'Νόμισμα', createShop: 'Δημιουργία καταστήματος',
+    demo: 'Επίδειξη', live: 'Ενεργό', off: 'Ανενεργό', feePerCan: 'Χρέωση ανά σπρέι', trialEnds: 'Δωρεάν έως', inviteEmail: 'Πρόσκληση προσωπικού (email)',
+    invite: 'Πρόσκληση', invited: 'Η πρόσκληση στάλθηκε.', linked: 'Ο υπάρχων λογαριασμός συνδέθηκε με το κατάστημα.', makeLive: 'Ενεργοποίηση',
+    makeDemo: 'Επίδειξη', switchOff: 'Απενεργοποίηση', created: 'Το κατάστημα δημιουργήθηκε. Πρόσκαλεσε το προσωπικό του παρακάτω.'
+  }
+};
+let lang = localStorage.getItem('kromatch:dashLang') || ((navigator.language || 'en').startsWith('el') ? 'el' : 'en');
+const t = (k, vars) => { let s = (TX[lang] && TX[lang][k]) || TX.en[k] || k; if (vars) for (const v in vars) s = s.replace('{' + v + '}', vars[v]); return s; };
+const $ = id => document.getElementById(id);
+function applyLang() {
+  document.documentElement.lang = lang; $('langSel').value = lang;
+  document.querySelectorAll('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
+  $('ovCode').placeholder = t('codePh'); $('ovPrice').placeholder = '0.00';
+}
+$('langSel').addEventListener('change', e => { lang = e.target.value; try { localStorage.setItem('kromatch:dashLang', lang); } catch (_) {} applyLang(); if (shop) renderAll(); });
+
+/* ---------- Helpers ---------- */
+let toastTimer;
+function toast(msg, err) { const el = $('toast'); el.textContent = msg; el.className = 'toast' + (err ? ' err' : ''); el.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 3000); }
+const fail = e => toast(t('error', { m: (e && (e.message || e.error)) || e }), true);
+function money(v, cur) { try { return new Intl.NumberFormat(lang === 'el' ? 'el-GR' : 'en-IE', { style: 'currency', currency: cur }).format(v); } catch (_) { return Number(v).toFixed(2) + ' ' + cur; } }
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const CITIES = ['athens','thessaloniki','paris','berlin','barcelona','lisbon','milan','amsterdam','london','toronto','montreal','newyork','losangeles','mexicocity','saopaulo'];
+
+/* ---------- Paint data from colors.js ---------- */
+const LINES = {};
+(window.PAINT_DATA || []).forEach(b => { LINES[b.brand] = b.colors.map(c => ({ code: c.code || c.name, name: c.name, hex: c.hex, finish: c.finish || '' })); });
+const ALL_LINES = Object.keys(LINES);
+
+/* ---------- Supabase ---------- */
+const CFG = window.KROMATCH_CONFIG;
+const sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey, { auth: { persistSession: true, detectSessionInUrl: true } });
+let session = null, isAdmin = false, myShops = [], shop = null, priv = null;
+let lines = [], outs = new Set(), overrides = [], orders = [];
+
+async function callFn(name, body) {
+  const r = await fetch(`${CFG.functionsUrl}/${name}`, { method: 'POST',
+    headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey, Authorization: 'Bearer ' + session.access_token },
+    body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+
+/* ---------- Login ---------- */
+$('loginBtn').addEventListener('click', async () => {
+  const email = $('loginEmail').value.trim(); if (!email) return;
+  $('loginBtn').disabled = true;
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname } });
+  $('loginBtn').disabled = false;
+  $('loginMsg').textContent = error ? t('loginError') : t('linkSent');
+});
+$('logoutBtn').addEventListener('click', async () => { await sb.auth.signOut(); location.reload(); });
+
+async function start() {
+  applyLang();
+  const { data } = await sb.auth.getSession();
+  session = data.session;
+  sb.auth.onAuthStateChange((_e, s) => { const had = !!session; session = s; if (!had && s) boot(); });
+  if (session) boot(); else { $('loginView').hidden = false; }
+}
+async function boot() {
+  $('loginView').hidden = true; $('logoutBtn').hidden = false;
+  const { data: adm } = await sb.rpc('is_admin');
+  isAdmin = adm === true;
+  if (isAdmin) {
+    const { data } = await sb.from('shops').select('*').order('sort_order');
+    myShops = data || [];
+  } else {
+    const { data } = await sb.from('shop_staff').select('shop_id, role, shops(*)');
+    myShops = (data || []).map(x => x.shops).filter(Boolean);
+  }
+  if (!myShops.length) { $('noShopView').hidden = false; return; }
+  $('appView').hidden = false; $('adminTab').hidden = !isAdmin;
+  const sel = $('shopSel');
+  sel.innerHTML = myShops.map(s => `<option value="${s.id}">${esc(s.name)}${s.is_live ? '' : s.is_demo ? ' (demo)' : ' (off)'}</option>`).join('');
+  const last = localStorage.getItem('kromatch:dashShop');
+  if (last && myShops.some(s => s.id === last)) sel.value = last;
+  sel.closest('.row').hidden = myShops.length < 2 && !isAdmin;
+  await selectShop(sel.value);
+  setInterval(() => { if (shop && !document.hidden) loadOrders().then(renderOrders); }, 30000);
+}
+$('shopSel').addEventListener('change', e => selectShop(e.target.value));
+
+async function selectShop(id) {
+  shop = myShops.find(s => s.id === id);
+  try { localStorage.setItem('kromatch:dashShop', id); } catch (_) {}
+  const [l, o, ov, p] = await Promise.all([
+    sb.from('shop_lines').select('*').eq('shop_id', id),
+    sb.from('stock_out').select('line, code').eq('shop_id', id),
+    sb.from('price_overrides').select('*').eq('shop_id', id),
+    sb.from('shop_private').select('*').eq('shop_id', id).maybeSingle(),
+  ]);
+  lines = (l.data || []).sort((a, b) => ALL_LINES.indexOf(a.line) - ALL_LINES.indexOf(b.line));
+  outs = new Set((o.data || []).map(x => x.line + '|' + x.code));
+  overrides = ov.data || [];
+  priv = p.data || {};
+  await loadOrders();
+  renderAll();
+}
+async function loadOrders() {
+  const { data, error } = await sb.from('orders').select('*, order_items(*)').eq('shop_id', shop.id)
+    .order('created_at', { ascending: false }).limit(60);
+  if (error) { fail(error); return; }
+  orders = data || [];
+}
+function renderAll() { renderOrders(); renderStock(); renderPrices(); renderShopForm(); if (isAdmin) renderAdmin(); }
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.toggleAttribute('aria-current', x === b));
+  document.querySelectorAll('.tab').forEach(x => { if (x === b) x.setAttribute('aria-current', 'page'); });
+  ['orders', 'stock', 'prices', 'shop', 'admin'].forEach(n => { $('tab-' + n).hidden = n !== b.dataset.tab; });
+}));
+$('refreshBtn').addEventListener('click', async () => { await loadOrders(); renderOrders(); });
+
+/* ---------- Orders ---------- */
+function orderCard(o) {
+  const d = document.createElement('div'); d.className = 'card';
+  const when = new Date(o.created_at).toLocaleString(lang === 'el' ? 'el-GR' : 'en-GB', { dateStyle: 'short', timeStyle: 'short' });
+  const totalTxt = (Number(o.subtotal) > 0 || !o.unpriced_cans) ? money(Number(o.total), o.currency) : t('priceAtShop');
+  d.innerHTML = `<div class="row"><b class="grow">#${o.order_no} · ${esc(when)}</b><span class="status st-${o.status}">${t('st_' + o.status)}</span></div>
+    <div class="row" style="margin-top:6px"><span class="muted">${t('code')}:</span> <span class="code">${esc(o.pickup_code)}</span></div>
+    <div style="margin-top:4px"><b>${o.method === 'delivery' ? t('delivery') : t('pickup')}</b>${o.delivery_address ? ' · ' + esc(o.delivery_address) : ''}</div>
+    <div class="muted">${t('customer')}: ${esc(o.customer_name)}${o.customer_phone ? ' · <a href="tel:' + esc(o.customer_phone) + '">' + esc(o.customer_phone) + '</a>' : ''}${o.customer_email ? ' · ' + esc(o.customer_email) : ''}</div>
+    <ul class="items">${(o.order_items || []).map(i => `<li><span class="sw" style="background:${esc(i.hex || '#ccc')}"></span>
+      <span class="grow">${i.qty} × <b>${esc(i.line)}</b> ${esc(i.code || '')} ${esc(i.name)}</span>
+      <span>${i.unit_price == null ? t('priceAtShop') : money(i.unit_price * i.qty, o.currency)}</span></li>`).join('')}</ul>
+    <div class="row"><b class="grow">${t('total')}: ${totalTxt}</b>${o.fee_total != null ? `<span class="note">${t('yourFee')}: ${money(Number(o.fee_total), o.currency)}</span>` : ''}</div>
+    <div class="row acts" style="margin-top:10px"></div>`;
+  const acts = d.querySelector('.acts');
+  const btn = (label, cls, fn) => { const b = document.createElement('button'); b.textContent = label; b.className = cls; b.addEventListener('click', fn); acts.appendChild(b); };
+  if (o.status === 'new') btn(t('markReady'), 'small', () => setStatus(o, 'ready'));
+  if (o.status === 'new' || o.status === 'ready') {
+    btn(t('markPicked'), 'small' + (o.status === 'new' ? ' secondary' : ''), () => {
+      const code = prompt(t('enterCode'), 'K-'); if (code) setStatus(o, 'picked_up', code);
+    });
+    btn(t('notAvail'), 'small danger', () => { if (confirm(t('confirmNotAvail'))) setStatus(o, 'not_available'); });
+    btn(t('cancel'), 'small secondary', () => { if (confirm(t('confirmCancel'))) setStatus(o, 'cancelled'); });
+  }
+  return d;
+}
+function renderOrders() {
+  const open = orders.filter(o => o.status === 'new' || o.status === 'ready');
+  const done = orders.filter(o => !(o.status === 'new' || o.status === 'ready')).slice(0, 20);
+  $('openOrders').innerHTML = open.length ? '' : `<p class="muted">${t('noOrders')}</p>`;
+  open.forEach(o => $('openOrders').appendChild(orderCard(o)));
+  $('doneOrders').innerHTML = done.length ? '' : `<p class="muted">${t('noRecent')}</p>`;
+  done.forEach(o => $('doneOrders').appendChild(orderCard(o)));
+  const n = orders.filter(o => o.status === 'new').length;
+  $('newCount').textContent = n; $('newCount').hidden = !n;
+}
+async function setStatus(o, status, code) {
+  try {
+    await callFn('update-order-status', { order_id: o.id, status, pickup_code: code });
+    toast(t('st_' + status)); await loadOrders(); renderOrders();
+  } catch (e) { toast(/match/i.test(e.message) ? t('codeWrong') : t('error', { m: e.message }), true); }
+}
+
+/* ---------- Stock ---------- */
+function renderStock() {
+  const sel = $('stockLine'), cur = sel.value;
+  sel.innerHTML = lines.map(l => `<option value="${esc(l.line)}">${esc(l.line)}</option>`).join('');
+  if (cur && lines.some(l => l.line === cur)) sel.value = cur;
+  drawColours();
+}
+function drawColours() {
+  const line = $('stockLine').value, q = $('stockSearch').value.trim().toLowerCase(), only = $('onlyOut').checked;
+  const list = (LINES[line] || []).filter(c => (!q || (c.name + ' ' + c.code).toLowerCase().includes(q)) && (!only || outs.has(line + '|' + c.code)));
+  const grid = $('colourGrid'); grid.innerHTML = '';
+  list.forEach(c => {
+    const out = outs.has(line + '|' + c.code);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'colour' + (out ? ' out' : '');
+    b.setAttribute('aria-pressed', out ? 'true' : 'false');
+    b.innerHTML = `<span class="sw" style="background:${esc(c.hex)}"></span><span class="grow"><span class="nm">${esc(c.name)}</span><small>${esc(c.code)}</small>${out ? `<span class="out-tag">${t('outTag')}</span>` : ''}</span>`;
+    b.addEventListener('click', () => toggleOut(line, c.code));
+    grid.appendChild(b);
+  });
+  const n = [...outs].filter(k => k.startsWith(line + '|')).length;
+  $('outCount').textContent = t('outOf', { n });
+}
+async function toggleOut(line, code) {
+  const key = line + '|' + code, was = outs.has(key);
+  if (was) outs.delete(key); else outs.add(key);
+  drawColours();
+  const res = was ? await sb.from('stock_out').delete().eq('shop_id', shop.id).eq('line', line).eq('code', code)
+                  : await sb.from('stock_out').insert({ shop_id: shop.id, line, code });
+  if (res.error) { if (was) outs.add(key); else outs.delete(key); drawColours(); fail(res.error); }
+}
+['stockLine', 'stockSearch', 'onlyOut'].forEach(id => $(id).addEventListener('input', drawColours));
+
+/* ---------- Prices ---------- */
+function renderPrices() {
+  const tb = $('priceTable'); tb.innerHTML = '';
+  lines.forEach(l => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><b>${esc(l.line)}</b></td><td><input type="number" step="0.01" min="0" value="${l.price ?? ''}" aria-label="${esc(l.line)}"></td>
+      <td class="note">${esc(shop.currency)}</td><td><button class="small danger">${t('remove')}</button></td>`;
+    const inp = tr.querySelector('input');
+    inp.addEventListener('change', async () => {
+      const v = inp.value === '' ? null : Number(inp.value);
+      const { error } = await sb.from('shop_lines').update({ price: v }).eq('shop_id', shop.id).eq('line', l.line);
+      if (error) fail(error); else { l.price = v; toast(t('saved')); }
+    });
+    tr.querySelector('button').addEventListener('click', async () => {
+      const { error } = await sb.from('shop_lines').delete().eq('shop_id', shop.id).eq('line', l.line);
+      if (error) fail(error); else { lines = lines.filter(x => x !== l); renderPrices(); renderStock(); }
+    });
+    tb.appendChild(tr);
+  });
+  const missing = ALL_LINES.filter(n => !lines.some(l => l.line === n));
+  $('addLineSel').innerHTML = missing.map(n => `<option>${esc(n)}</option>`).join('');
+  $('addLineSel').closest('.row').hidden = !missing.length;
+  $('ovLine').innerHTML = lines.map(l => `<option>${esc(l.line)}</option>`).join('');
+  fillOvCodes();
+  const ot = $('ovTable'); ot.innerHTML = '';
+  overrides.forEach(o => {
+    const c = (LINES[o.line] || []).find(x => x.code === o.code);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span class="sw" style="display:inline-block;vertical-align:middle;background:${esc(c ? c.hex : '#ccc')}"></span> <b>${esc(o.line)}</b> ${esc(o.code)} ${esc(c ? c.name : '')}</td>
+      <td>${money(Number(o.price), shop.currency)}</td><td><button class="small danger">${t('remove')}</button></td>`;
+    tr.querySelector('button').addEventListener('click', async () => {
+      const { error } = await sb.from('price_overrides').delete().eq('shop_id', shop.id).eq('line', o.line).eq('code', o.code);
+      if (error) fail(error); else { overrides = overrides.filter(x => x !== o); renderPrices(); }
+    });
+    ot.appendChild(tr);
+  });
+}
+function fillOvCodes() { $('ovCodes').innerHTML = (LINES[$('ovLine').value] || []).map(c => `<option value="${esc(c.code)}">${esc(c.name)}</option>`).join(''); }
+$('ovLine').addEventListener('change', fillOvCodes);
+$('addLineBtn').addEventListener('click', async () => {
+  const line = $('addLineSel').value; if (!line) return;
+  const { error } = await sb.from('shop_lines').insert({ shop_id: shop.id, line, price: null });
+  if (error) return fail(error);
+  lines.push({ shop_id: shop.id, line, price: null }); renderPrices(); renderStock(); toast(t('saved'));
+});
+$('ovAdd').addEventListener('click', async () => {
+  const line = $('ovLine').value, code = $('ovCode').value.trim(), price = Number($('ovPrice').value);
+  if (!line || !code || !(price >= 0) || $('ovPrice').value === '') return;
+  const { error } = await sb.from('price_overrides').upsert({ shop_id: shop.id, line, code, price });
+  if (error) return fail(error);
+  overrides = overrides.filter(o => !(o.line === line && o.code === code)).concat([{ line, code, price }]);
+  $('ovCode').value = ''; $('ovPrice').value = ''; renderPrices(); toast(t('saved'));
+});
+
+/* ---------- Shop details ---------- */
+function renderShopForm() {
+  $('fName').value = shop.name || ''; $('fArea').value = shop.area || ''; $('fAddress').value = shop.address || '';
+  $('fWebsite').value = shop.website || ''; $('fMaps').value = shop.maps_url || '';
+  $('fOrderEmail').value = priv.order_email || ''; $('fContact').value = priv.contact_name || ''; $('fPhone').value = priv.contact_phone || '';
+  const d = shop.delivery;
+  $('fDelivers').checked = !!d; $('deliveryFields').hidden = !d;
+  $('fFee').value = d ? (d.fee ?? '') : ''; $('fFreeOver').value = d ? (d.freeOver ?? '') : ''; $('fNote').value = d ? (d.note || '') : '';
+  $('lockedNote').textContent = t('lockedNote') + ` (${shop.city} · ${shop.currency})`;
+}
+$('fDelivers').addEventListener('change', e => { $('deliveryFields').hidden = !e.target.checked; });
+$('saveShop').addEventListener('click', async () => {
+  const delivery = $('fDelivers').checked ? { fee: Number($('fFee').value || 0), freeOver: $('fFreeOver').value === '' ? null : Number($('fFreeOver').value), note: $('fNote').value.trim() } : null;
+  const upd = { name: $('fName').value.trim() || shop.name, area: $('fArea').value.trim() || null, address: $('fAddress').value.trim() || null,
+                website: $('fWebsite').value.trim() || null, maps_url: $('fMaps').value.trim() || null, delivery };
+  const pupd = { order_email: $('fOrderEmail').value.trim() || null, contact_name: $('fContact').value.trim() || null, contact_phone: $('fPhone').value.trim() || null };
+  const [a, b] = await Promise.all([
+    sb.from('shops').update(upd).eq('id', shop.id),
+    sb.from('shop_private').update(pupd).eq('shop_id', shop.id),
+  ]);
+  if (a.error || b.error) return fail(a.error || b.error);
+  Object.assign(shop, upd); Object.assign(priv, pupd); toast(t('saved'));
+  const opt = [...$('shopSel').options].find(o => o.value === shop.id); if (opt) opt.textContent = shop.name;
+});
+
+/* ---------- Admin ---------- */
+async function renderAdmin() {
+  $('nCity').innerHTML = CITIES.map(c => `<option>${c}</option>`).join('');
+  const { data: privs } = await sb.from('shop_private').select('*');
+  const pmap = new Map((privs || []).map(p => [p.shop_id, p]));
+  const box = $('adminShops'); box.innerHTML = '';
+  myShops.forEach(s => {
+    const p = pmap.get(s.id) || {};
+    const d = document.createElement('div'); d.className = 'card';
+    const state = s.is_live && !s.is_demo ? t('live') : s.is_demo ? t('demo') : t('off');
+    d.innerHTML = `<div class="row"><b class="grow">${esc(s.name)}</b><span class="pill">${esc(s.city)} · ${esc(s.currency)}</span><span class="pill">${state}</span></div>
+      <div class="row" style="margin-top:8px">
+        <button class="small live">${t('makeLive')}</button><button class="small secondary demo">${t('makeDemo')}</button><button class="small danger offb">${t('switchOff')}</button>
+      </div>
+      <div class="row">
+        <label class="field grow"><span>${t('feePerCan')}</span><input class="fee" type="number" step="0.01" min="0" value="${p.fee_per_can ?? 0.4}"></label>
+        <label class="field grow"><span>${t('trialEnds')}</span><input class="trial" type="date" value="${p.trial_ends || ''}"></label>
+      </div>
+      <div class="row"><input class="inv grow" type="email" placeholder="${t('inviteEmail')}" style="margin:0"><button class="small secondary invb">${t('invite')}</button></div>`;
+    const set = async upd => { const { error } = await sb.from('shops').update(upd).eq('id', s.id); if (error) return fail(error); Object.assign(s, upd); renderAdmin(); toast(t('saved')); };
+    d.querySelector('.live').addEventListener('click', () => set({ is_live: true, is_demo: false }));
+    d.querySelector('.demo').addEventListener('click', () => set({ is_live: false, is_demo: true }));
+    d.querySelector('.offb').addEventListener('click', () => set({ is_live: false, is_demo: false }));
+    const savePriv = async () => {
+      const upd = { fee_per_can: Number(d.querySelector('.fee').value || 0), trial_ends: d.querySelector('.trial').value || null };
+      const { error } = await sb.from('shop_private').update(upd).eq('shop_id', s.id); if (error) fail(error); else toast(t('saved'));
+    };
+    d.querySelector('.fee').addEventListener('change', savePriv); d.querySelector('.trial').addEventListener('change', savePriv);
+    d.querySelector('.invb').addEventListener('click', async () => {
+      const email = d.querySelector('.inv').value.trim(); if (!email) return;
+      try { const r = await callFn('invite-staff', { shop_id: s.id, email }); toast(r.invited ? t('invited') : t('linked')); d.querySelector('.inv').value = ''; }
+      catch (e) { fail(e); }
+    });
+    box.appendChild(d);
+  });
+}
+$('createShop').addEventListener('click', async () => {
+  const name = $('nName').value.trim(); if (!name) return;
+  const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + Math.random().toString(36).slice(2, 6);
+  const { data, error } = await sb.from('shops').insert({ slug, name, city: $('nCity').value, currency: $('nCur').value, is_demo: false, is_live: false, sort_order: 1 }).select().single();
+  if (error) return fail(error);
+  const { error: e2 } = await sb.from('shop_private').insert({ shop_id: data.id, order_email: $('nEmail').value.trim() || null });
+  if (e2) return fail(e2);
+  myShops.unshift(data); $('nName').value = ''; $('nEmail').value = '';
+  const sel = $('shopSel'); sel.insertAdjacentHTML('afterbegin', `<option value="${data.id}">${esc(data.name)} (off)</option>`);
+  renderAdmin(); toast(t('created'));
+});
+
+start();
+</script>
+</body>
+</html>
