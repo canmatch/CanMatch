@@ -227,7 +227,7 @@ const TX = {
     st_new: 'New', st_ready: 'Ready', st_picked_up: 'Picked up', st_not_available: 'Not available', st_cancelled: 'Cancelled',
     yourFee: 'Kromatch fee', stockIntro: 'Everything is shown as in stock unless you mark it. Tap a colour when it runs out, tap again when it’s back.',
     line: 'Paint line', search: 'Search colour', onlyOut: 'Show only out of stock', outOf: '{n} out of stock',
-    outTag: 'OUT', pricesIntro: 'Price per can for each line you sell. Leave empty to show “Price at shop”.',
+    outTag: 'OUT', pricesIntro: 'Price per can for each line you sell. Lines without a price are hidden in the app until you add one.', hiddenNoPrice: 'Hidden in the app: add a price',
     remove: 'Remove', addLine: 'Add line', colourPrices: 'Single-colour prices', colourPricesIntro: 'Optional: a different price for specific colours (e.g. fluorescent or chrome).',
     add: 'Add', codePh: 'Colour code', shopName: 'Shop name', area: 'Area / neighbourhood', address: 'Address', website: 'Website',
     mapsLink: 'Google Maps link', orderContact: 'Orders', orderEmail: 'Email for new orders', contactName: 'Contact person',
@@ -254,7 +254,7 @@ const TX = {
     st_new: 'Νέα', st_ready: 'Έτοιμη', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
     yourFee: 'Χρέωση Kromatch', stockIntro: 'Όλα εμφανίζονται διαθέσιμα εκτός αν τα σημειώσεις. Πάτα ένα χρώμα όταν τελειώσει και ξανά όταν έρθει.',
     line: 'Σειρά χρωμάτων', search: 'Αναζήτηση χρώματος', onlyOut: 'Μόνο όσα έχουν τελειώσει', outOf: '{n} εκτός αποθέματος',
-    outTag: 'ΤΕΛΟΣ', pricesIntro: 'Τιμή ανά σπρέι για κάθε σειρά που πουλάς. Άφησέ το κενό για «Τιμή στο κατάστημα».',
+    outTag: 'ΤΕΛΟΣ', pricesIntro: 'Τιμή ανά σπρέι για κάθε σειρά που πουλάς. Οι σειρές χωρίς τιμή δεν εμφανίζονται στην εφαρμογή μέχρι να προσθέσεις τιμή.', hiddenNoPrice: 'Κρυφό στην εφαρμογή: πρόσθεσε τιμή',
     remove: 'Αφαίρεση', addLine: 'Προσθήκη σειράς', colourPrices: 'Τιμές για μεμονωμένα χρώματα', colourPricesIntro: 'Προαιρετικά: διαφορετική τιμή για συγκεκριμένα χρώματα (π.χ. φθορίζοντα ή χρώμια).',
     add: 'Προσθήκη', codePh: 'Κωδικός χρώματος', shopName: 'Όνομα καταστήματος', area: 'Περιοχή', address: 'Διεύθυνση', website: 'Ιστοσελίδα',
     mapsLink: 'Σύνδεσμος Google Maps', orderContact: 'Παραγγελίες', orderEmail: 'Email για νέες παραγγελίες', contactName: 'Υπεύθυνος επικοινωνίας',
@@ -459,12 +459,12 @@ function renderPrices() {
   lines.forEach(l => {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><b>${esc(l.line)}</b></td><td><input type="number" step="0.01" min="0" value="${l.price ?? ''}" aria-label="${esc(l.line)}"></td>
-      <td class="note">${esc(shop.currency)}</td><td><button class="small danger">${t('remove')}</button></td>`;
+      <td class="note">${esc(shop.currency)}${l.price == null ? `<div class="out-tag">${t('hiddenNoPrice')}</div>` : ''}</td><td><button class="small danger">${t('remove')}</button></td>`;
     const inp = tr.querySelector('input');
     inp.addEventListener('change', async () => {
       const v = inp.value === '' ? null : Number(inp.value);
       const { error } = await sb.from('shop_lines').update({ price: v }).eq('shop_id', shop.id).eq('line', l.line);
-      if (error) fail(error); else { l.price = v; toast(t('saved')); }
+      if (error) fail(error); else { l.price = v; toast(t('saved')); renderPrices(); }
     });
     tr.querySelector('button').addEventListener('click', async () => {
       const { error } = await sb.from('shop_lines').delete().eq('shop_id', shop.id).eq('line', l.line);

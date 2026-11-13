@@ -630,9 +630,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-15-ux3"></script>
-<script src="shops.js?v=2026-11-15-ux3"></script>
-<script src="config.js?v=2026-11-15-ux3"></script>
+<script src="colors.js?v=2026-11-15-priced"></script>
+<script src="shops.js?v=2026-11-15-priced"></script>
+<script src="config.js?v=2026-11-15-priced"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -2432,9 +2432,14 @@ function updateGoCart() {
 $('goCart').addEventListener('click', () => $('openList').click());
 /* ---------- Shops in the chosen city, prices ---------- */
 // Shops come from the live database when online; shops.js (or the last saved copy) is the fallback
-const normShop = sh => ({ id: sh.id || null, name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery || null,
-  demo: sh.demo !== false && sh.is_demo !== false, live: !!(sh.live || sh.is_live), lines: sh.lines || [], prices: sh.prices || {},
-  overrides: sh.overrides || {}, out: new Set(sh.out || []) });
+const normShop = sh => {
+  const prices = sh.prices || {}, overrides = sh.overrides || {};
+  // Only lines with a price are shown and orderable; a colour with its own price keeps its line visible
+  const priced = l => typeof prices[l] === 'number' || Object.keys(overrides).some(k => k.startsWith(l + '|'));
+  return { id: sh.id || null, name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery || null,
+    demo: sh.demo !== false && sh.is_demo !== false, live: !!(sh.live || sh.is_live), lines: (sh.lines || []).filter(priced), prices,
+    overrides, out: new Set(sh.out || []) };
+};
 let SHOPS_ALL = (store.shopsCache && store.shopsCache.length ? store.shopsCache : (window.SHOPS || [])).map(normShop);
 const allCityShops = () => SHOPS_ALL.filter(sh => sh.city && sh.city === store.city);
 const shopKey = sh => sh.id || sh.name;
@@ -2450,7 +2455,7 @@ function renderShopPick() {
   sel.value = store.shopPref || '';
 }
 // The shop a can is bought from: the first shop in the city that sells its line and has that colour in stock
-const shopFor = (brand, code) => cityShops().find(sh => sh.lines.includes(brand) && !(code && sh.out.has(brand + '|' + code))) || null;
+const shopFor = (brand, code) => cityShops().find(sh => sh.lines.includes(brand) && !(code && sh.out.has(brand + '|' + code)) && priceOf(sh, brand, code) !== undefined) || null;
 const CFG = window.KROMATCH_CONFIG || null;
 async function loadLiveShops() {
   if (!CFG) return false;
@@ -2489,7 +2494,7 @@ function priceOf(shop, brand, code) {
   const o = code && shop.overrides ? shop.overrides[brand + '|' + code] : undefined;
   if (typeof o === 'number') return o;
   const p = shop.prices ? shop.prices[brand] : null;
-  return typeof p === 'number' ? p : null;                       // null = price at shop
+  return typeof p === 'number' ? p : undefined;                  // no price = not shown
 }
 function priceTag(brand, code) {
   const shops = cityShops(); if (!shops.length) return null;
@@ -2908,7 +2913,7 @@ function labToHex(lab) {
 let autoColours = true, estimateOn = false, codesMode = false;
 function setDesignMode(codes) {
   codesMode = codes;
-  ['viewChips', 'designWrap', 'coloursField'].forEach(id => { $(id).hidden = codes; });
+  ['designWrap', 'coloursField'].forEach(id => { $(id).hidden = codes; });
   if (codes) $('autoColours').hidden = true;
 }
 function runCodes(hexes, shares, pickIds) {
