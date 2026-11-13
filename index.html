@@ -200,6 +200,9 @@
   .code-box b { font-stretch: 125%; font-weight: 900; font-size: 1.8rem; letter-spacing: 0.03em; }
   .my-order { background: var(--surface); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
   .my-order .row-actions { margin-top: 6px; }
+  .back-btn { font: inherit; font-weight: 700; font-size: 0.95rem; background: none; border: 0; color: var(--ink);
+              padding: 6px 2px; margin: 0 0 4px -2px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+  .back-btn span:first-child { font-size: 1.6rem; line-height: 0.8; }
   .welcome { z-index: 45; }
   .welcome-inner { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 6vh; }
   .welcome-logo { width: 112px; height: 112px; border-radius: 26px; }
@@ -252,6 +255,10 @@
   .wall-row select, .wall-row input { padding: 12px 8px !important; }
   .wall-row .field { margin-top: 8px; font-size: 0.9rem; }
   .alts { grid-column: 1 / 4; display: flex; flex-wrap: wrap; gap: 6px; }
+  .d-actions { grid-column: 1 / 4; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 2px; }
+  .d-actions .qty button { width: 32px; height: 32px; }
+  .d-actions .qty span { min-width: 1.6em; text-align: center; font-weight: 800; }
+  .match.d-skip { opacity: 0.5; }
   .alt-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; padding: 5px 10px; }
   .alt-chip .dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line); display: inline-block; }
   #designCanvas { display: block; max-width: 100%; max-height: 50vh; margin: 0 auto; }
@@ -381,8 +388,9 @@
 <!-- Account: sign in or create (optional) -->
 <div class="sheet" id="accountSheet" hidden role="dialog" aria-modal="true" aria-labelledby="accTitle">
   <div class="sheet-inner">
+    <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
     <div class="topbar"><h2 id="accTitle" data-i18n="accTitle"></h2>
-      <button type="button" class="icon-btn" id="accClose" data-i18n="done"></button></div>
+      <button type="button" class="icon-btn" id="accClose" hidden data-i18n="done"></button></div>
     <p class="tagline" id="accReason" data-i18n="accBenefits"></p>
     <label class="field"><span data-i18n="email"></span><input id="accSignEmail" type="email" autocomplete="email"></label>
     <button type="button" class="primary buy" id="accEmailBtn" data-i18n="continueEmail"></button>
@@ -399,6 +407,7 @@
 <!-- Setup: language and city, then how it works + tips -->
 <div class="sheet" id="setup" hidden role="dialog" aria-modal="true" aria-labelledby="setupTitle">
   <div class="sheet-inner">
+    <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
     <div id="stepStart">
       <h2 id="setupTitle" data-i18n="whereAreYou"></h2>
       <label class="field"><span data-i18n="cityLabel"></span><select id="citySelect"></select></label>
@@ -432,16 +441,11 @@
 <!-- Design: plan a whole design -->
 <div class="sheet" id="designSheet" hidden role="dialog" aria-modal="true" aria-labelledby="designTitle">
   <div class="sheet-inner">
+    <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
     <h2 id="designTitle" data-i18n="designTitle"></h2>
     <p class="tagline" data-i18n="designIntro"></p>
     <label class="primary"><span data-i18n="uploadDesign"></span><input id="designFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
     <p class="note" data-i18n="designTip"></p>
-    <details class="codes-box">
-      <summary data-i18n="codesQ"></summary>
-      <textarea id="codesIn" rows="3" placeholder="#E8432F, #1F6FB2, #F5C400" spellcheck="false"></textarea>
-      <button type="button" class="secondary small" id="codesGo" data-i18n="codesGo"></button>
-      <p class="hint" id="hexMsg" aria-live="polite"></p>
-    </details>
     <div class="wall-box">
       <h3 class="sub-h" data-i18n="wallQ"></h3>
       <p class="note" style="margin:2px 0 0" data-i18n="wallWhy"></p>
@@ -465,7 +469,7 @@
       <p class="note" data-i18n="usingFilters"></p>
 
       <ol class="matches" id="paletteList"></ol>
-      <div id="estimateBox" hidden>
+      <div id="estimateBox">
       <p class="note" id="coverageNote"></p>
       <div class="cart-total" id="designTotal"></div>
       <button type="button" class="primary buy" id="addAll" data-i18n="addAll"></button>
@@ -473,36 +477,22 @@
       <p class="hint ok" id="designMsg" aria-live="polite"></p>
 
       <button type="button" class="secondary" id="saveDesignBtn" data-i18n="saveDesign" style="margin-top:12px"></button>
-      <h3 class="sub-h" data-i18n="dlTitle"></h3>
-      <div class="sheet-actions" style="margin-top:10px">
-        <button type="button" class="secondary" id="dlDesignProcreate" data-i18n="dlProcreate"></button>
-        <button type="button" class="secondary" id="dlDesignAse" data-i18n="dlAdobe"></button>
-      </div>
     </div>
 
     <section id="myDesigns" hidden>
       <h3 class="sub-h" data-i18n="myDesigns"></h3>
       <div id="myDesignsList"></div>
     </section>
-    <details class="codes-box" style="margin-top:24px">
-    <summary data-i18n="rangeTitle"></summary>
-    <p class="note" data-i18n="rangeIntro"></p>
-    <label class="field"><select id="rangeSelect"></select></label>
-    <div class="sheet-actions" style="margin-top:10px">
-      <button type="button" class="secondary" id="dlRangeProcreate" data-i18n="dlProcreate"></button>
-      <button type="button" class="secondary" id="dlRangeAse" data-i18n="dlAdobe"></button>
-    </div>
-    <p class="note" data-i18n="procreateNote"></p>
-    </details>
   </div>
 </div>
 
 <!-- Settings -->
 <div class="sheet" id="settingsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
   <div class="sheet-inner">
+    <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
     <div class="topbar">
       <h2 id="settingsTitle" data-i18n="settings"></h2>
-      <button type="button" class="icon-btn" id="closeSettings" data-i18n="done"></button>
+      <button type="button" class="icon-btn" id="closeSettings" hidden data-i18n="done"></button>
     </div>
     <h3 class="sub-h" data-i18n="language"></h3>
     <div class="chips" style="margin-top:10px">
@@ -554,9 +544,10 @@
 <!-- Cart -->
 <div class="sheet" id="listSheet" hidden role="dialog" aria-modal="true" aria-labelledby="listTitle">
   <div class="sheet-inner cart">
+    <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
     <div class="topbar">
       <h2 id="listTitle" data-i18n="listTitle"></h2>
-      <button type="button" class="icon-btn" id="closeList" data-i18n="done"></button>
+      <button type="button" class="icon-btn" id="closeList" hidden data-i18n="done"></button>
     </div>
     <section id="myOrders" hidden>
       <h3 class="sub-h" data-i18n="myOrders"></h3>
@@ -581,6 +572,7 @@
 <!-- Checkout and order confirmation (ordering not connected yet) -->
 <div class="sheet" id="orderSheet" hidden role="dialog" aria-modal="true" aria-labelledby="orderTitle">
   <div class="sheet-inner">
+    <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
     <div id="checkoutView">
       <h2 id="coTitle"></h2>
       <div id="coItems"></div>
@@ -628,9 +620,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-14-accounts2"></script>
-<script src="shops.js?v=2026-11-14-accounts2"></script>
-<script src="config.js?v=2026-11-14-accounts2"></script>
+<script src="colors.js?v=2026-11-14-nav2"></script>
+<script src="shops.js?v=2026-11-14-nav2"></script>
+<script src="config.js?v=2026-11-14-nav2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -691,6 +683,8 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    addedOne: 'Added 1 can to your cart.',
+    back: 'Back',
     welcomeP1: 'Match a colour from any photo', welcomeP2: 'Plan a whole wall from your sketch', welcomeP3: 'Reserve the cans at a shop near you', welcomeStart: 'Start', privacyLink: 'Privacy policy', rememberMe: 'Remember my details on this phone', accPromptTitle: 'Keep your orders and designs', accPromptText: 'Create a free account to track orders and save designs on any device.', accCreate: 'Create free account', notNow: 'Not now', accTitle: 'Your Kromatch account', accBenefits: 'Free. Track your orders and save your designs on any phone or computer.', continueEmail: 'Continue with email', continueGoogle: 'Continue with Google', continueApple: 'Continue with Apple', accLinkSent: 'Check your email and tap the link to sign in.', accError: 'Couldn’t send the link: {m}', accNoPassword: 'No password needed. We’ll email you a sign-in link.', signedInAs: 'Signed in as {email}', signOut: 'Sign out', deleteAccount: 'Delete account', deleteConfirm: 'Delete your account, saved designs and profile? Orders already sent to shops stay with the shops. This can’t be undone.', accDeleted: 'Your account was deleted.', accOrSignIn: 'Create account or sign in', accLocalNote: 'Without an account, your details stay only on this phone.', accSyncedNote: 'Your details are saved to your account.', saveDesign: 'Save design', designNamePrompt: 'Name this design', myDesigns: 'My designs', openDesign: 'Open', designSaved: 'Design saved.', signInToSave: 'Create a free account to save designs.', noDesigns: 'No saved designs yet.',
     yourDetails: 'Your details', consentL: 'I agree to share my name and contact details with {shop} for this order.', needName: 'Please enter your name.', needContact: 'Please enter a phone number or email.', needConsent: 'Please tick the box to share your details with the shop.', sending: 'Sending your order…', sendFail: 'Couldn’t send the order: {m}', orderSent: 'Order sent to {shop}', orderNo: 'Order #{n}', pickupCodeL: 'Pickup code', showCode: 'Show this code in the shop when you collect your cans. You pay in the shop.', deliveryInfo: 'The shop will deliver your cans. You pay on delivery.', emailSentTo: 'A confirmation was sent to {email}.', myOrders: 'My orders', checkStatus: 'Check status', offline: 'no connection, please try again', st_new: 'Sent to shop', st_ready: 'Ready to collect', st_picked_up: 'Collected', st_not_available: 'Not available', st_cancelled: 'Cancelled',
     wallQ: 'How big is the wall?',
@@ -875,6 +869,8 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    addedOne: 'Προστέθηκε 1 σπρέι στο καλάθι σου.',
+    back: 'Πίσω',
     welcomeP1: 'Ταίριαξε ένα χρώμα από οποιαδήποτε φωτογραφία', welcomeP2: 'Σχεδίασε ολόκληρο τοίχο από το σκίτσο σου', welcomeP3: 'Κράτησε τα σπρέι σε κατάστημα κοντά σου', welcomeStart: 'Ξεκίνα', privacyLink: 'Πολιτική απορρήτου', rememberMe: 'Να θυμάται τα στοιχεία μου σε αυτό το κινητό', accPromptTitle: 'Κράτα τις παραγγελίες και τα σχέδιά σου', accPromptText: 'Φτιάξε δωρεάν λογαριασμό για να βλέπεις τις παραγγελίες σου και να αποθηκεύεις σχέδια σε κάθε συσκευή.', accCreate: 'Δωρεάν λογαριασμός', notNow: 'Όχι τώρα', accTitle: 'Ο λογαριασμός σου στο Kromatch', accBenefits: 'Δωρεάν. Παρακολούθησε τις παραγγελίες σου και αποθήκευσε τα σχέδιά σου σε κάθε κινητό ή υπολογιστή.', continueEmail: 'Συνέχεια με email', continueGoogle: 'Συνέχεια με Google', continueApple: 'Συνέχεια με Apple', accLinkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.', accError: 'Ο σύνδεσμος δεν στάλθηκε: {m}', accNoPassword: 'Χωρίς κωδικό. Θα σου στείλουμε σύνδεσμο σύνδεσης στο email.', signedInAs: 'Συνδεδεμένος ως {email}', signOut: 'Αποσύνδεση', deleteAccount: 'Διαγραφή λογαριασμού', deleteConfirm: 'Να διαγραφούν ο λογαριασμός, τα σχέδια και το προφίλ σου; Οι παραγγελίες που έχουν ήδη σταλεί μένουν στα καταστήματα. Δεν αναιρείται.', accDeleted: 'Ο λογαριασμός σου διαγράφηκε.', accOrSignIn: 'Δημιουργία λογαριασμού ή σύνδεση', accLocalNote: 'Χωρίς λογαριασμό, τα στοιχεία σου μένουν μόνο σε αυτό το κινητό.', accSyncedNote: 'Τα στοιχεία σου αποθηκεύονται στον λογαριασμό σου.', saveDesign: 'Αποθήκευση σχεδίου', designNamePrompt: 'Δώσε όνομα στο σχέδιο', myDesigns: 'Τα σχέδιά μου', openDesign: 'Άνοιγμα', designSaved: 'Το σχέδιο αποθηκεύτηκε.', signInToSave: 'Φτιάξε δωρεάν λογαριασμό για να αποθηκεύεις σχέδια.', noDesigns: 'Δεν υπάρχουν ακόμα αποθηκευμένα σχέδια.',
     yourDetails: 'Τα στοιχεία σου', consentL: 'Συμφωνώ να μοιραστώ το όνομα και τα στοιχεία επικοινωνίας μου με το {shop} για αυτή την παραγγελία.', needName: 'Γράψε το όνομά σου.', needContact: 'Γράψε τηλέφωνο ή email.', needConsent: 'Τσέκαρε το κουτάκι για να μοιραστείς τα στοιχεία σου με το κατάστημα.', sending: 'Αποστολή παραγγελίας…', sendFail: 'Η παραγγελία δεν στάλθηκε: {m}', orderSent: 'Η παραγγελία στάλθηκε στο {shop}', orderNo: 'Παραγγελία #{n}', pickupCodeL: 'Κωδικός παραλαβής', showCode: 'Δείξε αυτόν τον κωδικό στο κατάστημα όταν παραλάβεις τα σπρέι. Πληρώνεις στο κατάστημα.', deliveryInfo: 'Το κατάστημα θα σου στείλει τα σπρέι. Πληρώνεις κατά την παράδοση.', emailSentTo: 'Στάλθηκε επιβεβαίωση στο {email}.', myOrders: 'Οι παραγγελίες μου', checkStatus: 'Έλεγχος κατάστασης', offline: 'δεν υπάρχει σύνδεση, δοκίμασε ξανά', st_new: 'Στάλθηκε στο κατάστημα', st_ready: 'Έτοιμη για παραλαβή', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
     wallQ: 'Πόσο μεγάλος είναι ο τοίχος;',
@@ -1059,6 +1055,8 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    addedOne: '1 bombe ajoutée au panier.',
+    back: 'Retour',
     welcomeP1: 'Trouvez une couleur à partir de n’importe quelle photo', welcomeP2: 'Préparez tout un mur à partir de votre croquis', welcomeP3: 'Réservez les bombes dans un magasin près de chez vous', welcomeStart: 'Commencer', privacyLink: 'Politique de confidentialité', rememberMe: 'Mémoriser mes coordonnées sur ce téléphone', accPromptTitle: 'Gardez vos commandes et vos projets', accPromptText: 'Créez un compte gratuit pour suivre vos commandes et enregistrer vos projets sur tous vos appareils.', accCreate: 'Créer un compte gratuit', notNow: 'Pas maintenant', accTitle: 'Votre compte Kromatch', accBenefits: 'Gratuit. Suivez vos commandes et enregistrez vos projets sur n’importe quel téléphone ou ordinateur.', continueEmail: 'Continuer avec un e-mail', continueGoogle: 'Continuer avec Google', continueApple: 'Continuer avec Apple', accLinkSent: 'Consultez vos e-mails et touchez le lien pour vous connecter.', accError: 'Le lien n’a pas pu être envoyé\u00a0: {m}', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un lien de connexion par e-mail.', signedInAs: 'Connecté en tant que {email}', signOut: 'Se déconnecter', deleteAccount: 'Supprimer le compte', deleteConfirm: 'Supprimer votre compte, vos projets et votre profil\u202f? Les commandes déjà envoyées restent chez les magasins. Action irréversible.', accDeleted: 'Votre compte a été supprimé.', accOrSignIn: 'Créer un compte ou se connecter', accLocalNote: 'Sans compte, vos coordonnées restent uniquement sur ce téléphone.', accSyncedNote: 'Vos coordonnées sont enregistrées dans votre compte.', saveDesign: 'Enregistrer le projet', designNamePrompt: 'Nommez ce projet', myDesigns: 'Mes projets', openDesign: 'Ouvrir', designSaved: 'Projet enregistré.', signInToSave: 'Créez un compte gratuit pour enregistrer vos projets.', noDesigns: 'Aucun projet enregistré.',
     yourDetails: 'Vos coordonnées', consentL: 'J’accepte de partager mon nom et mes coordonnées avec {shop} pour cette commande.', needName: 'Veuillez saisir votre nom.', needContact: 'Veuillez saisir un téléphone ou un e-mail.', needConsent: 'Cochez la case pour partager vos coordonnées avec le magasin.', sending: 'Envoi de la commande…', sendFail: 'La commande n’a pas pu être envoyée\u00a0: {m}', orderSent: 'Commande envoyée à {shop}', orderNo: 'Commande n°{n}', pickupCodeL: 'Code de retrait', showCode: 'Montrez ce code en magasin pour récupérer vos bombes. Vous payez en magasin.', deliveryInfo: 'Le magasin vous livrera. Vous payez à la livraison.', emailSentTo: 'Une confirmation a été envoyée à {email}.', myOrders: 'Mes commandes', checkStatus: 'Voir le statut', offline: 'pas de connexion, réessayez', st_new: 'Envoyée au magasin', st_ready: 'Prête à retirer', st_picked_up: 'Retirée', st_not_available: 'Indisponible', st_cancelled: 'Annulée',
     wallQ: 'Quelle taille fait le mur ?',
@@ -1243,6 +1241,8 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    addedOne: '1 Dose zum Warenkorb hinzugefügt.',
+    back: 'Zurück',
     welcomeP1: 'Eine Farbe aus jedem Foto abgleichen', welcomeP2: 'Eine ganze Wand aus deiner Skizze planen', welcomeP3: 'Die Dosen in einem Shop in deiner Nähe reservieren', welcomeStart: 'Los geht’s', privacyLink: 'Datenschutzerklärung', rememberMe: 'Meine Angaben auf diesem Handy merken', accPromptTitle: 'Behalte deine Bestellungen und Designs', accPromptText: 'Erstelle ein kostenloses Konto, um Bestellungen zu verfolgen und Designs auf jedem Gerät zu speichern.', accCreate: 'Kostenloses Konto erstellen', notNow: 'Nicht jetzt', accTitle: 'Dein Kromatch-Konto', accBenefits: 'Kostenlos. Verfolge deine Bestellungen und speichere deine Designs auf jedem Handy oder Computer.', continueEmail: 'Weiter mit E-Mail', continueGoogle: 'Weiter mit Google', continueApple: 'Weiter mit Apple', accLinkSent: 'Sieh in deinen E-Mails nach und tippe auf den Link, um dich anzumelden.', accError: 'Link konnte nicht gesendet werden: {m}', accNoPassword: 'Kein Passwort nötig. Wir schicken dir einen Anmeldelink per E-Mail.', signedInAs: 'Angemeldet als {email}', signOut: 'Abmelden', deleteAccount: 'Konto löschen', deleteConfirm: 'Konto, gespeicherte Designs und Profil löschen? Bereits gesendete Bestellungen bleiben bei den Shops. Das lässt sich nicht rückgängig machen.', accDeleted: 'Dein Konto wurde gelöscht.', accOrSignIn: 'Konto erstellen oder anmelden', accLocalNote: 'Ohne Konto bleiben deine Angaben nur auf diesem Handy.', accSyncedNote: 'Deine Angaben sind in deinem Konto gespeichert.', saveDesign: 'Design speichern', designNamePrompt: 'Gib diesem Design einen Namen', myDesigns: 'Meine Designs', openDesign: 'Öffnen', designSaved: 'Design gespeichert.', signInToSave: 'Erstelle ein kostenloses Konto, um Designs zu speichern.', noDesigns: 'Noch keine gespeicherten Designs.',
     yourDetails: 'Deine Angaben', consentL: 'Ich bin einverstanden, meinen Namen und meine Kontaktdaten für diese Bestellung mit {shop} zu teilen.', needName: 'Bitte gib deinen Namen ein.', needContact: 'Bitte gib eine Telefonnummer oder E-Mail ein.', needConsent: 'Bitte setz das Häkchen, um deine Angaben mit dem Shop zu teilen.', sending: 'Bestellung wird gesendet…', sendFail: 'Bestellung konnte nicht gesendet werden: {m}', orderSent: 'Bestellung an {shop} gesendet', orderNo: 'Bestellung #{n}', pickupCodeL: 'Abholcode', showCode: 'Zeig diesen Code bei der Abholung im Shop. Du bezahlst im Shop.', deliveryInfo: 'Der Shop liefert deine Dosen. Du bezahlst bei Lieferung.', emailSentTo: 'Eine Bestätigung wurde an {email} gesendet.', myOrders: 'Meine Bestellungen', checkStatus: 'Status prüfen', offline: 'keine Verbindung, bitte erneut versuchen', st_new: 'An den Shop gesendet', st_ready: 'Abholbereit', st_picked_up: 'Abgeholt', st_not_available: 'Nicht verfügbar', st_cancelled: 'Storniert',
     wallQ: 'Wie groß ist die Wand?',
@@ -1427,6 +1427,8 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    addedOne: 'Se añadió 1 spray al carrito.',
+    back: 'Atrás',
     welcomeP1: 'Encuentra un color en cualquier foto', welcomeP2: 'Planifica una pared entera desde tu boceto', welcomeP3: 'Reserva los sprays en una tienda cerca de ti', welcomeStart: 'Empezar', privacyLink: 'Política de privacidad', rememberMe: 'Recordar mis datos en este móvil', accPromptTitle: 'Guarda tus pedidos y diseños', accPromptText: 'Crea una cuenta gratuita para seguir tus pedidos y guardar diseños en cualquier dispositivo.', accCreate: 'Crear cuenta gratuita', notNow: 'Ahora no', accTitle: 'Tu cuenta de Kromatch', accBenefits: 'Gratis. Sigue tus pedidos y guarda tus diseños en cualquier móvil u ordenador.', continueEmail: 'Continuar con correo', continueGoogle: 'Continuar con Google', continueApple: 'Continuar con Apple', accLinkSent: 'Revisa tu correo y toca el enlace para iniciar sesión.', accError: 'No se pudo enviar el enlace: {m}', accNoPassword: 'Sin contraseña. Te enviamos un enlace de acceso por correo.', signedInAs: 'Sesión iniciada como {email}', signOut: 'Cerrar sesión', deleteAccount: 'Eliminar cuenta', deleteConfirm: '¿Eliminar tu cuenta, tus diseños y tu perfil? Los pedidos ya enviados se quedan en las tiendas. No se puede deshacer.', accDeleted: 'Tu cuenta se ha eliminado.', accOrSignIn: 'Crear cuenta o iniciar sesión', accLocalNote: 'Sin cuenta, tus datos se quedan solo en este móvil.', accSyncedNote: 'Tus datos se guardan en tu cuenta.', saveDesign: 'Guardar diseño', designNamePrompt: 'Ponle nombre a este diseño', myDesigns: 'Mis diseños', openDesign: 'Abrir', designSaved: 'Diseño guardado.', signInToSave: 'Crea una cuenta gratuita para guardar diseños.', noDesigns: 'Aún no hay diseños guardados.',
     yourDetails: 'Tus datos', consentL: 'Acepto compartir mi nombre y mis datos de contacto con {shop} para este pedido.', needName: 'Escribe tu nombre.', needContact: 'Escribe un teléfono o un correo.', needConsent: 'Marca la casilla para compartir tus datos con la tienda.', sending: 'Enviando tu pedido…', sendFail: 'No se pudo enviar el pedido: {m}', orderSent: 'Pedido enviado a {shop}', orderNo: 'Pedido n.º {n}', pickupCodeL: 'Código de recogida', showCode: 'Muestra este código en la tienda al recoger tus sprays. Pagas en la tienda.', deliveryInfo: 'La tienda te enviará los sprays. Pagas a la entrega.', emailSentTo: 'Se envió una confirmación a {email}.', myOrders: 'Mis pedidos', checkStatus: 'Ver estado', offline: 'sin conexión, inténtalo de nuevo', st_new: 'Enviado a la tienda', st_ready: 'Listo para recoger', st_picked_up: 'Recogido', st_not_available: 'No disponible', st_cancelled: 'Cancelado',
     wallQ: '¿Qué tamaño tiene la pared?',
@@ -1611,6 +1613,8 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    addedOne: '1 bomboletta aggiunta al carrello.',
+    back: 'Indietro',
     welcomeP1: 'Abbina un colore da qualsiasi foto', welcomeP2: 'Pianifica un intero muro dal tuo schizzo', welcomeP3: 'Prenota le bombolette in un negozio vicino a te', welcomeStart: 'Inizia', privacyLink: 'Informativa sulla privacy', rememberMe: 'Ricorda i miei dati su questo telefono', accPromptTitle: 'Conserva ordini e progetti', accPromptText: 'Crea un account gratuito per seguire gli ordini e salvare i progetti su qualsiasi dispositivo.', accCreate: 'Crea account gratuito', notNow: 'Non ora', accTitle: 'Il tuo account Kromatch', accBenefits: 'Gratis. Segui i tuoi ordini e salva i tuoi progetti su qualsiasi telefono o computer.', continueEmail: 'Continua con email', continueGoogle: 'Continua con Google', continueApple: 'Continua con Apple', accLinkSent: 'Controlla la tua email e tocca il link per accedere.', accError: 'Impossibile inviare il link: {m}', accNoPassword: 'Nessuna password. Ti inviamo un link di accesso via email.', signedInAs: 'Accesso effettuato come {email}', signOut: 'Esci', deleteAccount: 'Elimina account', deleteConfirm: 'Eliminare account, progetti salvati e profilo? Gli ordini già inviati restano ai negozi. Non si può annullare.', accDeleted: 'Il tuo account è stato eliminato.', accOrSignIn: 'Crea un account o accedi', accLocalNote: 'Senza account, i tuoi dati restano solo su questo telefono.', accSyncedNote: 'I tuoi dati sono salvati nel tuo account.', saveDesign: 'Salva progetto', designNamePrompt: 'Dai un nome a questo progetto', myDesigns: 'I miei progetti', openDesign: 'Apri', designSaved: 'Progetto salvato.', signInToSave: 'Crea un account gratuito per salvare i progetti.', noDesigns: 'Nessun progetto salvato.',
     yourDetails: 'I tuoi dati', consentL: 'Accetto di condividere il mio nome e i miei contatti con {shop} per questo ordine.', needName: 'Inserisci il tuo nome.', needContact: 'Inserisci un telefono o un’email.', needConsent: 'Spunta la casella per condividere i tuoi dati con il negozio.', sending: 'Invio dell’ordine…', sendFail: 'Impossibile inviare l’ordine: {m}', orderSent: 'Ordine inviato a {shop}', orderNo: 'Ordine n. {n}', pickupCodeL: 'Codice di ritiro', showCode: 'Mostra questo codice in negozio quando ritiri le bombolette. Paghi in negozio.', deliveryInfo: 'Il negozio ti consegnerà le bombolette. Paghi alla consegna.', emailSentTo: 'È stata inviata una conferma a {email}.', myOrders: 'I miei ordini', checkStatus: 'Controlla lo stato', offline: 'nessuna connessione, riprova', st_new: 'Inviato al negozio', st_ready: 'Pronto per il ritiro', st_picked_up: 'Ritirato', st_not_available: 'Non disponibile', st_cancelled: 'Annullato',
     wallQ: 'Quanto è grande il muro?',
@@ -1795,6 +1799,8 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    addedOne: '1 spray adicionado ao carrinho.',
+    back: 'Voltar',
     welcomeP1: 'Encontre uma cor em qualquer foto', welcomeP2: 'Planeje uma parede inteira a partir do seu esboço', welcomeP3: 'Reserve os sprays numa loja perto de você', welcomeStart: 'Começar', privacyLink: 'Política de privacidade', rememberMe: 'Lembrar meus dados neste telefone', accPromptTitle: 'Guarde seus pedidos e projetos', accPromptText: 'Crie uma conta grátis para acompanhar pedidos e salvar projetos em qualquer dispositivo.', accCreate: 'Criar conta grátis', notNow: 'Agora não', accTitle: 'Sua conta Kromatch', accBenefits: 'Grátis. Acompanhe seus pedidos e salve seus projetos em qualquer telefone ou computador.', continueEmail: 'Continuar com e-mail', continueGoogle: 'Continuar com Google', continueApple: 'Continuar com Apple', accLinkSent: 'Confira seu e-mail e toque no link para entrar.', accError: 'Não foi possível enviar o link: {m}', accNoPassword: 'Sem senha. Enviamos um link de acesso por e-mail.', signedInAs: 'Conectado como {email}', signOut: 'Sair', deleteAccount: 'Excluir conta', deleteConfirm: 'Excluir sua conta, projetos salvos e perfil? Pedidos já enviados ficam com as lojas. Não dá para desfazer.', accDeleted: 'Sua conta foi excluída.', accOrSignIn: 'Criar conta ou entrar', accLocalNote: 'Sem conta, seus dados ficam só neste telefone.', accSyncedNote: 'Seus dados são salvos na sua conta.', saveDesign: 'Salvar projeto', designNamePrompt: 'Dê um nome a este projeto', myDesigns: 'Meus projetos', openDesign: 'Abrir', designSaved: 'Projeto salvo.', signInToSave: 'Crie uma conta grátis para salvar projetos.', noDesigns: 'Nenhum projeto salvo ainda.',
     yourDetails: 'Seus dados', consentL: 'Concordo em compartilhar meu nome e meus contatos com {shop} para este pedido.', needName: 'Digite seu nome.', needContact: 'Digite um telefone ou e-mail.', needConsent: 'Marque a caixa para compartilhar seus dados com a loja.', sending: 'Enviando seu pedido…', sendFail: 'Não foi possível enviar o pedido: {m}', orderSent: 'Pedido enviado para {shop}', orderNo: 'Pedido nº {n}', pickupCodeL: 'Código de retirada', showCode: 'Mostre este código na loja ao retirar seus sprays. Você paga na loja.', deliveryInfo: 'A loja vai entregar seus sprays. Você paga na entrega.', emailSentTo: 'Uma confirmação foi enviada para {email}.', myOrders: 'Meus pedidos', checkStatus: 'Ver status', offline: 'sem conexão, tente novamente', st_new: 'Enviado à loja', st_ready: 'Pronto para retirar', st_picked_up: 'Retirado', st_not_available: 'Indisponível', st_cancelled: 'Cancelado',
     wallQ: 'Qual o tamanho da parede?',
@@ -2564,7 +2570,7 @@ function openOrder(shop) {
   renderCheckout(); $('orderSheet').hidden = false; $('orderSheet').scrollTop = 0;
 }
 document.querySelectorAll('input[name=method]').forEach(r => r.addEventListener('change', () => { coMethod = r.value; renderCheckout(); }));
-$('coBack').addEventListener('click', () => { $('orderSheet').hidden = true; });
+$('coBack').addEventListener('click', () => navBack());
 $('placeOrder').addEventListener('click', async () => {
   const shop = coShop;
   if (coMethod === 'delivery') {
@@ -2579,7 +2585,10 @@ $('placeOrder').addEventListener('click', async () => {
   $('orderTitle').textContent = t(coMethod === 'delivery' ? 'doneDelivery' : 'donePickup').replace('{shop}', shop.name);
   const body = $('orderBody'); body.innerHTML = '';
   orderLines(shop).forEach(l => body.appendChild(lineEl(l.label, l.price)));
-  if (coMethod === 'delivery') body.appendChild(lineEl(t('deliveryFee'), tt.fee === 0 ? t('free') : money(tt.fee, shop.currency)));
+  if (coMethod === 'delivery') {
+    body.appendChild(lineEl(t('subtotal'), totalText(shop, tt.sum, tt.unpriced)));
+    body.appendChild(lineEl(t('deliveryFee'), tt.fee === 0 ? t('free') : money(tt.fee, shop.currency)));
+  }
   body.appendChild(lineEl(t('total'), (tt.sum > 0 || tt.unpriced === 0) ? money(tt.grand, shop.currency) : t('priceAtShop'), true));
   const note = document.createElement('p'); note.className = 'note';
   note.textContent = [unpricedText(tt.sum, tt.unpriced), `${t('payLabel')}: ${t(coMethod === 'delivery' ? 'payOnDelivery' : 'payInShop')}`,
@@ -2590,7 +2599,7 @@ $('placeOrder').addEventListener('click', async () => {
   sh.addEventListener('click', () => shareText(orderText(shop), t('orderHeader'))); links.appendChild(sh);
   $('checkoutView').hidden = true; $('doneView').hidden = false; $('orderSheet').scrollTop = 0;
 });
-$('orderClose').addEventListener('click', () => { $('orderSheet').hidden = true; renderList(); });
+$('orderClose').addEventListener('click', () => { navBack(); setTimeout(renderList, 0); });
 
 /* ---------- Real orders (live shops) ---------- */
 async function placeRealOrder(shop) {
@@ -2629,7 +2638,10 @@ async function placeRealOrder(shop) {
     const body = $('orderBody'); body.innerHTML = '';
     items.forEach(i => { const p = priceOf(shop, i.brand, i.code);
       body.appendChild(lineEl(`${i.qty} × ${i.brand} ${[i.code, itemName(i)].filter(Boolean).join(' ')}`, typeof p === 'number' ? money(p * i.qty, shop.currency) : t('priceAtShop'))); });
-    if (coMethod === 'delivery') body.appendChild(lineEl(t('deliveryFee'), j.delivery_fee ? money(j.delivery_fee, shop.currency) : t('free')));
+    if (coMethod === 'delivery') {
+      body.appendChild(lineEl(t('subtotal'), (j.subtotal > 0 || !j.unpriced_cans) ? money(j.subtotal, shop.currency) : t('priceAtShop')));
+      body.appendChild(lineEl(t('deliveryFee'), j.delivery_fee ? money(j.delivery_fee, shop.currency) : t('free')));
+    }
     body.appendChild(lineEl(t('total'), (j.subtotal > 0 || !j.unpriced_cans) ? money(j.total, shop.currency) : t('priceAtShop'), true));
     $('orderLinks').innerHTML = '';
     $('checkoutView').hidden = true; $('doneView').hidden = false; $('orderSheet').scrollTop = 0;
@@ -2672,7 +2684,7 @@ function goMatch() {
 }
 $('tabMatch').addEventListener('click', goMatch);
 $('openList').addEventListener('click', () => { $('settingsSheet').hidden = true; $('designSheet').hidden = true; renderList(); $('listSheet').hidden = false; setTab('openList'); });
-$('closeList').addEventListener('click', goMatch);
+$('closeList').addEventListener('click', () => navBack());
 $('clearList').addEventListener('click', () => { store.list = []; save(); renderList(); renderListCount(); });
 $('shareList').addEventListener('click', () => shareText(listText(), t('listHeader'), $('listMsg')));
 
@@ -2690,7 +2702,7 @@ function parseHex(v) {
   let h = m[1]; if (h.length === 3) h = h.split('').map(c => c + c).join('');
   return hexToRgb('#' + h);
 }
-$('codesGo').addEventListener('click', () => {
+$('codesGo')?.addEventListener('click', () => {
   const parts = $('codesIn').value.split(/[\s,;]+/).filter(Boolean);
   const rgbs = parts.map(parseHex);
   if (!parts.length || rgbs.some(x => !x)) { $('hexMsg').textContent = t('hexBad'); return; }
@@ -2809,6 +2821,7 @@ function runCodes(hexes, shares, pickIds) {
     const want = pickIds && pickIds[n];
     if (want && !options.some(o => o.p.id === want)) { const p = PAINTS.find(x => x.id === want); if (p) options.unshift({ p, d: deltaE2000(lab, p.lab) }); }
     return { lab, hex, share: shares && shares[n] ? shares[n] : 1 / hexes.length, options }; });
+  qtyOverride = {};
   picks = clusters.map((c, n) => { const i = pickIds ? c.options.findIndex(o => o.p.id === pickIds[n]) : -1; return i >= 0 ? i : 0; });
   $('designBody').hidden = false; renderPalette();
 }
@@ -2825,7 +2838,7 @@ function runDesign() {
     c.hex = labToHex(c.lab);
     c.options = cands.map(p => ({ p, d: deltaE2000(c.lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5);
   });
-  picks = clusters.map(() => 0);
+  picks = clusters.map(() => 0); qtyOverride = {};
   // Map every pixel to its colour group once, for the "with cans" preview
   const d = designOrig.data, n = designOrig.width * designOrig.height;
   designMap = new Int16Array(n).fill(-1);
@@ -2864,8 +2877,11 @@ function cansFor(share) {
   const coats = +$('wallCoats').value;
   return Math.max(1, Math.ceil(wallArea() * share * coats / COVERAGE_M2));
 }
+let qtyOverride = {};
+const qtyFor = (i, c) => qtyOverride[i] != null ? qtyOverride[i] : (estimateOn ? cansFor(c.share) : 1);
 function renderPalette() {
   estimateOn = wallArea() > 0;
+  $('coverageNote').hidden = !estimateOn;
   const ol = $('paletteList'); ol.innerHTML = ''; $('designMsg').textContent = '';
   $('coverageNote').textContent = t('coverageNote').replace('{c}', COVERAGE_M2);
   const totals = {};  // per currency
@@ -2874,19 +2890,28 @@ function renderPalette() {
     const li = document.createElement('li'); li.className = 'match';
     const opt = c.options[picks[i]];
     if (!opt) { li.textContent = t('noMatches'); ol.appendChild(li); return; }
-    const p = opt.p, m = matchPct(opt.d), qty = cansFor(c.share); totalCans += qty;
+    const p = opt.p, m = matchPct(opt.d), qty = qtyFor(i, c); totalCans += qty;
     const shop = shopFor(p.brand, p.code), price = priceOf(shop, p.brand, p.code);
     if (shop && typeof price === 'number') totals[shop.currency] = (totals[shop.currency] || 0) + price * qty;
     li.innerHTML = `<div class="pair-wrap"><div class="pair" aria-hidden="true"><span style="background:${c.hex}"></span><span style="background:${p.hex}"></span></div>
         <div class="pair-cap" aria-hidden="true"><span>${t('pairYou')}</span><span>${t('pairCan')}</span></div></div>
       <div><div class="name"></div><div class="meta"></div><div class="price-tag"></div></div>
       <div class="score"><b></b><span></span></div>
-      <button type="button" class="add more-btn"></button><div class="alts" hidden></div>`;
+      <div class="d-actions">
+        <div class="qty"><button type="button" class="minus" aria-label="−">−</button><span></span><button type="button" class="plus" aria-label="+">+</button></div>
+        <button type="button" class="add add-one"></button>
+        <button type="button" class="link-btn more-btn"></button>
+      </div><div class="alts" hidden></div>`;
     li.querySelector('.name').textContent = paintName(p);
     li.querySelector('.meta').textContent = [p.brand, codesMode ? c.hex : t('ofDesign').replace('{p}', Math.max(1, Math.round(c.share * 100)))].filter(Boolean).join(', ');
-    li.querySelector('.price-tag').textContent = estimateOn
-      ? [cansText(qty), shop && typeof price === 'number' ? money(price * qty, shop.currency) : '', shop ? shop.name : ''].filter(Boolean).join(' · ')
-      : [shop && typeof price === 'number' ? money(price, shop.currency) : (shop ? t('priceAtShop') : ''), shop ? shop.name : ''].filter(Boolean).join(' · ');
+    li.querySelector('.price-tag').textContent = [shop && typeof price === 'number' ? (qty > 1 ? `${money(price * qty, shop.currency)} (${money(price, shop.currency)} ${t('each')})` : money(price, shop.currency)) : (shop ? t('priceAtShop') : ''),
+      shop ? shop.name : ''].filter(Boolean).join(' · ');
+    li.querySelector('.qty span').textContent = qty;
+    li.querySelector('.minus').addEventListener('click', () => { qtyOverride[i] = Math.max(0, qty - 1); renderPalette(); });
+    li.querySelector('.plus').addEventListener('click', () => { qtyOverride[i] = Math.min(99, qty + 1); renderPalette(); });
+    const one = li.querySelector('.add-one'); one.textContent = t('addToList'); one.disabled = qty === 0;
+    one.addEventListener('click', () => { for (let k = 0; k < qty; k++) addToList(p, c.hex); $('designMsg').textContent = (qty === 1 ? t('addedOne') : t('addedAll').replace('{n}', qty)); });
+    if (qty === 0) li.classList.add('d-skip');
     li.querySelector('.score b').textContent = pct(m); li.querySelector('.score span').textContent = label(m);
     const btn = li.querySelector('.more-btn'), alts = li.querySelector('.alts');
     btn.textContent = t('otherOptions');
@@ -2901,7 +2926,6 @@ function renderPalette() {
     });
     ol.appendChild(li);
   });
-  $('estimateBox').hidden = !estimateOn;
   const tot = $('designTotal'); tot.innerHTML = '';
   const row = document.createElement('div'); row.className = 'total-row';
   const l = document.createElement('span'); l.textContent = `${t('designTotal')} · ${cansText(totalCans)}`;
@@ -2915,13 +2939,13 @@ function updateColoursLabel() {
 $('numColours').addEventListener('input', () => { autoColours = false; updateColoursLabel(); });
 $('numColours').addEventListener('change', () => { autoColours = false; runDesign(); });
 $('autoColours').addEventListener('click', () => { autoColours = true; runDesign(); });
-['wallW', 'wallH', 'wallUnit', 'wallCoats'].forEach(id => { $(id).addEventListener('input', renderPalette); $(id).addEventListener('change', renderPalette); });
+['wallW', 'wallH', 'wallUnit', 'wallCoats'].forEach(id => { const f = () => { qtyOverride = {}; renderPalette(); }; $(id).addEventListener('input', f); $(id).addEventListener('change', f); });
 $('viewOrig').addEventListener('click', () => { designView = 'orig'; drawDesign(); });
 $('viewCans').addEventListener('click', () => { designView = 'cans'; drawDesign(); });
 $('addAll').addEventListener('click', () => {
   let n = 0;
-  clusters.forEach((c, i) => { const o = c.options[picks[i]]; if (!o) return; const q = cansFor(c.share); for (let k = 0; k < q; k++) addToList(o.p, c.hex); n += q; });
-  $('designMsg').textContent = t('addedAll').replace('{n}', n);
+  clusters.forEach((c, i) => { const o = c.options[picks[i]]; if (!o) return; const q = qtyFor(i, c); for (let k = 0; k < q; k++) addToList(o.p, c.hex); n += q; });
+  $('designMsg').textContent = (n === 1 ? t('addedOne') : t('addedAll').replace('{n}', n));
 });
 
 /* ---------- Palette files for design apps ---------- */
@@ -2994,9 +3018,10 @@ async function downloadProcreate(title, paints) {
   download(`${safe} (Procreate).zip`, makeZip(files));
 }
 const designPaints = () => { const seen = new Set(); return clusters.map((c, i) => c.options[picks[i]]).filter(Boolean).map(o => o.p).filter(p => !seen.has(p.id) && seen.add(p.id)); };
-$('dlDesignProcreate').addEventListener('click', () => downloadProcreate('Kromatch design', designPaints()));
-$('dlDesignAse').addEventListener('click', () => download('Kromatch design.ase', makeASE('Kromatch design', designPaints())));
+$('dlDesignProcreate')?.addEventListener('click', () => downloadProcreate('Kromatch design', designPaints()));
+$('dlDesignAse')?.addEventListener('click', () => download('Kromatch design.ase', makeASE('Kromatch design', designPaints())));
 function fillRangeSelect() {
+  if (!$('rangeSelect')) return;
   const sel = $('rangeSelect'), cur = sel.value;
   const brands = BRANDS.filter(b => includeHardware || BRAND_PRESSURE[b] !== 'hardware');
   sel.innerHTML = (cityShops().length ? `<option value="__near">${t('nearRange')}</option>` : '') + brands.map(b => `<option value="${b}">${b}</option>`).join('');
@@ -3007,8 +3032,8 @@ function rangePaints() {
   const list = v === '__near' ? PAINTS.filter(p => shopFor(p.brand, p.code) && p.finish === 'solid' && (includeHardware || !isHardware(p))) : PAINTS.filter(p => p.brand === v);
   return { title: v === '__near' ? `Kromatch ${t('nearRange')}` : v, list };
 }
-$('dlRangeProcreate').addEventListener('click', () => { const r = rangePaints(); downloadProcreate(r.title, r.list); });
-$('dlRangeAse').addEventListener('click', () => { const r = rangePaints(); download(`${r.title.replace(/[\\/:*?"<>|]/g, '-')}.ase`, makeASE(r.title, r.list)); });
+$('dlRangeProcreate')?.addEventListener('click', () => { const r = rangePaints(); downloadProcreate(r.title, r.list); });
+$('dlRangeAse')?.addEventListener('click', () => { const r = rangePaints(); download(`${r.title.replace(/[\\/:*?"<>|]/g, '-')}.ase`, makeASE(r.title, r.list)); });
 
 /* ---------- Design tab ---------- */
 $('openDesign').addEventListener('click', () => { openDesignTab(); if (designOrig) runDesign(); });
@@ -3028,7 +3053,7 @@ function openAccount(reasonKey) {
   $('accGoogle').hidden = !(CFG && CFG.google); $('accApple').hidden = !(CFG && CFG.apple);
   $('accountSheet').hidden = false;
 }
-$('accClose').addEventListener('click', () => { $('accountSheet').hidden = true; });
+$('accClose').addEventListener('click', () => navBack());
 $('accOpen').addEventListener('click', () => openAccount());
 $('accPromptYes').addEventListener('click', () => { store.accountPromptDone = true; save(); $('accPrompt').hidden = true; openAccount(); });
 $('accPromptNo').addEventListener('click', () => { store.accountPromptDone = true; save(); $('accPrompt').hidden = true; });
@@ -3186,7 +3211,7 @@ function renderSettings() {
   $('accName').value = a.name || ''; $('accEmail').value = a.email || ''; $('accPhone').value = a.phone || '';
 }
 $('openSettings').addEventListener('click', () => { $('listSheet').hidden = true; $('designSheet').hidden = true; renderSettings(); $('setMsg').textContent = ''; $('settingsSheet').hidden = false; setTab('openSettings'); });
-$('closeSettings').addEventListener('click', goMatch);
+$('closeSettings').addEventListener('click', () => navBack());
 document.querySelectorAll('.set-lang').forEach(b => b.addEventListener('click', () => {
   lang = b.dataset.lang; store.lang = lang; save(); applyLang(); renderSettings();
 }));
@@ -3297,6 +3322,38 @@ setInterval(() => { if (document.visibilityState === 'visible') refreshLive(true
       Object.assign(o, { no: j.order.order_no, code: j.order.pickup_code, shop: j.order.shops?.name || '', status: j.order.status });
       save(); renderMyOrders(); }).catch(() => {});
 })();
+
+/* ---------- Back navigation (on-screen Back button and the phone's back gesture) ---------- */
+const NAV_SHEETS = ['designSheet', 'listSheet', 'settingsSheet', 'accountSheet', 'orderSheet', 'setup'];
+let navRestoring = false, navTimer = null;
+const navSnap = () => NAV_SHEETS.filter(id => !$(id).hidden);
+function navApply(list) {
+  navRestoring = true;
+  NAV_SHEETS.forEach(id => { $(id).hidden = !list.includes(id); });
+  setTab(list.includes('listSheet') ? 'openList' : list.includes('settingsSheet') ? 'openSettings' : list.includes('designSheet') ? 'openDesign' : 'tabMatch');
+  if (list.includes('listSheet')) renderList();
+  if (list.includes('settingsSheet')) renderSettings();
+  if (!list.length && lastSample) showResults();
+  renderListCount();
+  setTimeout(() => { navRestoring = false; }, 0);
+}
+function navBack() {
+  const st = history.state || {};
+  if ((st.depth || 0) > 0) history.back(); else navApply([]);
+}
+history.replaceState({ nav: navSnap(), depth: 0 }, '');
+const navObserver = new MutationObserver(() => {
+  if (navRestoring) return;
+  clearTimeout(navTimer);
+  navTimer = setTimeout(() => {
+    const cur = navSnap(), st = history.state || {};
+    if (JSON.stringify(cur) === JSON.stringify(st.nav || [])) return;
+    history.pushState({ nav: cur, depth: (st.depth || 0) + 1 }, '');
+  }, 0);
+});
+NAV_SHEETS.forEach(id => navObserver.observe($(id), { attributes: true, attributeFilter: ['hidden'] }));
+window.addEventListener('popstate', e => navApply((e.state && e.state.nav) || []));
+document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', navBack));
 </script>
 <script>
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
