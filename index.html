@@ -5,11 +5,11 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kromatch</title>
-<meta name="description" content="Match any colour or plan a whole mural with real spray cans.">
+<meta name="description" content="Find the right can for any colour, or plan a whole wall.">
 <!-- Link preview (WhatsApp, Messages, Instagram, Facebook...) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Kromatch">
-<meta property="og:description" content="Match any colour or plan a whole mural with real spray cans.">
+<meta property="og:description" content="Find the right can for any colour, or plan a whole wall.">
 <meta property="og:url" content="https://kromatch.netlify.app/">
 <meta property="og:image" content="https://kromatch.netlify.app/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -200,6 +200,23 @@
   .code-box b { font-stretch: 125%; font-weight: 900; font-size: 1.8rem; letter-spacing: 0.03em; }
   .my-order { background: var(--surface); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
   .my-order .row-actions { margin-top: 6px; }
+  .welcome { z-index: 45; }
+  .welcome-inner { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 6vh; }
+  .welcome-logo { width: 112px; height: 112px; border-radius: 26px; }
+  .welcome h1 { font-size: 2.6rem; margin: 18px 0 6px; }
+  .welcome-tag { font-size: 1.15rem; color: var(--ink); margin: 0 0 22px; max-width: 22em; }
+  .welcome-points { list-style: none; padding: 0; margin: 0 0 28px; text-align: left; display: grid; gap: 12px; width: 100%; max-width: 22em; }
+  .welcome-points li { display: flex; gap: 12px; align-items: center; background: var(--surface); border-radius: 14px; padding: 12px 14px; font-weight: 700; }
+  .welcome-points li span:first-child { font-size: 1.4rem; }
+  #accountSheet { z-index: 40; }
+  .acc-card { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 14px; margin: 16px 0; }
+  .acc-card p { margin: 4px 0 10px; opacity: 0.9; }
+  .acc-card .primary { background: var(--bg); color: var(--ink); border-color: var(--bg); }
+  .acc-card .secondary { color: var(--bg); border-color: var(--bg); }
+  .design-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--surface);
+                 border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+  .design-item .dots { display: flex; gap: 3px; margin-top: 4px; }
+  .design-item .dots span { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--line); }
   .order-check { width: 64px; height: 64px; border-radius: 50%; background: var(--ink); color: var(--bg);
                  display: grid; place-items: center; font-size: 2rem; font-weight: 900; margin-top: 24px; }
   .demo-note { background: var(--surface); border-left: 4px solid var(--ink); padding: 10px 12px; border-radius: 6px; font-size: 0.9rem; }
@@ -345,6 +362,40 @@
   <button type="button" class="tab" id="openSettings"><span class="tab-ico" aria-hidden="true">⚙</span><span data-i18n="settings"></span></button>
 </nav>
 
+<!-- Welcome (first open only) -->
+<div class="sheet welcome" id="welcome" hidden role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+  <div class="sheet-inner welcome-inner">
+    <img src="icon-512.png" alt="" class="welcome-logo" width="112" height="112">
+    <h1 id="welcomeTitle">Kromatch</h1>
+    <p class="welcome-tag" data-i18n="tagline"></p>
+    <ul class="welcome-points">
+      <li><span aria-hidden="true">📷</span><span data-i18n="welcomeP1"></span></li>
+      <li><span aria-hidden="true">🎨</span><span data-i18n="welcomeP2"></span></li>
+      <li><span aria-hidden="true">🛒</span><span data-i18n="welcomeP3"></span></li>
+    </ul>
+    <button type="button" class="primary buy" id="welcomeStart" data-i18n="welcomeStart"></button>
+    <p class="note" style="text-align:center"><a href="privacy.html" data-i18n="privacyLink"></a></p>
+  </div>
+</div>
+
+<!-- Account: sign in or create (optional) -->
+<div class="sheet" id="accountSheet" hidden role="dialog" aria-modal="true" aria-labelledby="accTitle">
+  <div class="sheet-inner">
+    <div class="topbar"><h2 id="accTitle" data-i18n="accTitle"></h2>
+      <button type="button" class="icon-btn" id="accClose" data-i18n="done"></button></div>
+    <p class="tagline" id="accReason" data-i18n="accBenefits"></p>
+    <label class="field"><span data-i18n="email"></span><input id="accSignEmail" type="email" autocomplete="email"></label>
+    <button type="button" class="primary buy" id="accEmailBtn" data-i18n="continueEmail"></button>
+    <p class="note" data-i18n="accNoPassword"></p>
+    <div class="sheet-actions" id="accSocial">
+      <button type="button" class="secondary buy" id="accGoogle" data-i18n="continueGoogle" hidden></button>
+      <button type="button" class="secondary buy" id="accApple" data-i18n="continueApple" hidden></button>
+    </div>
+    <p class="hint ok" id="accMsg" aria-live="polite"></p>
+    <p class="note"><a href="privacy.html" data-i18n="privacyLink"></a></p>
+  </div>
+</div>
+
 <!-- Setup: language and city, then how it works + tips -->
 <div class="sheet" id="setup" hidden role="dialog" aria-modal="true" aria-labelledby="setupTitle">
   <div class="sheet-inner">
@@ -421,6 +472,7 @@
       </div>
       <p class="hint ok" id="designMsg" aria-live="polite"></p>
 
+      <button type="button" class="secondary" id="saveDesignBtn" data-i18n="saveDesign" style="margin-top:12px"></button>
       <h3 class="sub-h" data-i18n="dlTitle"></h3>
       <div class="sheet-actions" style="margin-top:10px">
         <button type="button" class="secondary" id="dlDesignProcreate" data-i18n="dlProcreate"></button>
@@ -428,6 +480,10 @@
       </div>
     </div>
 
+    <section id="myDesigns" hidden>
+      <h3 class="sub-h" data-i18n="myDesigns"></h3>
+      <div id="myDesignsList"></div>
+    </section>
     <details class="codes-box" style="margin-top:24px">
     <summary data-i18n="rangeTitle"></summary>
     <p class="note" data-i18n="rangeIntro"></p>
@@ -470,7 +526,15 @@
     <label class="field"><span data-i18n="name"></span><input id="accName" type="text" autocomplete="name"></label>
     <label class="field"><span data-i18n="email"></span><input id="accEmail" type="email" autocomplete="email"></label>
     <label class="field"><span data-i18n="phoneL"></span><input id="accPhone" type="tel" autocomplete="tel"></label>
-    <p class="note" data-i18n="accountNote"></p>
+    <div id="accSignedOut">
+      <p class="note" data-i18n="accLocalNote"></p>
+      <button type="button" class="secondary small" id="accOpen" data-i18n="accOrSignIn"></button>
+    </div>
+    <div id="accSignedIn" hidden>
+      <p class="note"><b id="accWho"></b><br><span data-i18n="accSyncedNote"></span></p>
+      <div class="row-actions"><button type="button" class="secondary small" id="accSignOut" data-i18n="signOut"></button>
+        <button type="button" class="link-btn" id="accDelete" data-i18n="deleteAccount" style="color:#B3261E"></button></div>
+    </div>
 
     <h3 class="sub-h" data-i18n="payment"></h3>
     <label class="shop-opt" style="margin-top:10px"><input type="radio" name="pay" value="shop" checked><div><b data-i18n="payInShop"></b></div></label>
@@ -482,6 +546,7 @@
       <button type="button" class="secondary" id="setAbout" data-i18n="howTitle"></button>
       <button type="button" class="secondary" id="setEmpty" data-i18n="clearList"></button>
     </div>
+    <p class="note"><a href="privacy.html" data-i18n="privacyLink"></a></p>
     <p class="hint ok" id="setMsg" aria-live="polite"></p>
   </div>
 </div>
@@ -533,6 +598,8 @@
         <label class="field"><span data-i18n="phoneL"></span><input id="coPhone" type="tel" autocomplete="tel"></label>
         <label class="field"><span data-i18n="email"></span><input id="coEmail" type="email" autocomplete="email"></label>
         <label class="toggle consent"><input type="checkbox" id="coConsent"> <span id="coConsentText"></span></label>
+        <label class="toggle consent"><input type="checkbox" id="coRemember" checked> <span data-i18n="rememberMe"></span></label>
+        <p class="note"><a href="privacy.html" target="_blank" rel="noopener" data-i18n="privacyLink"></a></p>
       </div>
       <div id="coTotals" class="cart-total"></div>
       <p class="hint" id="coMsg" aria-live="polite"></p>
@@ -550,15 +617,21 @@
         <p class="note" id="rdEmail"></p>
       </div>
       <div id="orderBody"></div>
+      <div class="acc-card" id="accPrompt" hidden>
+        <b data-i18n="accPromptTitle"></b><p data-i18n="accPromptText"></p>
+        <div class="row-actions"><button type="button" class="primary small" id="accPromptYes" data-i18n="accCreate"></button>
+          <button type="button" class="secondary small" id="accPromptNo" data-i18n="notNow"></button></div>
+      </div>
       <div class="sheet-actions" id="orderLinks"></div>
       <div class="sheet-actions"><button type="button" class="secondary" id="orderClose" data-i18n="backToCart"></button></div>
     </div>
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-13-live2"></script>
-<script src="shops.js?v=2026-11-13-live2"></script>
-<script src="config.js?v=2026-11-13-live2"></script>
+<script src="colors.js?v=2026-11-14-accounts2"></script>
+<script src="shops.js?v=2026-11-14-accounts2"></script>
+<script src="config.js?v=2026-11-14-accounts2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -618,6 +691,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    welcomeP1: 'Match a colour from any photo', welcomeP2: 'Plan a whole wall from your sketch', welcomeP3: 'Reserve the cans at a shop near you', welcomeStart: 'Start', privacyLink: 'Privacy policy', rememberMe: 'Remember my details on this phone', accPromptTitle: 'Keep your orders and designs', accPromptText: 'Create a free account to track orders and save designs on any device.', accCreate: 'Create free account', notNow: 'Not now', accTitle: 'Your Kromatch account', accBenefits: 'Free. Track your orders and save your designs on any phone or computer.', continueEmail: 'Continue with email', continueGoogle: 'Continue with Google', continueApple: 'Continue with Apple', accLinkSent: 'Check your email and tap the link to sign in.', accError: 'Couldn’t send the link: {m}', accNoPassword: 'No password needed. We’ll email you a sign-in link.', signedInAs: 'Signed in as {email}', signOut: 'Sign out', deleteAccount: 'Delete account', deleteConfirm: 'Delete your account, saved designs and profile? Orders already sent to shops stay with the shops. This can’t be undone.', accDeleted: 'Your account was deleted.', accOrSignIn: 'Create account or sign in', accLocalNote: 'Without an account, your details stay only on this phone.', accSyncedNote: 'Your details are saved to your account.', saveDesign: 'Save design', designNamePrompt: 'Name this design', myDesigns: 'My designs', openDesign: 'Open', designSaved: 'Design saved.', signInToSave: 'Create a free account to save designs.', noDesigns: 'No saved designs yet.',
     yourDetails: 'Your details', consentL: 'I agree to share my name and contact details with {shop} for this order.', needName: 'Please enter your name.', needContact: 'Please enter a phone number or email.', needConsent: 'Please tick the box to share your details with the shop.', sending: 'Sending your order…', sendFail: 'Couldn’t send the order: {m}', orderSent: 'Order sent to {shop}', orderNo: 'Order #{n}', pickupCodeL: 'Pickup code', showCode: 'Show this code in the shop when you collect your cans. You pay in the shop.', deliveryInfo: 'The shop will deliver your cans. You pay on delivery.', emailSentTo: 'A confirmation was sent to {email}.', myOrders: 'My orders', checkStatus: 'Check status', offline: 'no connection, please try again', st_new: 'Sent to shop', st_ready: 'Ready to collect', st_picked_up: 'Collected', st_not_available: 'Not available', st_cancelled: 'Cancelled',
     wallQ: 'How big is the wall?',
     wallWhy: 'Optional. Fill it in to see how many cans of each colour you need.',
@@ -746,7 +820,7 @@ const T = {
     otherCityPh: 'Type your city',
     noShops: 'No shops are listed for your city yet.',
     noCity: 'Choose your city in Settings to see shops near you.',
-    tagline: 'Match any colour or plan a whole mural with real spray cans.',
+    tagline: 'Find the right can for any colour, or plan a whole wall.',
     takePhoto: 'Take or choose a photo',
     shootHint: 'Shoot in daylight, straight on, without flash.',
     tapHint: 'Touch the colour you want to match. Slide your finger to adjust, then let go.',
@@ -801,6 +875,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    welcomeP1: 'Ταίριαξε ένα χρώμα από οποιαδήποτε φωτογραφία', welcomeP2: 'Σχεδίασε ολόκληρο τοίχο από το σκίτσο σου', welcomeP3: 'Κράτησε τα σπρέι σε κατάστημα κοντά σου', welcomeStart: 'Ξεκίνα', privacyLink: 'Πολιτική απορρήτου', rememberMe: 'Να θυμάται τα στοιχεία μου σε αυτό το κινητό', accPromptTitle: 'Κράτα τις παραγγελίες και τα σχέδιά σου', accPromptText: 'Φτιάξε δωρεάν λογαριασμό για να βλέπεις τις παραγγελίες σου και να αποθηκεύεις σχέδια σε κάθε συσκευή.', accCreate: 'Δωρεάν λογαριασμός', notNow: 'Όχι τώρα', accTitle: 'Ο λογαριασμός σου στο Kromatch', accBenefits: 'Δωρεάν. Παρακολούθησε τις παραγγελίες σου και αποθήκευσε τα σχέδιά σου σε κάθε κινητό ή υπολογιστή.', continueEmail: 'Συνέχεια με email', continueGoogle: 'Συνέχεια με Google', continueApple: 'Συνέχεια με Apple', accLinkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.', accError: 'Ο σύνδεσμος δεν στάλθηκε: {m}', accNoPassword: 'Χωρίς κωδικό. Θα σου στείλουμε σύνδεσμο σύνδεσης στο email.', signedInAs: 'Συνδεδεμένος ως {email}', signOut: 'Αποσύνδεση', deleteAccount: 'Διαγραφή λογαριασμού', deleteConfirm: 'Να διαγραφούν ο λογαριασμός, τα σχέδια και το προφίλ σου; Οι παραγγελίες που έχουν ήδη σταλεί μένουν στα καταστήματα. Δεν αναιρείται.', accDeleted: 'Ο λογαριασμός σου διαγράφηκε.', accOrSignIn: 'Δημιουργία λογαριασμού ή σύνδεση', accLocalNote: 'Χωρίς λογαριασμό, τα στοιχεία σου μένουν μόνο σε αυτό το κινητό.', accSyncedNote: 'Τα στοιχεία σου αποθηκεύονται στον λογαριασμό σου.', saveDesign: 'Αποθήκευση σχεδίου', designNamePrompt: 'Δώσε όνομα στο σχέδιο', myDesigns: 'Τα σχέδιά μου', openDesign: 'Άνοιγμα', designSaved: 'Το σχέδιο αποθηκεύτηκε.', signInToSave: 'Φτιάξε δωρεάν λογαριασμό για να αποθηκεύεις σχέδια.', noDesigns: 'Δεν υπάρχουν ακόμα αποθηκευμένα σχέδια.',
     yourDetails: 'Τα στοιχεία σου', consentL: 'Συμφωνώ να μοιραστώ το όνομα και τα στοιχεία επικοινωνίας μου με το {shop} για αυτή την παραγγελία.', needName: 'Γράψε το όνομά σου.', needContact: 'Γράψε τηλέφωνο ή email.', needConsent: 'Τσέκαρε το κουτάκι για να μοιραστείς τα στοιχεία σου με το κατάστημα.', sending: 'Αποστολή παραγγελίας…', sendFail: 'Η παραγγελία δεν στάλθηκε: {m}', orderSent: 'Η παραγγελία στάλθηκε στο {shop}', orderNo: 'Παραγγελία #{n}', pickupCodeL: 'Κωδικός παραλαβής', showCode: 'Δείξε αυτόν τον κωδικό στο κατάστημα όταν παραλάβεις τα σπρέι. Πληρώνεις στο κατάστημα.', deliveryInfo: 'Το κατάστημα θα σου στείλει τα σπρέι. Πληρώνεις κατά την παράδοση.', emailSentTo: 'Στάλθηκε επιβεβαίωση στο {email}.', myOrders: 'Οι παραγγελίες μου', checkStatus: 'Έλεγχος κατάστασης', offline: 'δεν υπάρχει σύνδεση, δοκίμασε ξανά', st_new: 'Στάλθηκε στο κατάστημα', st_ready: 'Έτοιμη για παραλαβή', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
     wallQ: 'Πόσο μεγάλος είναι ο τοίχος;',
     wallWhy: 'Προαιρετικό. Συμπλήρωσέ το για να δεις πόσα σπρέι από κάθε χρώμα χρειάζεσαι.',
@@ -929,7 +1004,7 @@ const T = {
     otherCityPh: 'Γράψε την πόλη σου',
     noShops: 'Δεν υπάρχουν ακόμα καταστήματα για την πόλη σου.',
     noCity: 'Διάλεξε την πόλη σου στις Ρυθμίσεις για να δεις καταστήματα κοντά σου.',
-    tagline: 'Ταίριαξε οποιοδήποτε χρώμα ή σχεδίασε ολόκληρη τοιχογραφία με πραγματικά σπρέι.',
+    tagline: 'Βρες το σωστό σπρέι για κάθε χρώμα ή σχεδίασε ολόκληρο τοίχο.',
     takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία',
     shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
     tapHint: 'Άγγιξε το χρώμα που θέλεις. Σύρε το δάχτυλο για να το ρυθμίσεις και μετά άφησέ το.',
@@ -984,6 +1059,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    welcomeP1: 'Trouvez une couleur à partir de n’importe quelle photo', welcomeP2: 'Préparez tout un mur à partir de votre croquis', welcomeP3: 'Réservez les bombes dans un magasin près de chez vous', welcomeStart: 'Commencer', privacyLink: 'Politique de confidentialité', rememberMe: 'Mémoriser mes coordonnées sur ce téléphone', accPromptTitle: 'Gardez vos commandes et vos projets', accPromptText: 'Créez un compte gratuit pour suivre vos commandes et enregistrer vos projets sur tous vos appareils.', accCreate: 'Créer un compte gratuit', notNow: 'Pas maintenant', accTitle: 'Votre compte Kromatch', accBenefits: 'Gratuit. Suivez vos commandes et enregistrez vos projets sur n’importe quel téléphone ou ordinateur.', continueEmail: 'Continuer avec un e-mail', continueGoogle: 'Continuer avec Google', continueApple: 'Continuer avec Apple', accLinkSent: 'Consultez vos e-mails et touchez le lien pour vous connecter.', accError: 'Le lien n’a pas pu être envoyé\u00a0: {m}', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un lien de connexion par e-mail.', signedInAs: 'Connecté en tant que {email}', signOut: 'Se déconnecter', deleteAccount: 'Supprimer le compte', deleteConfirm: 'Supprimer votre compte, vos projets et votre profil\u202f? Les commandes déjà envoyées restent chez les magasins. Action irréversible.', accDeleted: 'Votre compte a été supprimé.', accOrSignIn: 'Créer un compte ou se connecter', accLocalNote: 'Sans compte, vos coordonnées restent uniquement sur ce téléphone.', accSyncedNote: 'Vos coordonnées sont enregistrées dans votre compte.', saveDesign: 'Enregistrer le projet', designNamePrompt: 'Nommez ce projet', myDesigns: 'Mes projets', openDesign: 'Ouvrir', designSaved: 'Projet enregistré.', signInToSave: 'Créez un compte gratuit pour enregistrer vos projets.', noDesigns: 'Aucun projet enregistré.',
     yourDetails: 'Vos coordonnées', consentL: 'J’accepte de partager mon nom et mes coordonnées avec {shop} pour cette commande.', needName: 'Veuillez saisir votre nom.', needContact: 'Veuillez saisir un téléphone ou un e-mail.', needConsent: 'Cochez la case pour partager vos coordonnées avec le magasin.', sending: 'Envoi de la commande…', sendFail: 'La commande n’a pas pu être envoyée\u00a0: {m}', orderSent: 'Commande envoyée à {shop}', orderNo: 'Commande n°{n}', pickupCodeL: 'Code de retrait', showCode: 'Montrez ce code en magasin pour récupérer vos bombes. Vous payez en magasin.', deliveryInfo: 'Le magasin vous livrera. Vous payez à la livraison.', emailSentTo: 'Une confirmation a été envoyée à {email}.', myOrders: 'Mes commandes', checkStatus: 'Voir le statut', offline: 'pas de connexion, réessayez', st_new: 'Envoyée au magasin', st_ready: 'Prête à retirer', st_picked_up: 'Retirée', st_not_available: 'Indisponible', st_cancelled: 'Annulée',
     wallQ: 'Quelle taille fait le mur ?',
     wallWhy: 'Facultatif. Renseignez-le pour voir combien de bombes de chaque couleur il vous faut.',
@@ -1112,7 +1188,7 @@ const T = {
     otherCityPh: 'Saisissez votre ville',
     noShops: 'Aucun magasin n’est encore référencé pour votre ville.',
     noCity: 'Choisissez votre ville dans Réglages pour voir les magasins proches.',
-    tagline: 'Trouvez n’importe quelle couleur ou préparez toute une fresque avec de vraies bombes.',
+    tagline: 'Trouvez la bonne bombe pour chaque couleur, ou préparez tout un mur.',
     takePhoto: 'Prendre ou choisir une photo',
     shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
     tapHint: 'Touchez la couleur voulue. Glissez le doigt pour ajuster, puis relâchez.',
@@ -1167,6 +1243,7 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    welcomeP1: 'Eine Farbe aus jedem Foto abgleichen', welcomeP2: 'Eine ganze Wand aus deiner Skizze planen', welcomeP3: 'Die Dosen in einem Shop in deiner Nähe reservieren', welcomeStart: 'Los geht’s', privacyLink: 'Datenschutzerklärung', rememberMe: 'Meine Angaben auf diesem Handy merken', accPromptTitle: 'Behalte deine Bestellungen und Designs', accPromptText: 'Erstelle ein kostenloses Konto, um Bestellungen zu verfolgen und Designs auf jedem Gerät zu speichern.', accCreate: 'Kostenloses Konto erstellen', notNow: 'Nicht jetzt', accTitle: 'Dein Kromatch-Konto', accBenefits: 'Kostenlos. Verfolge deine Bestellungen und speichere deine Designs auf jedem Handy oder Computer.', continueEmail: 'Weiter mit E-Mail', continueGoogle: 'Weiter mit Google', continueApple: 'Weiter mit Apple', accLinkSent: 'Sieh in deinen E-Mails nach und tippe auf den Link, um dich anzumelden.', accError: 'Link konnte nicht gesendet werden: {m}', accNoPassword: 'Kein Passwort nötig. Wir schicken dir einen Anmeldelink per E-Mail.', signedInAs: 'Angemeldet als {email}', signOut: 'Abmelden', deleteAccount: 'Konto löschen', deleteConfirm: 'Konto, gespeicherte Designs und Profil löschen? Bereits gesendete Bestellungen bleiben bei den Shops. Das lässt sich nicht rückgängig machen.', accDeleted: 'Dein Konto wurde gelöscht.', accOrSignIn: 'Konto erstellen oder anmelden', accLocalNote: 'Ohne Konto bleiben deine Angaben nur auf diesem Handy.', accSyncedNote: 'Deine Angaben sind in deinem Konto gespeichert.', saveDesign: 'Design speichern', designNamePrompt: 'Gib diesem Design einen Namen', myDesigns: 'Meine Designs', openDesign: 'Öffnen', designSaved: 'Design gespeichert.', signInToSave: 'Erstelle ein kostenloses Konto, um Designs zu speichern.', noDesigns: 'Noch keine gespeicherten Designs.',
     yourDetails: 'Deine Angaben', consentL: 'Ich bin einverstanden, meinen Namen und meine Kontaktdaten für diese Bestellung mit {shop} zu teilen.', needName: 'Bitte gib deinen Namen ein.', needContact: 'Bitte gib eine Telefonnummer oder E-Mail ein.', needConsent: 'Bitte setz das Häkchen, um deine Angaben mit dem Shop zu teilen.', sending: 'Bestellung wird gesendet…', sendFail: 'Bestellung konnte nicht gesendet werden: {m}', orderSent: 'Bestellung an {shop} gesendet', orderNo: 'Bestellung #{n}', pickupCodeL: 'Abholcode', showCode: 'Zeig diesen Code bei der Abholung im Shop. Du bezahlst im Shop.', deliveryInfo: 'Der Shop liefert deine Dosen. Du bezahlst bei Lieferung.', emailSentTo: 'Eine Bestätigung wurde an {email} gesendet.', myOrders: 'Meine Bestellungen', checkStatus: 'Status prüfen', offline: 'keine Verbindung, bitte erneut versuchen', st_new: 'An den Shop gesendet', st_ready: 'Abholbereit', st_picked_up: 'Abgeholt', st_not_available: 'Nicht verfügbar', st_cancelled: 'Storniert',
     wallQ: 'Wie groß ist die Wand?',
     wallWhy: 'Optional. Trag die Maße ein, um zu sehen, wie viele Dosen du von jeder Farbe brauchst.',
@@ -1295,7 +1372,7 @@ const T = {
     otherCityPh: 'Stadt eingeben',
     noShops: 'Für deine Stadt sind noch keine Shops eingetragen.',
     noCity: 'Wähle in den Einstellungen deine Stadt, um Shops in der Nähe zu sehen.',
-    tagline: 'Gleiche jede Farbe ab oder plane ein ganzes Wandbild mit echten Sprühdosen.',
+    tagline: 'Finde die richtige Dose für jede Farbe oder plane eine ganze Wand.',
     takePhoto: 'Foto aufnehmen oder auswählen',
     shootHint: 'Bei Tageslicht, gerade von vorn, ohne Blitz fotografieren.',
     tapHint: 'Berühre die Farbe, die du abgleichen willst. Zum Anpassen den Finger schieben, dann loslassen.',
@@ -1350,6 +1427,7 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    welcomeP1: 'Encuentra un color en cualquier foto', welcomeP2: 'Planifica una pared entera desde tu boceto', welcomeP3: 'Reserva los sprays en una tienda cerca de ti', welcomeStart: 'Empezar', privacyLink: 'Política de privacidad', rememberMe: 'Recordar mis datos en este móvil', accPromptTitle: 'Guarda tus pedidos y diseños', accPromptText: 'Crea una cuenta gratuita para seguir tus pedidos y guardar diseños en cualquier dispositivo.', accCreate: 'Crear cuenta gratuita', notNow: 'Ahora no', accTitle: 'Tu cuenta de Kromatch', accBenefits: 'Gratis. Sigue tus pedidos y guarda tus diseños en cualquier móvil u ordenador.', continueEmail: 'Continuar con correo', continueGoogle: 'Continuar con Google', continueApple: 'Continuar con Apple', accLinkSent: 'Revisa tu correo y toca el enlace para iniciar sesión.', accError: 'No se pudo enviar el enlace: {m}', accNoPassword: 'Sin contraseña. Te enviamos un enlace de acceso por correo.', signedInAs: 'Sesión iniciada como {email}', signOut: 'Cerrar sesión', deleteAccount: 'Eliminar cuenta', deleteConfirm: '¿Eliminar tu cuenta, tus diseños y tu perfil? Los pedidos ya enviados se quedan en las tiendas. No se puede deshacer.', accDeleted: 'Tu cuenta se ha eliminado.', accOrSignIn: 'Crear cuenta o iniciar sesión', accLocalNote: 'Sin cuenta, tus datos se quedan solo en este móvil.', accSyncedNote: 'Tus datos se guardan en tu cuenta.', saveDesign: 'Guardar diseño', designNamePrompt: 'Ponle nombre a este diseño', myDesigns: 'Mis diseños', openDesign: 'Abrir', designSaved: 'Diseño guardado.', signInToSave: 'Crea una cuenta gratuita para guardar diseños.', noDesigns: 'Aún no hay diseños guardados.',
     yourDetails: 'Tus datos', consentL: 'Acepto compartir mi nombre y mis datos de contacto con {shop} para este pedido.', needName: 'Escribe tu nombre.', needContact: 'Escribe un teléfono o un correo.', needConsent: 'Marca la casilla para compartir tus datos con la tienda.', sending: 'Enviando tu pedido…', sendFail: 'No se pudo enviar el pedido: {m}', orderSent: 'Pedido enviado a {shop}', orderNo: 'Pedido n.º {n}', pickupCodeL: 'Código de recogida', showCode: 'Muestra este código en la tienda al recoger tus sprays. Pagas en la tienda.', deliveryInfo: 'La tienda te enviará los sprays. Pagas a la entrega.', emailSentTo: 'Se envió una confirmación a {email}.', myOrders: 'Mis pedidos', checkStatus: 'Ver estado', offline: 'sin conexión, inténtalo de nuevo', st_new: 'Enviado a la tienda', st_ready: 'Listo para recoger', st_picked_up: 'Recogido', st_not_available: 'No disponible', st_cancelled: 'Cancelado',
     wallQ: '¿Qué tamaño tiene la pared?',
     wallWhy: 'Opcional. Rellénalo para ver cuántos sprays de cada color necesitas.',
@@ -1478,7 +1556,7 @@ const T = {
     otherCityPh: 'Escribe tu ciudad',
     noShops: 'Todavía no hay tiendas para tu ciudad.',
     noCity: 'Elige tu ciudad en Ajustes para ver tiendas cerca de ti.',
-    tagline: 'Encuentra cualquier color o planifica un mural entero con sprays reales.',
+    tagline: 'Encuentra el spray adecuado para cada color o planifica una pared entera.',
     takePhoto: 'Haz o elige una foto',
     shootHint: 'Con luz de día, de frente y sin flash.',
     tapHint: 'Toca el color que quieres encontrar. Desliza el dedo para ajustar y luego suelta.',
@@ -1533,6 +1611,7 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    welcomeP1: 'Abbina un colore da qualsiasi foto', welcomeP2: 'Pianifica un intero muro dal tuo schizzo', welcomeP3: 'Prenota le bombolette in un negozio vicino a te', welcomeStart: 'Inizia', privacyLink: 'Informativa sulla privacy', rememberMe: 'Ricorda i miei dati su questo telefono', accPromptTitle: 'Conserva ordini e progetti', accPromptText: 'Crea un account gratuito per seguire gli ordini e salvare i progetti su qualsiasi dispositivo.', accCreate: 'Crea account gratuito', notNow: 'Non ora', accTitle: 'Il tuo account Kromatch', accBenefits: 'Gratis. Segui i tuoi ordini e salva i tuoi progetti su qualsiasi telefono o computer.', continueEmail: 'Continua con email', continueGoogle: 'Continua con Google', continueApple: 'Continua con Apple', accLinkSent: 'Controlla la tua email e tocca il link per accedere.', accError: 'Impossibile inviare il link: {m}', accNoPassword: 'Nessuna password. Ti inviamo un link di accesso via email.', signedInAs: 'Accesso effettuato come {email}', signOut: 'Esci', deleteAccount: 'Elimina account', deleteConfirm: 'Eliminare account, progetti salvati e profilo? Gli ordini già inviati restano ai negozi. Non si può annullare.', accDeleted: 'Il tuo account è stato eliminato.', accOrSignIn: 'Crea un account o accedi', accLocalNote: 'Senza account, i tuoi dati restano solo su questo telefono.', accSyncedNote: 'I tuoi dati sono salvati nel tuo account.', saveDesign: 'Salva progetto', designNamePrompt: 'Dai un nome a questo progetto', myDesigns: 'I miei progetti', openDesign: 'Apri', designSaved: 'Progetto salvato.', signInToSave: 'Crea un account gratuito per salvare i progetti.', noDesigns: 'Nessun progetto salvato.',
     yourDetails: 'I tuoi dati', consentL: 'Accetto di condividere il mio nome e i miei contatti con {shop} per questo ordine.', needName: 'Inserisci il tuo nome.', needContact: 'Inserisci un telefono o un’email.', needConsent: 'Spunta la casella per condividere i tuoi dati con il negozio.', sending: 'Invio dell’ordine…', sendFail: 'Impossibile inviare l’ordine: {m}', orderSent: 'Ordine inviato a {shop}', orderNo: 'Ordine n. {n}', pickupCodeL: 'Codice di ritiro', showCode: 'Mostra questo codice in negozio quando ritiri le bombolette. Paghi in negozio.', deliveryInfo: 'Il negozio ti consegnerà le bombolette. Paghi alla consegna.', emailSentTo: 'È stata inviata una conferma a {email}.', myOrders: 'I miei ordini', checkStatus: 'Controlla lo stato', offline: 'nessuna connessione, riprova', st_new: 'Inviato al negozio', st_ready: 'Pronto per il ritiro', st_picked_up: 'Ritirato', st_not_available: 'Non disponibile', st_cancelled: 'Annullato',
     wallQ: 'Quanto è grande il muro?',
     wallWhy: 'Facoltativo. Compilalo per vedere quante bombolette di ogni colore ti servono.',
@@ -1661,7 +1740,7 @@ const T = {
     otherCityPh: 'Scrivi la tua città',
     noShops: 'Non ci sono ancora negozi per la tua città.',
     noCity: 'Scegli la tua città nelle Impostazioni per vedere i negozi vicini.',
-    tagline: 'Abbina qualsiasi colore o pianifica un intero murale con vere bombolette spray.',
+    tagline: 'Trova la bomboletta giusta per ogni colore o pianifica un intero muro.',
     takePhoto: 'Scatta o scegli una foto',
     shootHint: 'Alla luce del giorno, di fronte, senza flash.',
     tapHint: 'Tocca il colore da abbinare. Scorri il dito per regolare, poi rilascia.',
@@ -1716,6 +1795,7 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    welcomeP1: 'Encontre uma cor em qualquer foto', welcomeP2: 'Planeje uma parede inteira a partir do seu esboço', welcomeP3: 'Reserve os sprays numa loja perto de você', welcomeStart: 'Começar', privacyLink: 'Política de privacidade', rememberMe: 'Lembrar meus dados neste telefone', accPromptTitle: 'Guarde seus pedidos e projetos', accPromptText: 'Crie uma conta grátis para acompanhar pedidos e salvar projetos em qualquer dispositivo.', accCreate: 'Criar conta grátis', notNow: 'Agora não', accTitle: 'Sua conta Kromatch', accBenefits: 'Grátis. Acompanhe seus pedidos e salve seus projetos em qualquer telefone ou computador.', continueEmail: 'Continuar com e-mail', continueGoogle: 'Continuar com Google', continueApple: 'Continuar com Apple', accLinkSent: 'Confira seu e-mail e toque no link para entrar.', accError: 'Não foi possível enviar o link: {m}', accNoPassword: 'Sem senha. Enviamos um link de acesso por e-mail.', signedInAs: 'Conectado como {email}', signOut: 'Sair', deleteAccount: 'Excluir conta', deleteConfirm: 'Excluir sua conta, projetos salvos e perfil? Pedidos já enviados ficam com as lojas. Não dá para desfazer.', accDeleted: 'Sua conta foi excluída.', accOrSignIn: 'Criar conta ou entrar', accLocalNote: 'Sem conta, seus dados ficam só neste telefone.', accSyncedNote: 'Seus dados são salvos na sua conta.', saveDesign: 'Salvar projeto', designNamePrompt: 'Dê um nome a este projeto', myDesigns: 'Meus projetos', openDesign: 'Abrir', designSaved: 'Projeto salvo.', signInToSave: 'Crie uma conta grátis para salvar projetos.', noDesigns: 'Nenhum projeto salvo ainda.',
     yourDetails: 'Seus dados', consentL: 'Concordo em compartilhar meu nome e meus contatos com {shop} para este pedido.', needName: 'Digite seu nome.', needContact: 'Digite um telefone ou e-mail.', needConsent: 'Marque a caixa para compartilhar seus dados com a loja.', sending: 'Enviando seu pedido…', sendFail: 'Não foi possível enviar o pedido: {m}', orderSent: 'Pedido enviado para {shop}', orderNo: 'Pedido nº {n}', pickupCodeL: 'Código de retirada', showCode: 'Mostre este código na loja ao retirar seus sprays. Você paga na loja.', deliveryInfo: 'A loja vai entregar seus sprays. Você paga na entrega.', emailSentTo: 'Uma confirmação foi enviada para {email}.', myOrders: 'Meus pedidos', checkStatus: 'Ver status', offline: 'sem conexão, tente novamente', st_new: 'Enviado à loja', st_ready: 'Pronto para retirar', st_picked_up: 'Retirado', st_not_available: 'Indisponível', st_cancelled: 'Cancelado',
     wallQ: 'Qual o tamanho da parede?',
     wallWhy: 'Opcional. Preencha para ver quantos sprays de cada cor você precisa.',
@@ -1844,7 +1924,7 @@ const T = {
     otherCityPh: 'Digite sua cidade',
     noShops: 'Ainda não há lojas para a sua cidade.',
     noCity: 'Escolha sua cidade nos Ajustes para ver lojas perto de você.',
-    tagline: 'Encontre qualquer cor ou planeje um mural inteiro com sprays de verdade.',
+    tagline: 'Encontre o spray certo para cada cor ou planeje uma parede inteira.',
     takePhoto: 'Tire ou escolha uma foto',
     shootHint: 'Com luz do dia, de frente e sem flash.',
     tapHint: 'Toque na cor que quer encontrar. Deslize o dedo para ajustar e solte.',
@@ -2494,6 +2574,7 @@ $('placeOrder').addEventListener('click', async () => {
   }
   if (!shop.demo) { await placeRealOrder(shop); return; }
   $('demoNoteEl').hidden = false; $('realDone').hidden = true;
+  $('accPrompt').hidden = !!authSession || !!store.accountPromptDone;
   const tt = checkoutTotals(shop);
   $('orderTitle').textContent = t(coMethod === 'delivery' ? 'doneDelivery' : 'donePickup').replace('{shop}', shop.name);
   const body = $('orderBody'); body.innerHTML = '';
@@ -2517,12 +2598,13 @@ async function placeRealOrder(shop) {
   if (!name) { $('coMsg').textContent = t('needName'); $('coName').focus(); return; }
   if (!phone && !email) { $('coMsg').textContent = t('needContact'); $('coPhone').focus(); return; }
   if (!$('coConsent').checked) { $('coMsg').textContent = t('needConsent'); return; }
-  store.account = Object.assign(store.account || {}, { name, phone, email }); save();
+  const remember = $('coRemember').checked;
+  if (remember) { store.account = Object.assign(store.account || {}, { name, phone, email }); save(); if (authSession) syncProfile(); }
   const items = itemsFor(shop);
   const btn = $('placeOrder'); btn.disabled = true; $('coMsg').textContent = t('sending');
   try {
     const r = await fetch(`${CFG.functionsUrl}/create-order`, { method: 'POST',
-      headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey },
+      headers: Object.assign({ 'Content-Type': 'application/json', apikey: CFG.supabaseKey }, authSession ? { Authorization: 'Bearer ' + authSession.access_token } : {}),
       body: JSON.stringify({ shop_id: shop.id, method: coMethod, consent: true, lang,
         customer: { name, phone, email, address: coMethod === 'delivery' ? store.account.address : '' },
         items: items.map(i => ({ line: i.brand, code: i.code, name: i.name, hex: i.hex, target_hex: i.targets[i.targets.length - 1], qty: i.qty })) }) });
@@ -2542,6 +2624,8 @@ async function placeRealOrder(shop) {
     $('rdCode').textContent = j.pickup_code;
     $('rdInfo').textContent = coMethod === 'delivery' ? t('deliveryInfo') : t('showCode');
     $('rdEmail').textContent = email ? t('emailSentTo').replace('{email}', email) : '';
+    if (!remember) { store.account = Object.assign(store.account || {}, { name: '', phone: '', email: '' }); save(); ['coName', 'coPhone', 'coEmail'].forEach(id => { $(id).value = ''; }); }
+    $('accPrompt').hidden = !!authSession || !!store.accountPromptDone;
     const body = $('orderBody'); body.innerHTML = '';
     items.forEach(i => { const p = priceOf(shop, i.brand, i.code);
       body.appendChild(lineEl(`${i.qty} × ${i.brand} ${[i.code, itemName(i)].filter(Boolean).join(' ')}`, typeof p === 'number' ? money(p * i.qty, shop.currency) : t('priceAtShop'))); });
@@ -2717,12 +2801,15 @@ function setDesignMode(codes) {
   ['viewChips', 'designWrap', 'coloursField'].forEach(id => { $(id).hidden = codes; });
   if (codes) $('autoColours').hidden = true;
 }
-function runCodes(hexes) {
+function runCodes(hexes, shares, pickIds) {
   setDesignMode(true); designOrig = null; estimateOn = false;
   const cands = candidatePaints();
-  clusters = hexes.map(hex => { const lab = rgbToLab(...hexToRgb(hex));
-    return { lab, hex, share: 1 / hexes.length, options: cands.map(p => ({ p, d: deltaE2000(lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5) }; });
-  picks = clusters.map(() => 0);
+  clusters = hexes.map((hex, n) => { const lab = rgbToLab(...hexToRgb(hex));
+    const options = cands.map(p => ({ p, d: deltaE2000(lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5);
+    const want = pickIds && pickIds[n];
+    if (want && !options.some(o => o.p.id === want)) { const p = PAINTS.find(x => x.id === want); if (p) options.unshift({ p, d: deltaE2000(lab, p.lab) }); }
+    return { lab, hex, share: shares && shares[n] ? shares[n] : 1 / hexes.length, options }; });
+  picks = clusters.map((c, n) => { const i = pickIds ? c.options.findIndex(o => o.p.id === pickIds[n]) : -1; return i >= 0 ? i : 0; });
   $('designBody').hidden = false; renderPalette();
 }
 
@@ -2928,12 +3015,167 @@ $('openDesign').addEventListener('click', () => { openDesignTab(); if (designOri
 $('homeDesignFile').addEventListener('change', e => { openDesignTab(); loadDesignFile(e.target.files[0]); e.target.value = ''; });
 $('designPromptBtn').addEventListener('click', () => { openDesignTab(); if (designOrig) runDesign(); });
 
+
+/* ---------- Optional accounts (email link, Google, Apple) ---------- */
+const authClient = (window.supabase && CFG) ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey,
+  { auth: { persistSession: true, detectSessionInUrl: true, flowType: 'pkce' } }) : null;
+let authSession = null;
+const restAuth = () => ({ apikey: CFG.supabaseKey, Authorization: 'Bearer ' + authSession.access_token, 'Content-Type': 'application/json' });
+function openAccount(reasonKey) {
+  $('accReason').textContent = t(reasonKey || 'accBenefits');
+  $('accSignEmail').value = (store.account && store.account.email) || '';
+  $('accMsg').textContent = '';
+  $('accGoogle').hidden = !(CFG && CFG.google); $('accApple').hidden = !(CFG && CFG.apple);
+  $('accountSheet').hidden = false;
+}
+$('accClose').addEventListener('click', () => { $('accountSheet').hidden = true; });
+$('accOpen').addEventListener('click', () => openAccount());
+$('accPromptYes').addEventListener('click', () => { store.accountPromptDone = true; save(); $('accPrompt').hidden = true; openAccount(); });
+$('accPromptNo').addEventListener('click', () => { store.accountPromptDone = true; save(); $('accPrompt').hidden = true; });
+const backHere = () => location.origin + location.pathname;
+$('accEmailBtn').addEventListener('click', async () => {
+  const email = $('accSignEmail').value.trim(); if (!email || !authClient) return;
+  $('accEmailBtn').disabled = true;
+  const { error } = await authClient.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: backHere() } });
+  $('accEmailBtn').disabled = false;
+  $('accMsg').textContent = error ? t('accError').replace('{m}', error.message) : t('accLinkSent');
+});
+['google', 'apple'].forEach(provider => $('acc' + provider[0].toUpperCase() + provider.slice(1)).addEventListener('click', async () => {
+  if (!authClient) return;
+  const { error } = await authClient.auth.signInWithOAuth({ provider, options: { redirectTo: backHere() } });
+  if (error) $('accMsg').textContent = t('accError').replace('{m}', error.message);
+}));
+function renderAccountSection() {
+  const on = !!authSession;
+  $('accSignedOut').hidden = on; $('accSignedIn').hidden = !on;
+  if (on) $('accWho').textContent = t('signedInAs').replace('{email}', authSession.user.email || '');
+}
+$('accSignOut').addEventListener('click', async () => {
+  if (authClient) await authClient.auth.signOut();
+  authSession = null; renderAccountSection(); renderMyDesigns(); renderMyOrders();
+});
+$('accDelete').addEventListener('click', async () => {
+  if (!authSession || !confirm(t('deleteConfirm'))) return;
+  try {
+    const r = await fetch(`${CFG.functionsUrl}/delete-account`, { method: 'POST', headers: restAuth() });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { $('setMsg').textContent = j.error || t('sendFail').replace('{m}', r.status); return; }
+    await authClient.auth.signOut(); authSession = null;
+    store.account = {}; store.orders = (store.orders || []).filter(o => o.token); save();
+    renderSettings(); renderMyDesigns(); $('setMsg').textContent = t('accDeleted');
+  } catch (e) { $('setMsg').textContent = t('offline'); }
+});
+async function syncProfile() {
+  if (!authSession) return;
+  const a = store.account || {};
+  await fetch(`${CFG.supabaseUrl}/rest/v1/profiles?on_conflict=user_id`, { method: 'POST',
+    headers: Object.assign(restAuth(), { Prefer: 'resolution=merge-duplicates' }),
+    body: JSON.stringify({ user_id: authSession.user.id, name: a.name || null, phone: a.phone || null,
+      email: a.email || authSession.user.email || null, address: a.address || null }) }).catch(() => {});
+}
+async function afterSignIn() {
+  renderAccountSection();
+  $('accountSheet').hidden = true;
+  // Bring the profile in, or fill it from what's on this phone
+  try {
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/profiles?select=*&user_id=eq.${authSession.user.id}`, { headers: restAuth() });
+    const rows = r.ok ? await r.json() : [];
+    const prof = rows[0];
+    const local = store.account || {};
+    store.account = Object.assign({}, local, prof ? { name: prof.name || local.name, phone: prof.phone || local.phone,
+      email: prof.email || local.email || authSession.user.email, address: prof.address || local.address } : { email: local.email || authSession.user.email });
+    save(); await syncProfile();
+  } catch (e) {}
+  // Move orders made on this phone into the account
+  for (const o of (store.orders || []).filter(o => o.token)) {
+    await fetch(`${CFG.supabaseUrl}/rest/v1/rpc/claim_order`, { method: 'POST', headers: restAuth(),
+      body: JSON.stringify({ p_order: o.id, p_token: o.token }) }).catch(() => {});
+  }
+  await loadAccountOrders(); renderMyDesigns(); if (!$('settingsSheet').hidden) renderSettings();
+}
+async function loadAccountOrders() {
+  if (!authSession) return;
+  try {
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/orders?select=id,order_no,status,pickup_code,created_at,shops(name)&order=created_at.desc&limit=30`, { headers: restAuth() });
+    if (!r.ok) return;
+    const rows = await r.json();
+    const mine = store.orders || [];
+    rows.forEach(x => {
+      const o = mine.find(m => m.id === x.id);
+      const v = { id: x.id, no: x.order_no, code: x.pickup_code, shop: x.shops ? x.shops.name : '', status: x.status, created: x.created_at };
+      if (o) Object.assign(o, v); else mine.push(v);
+    });
+    mine.sort((a, b) => String(b.created || '').localeCompare(String(a.created || '')));
+    store.orders = mine.slice(0, 30); save(); renderMyOrders();
+  } catch (e) {}
+}
+
+/* ---------- Saved designs (account) ---------- */
+$('saveDesignBtn').addEventListener('click', async () => {
+  if (!clusters.length) return;
+  if (!authSession) { openAccount('signInToSave'); return; }
+  const name = (prompt(t('designNamePrompt'), '') || '').trim().slice(0, 80); if (!name) return;
+  const data = { source: codesMode ? 'codes' : 'image',
+    colours: clusters.map((c, i) => ({ hex: c.hex, share: c.share, pick: c.options[picks[i]] ? c.options[picks[i]].p.id : null })),
+    wall: { w: $('wallW').value, h: $('wallH').value, unit: $('wallUnit').value, coats: $('wallCoats').value } };
+  try {
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs`, { method: 'POST', headers: Object.assign(restAuth(), { Prefer: 'return=minimal' }),
+      body: JSON.stringify({ user_id: authSession.user.id, name, data }) });
+    if (!r.ok) throw new Error(r.status);
+    $('designMsg').textContent = t('designSaved'); renderMyDesigns();
+  } catch (e) { $('designMsg').textContent = t('sendFail').replace('{m}', t('offline')); }
+});
+async function renderMyDesigns() {
+  const box = $('myDesignsList');
+  if (!authSession) { $('myDesigns').hidden = true; return; }
+  try {
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs?select=id,name,data,created_at&order=created_at.desc&limit=50`, { headers: restAuth() });
+    const rows = r.ok ? await r.json() : [];
+    $('myDesigns').hidden = false; box.innerHTML = '';
+    if (!rows.length) { box.innerHTML = `<p class="note">${t('noDesigns')}</p>`; return; }
+    rows.forEach(d => {
+      const el = document.createElement('div'); el.className = 'design-item';
+      el.innerHTML = `<div><b></b><div class="dots"></div></div><div class="row-actions" style="margin:0">
+        <button type="button" class="secondary small op"></button><button type="button" class="link-btn rm"></button></div>`;
+      el.querySelector('b').textContent = d.name;
+      (d.data.colours || []).slice(0, 12).forEach(c => { const sp = document.createElement('span'); sp.style.background = c.hex; el.querySelector('.dots').appendChild(sp); });
+      el.querySelector('.op').textContent = t('openDesign');
+      el.querySelector('.rm').textContent = t('remove');
+      el.querySelector('.op').addEventListener('click', () => {
+        const cs = d.data.colours || [];
+        const w = d.data.wall || {};
+        $('wallW').value = w.w || ''; $('wallH').value = w.h || ''; if (w.unit) $('wallUnit').value = w.unit; if (w.coats) $('wallCoats').value = w.coats;
+        runCodes(cs.map(c => c.hex), cs.map(c => c.share), cs.map(c => c.pick));
+        $('designBody').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      el.querySelector('.rm').addEventListener('click', async () => {
+        await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs?id=eq.${d.id}`, { method: 'DELETE', headers: restAuth() }).catch(() => {});
+        renderMyDesigns();
+      });
+      box.appendChild(el);
+    });
+  } catch (e) { $('myDesigns').hidden = true; }
+}
+if (authClient) {
+  authClient.auth.getSession().then(({ data }) => { authSession = data.session; renderAccountSection(); if (authSession) { loadAccountOrders(); renderMyDesigns(); } });
+  authClient.auth.onAuthStateChange((event, session) => {
+    const was = !!authSession; authSession = session;
+    if (event === 'SIGNED_IN' && !was) afterSignIn();
+    if (event === 'SIGNED_OUT') renderAccountSection();
+  });
+}
+
+/* ---------- Welcome (first open only) ---------- */
+if (!store.welcomed) $('welcome').hidden = false;
+$('welcomeStart').addEventListener('click', () => { store.welcomed = true; save(); $('welcome').hidden = true; });
+
 /* ---------- Settings (no walkthrough) ---------- */
 function fillCitySelect(sel, value) {
   sel.innerHTML = '<option value="">—</option>' + CITIES.map(c => `<option value="${c.key}">${c[lang] || c.en}</option>`).join('');
   sel.value = value || '';
 }
 function renderSettings() {
+  renderAccountSection();
   document.querySelectorAll('.set-lang').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
   fillCitySelect($('setCity'), store.city);
   $('setOtherField').hidden = store.city !== 'other'; $('setOther').value = store.cityOther || '';
@@ -2954,8 +3196,9 @@ $('setCity').addEventListener('change', e => {
 });
 $('setOther').addEventListener('input', e => { store.cityOther = e.target.value.trim(); save(); });
 ['accName', 'accEmail', 'accPhone'].forEach(id => $(id).addEventListener('input', () => {
-  store.account = { name: $('accName').value.trim(), email: $('accEmail').value.trim(), phone: $('accPhone').value.trim() };
+  store.account = Object.assign(store.account || {}, { name: $('accName').value.trim(), email: $('accEmail').value.trim(), phone: $('accPhone').value.trim() });
   save(); $('setMsg').textContent = t('saved');
+  clearTimeout(window.__profT); window.__profT = setTimeout(() => { if (authSession) syncProfile(); }, 800);
 }));
 $('setEmpty').addEventListener('click', () => { store.list = []; save(); renderListCount(); $('setMsg').textContent = t('cartEmptied'); });
 $('setAbout').addEventListener('click', () => { showStep('stepAbout'); });

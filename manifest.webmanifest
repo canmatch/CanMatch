@@ -1,7 +1,7 @@
 {
   "name": "Kromatch",
   "short_name": "Kromatch",
-  "description": "Match any colour or plan a whole mural with real spray cans.",
+  "description": "Find the right can for any colour, or plan a whole wall.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
