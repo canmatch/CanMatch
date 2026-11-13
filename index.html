@@ -556,9 +556,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-13-live"></script>
-<script src="shops.js?v=2026-11-13-live"></script>
-<script src="config.js?v=2026-11-13-live"></script>
+<script src="colors.js?v=2026-11-13-live2"></script>
+<script src="shops.js?v=2026-11-13-live2"></script>
+<script src="config.js?v=2026-11-13-live2"></script>
 <script>
 /* ---------- Colour maths ---------- */
 
@@ -3016,7 +3016,30 @@ $('setup').hidden = true;
 applyLang();
 updateLocBar();
 if (pendingSuggest) showSuggest(pendingSuggest);
-loadLiveShops().then(ok => { if (ok) { if (lastSample) showResults(); renderListCount(); } });
+// Keep prices and stock fresh without reopening the app
+let lastRefresh = 0, refreshing = false;
+async function refreshLive(force) {
+  if (refreshing || (!force && Date.now() - lastRefresh < 30000)) return;
+  refreshing = true;
+  const before = JSON.stringify(store.shopsCache || null);
+  const ok = await loadLiveShops();
+  refreshing = false; lastRefresh = Date.now();
+  if (!ok || (!force && JSON.stringify(store.shopsCache || null) === before)) return;   // nothing changed
+  if (lastSample && !$('results').hidden) showResults();
+  if (!$('designSheet').hidden && typeof clusters !== 'undefined' && clusters.length) {
+    if (typeof codesMode !== 'undefined' && codesMode) runCodes(clusters.map(c => c.hex)); else runDesign();
+  }
+  if (!$('listSheet').hidden) renderList();
+  renderListCount();
+}
+refreshLive(true);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  refreshLive(false);
+  // also check for a newer version of the app itself
+  if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => {});
+});
+setInterval(() => { if (document.visibilityState === 'visible') refreshLive(true); }, 120000);
 // Link from a confirmation email: #order-<id>-<token>
 (() => {
   const m = location.hash.match(/^#order-([0-9a-f-]{36})-([0-9a-f-]{36})$/i);
