@@ -117,6 +117,7 @@
       <button class="tab" data-tab="prices" data-t="tabPrices"></button>
       <button class="tab" data-tab="shop" data-t="tabShop"></button>
       <button class="tab" data-tab="admin" id="adminTab" hidden data-t="tabAdmin"></button>
+      <button class="tab" data-tab="insights" id="insightsTab" hidden data-t="tabInsights"></button>
     </div>
 
     <!-- Orders -->
@@ -184,7 +185,17 @@
         </div>
       </div>
       <p class="note" id="lockedNote"></p>
+      <p class="note" id="connectedNote" hidden></p>
       <button id="saveShop" data-t="save"></button>
+    </div>
+
+    <!-- Insights (admin) -->
+    <div id="tab-insights" hidden>
+      <p class="note" data-t="insightsIntro"></p>
+      <div class="row"><label class="field grow"><span data-t="period"></span>
+        <select id="insDays"><option value="30">30</option><option value="90" selected>90</option><option value="180">180</option><option value="365">365</option></select></label></div>
+      <div id="insList"></div>
+      <div class="card" id="insPreview" hidden><h3 id="insPrevTitle" style="margin-top:0"></h3><div style="overflow-x:auto"><table class="prices" id="insTable"></table></div></div>
     </div>
 
     <!-- Admin -->
@@ -207,12 +218,13 @@
 <div class="toast" id="toast" hidden role="status"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script src="config.js?v=2026-11-13-dash"></script>
-<script src="colors.js?v=2026-11-13-dash"></script>
+<script src="config.js?v=2026-11-15-conn"></script>
+<script src="colors.js?v=2026-11-15-conn"></script>
 <script>
 /* ---------- Text (English and Greek) ---------- */
 const TX = {
   en: {
+    tabInsights: 'Insights', connTitle: 'Shop system', notConnected: 'Not connected', connError: 'last sync failed', never: 'never synced', justNow: 'synced just now', minAgo: 'synced {n} min ago', connIntro: 'Connect the shop’s own system once. Kromatch then updates prices and stock every 15 minutes, and sends orders into their system. The shop doesn’t have to do anything after this.', connType: 'Their system', csvName: 'Spreadsheet link', shopifyStore: 'Shopify store address', shopifyToken: 'Admin API access token', keySaved: 'Saved (leave empty to keep)', shopifyHelp: 'In Shopify: Settings → Apps and sales channels → Develop apps → Create an app, allow read_products, read_inventory and write_draft_orders, install it, then copy the Admin API access token.', wooUrl: 'Shop website address', wooKey: 'Consumer key', wooSecret: 'Consumer secret', wooHelp: 'In WordPress: WooCommerce → Settings → Advanced → REST API → Add key, permissions Read/Write, then copy both keys.', csvUrl: 'Spreadsheet link (CSV)', csvHelp: 'Google Sheets: File → Share → Publish to web → choose the sheet → Comma-separated values (.csv) → Publish, and paste the link. Columns: SKU or colour code, Brand/line, Colour name, Price, Stock.', optStock: 'Update stock automatically', optPrices: 'Update prices automatically', optPush: 'Send Kromatch orders into their system', webhook: 'Also send each order to this web address (optional)', testConn: 'Test connection', syncNow: 'Sync now', working: 'Working…', testResult: 'Connected: {p} products found, {r} recognised as Kromatch colours.', syncResult: 'Synced: {r} of {p} products recognised, {o} colours unavailable.', unmatchedTitle: 'Not recognised ({n})', unmatchedHelp: 'Paint products Kromatch couldn’t recognise. Choose the line and type the colour code to link them; leave caps and accessories as they are.', ignore: 'Not a Kromatch colour', connectedNote: 'Connected to {p}: prices and stock update automatically ({when}).', insightsIntro: 'Anonymous data about colour demand: what people match and plan, which cans they choose and what they order. No names, emails or precise locations. Download as spreadsheets for paint brands.', period: 'Period (days)', preview: 'Preview', download: 'Download spreadsheet', noData: 'No data yet for this period.', repDemand: 'Most-wanted colours', repDemandDesc: 'Colours people try to match or use in designs, by city, colour family and lightness.', repGaps: 'Gaps in the ranges', repGapsDesc: 'Colours people want where no can is a close match: ideas for new colours.', repChoice: 'Brand choice', repChoiceDesc: 'How often each line was offered as a match, and how often people picked it.', repTop: 'Top cans', repTopDesc: 'Cans added to carts and ordered, by city, line and colour.', repMurals: 'Mural planning', repMuralsDesc: 'Designs planned: number of colours, cans needed and wall size, by city.',
     forShops: 'for shops', logout: 'Log out', loginTitle: 'Shop login',
     loginIntro: 'Enter the email Kromatch invited. We’ll send you a login link, no password needed.',
     email: 'Email', sendLink: 'Send login link', linkSent: 'Check your email and tap the link to log in.',
@@ -240,6 +252,7 @@ const TX = {
     makeDemo: 'Make demo', switchOff: 'Switch off', created: 'Shop created. Invite its staff below.'
   },
   el: {
+    tabInsights: 'Στοιχεία', connTitle: 'Σύστημα καταστήματος', notConnected: 'Μη συνδεδεμένο', connError: 'ο τελευταίος συγχρονισμός απέτυχε', never: 'δεν έχει συγχρονιστεί', justNow: 'συγχρονίστηκε μόλις τώρα', minAgo: 'συγχρονίστηκε πριν από {n} λεπτά', connIntro: 'Σύνδεσε μία φορά το σύστημα του καταστήματος. Το Kromatch ενημερώνει τιμές και απόθεμα κάθε 15 λεπτά και στέλνει τις παραγγελίες στο σύστημά τους. Το κατάστημα δεν χρειάζεται να κάνει τίποτα μετά.', connType: 'Το σύστημά τους', csvName: 'Σύνδεσμος υπολογιστικού φύλλου', shopifyStore: 'Διεύθυνση καταστήματος Shopify', shopifyToken: 'Admin API access token', keySaved: 'Αποθηκευμένο (άφησέ το κενό για να μείνει)', shopifyHelp: 'Στο Shopify: Settings → Apps and sales channels → Develop apps → Create an app, δώσε read_products, read_inventory και write_draft_orders, εγκατάστησέ το και αντίγραψε το Admin API access token.', wooUrl: 'Διεύθυνση ιστοσελίδας', wooKey: 'Consumer key', wooSecret: 'Consumer secret', wooHelp: 'Στο WordPress: WooCommerce → Settings → Advanced → REST API → Add key, δικαιώματα Read/Write, και αντίγραψε και τα δύο κλειδιά.', csvUrl: 'Σύνδεσμος υπολογιστικού φύλλου (CSV)', csvHelp: 'Google Sheets: Αρχείο → Κοινή χρήση → Δημοσίευση στον ιστό → επίλεξε το φύλλο → CSV → Δημοσίευση, και επικόλλησε τον σύνδεσμο. Στήλες: SKU ή κωδικός χρώματος, Μάρκα/σειρά, Όνομα χρώματος, Τιμή, Απόθεμα.', optStock: 'Αυτόματη ενημέρωση αποθέματος', optPrices: 'Αυτόματη ενημέρωση τιμών', optPush: 'Αποστολή παραγγελιών Kromatch στο σύστημά τους', webhook: 'Αποστολή κάθε παραγγελίας και σε αυτή τη διεύθυνση (προαιρετικό)', testConn: 'Έλεγχος σύνδεσης', syncNow: 'Συγχρονισμός τώρα', working: 'Γίνεται…', testResult: 'Συνδέθηκε: βρέθηκαν {p} προϊόντα, {r} αναγνωρίστηκαν ως χρώματα Kromatch.', syncResult: 'Συγχρονίστηκε: αναγνωρίστηκαν {r} από {p} προϊόντα, {o} χρώματα μη διαθέσιμα.', unmatchedTitle: 'Δεν αναγνωρίστηκαν ({n})', unmatchedHelp: 'Προϊόντα βαφής που δεν αναγνωρίστηκαν. Διάλεξε σειρά και γράψε τον κωδικό χρώματος για να συνδεθούν. Άφησε καπάκια και αξεσουάρ ως έχουν.', ignore: 'Δεν είναι χρώμα Kromatch', connectedNote: 'Συνδεδεμένο με {p}: τιμές και απόθεμα ενημερώνονται αυτόματα ({when}).', insightsIntro: 'Ανώνυμα στοιχεία ζήτησης χρωμάτων: τι ταιριάζουν και σχεδιάζουν οι χρήστες, ποια σπρέι διαλέγουν και τι παραγγέλνουν. Χωρίς ονόματα, email ή ακριβείς τοποθεσίες.', period: 'Περίοδος (ημέρες)', preview: 'Προεπισκόπηση', download: 'Λήψη υπολογιστικού φύλλου', noData: 'Δεν υπάρχουν ακόμα στοιχεία για αυτή την περίοδο.', repDemand: 'Τα πιο ζητούμενα χρώματα', repDemandDesc: 'Χρώματα που ταιριάζουν ή χρησιμοποιούν σε σχέδια, ανά πόλη, οικογένεια χρώματος και φωτεινότητα.', repGaps: 'Κενά στις σειρές', repGapsDesc: 'Χρώματα που ζητούνται χωρίς κοντινό σπρέι: ιδέες για νέα χρώματα.', repChoice: 'Επιλογή μάρκας', repChoiceDesc: 'Πόσο συχνά προτάθηκε κάθε σειρά και πόσο συχνά επιλέχθηκε.', repTop: 'Κορυφαία σπρέι', repTopDesc: 'Σπρέι που μπήκαν σε καλάθια και παραγγέλθηκαν, ανά πόλη, σειρά και χρώμα.', repMurals: 'Σχεδιασμός τοιχογραφιών', repMuralsDesc: 'Σχέδια: αριθμός χρωμάτων, σπρέι και μέγεθος τοίχου, ανά πόλη.',
     forShops: 'για καταστήματα', logout: 'Αποσύνδεση', loginTitle: 'Σύνδεση καταστήματος',
     loginIntro: 'Γράψε το email που προσκάλεσε το Kromatch. Θα σου στείλουμε σύνδεσμο σύνδεσης, χωρίς κωδικό.',
     email: 'Email', sendLink: 'Αποστολή συνδέσμου', linkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.',
@@ -335,7 +348,7 @@ async function boot() {
     myShops = (data || []).map(x => x.shops).filter(Boolean);
   }
   if (!myShops.length) { $('noShopView').hidden = false; return; }
-  $('appView').hidden = false; $('adminTab').hidden = !isAdmin;
+  $('appView').hidden = false; $('adminTab').hidden = !isAdmin; $('insightsTab').hidden = !isAdmin;
   const sel = $('shopSel');
   sel.innerHTML = myShops.map(s => `<option value="${s.id}">${esc(s.name)}${s.is_live ? '' : s.is_demo ? ' (demo)' : ' (off)'}</option>`).join('');
   const last = localStorage.getItem('kromatch:dashShop');
@@ -362,6 +375,16 @@ async function selectShop(id) {
   await loadOrders();
   renderAll();
 }
+// Reload prices and stock for the open shop without redrawing the Admin screen
+async function refreshShopData() {
+  const [l, o, ov] = await Promise.all([
+    sb.from('shop_lines').select('*').eq('shop_id', shop.id),
+    sb.from('stock_out').select('line, code').eq('shop_id', shop.id),
+    sb.from('price_overrides').select('*').eq('shop_id', shop.id)]);
+  lines = (l.data || []).sort((a, b) => ALL_LINES.indexOf(a.line) - ALL_LINES.indexOf(b.line));
+  outs = new Set((o.data || []).map(x => x.line + '|' + x.code)); overrides = ov.data || [];
+  renderStock(); renderPrices();
+}
 async function loadOrders() {
   const { data, error } = await sb.from('orders').select('*, order_items(*)').eq('shop_id', shop.id)
     .order('created_at', { ascending: false }).limit(60);
@@ -374,7 +397,8 @@ function renderAll() { renderOrders(); renderStock(); renderPrices(); renderShop
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.tab').forEach(x => x.toggleAttribute('aria-current', x === b));
   document.querySelectorAll('.tab').forEach(x => { if (x === b) x.setAttribute('aria-current', 'page'); });
-  ['orders', 'stock', 'prices', 'shop', 'admin'].forEach(n => { $('tab-' + n).hidden = n !== b.dataset.tab; });
+  ['orders', 'stock', 'prices', 'shop', 'admin', 'insights'].forEach(n => { $('tab-' + n).hidden = n !== b.dataset.tab; });
+  if (b.dataset.tab === 'insights') renderInsights();
 }));
 $('refreshBtn').addEventListener('click', async () => { await loadOrders(); renderOrders(); });
 
@@ -516,6 +540,10 @@ function renderShopForm() {
   $('fDelivers').checked = !!d; $('deliveryFields').hidden = !d;
   $('fFee').value = d ? (d.fee ?? '') : ''; $('fFreeOver').value = d ? (d.freeOver ?? '') : ''; $('fNote').value = d ? (d.note || '') : '';
   $('lockedNote').textContent = t('lockedNote') + ` (${shop.city} · ${shop.currency})`;
+  sb.from('shop_integrations').select('provider, last_sync_at, sync_stock, sync_prices').eq('shop_id', shop.id).maybeSingle().then(({ data }) => {
+    $('connectedNote').hidden = !data;
+    if (data) $('connectedNote').textContent = t('connectedNote', { p: ({ shopify: 'Shopify', woocommerce: 'WooCommerce', csv: t('csvName') })[data.provider], when: ago(data.last_sync_at) });
+  });
 }
 $('fDelivers').addEventListener('change', e => { $('deliveryFields').hidden = !e.target.checked; });
 $('saveShop').addEventListener('click', async () => {
@@ -550,7 +578,8 @@ async function renderAdmin() {
         <label class="field grow"><span>${t('feePerCan')}</span><input class="fee" type="number" step="0.01" min="0" value="${p.fee_per_can ?? 0.4}"></label>
         <label class="field grow"><span>${t('trialEnds')}</span><input class="trial" type="date" value="${p.trial_ends || ''}"></label>
       </div>
-      <div class="row"><input class="inv grow" type="email" placeholder="${t('inviteEmail')}" style="margin:0"><button class="small secondary invb">${t('invite')}</button></div>`;
+      <div class="row"><input class="inv grow" type="email" placeholder="${t('inviteEmail')}" style="margin:0"><button class="small secondary invb">${t('invite')}</button></div>
+      <details class="conn" style="margin-top:12px"><summary><b>${t('connTitle')}</b> <span class="pill connstate"></span></summary><div class="connbody"></div></details>`;
     const set = async upd => { const { error } = await sb.from('shops').update(upd).eq('id', s.id); if (error) return fail(error); Object.assign(s, upd); renderAdmin(); toast(t('saved')); };
     d.querySelector('.live').addEventListener('click', () => set({ is_live: true, is_demo: false }));
     d.querySelector('.demo').addEventListener('click', () => set({ is_live: false, is_demo: true }));
@@ -565,7 +594,129 @@ async function renderAdmin() {
       try { const r = await callFn('invite-staff', { shop_id: s.id, email }); toast(r.invited ? t('invited') : t('linked')); d.querySelector('.inv').value = ''; }
       catch (e) { fail(e); }
     });
+    d.querySelector('.conn').addEventListener('toggle', e => { if (e.target.open) renderConnection(s, d.querySelector('.connbody'), d.querySelector('.connstate')); });
+    loadConnState(s, d.querySelector('.connstate'));
     box.appendChild(d);
+  });
+}
+/* ---------- Shop system connection (admin) ---------- */
+const ago = iso => { if (!iso) return t('never'); const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 1 ? t('justNow') : m < 60 ? t('minAgo', { n: m }) : new Date(iso).toLocaleString(); };
+async function loadConnState(s, pill) {
+  const { data } = await sb.from('shop_integrations').select('*').eq('shop_id', s.id).maybeSingle();
+  pill.textContent = data ? `${({ shopify: 'Shopify', woocommerce: 'WooCommerce', csv: t('csvName') })[data.provider]} · ${data.last_status === 'error' ? t('connError') : ago(data.last_sync_at)}` : t('notConnected');
+  return data;
+}
+async function renderConnection(s, body, pill) {
+  const integ = await loadConnState(s, pill) || { provider: 'shopify', config: {}, sync_stock: true, sync_prices: true, push_orders: true };
+  body.innerHTML = `
+    <p class="note">${t('connIntro')}</p>
+    <label class="field"><span>${t('connType')}</span><select class="cprov">
+      <option value="shopify">Shopify</option><option value="woocommerce">WooCommerce</option><option value="csv">${t('csvName')}</option></select></label>
+    <div class="cf cf-shopify"><label class="field"><span>${t('shopifyStore')}</span><input class="cstore" placeholder="shopname.myshopify.com"></label>
+      <label class="field"><span>${t('shopifyToken')}</span><input class="ctoken" type="password" placeholder="${integ.id ? t('keySaved') : 'shpat_…'}"></label>
+      <p class="note">${t('shopifyHelp')}</p></div>
+    <div class="cf cf-woocommerce"><label class="field"><span>${t('wooUrl')}</span><input class="curl" placeholder="https://shop.example.com"></label>
+      <label class="field"><span>${t('wooKey')}</span><input class="ckey" type="password" placeholder="${integ.id ? t('keySaved') : 'ck_…'}"></label>
+      <label class="field"><span>${t('wooSecret')}</span><input class="csecret" type="password" placeholder="${integ.id ? t('keySaved') : 'cs_…'}"></label>
+      <p class="note">${t('wooHelp')}</p></div>
+    <div class="cf cf-csv"><label class="field"><span>${t('csvUrl')}</span><input class="ccsv" placeholder="https://docs.google.com/…/pub?output=csv"></label>
+      <p class="note">${t('csvHelp')}</p></div>
+    <label class="row"><input type="checkbox" class="cstock" style="width:auto;margin:0"> ${t('optStock')}</label>
+    <label class="row"><input type="checkbox" class="cprices" style="width:auto;margin:0"> ${t('optPrices')}</label>
+    <label class="row"><input type="checkbox" class="cpush" style="width:auto;margin:0"> ${t('optPush')}</label>
+    <label class="field"><span>${t('webhook')}</span><input class="chook" type="url" placeholder="https://…"></label>
+    <div class="row" style="margin-top:8px"><button class="small csave">${t('save')}</button><button class="small secondary ctest">${t('testConn')}</button>
+      <button class="small secondary csync">${t('syncNow')}</button></div>
+    <p class="note cmsg" aria-live="polite"></p>
+    <div class="cunmatched"></div>`;
+  const $$ = c => body.querySelector(c);
+  $$('.cprov').value = integ.provider; $$('.cstore').value = integ.config.store || ''; $$('.curl').value = integ.config.url && integ.provider === 'woocommerce' ? integ.config.url : '';
+  $$('.ccsv').value = integ.provider === 'csv' ? (integ.config.url || '') : '';
+  $$('.cstock').checked = integ.sync_stock !== false; $$('.cprices').checked = integ.sync_prices !== false; $$('.cpush').checked = integ.push_orders !== false;
+  $$('.chook').value = integ.webhook_url || '';
+  const showFields = () => body.querySelectorAll('.cf').forEach(f => { f.hidden = !f.classList.contains('cf-' + $$('.cprov').value); });
+  $$('.cprov').addEventListener('change', showFields); showFields();
+  const msg = m => { $$('.cmsg').textContent = m; };
+  $$('.csave').addEventListener('click', async () => {
+    const prov = $$('.cprov').value;
+    const config = prov === 'shopify' ? { store: $$('.cstore').value.trim() } : prov === 'woocommerce' ? { url: $$('.curl').value.trim() } : { url: $$('.ccsv').value.trim() };
+    const secret = prov === 'shopify' ? { token: $$('.ctoken').value.trim() } : prov === 'woocommerce' ? { key: $$('.ckey').value.trim(), secret: $$('.csecret').value.trim() } : null;
+    try { await callFn('integrations', { action: 'save', shop_id: s.id, provider: prov, config, secret,
+      sync_stock: $$('.cstock').checked, sync_prices: $$('.cprices').checked, push_orders: $$('.cpush').checked, webhook_url: $$('.chook').value.trim() || null });
+      msg(t('saved')); loadConnState(s, pill); } catch (e) { msg(t('error', { m: e.message })); }
+  });
+  $$('.ctest').addEventListener('click', async () => {
+    msg(t('working'));
+    try { const r = await callFn('integrations', { action: 'test', shop_id: s.id }); msg(t('testResult', { p: r.products, r: r.recognised })); }
+    catch (e) { msg(t('error', { m: e.message })); }
+  });
+  $$('.csync').addEventListener('click', async () => {
+    msg(t('working'));
+    try { const r = await callFn('integrations', { action: 'sync', shop_id: s.id }); const x = r.results[0] || {};
+      msg(x.status === 'ok' ? t('syncResult', { r: x.recognised, p: x.products, o: x.out_of_stock }) : t('error', { m: x.message }));
+      loadConnState(s, pill); renderUnmatched(s, $$('.cunmatched')); if (shop && shop.id === s.id) refreshShopData(); }
+    catch (e) { msg(t('error', { m: e.message })); }
+  });
+  renderUnmatched(s, $$('.cunmatched'));
+}
+async function renderUnmatched(s, box) {
+  const { data } = await sb.from('product_map').select('external_id, title, sku, price').eq('shop_id', s.id).is('line', null).limit(200);
+  box.innerHTML = '';
+  if (!data || !data.length) return;
+  const h = document.createElement('h3'); h.textContent = t('unmatchedTitle', { n: data.length }); box.appendChild(h);
+  const p = document.createElement('p'); p.className = 'note'; p.textContent = t('unmatchedHelp'); box.appendChild(p);
+  data.forEach(r => {
+    const row = document.createElement('div'); row.className = 'row'; row.style.margin = '6px 0';
+    row.innerHTML = `<span class="grow" style="font-size:0.85rem"></span><select style="width:auto;margin:0"><option value="">${t('ignore')}</option>${ALL_LINES.map(l => `<option>${esc(l)}</option>`).join('')}</select>
+      <input style="width:110px;margin:0" placeholder="${t('codePh')}"><button class="small secondary">${t('save')}</button>`;
+    row.querySelector('span').textContent = `${r.title}${r.sku ? ' · ' + r.sku : ''}`;
+    row.querySelector('button').addEventListener('click', async () => {
+      const line = row.querySelector('select').value, code = row.querySelector('input').value.trim();
+      if (!line || !code) return;
+      const { error } = await sb.from('product_map').update({ line, code, manual: true, match_method: 'manual' }).eq('shop_id', s.id).eq('external_id', r.external_id);
+      if (error) fail(error); else { row.remove(); toast(t('saved')); }
+    });
+    box.appendChild(row);
+  });
+}
+
+/* ---------- Insights (admin): download anonymous demand data as spreadsheets ---------- */
+const REPORTS = [
+  ['insight_colour_demand', 'repDemand', 'repDemandDesc'],
+  ['insight_range_gaps', 'repGaps', 'repGapsDesc'],
+  ['insight_brand_choice', 'repChoice', 'repChoiceDesc'],
+  ['insight_top_cans', 'repTop', 'repTopDesc'],
+  ['insight_murals', 'repMurals', 'repMuralsDesc'],
+];
+function toCSV(rows) {
+  if (!rows.length) return '';
+  const cols = Object.keys(rows[0]);
+  const cell = v => { const x = v == null ? '' : String(v); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; };
+  return [cols.join(','), ...rows.map(r => cols.map(c => cell(r[c])).join(','))].join('\n');
+}
+function renderInsights() {
+  const box = $('insList'); box.innerHTML = '';
+  REPORTS.forEach(([fn, title, desc]) => {
+    const c = document.createElement('div'); c.className = 'card';
+    c.innerHTML = `<b></b><p class="note" style="margin:4px 0 8px"></p><div class="row"><button class="small secondary view"></button><button class="small dl"></button></div>`;
+    c.querySelector('b').textContent = t(title); c.querySelector('p').textContent = t(desc);
+    c.querySelector('.view').textContent = t('preview'); c.querySelector('.dl').textContent = t('download');
+    const load = async () => { const { data, error } = await sb.rpc(fn, { p_days: Number($('insDays').value) }); if (error) { fail(error); return null; } return data || []; };
+    c.querySelector('.view').addEventListener('click', async () => {
+      const rows = await load(); if (!rows) return;
+      $('insPreview').hidden = false; $('insPrevTitle').textContent = `${t(title)} · ${rows.length}`;
+      const cols = rows.length ? Object.keys(rows[0]) : [];
+      $('insTable').innerHTML = rows.length ? `<tr>${cols.map(k => `<td><b>${esc(k)}</b></td>`).join('')}</tr>` +
+        rows.slice(0, 50).map(r => `<tr>${cols.map(k => `<td>${k.includes('hex') && r[k] ? `<span class="sw" style="display:inline-block;vertical-align:middle;background:${esc(r[k])}"></span> ` : ''}${esc(r[k])}</td>`).join('')}</tr>`).join('')
+        : `<tr><td class="muted">${t('noData')}</td></tr>`;
+    });
+    c.querySelector('.dl').addEventListener('click', async () => {
+      const rows = await load(); if (!rows) return;
+      if (!rows.length) { toast(t('noData')); return; }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([toCSV(rows)], { type: 'text/csv' }));
+      a.download = `kromatch-${fn.replace('insight_', '')}-${$('insDays').value}d.csv`; document.body.appendChild(a); a.click(); a.remove();
+    });
+    box.appendChild(c);
   });
 }
 $('createShop').addEventListener('click', async () => {

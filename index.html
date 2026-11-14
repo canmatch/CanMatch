@@ -207,6 +207,18 @@
               padding: 6px 2px; margin: 0 0 4px -2px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
   .back-btn span:first-child { font-size: 1.6rem; line-height: 0.8; }
   .welcome { z-index: 45; }
+  #orderDetail { z-index: 32; }
+  .od-steps { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 0; }
+  .od-steps li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; padding-bottom: 14px; position: relative; }
+  .od-steps li::before { content: ''; position: absolute; left: 13px; top: 24px; bottom: 0; width: 2px; background: var(--line); }
+  .od-steps li:last-child::before { display: none; }
+  .od-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center;
+            font-weight: 900; font-size: 0.85rem; background: var(--bg); position: relative; z-index: 1; }
+  .od-steps li.done .od-dot { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .od-steps li.bad .od-dot { background: #B3261E; border-color: #B3261E; color: #fff; }
+  .od-steps li.now b { text-decoration: underline; text-underline-offset: 3px; }
+  .od-steps small { display: block; color: var(--muted); }
+  .my-order { cursor: pointer; }
   .welcome-inner { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 6vh; }
   .welcome-logo { width: 112px; height: 112px; border-radius: 26px; }
   .welcome h1 { font-size: 2.6rem; margin: 18px 0 6px; }
@@ -397,6 +409,23 @@
   </div>
 </div>
 
+<!-- Order page: status, pickup code and cans -->
+<div class="sheet" id="orderDetail" hidden role="dialog" aria-modal="true" aria-labelledby="odTitle">
+  <div class="sheet-inner">
+    <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
+    <h2 id="odTitle"></h2>
+    <p class="muted" id="odShop"></p>
+    <p class="demo-note" id="odDemo" data-i18n="odDemoNote" hidden></p>
+    <ol class="od-steps" id="odSteps"></ol>
+    <div class="code-box"><span data-i18n="pickupCodeL"></span><b id="odCode"></b></div>
+    <p class="note" id="odHow"></p>
+    <div id="odItems"></div>
+    <div class="sheet-actions"><button type="button" class="secondary" id="odRefresh" data-i18n="refreshStatus"></button>
+      <a class="secondary" id="odMaps" target="_blank" rel="noopener" hidden data-i18n="directions" style="text-decoration:none"></a></div>
+    <p class="note" id="odMsg" aria-live="polite"></p>
+  </div>
+</div>
+
 <!-- Account: sign in or create (optional) -->
 <div class="sheet" id="accountSheet" hidden role="dialog" aria-modal="true" aria-labelledby="accTitle">
   <div class="sheet-inner">
@@ -541,6 +570,10 @@
     <label class="shop-opt unavail"><input type="radio" name="pay" value="card" disabled><div><b data-i18n="payCard"></b> · <span data-i18n="comingSoon"></span></div></label>
     <p class="note" data-i18n="paymentNote"></p>
 
+    <h3 class="sub-h" data-i18n="dataTitle"></h3>
+    <label class="toggle consent"><input type="checkbox" id="shareData"> <span data-i18n="shareData"></span></label>
+    <p class="note" data-i18n="shareDataNote"></p>
+
     <h3 class="sub-h" data-i18n="help"></h3>
     <div class="sheet-actions" style="margin-top:10px">
       <button type="button" class="secondary" id="setAbout" data-i18n="howTitle"></button>
@@ -630,9 +663,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-15-priced"></script>
-<script src="shops.js?v=2026-11-15-priced"></script>
-<script src="config.js?v=2026-11-15-priced"></script>
+<script src="colors.js?v=2026-11-16-conn"></script>
+<script src="shops.js?v=2026-11-16-conn"></script>
+<script src="config.js?v=2026-11-16-conn"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -693,6 +726,20 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    shareDataNote: 'Only which colours are matched and which cans are chosen, with your city. Never your name, email, photos or location. Used to improve Kromatch and, in summary form, shared with paint makers.',
+    shareData: 'Share anonymous colour data to help improve Kromatch',
+    dataTitle: 'Usage data',
+    directions: 'Directions',
+    odNotFound: 'Couldn’t find this order. It may have been made on another phone.',
+    refreshStatus: 'Refresh status',
+    odFailedNote: 'The shop couldn’t fill this order. You haven’t paid anything.',
+    odWaiting: 'Waiting for the shop',
+    odDelivered: 'Delivered',
+    odOnWay: 'On its way',
+    odSent: 'Sent to shop',
+    odDemoNote: 'This is a demo order. In a live shop, this page updates as the shop prepares your cans.',
+    demoTag: 'demo',
+    viewOrder: 'View order',
     goToCart: 'Go to cart · {n}',
     holdOriginal: 'This is your design painted with the cans below. Touch and hold it to see your original.',
     taglineMatch: 'Find the right can for any colour.',
@@ -884,6 +931,20 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    shareDataNote: 'Μόνο ποια χρώματα ταιριάζονται και ποια σπρέι επιλέγονται, μαζί με την πόλη σου. Ποτέ όνομα, email, φωτογραφίες ή τοποθεσία. Χρησιμοποιούνται για τη βελτίωση του Kromatch και, συγκεντρωτικά, κοινοποιούνται σε κατασκευαστές χρωμάτων.',
+    shareData: 'Κοινοποίηση ανώνυμων δεδομένων χρωμάτων για τη βελτίωση του Kromatch',
+    dataTitle: 'Δεδομένα χρήσης',
+    directions: 'Οδηγίες',
+    odNotFound: 'Η παραγγελία δεν βρέθηκε. Ίσως έγινε από άλλο κινητό.',
+    refreshStatus: 'Ανανέωση κατάστασης',
+    odFailedNote: 'Το κατάστημα δεν μπόρεσε να εκτελέσει την παραγγελία. Δεν πλήρωσες τίποτα.',
+    odWaiting: 'Αναμονή για το κατάστημα',
+    odDelivered: 'Παραδόθηκε',
+    odOnWay: 'Σε αποστολή',
+    odSent: 'Στάλθηκε στο κατάστημα',
+    odDemoNote: 'Αυτή είναι παραγγελία επίδειξης. Σε πραγματικό κατάστημα, η σελίδα ενημερώνεται καθώς το κατάστημα ετοιμάζει τα σπρέι σου.',
+    demoTag: 'επίδειξη',
+    viewOrder: 'Προβολή παραγγελίας',
     goToCart: 'Στο καλάθι · {n}',
     holdOriginal: 'Αυτό είναι το σχέδιό σου με τα σπρέι παρακάτω. Άγγιξε και κράτα για να δεις το αρχικό.',
     taglineMatch: 'Βρες το σωστό σπρέι για κάθε χρώμα.',
@@ -1075,6 +1136,20 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    shareDataNote: 'Seulement les couleurs recherchées et les bombes choisies, avec votre ville. Jamais votre nom, e-mail, photos ou position. Utilisé pour améliorer Kromatch et, sous forme agrégée, partagé avec des fabricants de peinture.',
+    shareData: 'Partager des données de couleurs anonymes pour améliorer Kromatch',
+    dataTitle: 'Données d’utilisation',
+    directions: 'Itinéraire',
+    odNotFound: 'Commande introuvable. Elle a peut-être été passée sur un autre téléphone.',
+    refreshStatus: 'Actualiser le statut',
+    odFailedNote: 'Le magasin n’a pas pu honorer cette commande. Vous n’avez rien payé.',
+    odWaiting: 'En attente du magasin',
+    odDelivered: 'Livrée',
+    odOnWay: 'En cours de livraison',
+    odSent: 'Envoyée au magasin',
+    odDemoNote: 'Ceci est une commande de démonstration. Dans un vrai magasin, cette page se met à jour pendant que le magasin prépare vos bombes.',
+    demoTag: 'démo',
+    viewOrder: 'Voir la commande',
     goToCart: 'Voir le panier · {n}',
     holdOriginal: 'Voici votre dessin avec les bombes ci-dessous. Touchez et maintenez pour voir l’original.',
     taglineMatch: 'Trouvez la bonne bombe pour chaque couleur.',
@@ -1266,6 +1341,20 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    shareDataNote: 'Nur welche Farben abgeglichen und welche Dosen gewählt werden, mit deiner Stadt. Nie Name, E-Mail, Fotos oder Standort. Wird zur Verbesserung von Kromatch genutzt und zusammengefasst mit Farbherstellern geteilt.',
+    shareData: 'Anonyme Farbdaten teilen, um Kromatch zu verbessern',
+    dataTitle: 'Nutzungsdaten',
+    directions: 'Route',
+    odNotFound: 'Bestellung nicht gefunden. Vielleicht wurde sie auf einem anderen Handy aufgegeben.',
+    refreshStatus: 'Status aktualisieren',
+    odFailedNote: 'Der Shop konnte diese Bestellung nicht ausführen. Du hast nichts bezahlt.',
+    odWaiting: 'Wartet auf den Shop',
+    odDelivered: 'Geliefert',
+    odOnWay: 'Unterwegs',
+    odSent: 'An den Shop gesendet',
+    odDemoNote: 'Das ist eine Demo-Bestellung. Bei einem echten Shop wird diese Seite aktualisiert, während der Shop deine Dosen vorbereitet.',
+    demoTag: 'Demo',
+    viewOrder: 'Bestellung ansehen',
     goToCart: 'Zum Warenkorb · {n}',
     holdOriginal: 'Das ist dein Design mit den Dosen unten. Halte es gedrückt, um das Original zu sehen.',
     taglineMatch: 'Finde die richtige Dose für jede Farbe.',
@@ -1457,6 +1546,20 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    shareDataNote: 'Solo qué colores se buscan y qué sprays se eligen, con tu ciudad. Nunca tu nombre, correo, fotos ni ubicación. Se usa para mejorar Kromatch y, de forma agregada, se comparte con fabricantes de pintura.',
+    shareData: 'Compartir datos de color anónimos para mejorar Kromatch',
+    dataTitle: 'Datos de uso',
+    directions: 'Cómo llegar',
+    odNotFound: 'No se encontró este pedido. Puede que se hiciera en otro móvil.',
+    refreshStatus: 'Actualizar estado',
+    odFailedNote: 'La tienda no pudo completar este pedido. No has pagado nada.',
+    odWaiting: 'Esperando a la tienda',
+    odDelivered: 'Entregado',
+    odOnWay: 'En camino',
+    odSent: 'Enviado a la tienda',
+    odDemoNote: 'Este es un pedido de demostración. En una tienda real, esta página se actualiza mientras la tienda prepara tus sprays.',
+    demoTag: 'demo',
+    viewOrder: 'Ver pedido',
     goToCart: 'Ir al carrito · {n}',
     holdOriginal: 'Este es tu diseño pintado con los sprays de abajo. Mantén pulsado para ver el original.',
     taglineMatch: 'Encuentra el spray adecuado para cada color.',
@@ -1648,6 +1751,20 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    shareDataNote: 'Solo quali colori vengono abbinati e quali bombolette scelte, con la tua città. Mai nome, email, foto o posizione. Usati per migliorare Kromatch e, in forma aggregata, condivisi con i produttori di vernici.',
+    shareData: 'Condividi dati anonimi sui colori per migliorare Kromatch',
+    dataTitle: 'Dati di utilizzo',
+    directions: 'Indicazioni',
+    odNotFound: 'Ordine non trovato. Forse è stato fatto da un altro telefono.',
+    refreshStatus: 'Aggiorna stato',
+    odFailedNote: 'Il negozio non ha potuto evadere questo ordine. Non hai pagato nulla.',
+    odWaiting: 'In attesa del negozio',
+    odDelivered: 'Consegnato',
+    odOnWay: 'In consegna',
+    odSent: 'Inviato al negozio',
+    odDemoNote: 'Questo è un ordine dimostrativo. In un negozio reale, questa pagina si aggiorna mentre il negozio prepara le tue bombolette.',
+    demoTag: 'demo',
+    viewOrder: 'Vedi ordine',
     goToCart: 'Vai al carrello · {n}',
     holdOriginal: 'Questo è il tuo progetto con le bombolette qui sotto. Tieni premuto per vedere l’originale.',
     taglineMatch: 'Trova la bomboletta giusta per ogni colore.',
@@ -1839,6 +1956,20 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    shareDataNote: 'Apenas quais cores são buscadas e quais sprays são escolhidos, com sua cidade. Nunca seu nome, e-mail, fotos ou localização. Usado para melhorar o Kromatch e, de forma agregada, compartilhado com fabricantes de tinta.',
+    shareData: 'Compartilhar dados de cores anônimos para melhorar o Kromatch',
+    dataTitle: 'Dados de uso',
+    directions: 'Como chegar',
+    odNotFound: 'Pedido não encontrado. Pode ter sido feito em outro telefone.',
+    refreshStatus: 'Atualizar status',
+    odFailedNote: 'A loja não conseguiu atender este pedido. Você não pagou nada.',
+    odWaiting: 'Aguardando a loja',
+    odDelivered: 'Entregue',
+    odOnWay: 'A caminho',
+    odSent: 'Enviado à loja',
+    odDemoNote: 'Este é um pedido de demonstração. Numa loja real, esta página é atualizada enquanto a loja prepara seus sprays.',
+    demoTag: 'demo',
+    viewOrder: 'Ver pedido',
     goToCart: 'Ir ao carrinho · {n}',
     holdOriginal: 'Este é o seu projeto pintado com os sprays abaixo. Toque e segure para ver o original.',
     taglineMatch: 'Encontre o spray certo para cada cor.',
@@ -2282,6 +2413,7 @@ function label(p) { return p >= 95 ? t('l1') : p >= 87 ? t('l2') : p >= 75 ? t('
 function inList(id) { return store.list.some(i => i.id === id); }
 
 const matchQty = {};
+let lastLoggedSample = '';
 function showResults() {
   if (!lastSample) return;
   const [r, g, b] = lastSample, hex = rgbToHex(r, g, b), lab = rgbToLab(r, g, b);
@@ -2330,11 +2462,20 @@ function showResults() {
                          li.querySelector('.qty span').textContent = q(); };
     li.querySelector('.minus').addEventListener('click', () => { matchQty[p.id] = Math.max(1, q() - 1); sync(); });
     li.querySelector('.plus').addEventListener('click', () => { matchQty[p.id] = Math.min(99, q() + 1); sync(); });
-    btn.addEventListener('click', () => { for (let k = 0; k < q(); k++) addToList(p, hex); sync(); });
+    btn.addEventListener('click', () => { for (let k = 0; k < q(); k++) addToList(p, hex); sync();
+      logEvent('add', { line: p.brand, code: p.code, name: p.name, qty: q(), offered: true, source: 'match' }); });
     sync();
     ol.appendChild(li);
   });
   $('results').hidden = false;
+  // anonymous demand data: once per colour matched
+  const sKey = lastSample.join(',');
+  if (list.length && sKey !== lastLoggedSample && typeof logEvent === 'function') {
+    lastLoggedSample = sKey;
+    const lab0 = rgbToLab(...lastSample), best = list[0];
+    logEvent('match', Object.assign({ hex: rgbToHex(...lastSample), best_pct: matchPct(best.d), best_line: best.brand,
+      offered_lines: [...new Set(list.slice(0, 6).map(x => x.brand))] }, colourFamily(lab0)));
+  }
   $('showMore').hidden = !list.length;
   $('nearNote').hidden = !(nearOnly && !cityShops().length);
   $('nearNote').textContent = store.city ? t('nearNoShops') : t('noCity');
@@ -2424,7 +2565,7 @@ function renderListCount() {
 }
 function updateGoCart() {
   const n = store.list.reduce((a, i) => a + i.qty, 0);
-  const onPage = $('listSheet').hidden && $('settingsSheet').hidden && $('orderSheet').hidden && $('accountSheet').hidden && $('setup').hidden;
+  const onPage = $('listSheet').hidden && $('settingsSheet').hidden && $('orderSheet').hidden && $('accountSheet').hidden && $('setup').hidden && $('orderDetail').hidden;
   const show = n > 0 && onPage;
   $('goCart').hidden = !show; document.body.classList.toggle('has-go-cart', show);
   $('goCart').textContent = '🛒 ' + t('goToCart').replace('{n}', n === 1 ? t('oneCan') : t('cans').replace('{n}', n));
@@ -2677,6 +2818,16 @@ $('placeOrder').addEventListener('click', async () => {
   }
   if (!shop.demo) { await placeRealOrder(shop); return; }
   $('demoNoteEl').hidden = false; $('realDone').hidden = true;
+  {
+    const its = itemsFor(shop), tt0 = checkoutTotals(shop);
+    store.demoNo = (store.demoNo || 0) + 1;
+    store.orders = [{ id: 'demo-' + Date.now(), demo: true, no: 'D' + store.demoNo, code: 'K-' + String(1000 + Math.floor(Math.random() * 9000)),
+      shop: shop.name, status: 'new', method: coMethod, currency: shop.currency, total: Math.round(tt0.grand * 100) / 100, created: new Date().toISOString(),
+      items: its.map(i => ({ line: i.brand, code: i.code, name: itemName(i), qty: i.qty, unit_price: priceOf(shop, i.brand, i.code) })) }]
+      .concat(store.orders || []).slice(0, 30);
+    save();
+    logEvent('order', { demo: true, method: coMethod, currency: shop.currency, items: its.map(i => ({ line: i.brand, code: i.code, name: i.name, qty: i.qty })) });
+  }
   $('accPrompt').hidden = !!authSession || !!store.accountPromptDone;
   const tt = checkoutTotals(shop);
   $('orderTitle').textContent = t(coMethod === 'delivery' ? 'doneDelivery' : 'donePickup').replace('{shop}', shop.name);
@@ -2721,8 +2872,11 @@ async function placeRealOrder(shop) {
       return;
     }
     // Remember the order on this phone and take its cans out of the cart
-    store.orders = [{ id: j.order_id, token: j.public_token, no: j.order_no, code: j.pickup_code, shop: shop.name,
-                      created: new Date().toISOString(), status: 'new' }].concat(store.orders || []).slice(0, 30);
+    store.orders = [{ id: j.order_id, token: j.public_token, no: j.order_no, code: j.pickup_code, shop: shop.name, method: coMethod,
+                      currency: shop.currency, total: j.total, created: new Date().toISOString(), status: 'new',
+                      items: items.map(i => ({ line: i.brand, code: i.code, name: itemName(i), qty: i.qty, unit_price: priceOf(shop, i.brand, i.code) })) }]
+                      .concat(store.orders || []).slice(0, 30);
+    logEvent('order', { demo: false, method: coMethod, currency: shop.currency, items: items.map(i => ({ line: i.brand, code: i.code, name: i.name, qty: i.qty })) });
     store.list = store.list.filter(i => !items.includes(i)); save(); renderListCount();
     $('orderTitle').textContent = t('orderSent').replace('{shop}', shop.name);
     $('demoNoteEl').hidden = true; $('realDone').hidden = false;
@@ -2760,8 +2914,11 @@ function renderMyOrders() {
     d.querySelector('b').textContent = `${o.shop} · #${o.no}`;
     d.querySelector('.status-txt').textContent = t('st_' + (o.status || 'new'));
     d.querySelector('.note').textContent = `${t('pickupCodeL')}: ${o.code}`;
-    const btn = d.querySelector('.chk'); btn.textContent = t('checkStatus');
-    btn.addEventListener('click', async () => {
+    const btn = d.querySelector('.chk'); btn.textContent = t('viewOrder');
+    d.addEventListener('click', () => openOrderDetail(o));
+    if (o.demo) d.querySelector('b').textContent += ` · ${t('demoTag')}`;
+    btn.addEventListener('click', e => { e.stopPropagation(); openOrderDetail(o); });
+    if (false) btn.addEventListener('click', async () => {
       try {
         const r = await fetch(`${CFG.functionsUrl}/get-order`, { method: 'POST',
           headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey }, body: JSON.stringify({ order_id: o.id, token: o.token }) });
@@ -2833,7 +2990,7 @@ function loadDesignFile(file) {
     dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
     dCtx.drawImage(img, 0, 0, dCanvas.width, dCanvas.height);
     designOrig = dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height);
-    designImg = img; URL.revokeObjectURL(url); autoColours = true; estimateOn = false; setDesignMode(false);
+    designImg = img; URL.revokeObjectURL(url); autoColours = true; designSerial++; estimateOn = false; setDesignMode(false);
     $('designBody').hidden = false; runDesign();
   };
   img.onerror = () => alert(t('badImage'));
@@ -2982,7 +3139,23 @@ function cansFor(share) {
 }
 let qtyOverride = {};
 const qtyFor = (i, c) => qtyOverride[i] != null ? qtyOverride[i] : (estimateOn ? cansFor(c.share) : 1);
+let designLogTimer = null, designSerial = 0, designLogged = -1;
+function scheduleDesignLog() {
+  clearTimeout(designLogTimer);
+  const serial = designSerial;
+  designLogTimer = setTimeout(() => {
+    if (designLogged === serial || !clusters.length) return;
+    designLogged = serial;
+    const chosen = clusters.map((c, i) => c.options[picks[i]]).filter(Boolean);
+    let cans = 0; clusters.forEach((c, i) => { cans += qtyFor(i, c); });
+    logEvent('design', { colours: clusters.length, cans: estimateOn ? cans : '', wall_m2: estimateOn ? Math.round(wallArea() * 10) / 10 : '',
+      lines: [...new Set(chosen.map(o => o.p.brand))], source: codesMode ? 'codes' : 'image',
+      palette: clusters.slice(0, 40).map((c, i) => { const o = c.options[picks[i]];
+        return Object.assign({ hex: c.hex, share: Math.round(c.share * 1000) / 1000, best_pct: o ? matchPct(o.d) : null, best_line: o ? o.p.brand : null }, colourFamily(c.lab)); }) });
+  }, 6000);
+}
 function renderPalette() {
+  scheduleDesignLog();
   estimateOn = wallArea() > 0;
   $('coverageNote').hidden = !estimateOn;
   const ol = $('paletteList'); ol.innerHTML = ''; $('designMsg').textContent = '';
@@ -3013,7 +3186,7 @@ function renderPalette() {
     li.querySelector('.minus').addEventListener('click', () => { qtyOverride[i] = Math.max(0, qty - 1); renderPalette(); });
     li.querySelector('.plus').addEventListener('click', () => { qtyOverride[i] = Math.min(99, qty + 1); renderPalette(); });
     const one = li.querySelector('.add-one'); one.textContent = t('addToList'); one.disabled = qty === 0;
-    one.addEventListener('click', () => { for (let k = 0; k < qty; k++) addToList(p, c.hex); $('designMsg').textContent = (qty === 1 ? t('addedOne') : t('addedAll').replace('{n}', qty)); });
+    one.addEventListener('click', () => { for (let k = 0; k < qty; k++) addToList(p, c.hex); logEvent('add', { line: p.brand, code: p.code, name: p.name, qty, source: 'design' }); $('designMsg').textContent = (qty === 1 ? t('addedOne') : t('addedAll').replace('{n}', qty)); });
     if (qty === 0) li.classList.add('d-skip');
     li.querySelector('.score b').textContent = pct(m); li.querySelector('.score span').textContent = label(m);
     const btn = li.querySelector('.more-btn'), alts = li.querySelector('.alts');
@@ -3052,7 +3225,8 @@ dCanvas.addEventListener('contextmenu', e => e.preventDefault());
 $('viewCans').addEventListener('click', () => { designView = 'cans'; drawDesign(); });
 $('addAll').addEventListener('click', () => {
   let n = 0;
-  clusters.forEach((c, i) => { const o = c.options[picks[i]]; if (!o) return; const q = qtyFor(i, c); for (let k = 0; k < q; k++) addToList(o.p, c.hex); n += q; });
+  clusters.forEach((c, i) => { const o = c.options[picks[i]]; if (!o) return; const q = qtyFor(i, c); for (let k = 0; k < q; k++) addToList(o.p, c.hex); n += q;
+    if (q) logEvent('add', { line: o.p.brand, code: o.p.code, name: o.p.name, qty: q, source: 'design' }); });
   $('designMsg').textContent = (n === 1 ? t('addedOne') : t('addedAll').replace('{n}', n));
 });
 
@@ -3302,12 +3476,118 @@ if (authClient) {
 if (!store.welcomed) $('welcome').hidden = false;
 $('welcomeStart').addEventListener('click', () => { store.welcomed = true; save(); $('welcome').hidden = true; });
 
+
+/* ---------- Order page ---------- */
+let odCurrent = null;
+function renderOrderDetail(o, full) {
+  odCurrent = o;
+  $('odTitle').textContent = t('orderNo').replace('{n}', o.no);
+  const shopInfo = full && full.shops ? full.shops : null;
+  $('odShop').textContent = [o.shop || (shopInfo && shopInfo.name) || '', shopInfo && shopInfo.address, o.created ? new Date(o.created).toLocaleString(lang) : ''].filter(Boolean).join(' · ');
+  $('odDemo').hidden = !o.demo;
+  $('odCode').textContent = o.code || '…';
+  const method = (full && full.method) || o.method || 'pickup';
+  $('odHow').textContent = method === 'delivery' ? t('deliveryInfo') : t('showCode');
+  // progress line
+  const st = (full && full.status) || o.status || 'new';
+  const failed = st === 'not_available' || st === 'cancelled';
+  const steps = [['new', t('odSent'), full && full.created_at], ['ready', method === 'delivery' ? t('odOnWay') : t('st_ready'), full && full.ready_at],
+                 ['picked_up', method === 'delivery' ? t('odDelivered') : t('st_picked_up'), full && full.picked_up_at]];
+  const order = ['new', 'ready', 'picked_up'];
+  const reached = failed ? 0 : order.indexOf(st);
+  const ol = $('odSteps'); ol.innerHTML = '';
+  steps.forEach(([key, label, when], n) => {
+    const li = document.createElement('li');
+    li.className = n <= reached ? 'done' + (n === reached ? ' now' : '') : '';
+    li.innerHTML = `<span class="od-dot">${n <= reached ? '✓' : n + 1}</span><div><b></b><small></small></div>`;
+    li.querySelector('b').textContent = label;
+    li.querySelector('small').textContent = when ? new Date(when).toLocaleString(lang) : (n === reached + 1 && !failed ? t('odWaiting') : '');
+    ol.appendChild(li);
+  });
+  if (failed) {
+    const li = document.createElement('li'); li.className = 'bad now';
+    li.innerHTML = `<span class="od-dot">!</span><div><b></b><small></small></div>`;
+    li.querySelector('b').textContent = t('st_' + st); li.querySelector('small').textContent = t('odFailedNote');
+    ol.appendChild(li);
+  }
+  // cans
+  const items = (full && full.order_items) || o.items || [];
+  const box = $('odItems'); box.innerHTML = '';
+  const cur = (full && full.currency) || o.currency || 'EUR';
+  items.forEach(i => {
+    const unit = i.unit_price != null ? Number(i.unit_price) : null;
+    const label = `${i.qty} × ${i.line || i.brand} ${[i.code, i.name].filter(Boolean).join(' ')}${i.available === false ? ' (' + t('st_not_available') + ')' : ''}`;
+    box.appendChild(lineEl(label, unit != null ? money(unit * i.qty, cur) : ''));
+  });
+  const total = full ? Number(full.total) : o.total;
+  if (total != null && !isNaN(total)) {
+    if (full && Number(full.delivery_fee) > 0) box.appendChild(lineEl(t('deliveryFee'), money(Number(full.delivery_fee), cur)));
+    box.appendChild(lineEl(t('total'), money(total, cur), true));
+  }
+  const maps = shopInfo && shopInfo.maps_url;
+  $('odMaps').hidden = !maps; if (maps) $('odMaps').href = maps;
+  $('odRefresh').hidden = !!o.demo;
+}
+async function refreshOrderDetail() {
+  const o = odCurrent; if (!o || o.demo) return;
+  $('odMsg').textContent = '';
+  try {
+    let full = null;
+    if (o.token) {
+      const r = await fetch(`${CFG.functionsUrl}/get-order`, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey },
+        body: JSON.stringify({ order_id: o.id, token: o.token }) });
+      const j = await r.json(); if (j.ok) full = j.order;
+    } else if (authSession) {
+      const r = await fetch(`${CFG.supabaseUrl}/rest/v1/orders?select=*,shops(name,address,maps_url),order_items(*)&id=eq.${o.id}`, { headers: restAuth() });
+      const rows = r.ok ? await r.json() : []; full = rows[0] || null;
+    }
+    if (!full) { $('odMsg').textContent = t('odNotFound'); return; }
+    Object.assign(o, { status: full.status, no: full.order_no || o.no, code: full.pickup_code || o.code, shop: (full.shops && full.shops.name) || o.shop });
+    save(); renderOrderDetail(o, full); renderMyOrders();
+  } catch (e) { $('odMsg').textContent = t('offline'); }
+}
+function openOrderDetail(o) {
+  renderOrderDetail(o, null);
+  $('orderDetail').hidden = false; $('orderDetail').scrollTop = 0;
+  refreshOrderDetail();
+}
+$('odRefresh').addEventListener('click', refreshOrderDetail);
+
+/* ---------- Anonymous usage data (helps paint brands; no personal data) ---------- */
+// Only colours, cans, city and language are sent. No names, emails, accounts, photos or precise locations.
+// The session id is random, kept in memory only, and changes every time the app opens.
+const SESSION = Math.random().toString(36).slice(2, 12);
+let evQueue = [], evTimer = null;
+function colourFamily(lab) {
+  const [L, a, b] = lab; const C = Math.hypot(a, b); let h = Math.atan2(b, a) * 180 / Math.PI; if (h < 0) h += 360;
+  const light = L < 35 ? 'dark' : L < 70 ? 'mid' : 'light';
+  if (C < 10) return { family: L < 20 ? 'black' : L > 90 ? 'white' : 'grey', light };
+  // Hue boundaries measured on real paint colours in Lab space
+  let fam = h >= 340 || h < 20 ? 'pink' : h < 50 ? 'red' : h < 78 ? 'orange' : h < 105 ? 'yellow' : h < 170 ? 'green' : h < 225 ? 'teal' : h < 295 ? 'blue' : 'purple';
+  if (h >= 40 && h < 100 && C < 45 && L < 70) fam = 'brown';
+  if (fam === 'pink' && L < 40) fam = 'red';
+  return { family: fam, light };
+}
+function logEvent(kind, data) {
+  if (store.analyticsOff || !CFG) return;
+  evQueue.push({ kind, city: store.city || null, lang, session: SESSION, data });
+  clearTimeout(evTimer); evTimer = setTimeout(flushEvents, 4000);
+}
+function flushEvents() {
+  if (!evQueue.length || !CFG) return;
+  const batch = evQueue.splice(0, 50);
+  fetch(`${CFG.supabaseUrl}/rest/v1/events`, { method: 'POST', keepalive: true,
+    headers: { apikey: CFG.supabaseKey, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(batch) }).catch(() => {});
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushEvents(); });
+
 /* ---------- Settings (no walkthrough) ---------- */
 function fillCitySelect(sel, value) {
   sel.innerHTML = '<option value="">—</option>' + CITIES.filter(c => cityOn(c.key)).map(c => `<option value="${c.key}">${c[lang] || c.en}</option>`).join('');
   sel.value = value || '';
 }
 function renderSettings() {
+  $('shareData').checked = !store.analyticsOff;
   document.querySelectorAll('.set-lang').forEach(b => { b.hidden = !!ACTIVE_LANGS && !ACTIVE_LANGS.includes(b.dataset.lang); });
   renderAccountSection();
   document.querySelectorAll('.set-lang').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
@@ -3335,6 +3615,7 @@ $('setOther').addEventListener('input', e => { store.cityOther = e.target.value.
   clearTimeout(window.__profT); window.__profT = setTimeout(() => { if (authSession) syncProfile(); }, 800);
 }));
 $('setEmpty').addEventListener('click', () => { store.list = []; save(); renderListCount(); $('setMsg').textContent = t('cartEmptied'); });
+$('shareData').addEventListener('change', e => { store.analyticsOff = !e.target.checked; if (store.analyticsOff) evQueue = []; save(); });
 $('setAbout').addEventListener('click', () => { showStep('stepAbout'); });
 
 /* ---------- Start ---------- */
@@ -3438,7 +3719,7 @@ setInterval(() => { if (document.visibilityState === 'visible') refreshLive(true
 })();
 
 /* ---------- Back navigation (on-screen Back button and the phone's back gesture) ---------- */
-const NAV_SHEETS = ['designSheet', 'listSheet', 'settingsSheet', 'accountSheet', 'orderSheet', 'setup'];
+const NAV_SHEETS = ['designSheet', 'listSheet', 'settingsSheet', 'accountSheet', 'orderSheet', 'orderDetail', 'setup'];
 let navRestoring = false, navTimer = null;
 const navSnap = () => NAV_SHEETS.filter(id => !$(id).hidden);
 function navApply(list) {
