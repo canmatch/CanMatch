@@ -52,6 +52,10 @@
     <tr><td>Account email and profile</td><td>Only if you create an account</td><td>To let you sign in, see your orders and saved designs on any device (performance of contract).</td></tr>
     <tr><td>Saved designs (colour palette, chosen cans, wall size)</td><td>Only if you save a design to your account</td><td>To show your designs on any device. The image itself is never saved.</td></tr>
     <tr><td>Anonymous colour data: colours matched or used in designs, colour family, cans offered and chosen, number of cans, wall size, city and language</td><td>When you use Kromatch, unless switched off in Settings → Usage data</td><td>To improve Kromatch, and to produce summary reports about colour demand for paint makers. This data has no name, email, account, photo, precise location or device identifier, and the session id is random and changes every time the app opens (legitimate interest; you can opt out at any time).</td></tr>
+    <tr><td>Protection against fake and duplicate orders: a one-way scrambled code made from your network (IP) address, and a bot check</td><td>When you place an order</td><td>To stop spam and fake orders reaching shops. The scrambled code can't be turned back into your address and is deleted after 2 days; the bot check is done by Cloudflare Turnstile (legitimate interest).</td></tr>
+    <tr><td>Phone notifications</td><td>Only if you tap "Tell me when it's ready" and allow notifications</td><td>To tell you when your cans are ready. We store a technical address for your phone's notification service (from Apple, Google or Mozilla), linked to that order only, and delete it when it stops working (consent; you can switch notifications off in your phone's settings).</td></tr>
+    <tr><td>Your answer to "Did you collect your cans?"</td><td>If you answer the email or the question in the app</td><td>To make sure orders and the shop's fees are recorded correctly (legitimate interest).</td></tr>
+    <tr><td>Favourite colours</td><td>If you star a colour</td><td>Stored on your phone; if you're signed in, also in your account so they appear on your other devices.</td></tr>
     <tr><td>Details saved on your phone</td><td>If you tick "Remember my details" or use Settings</td><td>Stored only in your browser's storage, so you don't have to retype them.</td></tr>
   </table>
 
@@ -60,7 +64,7 @@
     <li><b>The shop you order from:</b> your name, contact details, delivery address (if any) and order, only for that order.</li>
     <li><b>Service providers</b> who process data for us under contract:
       Supabase (database and sign-in, hosted in the EU, Frankfurt), Netlify (app hosting), Resend (order emails),
-      Google Fonts (font delivery). If you choose to sign in with Google or Apple, that company handles the sign-in.</li>
+      Google Fonts (font delivery), Cloudflare (bot check on orders, if switched on), Twilio (text messages to shops about new orders, if the shop switched them on; these include your first name and order), and the notification service of your phone's maker (Apple, Google or Mozilla) if you turn on notifications. If you choose to sign in with Google or Apple, that company handles the sign-in.</li>
     <li><b>The shop's own ordering system,</b> if the shop has connected it to Kromatch (for example Shopify or WooCommerce): your order and the contact details needed for it are passed into that system, only for shops you order from.</li>
     <li><b>Paint makers and other businesses:</b> only summary reports built from anonymous colour data (for example "red is the most-matched colour family in Athens this quarter"). Never personal data. [Confirm wording with your lawyer.]</li>
     <li><b>Authorities,</b> only if the law requires it.</li>
@@ -69,6 +73,7 @@
 
   <h2>How long we keep it</h2>
   <ul>
+    <li>Orders that aren't collected are released automatically after the shop's hold time (usually 7 days).</li>
     <li>Orders: [e.g. as long as required for the shop's and our accounting records, typically up to 5 years under Greek tax law; confirm with accountant].</li>
     <li>Account and saved designs: until you delete your account.</li>
     <li>Data stored on your phone: until you clear it, delete the app, or clear your browser data.</li>

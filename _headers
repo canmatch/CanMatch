@@ -1,0 +1,21 @@
+# Netlify security headers for Kromatch (applied to every page)
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://efuzxqdnzblsvnflqmwf.supabase.co wss://efuzxqdnzblsvnflqmwf.supabase.co https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), geolocation=(self), microphone=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Always check for a newer version of the app itself
+/index.html
+  Cache-Control: no-cache
+/sw.js
+  Cache-Control: no-cache
+/config.js
+  Cache-Control: no-cache
+
+# The shop dashboard should never show up in search engines
+/dashboard.html
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache
