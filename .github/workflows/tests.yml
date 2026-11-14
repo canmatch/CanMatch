@@ -1,0 +1,24 @@
+# Runs Kromatch's checks every time you upload changes to GitHub.
+# A red ✗ next to your upload means something is broken: open it to see what, before it reaches users.
+name: Kromatch checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Quick checks (code, colours, translations, files)
+        run: node tests/check.mjs
+      - name: Install a test browser
+        run: |
+          npm install --no-save --no-package-lock playwright@1.49.1
+          npx playwright install --with-deps chromium
+      - name: Browser check (app + dashboard)
+        run: node tests/smoke.mjs
