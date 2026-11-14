@@ -76,6 +76,26 @@
   .ov-grid { display: grid; grid-template-columns: 1fr 1fr 90px auto; gap: 8px; align-items: center; }
   .ov-grid select { grid-column: 1 / -1; }
   .pill { font-size: 0.75rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: var(--line); }
+  .st-expired { color: var(--muted); }
+  .flag { font-size: 0.82rem; font-weight: 700; margin-top: 4px; } .flag.bad { color: var(--warn); } .flag.good { color: var(--ok); }
+  .hday { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .hrow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 3px 0; font-size: 0.9rem; }
+  .hrow b { width: 44px; } .hrow input[type=time] { width: auto; margin: 0; padding: 6px 8px; }
+  .hrow label { display: flex; gap: 4px; align-items: center; font-size: 0.85rem; font-weight: 400; }
+  label.row.nowrap { flex-wrap: nowrap; align-items: flex-start; } label.row.nowrap input { margin-top: 3px !important; }
+  .slip td:first-child { width: 16mm; white-space: nowrap; }
+  .pause-bar { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 14px; margin: 10px 0; font-weight: 800; }
+  .pause-bar.on { background: #E6F4EA; color: #145A2E; } .pause-bar.off { background: #FCE8E6; color: #8C1D18; }
+  @media (prefers-color-scheme: dark) { .pause-bar.on { background: #173523; color: #A8E6BD; } .pause-bar.off { background: #3C1A18; color: #FFB4AB; } }
+  .keybox { font-family: ui-monospace, Menlo, monospace; font-size: 0.78rem; word-break: break-all; background: var(--bg); padding: 8px; border-radius: 8px; user-select: all; }
+  #printArea { display: none; }
+  @media print {
+    body > *:not(#printArea) { display: none !important; }
+    #printArea { display: block !important; color: #000; background: #fff; font: 13px/1.4 Arial, sans-serif; }
+    .slip { width: 72mm; margin: 0 auto; } .slip h1 { font-size: 18px; margin: 0 0 4px; } .slip .big { font-size: 34px; font-weight: 900; letter-spacing: 1px; margin: 6px 0; }
+    .slip table { width: 100%; border-collapse: collapse; } .slip td { padding: 3px 0; border-bottom: 1px dashed #999; vertical-align: top; }
+    .slip .box { display: inline-block; width: 12px; height: 12px; border: 1.5px solid #000; margin-right: 6px; }
+  }
 </style>
 </head>
 <body>
@@ -116,12 +136,14 @@
       <button class="tab" data-tab="stock" data-t="tabStock"></button>
       <button class="tab" data-tab="prices" data-t="tabPrices"></button>
       <button class="tab" data-tab="shop" data-t="tabShop"></button>
+      <button class="tab" data-tab="billing" data-t="tabBilling"></button>
       <button class="tab" data-tab="admin" id="adminTab" hidden data-t="tabAdmin"></button>
       <button class="tab" data-tab="insights" id="insightsTab" hidden data-t="tabInsights"></button>
     </div>
 
     <!-- Orders -->
     <div id="tab-orders">
+      <div class="pause-bar" id="pauseBar" hidden><span id="pauseText"></span><button class="small secondary" id="pauseToggle"></button></div>
       <div class="row"><h2 class="grow" data-t="openOrders"></h2><button class="secondary small" id="refreshBtn" data-t="refresh"></button></div>
       <div id="openOrders"></div>
       <h2 data-t="recentOrders"></h2>
@@ -148,6 +170,7 @@
         <select id="addLineSel" class="grow" style="margin:0"></select>
         <button class="secondary small" id="addLineBtn" data-t="addLine"></button>
       </div>
+      <div class="card" id="holdsCard" hidden style="margin-top:14px"><h3 style="margin-top:0" data-t="holdsTitle"></h3><p class="note" data-t="holdsIntro"></p><div id="holdsList"></div></div>
       <h3 data-t="colourPrices"></h3>
       <p class="note" data-t="colourPricesIntro"></p>
       <div class="ov-grid">
@@ -175,6 +198,30 @@
         <label class="field"><span data-t="contactName"></span><input id="fContact"></label>
         <label class="field"><span data-t="contactPhone"></span><input id="fPhone" type="tel"></label>
       </div>
+      <div class="card" id="opsCard">
+        <h3 style="margin-top:0" data-t="hoursCard"></h3>
+        <label class="row nowrap" style="font-weight:700"><input type="checkbox" id="fPaused" style="width:auto;margin:0"> <span data-t="pausedLabel"></span></label>
+        <label class="field" id="fPauseMsgWrap"><span data-t="pauseMsg"></span><input id="fPauseMsg" maxlength="200"></label>
+        <div id="hoursGrid" style="margin:12px 0"></div>
+        <label class="field"><span data-t="holdDays"></span><select id="fHold" style="width:auto"></select></label>
+        <label class="field"><span data-t="publicPhone"></span><input id="fPubPhone" type="tel" maxlength="40"></label>
+        <label class="field"><span data-t="about"></span><input id="fAbout" maxlength="300"></label>
+      </div>
+      <div class="card" id="notifyCard">
+        <h3 style="margin-top:0" data-t="notifyCard"></h3>
+        <label class="field"><span data-t="notifyPhone"></span><input id="fNotifyPhone" type="tel" placeholder="+30 69…"></label>
+        <label class="row"><input type="checkbox" id="fSms" style="width:auto;margin:0"> <span data-t="notifySms"></span></label>
+        <label class="row"><input type="checkbox" id="fWa" style="width:auto;margin:0"> <span data-t="notifyWa"></span></label>
+        <label class="row"><input type="checkbox" id="fWeekly" style="width:auto;margin:0"> <span data-t="weekly"></span></label>
+      </div>
+      <div class="card" id="billCard">
+        <h3 style="margin-top:0" data-t="billingCard"></h3>
+        <label class="field"><span data-t="billingName"></span><input id="fBillName"></label>
+        <label class="field"><span data-t="billingVat"></span><input id="fBillVat"></label>
+        <label class="field"><span data-t="billingAddr"></span><input id="fBillAddr"></label>
+        <label class="field"><span data-t="billingEmail"></span><input id="fBillEmail" type="email"></label>
+      </div>
+      <p class="note" id="updateNote" hidden data-t="needsUpdate"></p>
       <div class="card">
         <h3 style="margin-top:0" data-t="deliveryTitle"></h3>
         <label class="row" style="font-weight:700"><input type="checkbox" id="fDelivers" style="width:auto;margin:0"> <span data-t="weDeliver"></span></label>
@@ -189,6 +236,19 @@
       <button id="saveShop" data-t="save"></button>
     </div>
 
+    <!-- Billing -->
+    <div id="tab-billing" hidden>
+      <p class="note" data-t="billingIntro"></p>
+      <div class="card" id="billAdmin" hidden>
+        <div class="row"><label class="field grow" style="margin:0"><span data-t="month"></span><input id="billMonth" type="month"></label>
+          <button class="small" id="makeStatements" data-t="makeStatements" style="align-self:flex-end"></button>
+          <button class="small secondary" id="billCsv" data-t="downloadCsv" style="align-self:flex-end"></button></div>
+      </div>
+      <div style="overflow-x:auto"><table class="prices" id="billTable"></table></div>
+      <div class="card" id="billPreview" hidden style="margin-top:12px"><div class="row"><b class="grow" id="billPrevTitle"></b><button class="small secondary" id="billPrevClose">×</button></div>
+        <iframe id="billFrame" style="width:100%;height:520px;border:0;background:#fff;border-radius:8px;margin-top:8px" sandbox></iframe></div>
+    </div>
+
     <!-- Insights (admin) -->
     <div id="tab-insights" hidden>
       <p class="note" data-t="insightsIntro"></p>
@@ -200,6 +260,8 @@
 
     <!-- Admin -->
     <div id="tab-admin" hidden>
+      <h2 data-t="health"></h2>
+      <div class="card" id="healthCard"></div>
       <h2 data-t="allShops"></h2>
       <div id="adminShops"></div>
       <h2 data-t="newShop"></h2>
@@ -216,14 +278,17 @@
   </section>
 </main>
 <div class="toast" id="toast" hidden role="status"></div>
+<div id="printArea" aria-hidden="true"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script src="config.js?v=2026-11-15-conn"></script>
-<script src="colors.js?v=2026-11-15-conn"></script>
+<script src="config.js?v=2026-11-17-ops"></script>
+<script src="colors.js?v=2026-11-17-ops"></script>
 <script>
 /* ---------- Text (English and Greek) ---------- */
 const TX = {
   en: {
+    repBad: 'Reported wrong matches', repBadDesc: 'Cans testers flagged as not matching (too light, too dark or wrong colour). Fix these colours first.',
+    st_expired: 'Expired', heldUntil: 'Held until {d}', byCustomer: 'cancelled by the customer', custYes: 'Customer confirmed they collected', custNo: 'Customer says they did NOT collect', printSlip: 'Print slip', slipTitle: 'Kromatch order', items: 'Cans', pickupBy: 'Collect by', takingOrders: 'Taking orders', pausedNow: 'Orders paused', pauseBtn: 'Pause orders', resumeBtn: 'Take orders again', pausePrompt: 'Message for customers (optional), e.g. “Back on Monday”', hoursCard: 'Opening hours & orders', closedDay: 'Closed', split: '+ afternoon', holdDays: 'Hold orders for', days: 'days', publicPhone: 'Shop phone (shown in the app)', about: 'Short description (shown in the app)', pausedLabel: 'Pause orders (customers can still see your shop)', pauseMsg: 'Message while paused', notifyCard: 'How you hear about orders', notifyPhone: 'Mobile for order alerts', notifySms: 'Text me (SMS) for new orders', notifyWa: 'WhatsApp me for new orders', weekly: 'Weekly summary email (Monday mornings)', billingCard: 'Billing details', billingName: 'Business name', billingVat: 'VAT number (ΑΦΜ)', billingAddr: 'Billing address', billingEmail: 'Email for statements (if different)', needsUpdate: 'Install the latest database update to use this.', holdsTitle: 'Price changes waiting for approval', holdsIntro: 'These prices in your shop system changed a lot (more than 30%), so Kromatch kept the old price. Approve if the new price is right.', approve: 'Approve', reject: 'Reject', wholeLine: 'all colours', tabBilling: 'Billing', billingIntro: 'What you owe Kromatch each month: orders collected × fee per can, after any free trial.', month: 'Month', makeStatements: 'Make statements', stNumber: 'Statement', orders: 'Orders', cans: 'Cans', fee: 'Fee', vat: 'VAT', status: 'Status', bs_draft: 'Draft', bs_sent: 'Sent', bs_paid: 'Paid', bs_disputed: 'Disputed', bs_waived: 'Waived', previewSt: 'Preview', emailShop: 'Email to shop', sentTo: 'Sent to {e}', noStatements: 'No statements yet.', downloadCsv: 'Download CSV', health: 'System health', lastJobs: 'Hourly jobs', lastJobsNone: 'Not run yet. Check the schedule (step 6 of the guide).', runJobs: 'Run jobs now', testEmail: 'Send me a test email', testPhone: 'Test text to (optional)', keysTitle: 'Notification keys', keysIntro: 'Phone notifications need a pair of keys. Make them here once (they’re created in your browser, not sent anywhere).', makeKeys: 'Make keys', keysPub: 'Public key: paste into config.js as vapidPublicKey', keysPriv: 'Private key: paste into Supabase secrets as VAPID_PRIVATE_KEY (and the public one as VAPID_PUBLIC_KEY). Don’t share it.', vatRate: 'VAT % (empty = automatic)', payMethod: 'Payment', pm_bank_transfer: 'Bank transfer', pm_direct_debit: 'Direct debit', pm_card: 'Card', payRef: 'Mandate / customer ID', syncIssues: 'Shop connections', ok: 'OK', pendingHolds: '{n} price change(s) waiting', jobsDone: 'Jobs ran.', slipFooter: 'Collected? Mark it “Picked up” in the dashboard with the customer’s code.',
     tabInsights: 'Insights', connTitle: 'Shop system', notConnected: 'Not connected', connError: 'last sync failed', never: 'never synced', justNow: 'synced just now', minAgo: 'synced {n} min ago', connIntro: 'Connect the shop’s own system once. Kromatch then updates prices and stock every 15 minutes, and sends orders into their system. The shop doesn’t have to do anything after this.', connType: 'Their system', csvName: 'Spreadsheet link', shopifyStore: 'Shopify store address', shopifyToken: 'Admin API access token', keySaved: 'Saved (leave empty to keep)', shopifyHelp: 'In Shopify: Settings → Apps and sales channels → Develop apps → Create an app, allow read_products, read_inventory and write_draft_orders, install it, then copy the Admin API access token.', wooUrl: 'Shop website address', wooKey: 'Consumer key', wooSecret: 'Consumer secret', wooHelp: 'In WordPress: WooCommerce → Settings → Advanced → REST API → Add key, permissions Read/Write, then copy both keys.', csvUrl: 'Spreadsheet link (CSV)', csvHelp: 'Google Sheets: File → Share → Publish to web → choose the sheet → Comma-separated values (.csv) → Publish, and paste the link. Columns: SKU or colour code, Brand/line, Colour name, Price, Stock.', optStock: 'Update stock automatically', optPrices: 'Update prices automatically', optPush: 'Send Kromatch orders into their system', webhook: 'Also send each order to this web address (optional)', testConn: 'Test connection', syncNow: 'Sync now', working: 'Working…', testResult: 'Connected: {p} products found, {r} recognised as Kromatch colours.', syncResult: 'Synced: {r} of {p} products recognised, {o} colours unavailable.', unmatchedTitle: 'Not recognised ({n})', unmatchedHelp: 'Paint products Kromatch couldn’t recognise. Choose the line and type the colour code to link them; leave caps and accessories as they are.', ignore: 'Not a Kromatch colour', connectedNote: 'Connected to {p}: prices and stock update automatically ({when}).', insightsIntro: 'Anonymous data about colour demand: what people match and plan, which cans they choose and what they order. No names, emails or precise locations. Download as spreadsheets for paint brands.', period: 'Period (days)', preview: 'Preview', download: 'Download spreadsheet', noData: 'No data yet for this period.', repDemand: 'Most-wanted colours', repDemandDesc: 'Colours people try to match or use in designs, by city, colour family and lightness.', repGaps: 'Gaps in the ranges', repGapsDesc: 'Colours people want where no can is a close match: ideas for new colours.', repChoice: 'Brand choice', repChoiceDesc: 'How often each line was offered as a match, and how often people picked it.', repTop: 'Top cans', repTopDesc: 'Cans added to carts and ordered, by city, line and colour.', repMurals: 'Mural planning', repMuralsDesc: 'Designs planned: number of colours, cans needed and wall size, by city.',
     forShops: 'for shops', logout: 'Log out', loginTitle: 'Shop login',
     loginIntro: 'Enter the email Kromatch invited. We’ll send you a login link, no password needed.',
@@ -252,6 +317,8 @@ const TX = {
     makeDemo: 'Make demo', switchOff: 'Switch off', created: 'Shop created. Invite its staff below.'
   },
   el: {
+    repBad: 'Αναφορές λάθος αντιστοίχισης', repBadDesc: 'Σπρέι που οι δοκιμαστές σημείωσαν ότι δεν ταιριάζουν (πιο ανοιχτό, πιο σκούρο ή λάθος χρώμα). Διόρθωσε πρώτα αυτά.',
+    st_expired: 'Έληξε', heldUntil: 'Κρατιέται έως {d}', byCustomer: 'ακυρώθηκε από τον πελάτη', custYes: 'Ο πελάτης επιβεβαίωσε ότι παρέλαβε', custNo: 'Ο πελάτης λέει ότι ΔΕΝ παρέλαβε', printSlip: 'Εκτύπωση', slipTitle: 'Παραγγελία Kromatch', items: 'Σπρέι', pickupBy: 'Παραλαβή έως', takingOrders: 'Δεχόμαστε παραγγελίες', pausedNow: 'Παραγγελίες σε παύση', pauseBtn: 'Παύση παραγγελιών', resumeBtn: 'Ξανά παραγγελίες', pausePrompt: 'Μήνυμα για τους πελάτες (προαιρετικό), π.χ. «Επιστρέφουμε τη Δευτέρα»', hoursCard: 'Ωράριο & παραγγελίες', closedDay: 'Κλειστά', split: '+ απόγευμα', holdDays: 'Κράτηση παραγγελιών για', days: 'ημέρες', publicPhone: 'Τηλέφωνο καταστήματος (φαίνεται στην εφαρμογή)', about: 'Σύντομη περιγραφή (φαίνεται στην εφαρμογή)', pausedLabel: 'Παύση παραγγελιών (οι πελάτες βλέπουν ακόμα το κατάστημα)', pauseMsg: 'Μήνυμα κατά την παύση', notifyCard: 'Πώς μαθαίνεις για τις παραγγελίες', notifyPhone: 'Κινητό για ειδοποιήσεις', notifySms: 'Στείλε μου SMS για νέες παραγγελίες', notifyWa: 'Στείλε μου WhatsApp για νέες παραγγελίες', weekly: 'Εβδομαδιαία σύνοψη με email (Δευτέρα πρωί)', billingCard: 'Στοιχεία τιμολόγησης', billingName: 'Επωνυμία', billingVat: 'ΑΦΜ', billingAddr: 'Διεύθυνση τιμολόγησης', billingEmail: 'Email για καταστάσεις (αν διαφέρει)', needsUpdate: 'Εγκατέστησε την τελευταία ενημέρωση βάσης για να το χρησιμοποιήσεις.', holdsTitle: 'Αλλαγές τιμών που περιμένουν έγκριση', holdsIntro: 'Αυτές οι τιμές στο σύστημά σου άλλαξαν πολύ (πάνω από 30%), οπότε το Kromatch κράτησε την παλιά τιμή. Έγκρινε αν η νέα τιμή είναι σωστή.', approve: 'Έγκριση', reject: 'Απόρριψη', wholeLine: 'όλα τα χρώματα', tabBilling: 'Χρεώσεις', billingIntro: 'Τι οφείλεις στο Kromatch κάθε μήνα: παραληφθείσες παραγγελίες × χρέωση ανά σπρέι, μετά τη δωρεάν περίοδο.', month: 'Μήνας', makeStatements: 'Δημιουργία καταστάσεων', stNumber: 'Κατάσταση', orders: 'Παραγγελίες', cans: 'Σπρέι', fee: 'Χρέωση', vat: 'ΦΠΑ', status: 'Κατάσταση', bs_draft: 'Πρόχειρη', bs_sent: 'Στάλθηκε', bs_paid: 'Πληρώθηκε', bs_disputed: 'Αμφισβητείται', bs_waived: 'Χαρίστηκε', previewSt: 'Προεπισκόπηση', emailShop: 'Αποστολή στο κατάστημα', sentTo: 'Στάλθηκε στο {e}', noStatements: 'Δεν υπάρχουν καταστάσεις ακόμα.', downloadCsv: 'Λήψη CSV', health: 'Κατάσταση συστήματος', lastJobs: 'Ωριαίες εργασίες', lastJobsNone: 'Δεν έχουν τρέξει ακόμα. Έλεγξε το πρόγραμμα (βήμα 6 του οδηγού).', runJobs: 'Εκτέλεση τώρα', testEmail: 'Στείλε μου δοκιμαστικό email', testPhone: 'Δοκιμαστικό SMS σε (προαιρετικό)', keysTitle: 'Κλειδιά ειδοποιήσεων', keysIntro: 'Οι ειδοποιήσεις στο κινητό χρειάζονται ένα ζεύγος κλειδιών. Φτιάξ’ τα εδώ μία φορά (δημιουργούνται στον browser σου, δεν στέλνονται πουθενά).', makeKeys: 'Δημιουργία κλειδιών', keysPub: 'Δημόσιο κλειδί: βάλ’ το στο config.js ως vapidPublicKey', keysPriv: 'Ιδιωτικό κλειδί: βάλ’ το στα Supabase secrets ως VAPID_PRIVATE_KEY (και το δημόσιο ως VAPID_PUBLIC_KEY). Μην το μοιραστείς.', vatRate: 'ΦΠΑ % (κενό = αυτόματα)', payMethod: 'Πληρωμή', pm_bank_transfer: 'Τραπεζική μεταφορά', pm_direct_debit: 'Πάγια εντολή', pm_card: 'Κάρτα', payRef: 'Αριθμός εντολής / πελάτη', syncIssues: 'Συνδέσεις καταστημάτων', ok: 'OK', pendingHolds: '{n} αλλαγή(ές) τιμής σε αναμονή', jobsDone: 'Οι εργασίες έτρεξαν.', slipFooter: 'Παραλήφθηκε; Σημείωσέ το «Παραλήφθηκε» στο dashboard με τον κωδικό του πελάτη.',
     tabInsights: 'Στοιχεία', connTitle: 'Σύστημα καταστήματος', notConnected: 'Μη συνδεδεμένο', connError: 'ο τελευταίος συγχρονισμός απέτυχε', never: 'δεν έχει συγχρονιστεί', justNow: 'συγχρονίστηκε μόλις τώρα', minAgo: 'συγχρονίστηκε πριν από {n} λεπτά', connIntro: 'Σύνδεσε μία φορά το σύστημα του καταστήματος. Το Kromatch ενημερώνει τιμές και απόθεμα κάθε 15 λεπτά και στέλνει τις παραγγελίες στο σύστημά τους. Το κατάστημα δεν χρειάζεται να κάνει τίποτα μετά.', connType: 'Το σύστημά τους', csvName: 'Σύνδεσμος υπολογιστικού φύλλου', shopifyStore: 'Διεύθυνση καταστήματος Shopify', shopifyToken: 'Admin API access token', keySaved: 'Αποθηκευμένο (άφησέ το κενό για να μείνει)', shopifyHelp: 'Στο Shopify: Settings → Apps and sales channels → Develop apps → Create an app, δώσε read_products, read_inventory και write_draft_orders, εγκατάστησέ το και αντίγραψε το Admin API access token.', wooUrl: 'Διεύθυνση ιστοσελίδας', wooKey: 'Consumer key', wooSecret: 'Consumer secret', wooHelp: 'Στο WordPress: WooCommerce → Settings → Advanced → REST API → Add key, δικαιώματα Read/Write, και αντίγραψε και τα δύο κλειδιά.', csvUrl: 'Σύνδεσμος υπολογιστικού φύλλου (CSV)', csvHelp: 'Google Sheets: Αρχείο → Κοινή χρήση → Δημοσίευση στον ιστό → επίλεξε το φύλλο → CSV → Δημοσίευση, και επικόλλησε τον σύνδεσμο. Στήλες: SKU ή κωδικός χρώματος, Μάρκα/σειρά, Όνομα χρώματος, Τιμή, Απόθεμα.', optStock: 'Αυτόματη ενημέρωση αποθέματος', optPrices: 'Αυτόματη ενημέρωση τιμών', optPush: 'Αποστολή παραγγελιών Kromatch στο σύστημά τους', webhook: 'Αποστολή κάθε παραγγελίας και σε αυτή τη διεύθυνση (προαιρετικό)', testConn: 'Έλεγχος σύνδεσης', syncNow: 'Συγχρονισμός τώρα', working: 'Γίνεται…', testResult: 'Συνδέθηκε: βρέθηκαν {p} προϊόντα, {r} αναγνωρίστηκαν ως χρώματα Kromatch.', syncResult: 'Συγχρονίστηκε: αναγνωρίστηκαν {r} από {p} προϊόντα, {o} χρώματα μη διαθέσιμα.', unmatchedTitle: 'Δεν αναγνωρίστηκαν ({n})', unmatchedHelp: 'Προϊόντα βαφής που δεν αναγνωρίστηκαν. Διάλεξε σειρά και γράψε τον κωδικό χρώματος για να συνδεθούν. Άφησε καπάκια και αξεσουάρ ως έχουν.', ignore: 'Δεν είναι χρώμα Kromatch', connectedNote: 'Συνδεδεμένο με {p}: τιμές και απόθεμα ενημερώνονται αυτόματα ({when}).', insightsIntro: 'Ανώνυμα στοιχεία ζήτησης χρωμάτων: τι ταιριάζουν και σχεδιάζουν οι χρήστες, ποια σπρέι διαλέγουν και τι παραγγέλνουν. Χωρίς ονόματα, email ή ακριβείς τοποθεσίες.', period: 'Περίοδος (ημέρες)', preview: 'Προεπισκόπηση', download: 'Λήψη υπολογιστικού φύλλου', noData: 'Δεν υπάρχουν ακόμα στοιχεία για αυτή την περίοδο.', repDemand: 'Τα πιο ζητούμενα χρώματα', repDemandDesc: 'Χρώματα που ταιριάζουν ή χρησιμοποιούν σε σχέδια, ανά πόλη, οικογένεια χρώματος και φωτεινότητα.', repGaps: 'Κενά στις σειρές', repGapsDesc: 'Χρώματα που ζητούνται χωρίς κοντινό σπρέι: ιδέες για νέα χρώματα.', repChoice: 'Επιλογή μάρκας', repChoiceDesc: 'Πόσο συχνά προτάθηκε κάθε σειρά και πόσο συχνά επιλέχθηκε.', repTop: 'Κορυφαία σπρέι', repTopDesc: 'Σπρέι που μπήκαν σε καλάθια και παραγγέλθηκαν, ανά πόλη, σειρά και χρώμα.', repMurals: 'Σχεδιασμός τοιχογραφιών', repMuralsDesc: 'Σχέδια: αριθμός χρωμάτων, σπρέι και μέγεθος τοίχου, ανά πόλη.',
     forShops: 'για καταστήματα', logout: 'Αποσύνδεση', loginTitle: 'Σύνδεση καταστήματος',
     loginIntro: 'Γράψε το email που προσκάλεσε το Kromatch. Θα σου στείλουμε σύνδεσμο σύνδεσης, χωρίς κωδικό.',
@@ -391,14 +458,17 @@ async function loadOrders() {
   if (error) { fail(error); return; }
   orders = data || [];
 }
-function renderAll() { renderOrders(); renderStock(); renderPrices(); renderShopForm(); if (isAdmin) renderAdmin(); }
+function renderAll() { renderOrders(); renderPauseBar(); renderStock(); renderPrices(); renderHolds(); renderShopForm(); if (isAdmin) renderAdmin(); if (!$('tab-billing').hidden) renderBilling(); }
+// Columns added by the "running the business" database update
+const hasOps = () => shop && ('orders_paused' in shop);
 
 /* ---------- Tabs ---------- */
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.tab').forEach(x => x.toggleAttribute('aria-current', x === b));
   document.querySelectorAll('.tab').forEach(x => { if (x === b) x.setAttribute('aria-current', 'page'); });
-  ['orders', 'stock', 'prices', 'shop', 'admin', 'insights'].forEach(n => { $('tab-' + n).hidden = n !== b.dataset.tab; });
+  ['orders', 'stock', 'prices', 'shop', 'billing', 'admin', 'insights'].forEach(n => { $('tab-' + n).hidden = n !== b.dataset.tab; });
   if (b.dataset.tab === 'insights') renderInsights();
+  if (b.dataset.tab === 'billing') renderBilling();
 }));
 $('refreshBtn').addEventListener('click', async () => { await loadOrders(); renderOrders(); });
 
@@ -415,6 +485,10 @@ function orderCard(o) {
       <span class="grow">${i.qty} × <b>${esc(i.line)}</b> ${esc(i.code || '')} ${esc(i.name)}</span>
       <span>${i.unit_price == null ? t('priceAtShop') : money(i.unit_price * i.qty, o.currency)}</span></li>`).join('')}</ul>
     <div class="row"><b class="grow">${t('total')}: ${totalTxt}</b>${o.fee_total != null ? `<span class="note">${t('yourFee')}: ${money(Number(o.fee_total), o.currency)}</span>` : ''}</div>
+    ${o.expires_at && (o.status === 'new' || o.status === 'ready') ? `<div class="note">${t('heldUntil', { d: esc(fmtDT(o.expires_at)) })}</div>` : ''}
+    ${o.status === 'cancelled' && o.cancelled_by === 'customer' ? `<div class="flag bad">${t('byCustomer')}</div>` : ''}
+    ${o.customer_collected === 'yes' && o.status === 'picked_up' ? `<div class="flag good">✓ ${t('custYes')}</div>` : ''}
+    ${o.customer_collected === 'no' && o.status === 'picked_up' ? `<div class="flag bad">⚠ ${t('custNo')}</div>` : ''}
     <div class="row acts" style="margin-top:10px"></div>`;
   const acts = d.querySelector('.acts');
   const btn = (label, cls, fn) => { const b = document.createElement('button'); b.textContent = label; b.className = cls; b.addEventListener('click', fn); acts.appendChild(b); };
@@ -425,6 +499,7 @@ function orderCard(o) {
     });
     btn(t('notAvail'), 'small danger', () => { if (confirm(t('confirmNotAvail'))) setStatus(o, 'not_available'); });
     btn(t('cancel'), 'small secondary', () => { if (confirm(t('confirmCancel'))) setStatus(o, 'cancelled'); });
+    btn(t('printSlip'), 'small secondary', () => printSlip(o));
   }
   return d;
 }
@@ -438,12 +513,43 @@ function renderOrders() {
   const n = orders.filter(o => o.status === 'new').length;
   $('newCount').textContent = n; $('newCount').hidden = !n;
 }
+const fmtDT = iso => new Date(iso).toLocaleString(lang === 'el' ? 'el-GR' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+// A small slip to print and tape to the bag of cans (works with normal and receipt printers)
+function printSlip(o) {
+  $('printArea').innerHTML = `<div class="slip"><h1>${esc(t('slipTitle'))} #${o.order_no}</h1><div>${esc(shop.name)}</div>
+    <div class="big">${esc(o.pickup_code)}</div>
+    <div><b>${esc(o.customer_name)}</b>${o.customer_phone ? ' · ' + esc(o.customer_phone) : ''}</div>
+    <div>${o.method === 'delivery' ? esc(t('delivery')) + ': ' + esc(o.delivery_address || '') : esc(t('pickup'))}</div>
+    ${o.expires_at ? `<div>${esc(t('pickupBy'))}: ${esc(fmtDT(o.expires_at))}</div>` : ''}
+    <h3 style="margin:10px 0 4px">${esc(t('items'))}</h3>
+    <table>${(o.order_items || []).map(i => `<tr><td><span class="box"></span>${i.qty} ×</td><td><b>${esc(i.line)}</b> ${esc(i.code || '')}<br>${esc(i.name)}</td></tr>`).join('')}</table>
+    <p><b>${esc(t('total'))}: ${money(Number(o.total), o.currency)}</b></p>
+    <p style="font-size:11px">${esc(t('slipFooter'))}</p></div>`;
+  window.print();
+}
 async function setStatus(o, status, code) {
   try {
     await callFn('update-order-status', { order_id: o.id, status, pickup_code: code });
     toast(t('st_' + status)); await loadOrders(); renderOrders();
   } catch (e) { toast(/match/i.test(e.message) ? t('codeWrong') : t('error', { m: e.message }), true); }
 }
+
+/* ---------- Pause orders (quick switch on the Orders tab) ---------- */
+function renderPauseBar() {
+  $('pauseBar').hidden = !hasOps() || !shop.is_live;
+  if ($('pauseBar').hidden) return;
+  $('pauseBar').className = 'pause-bar ' + (shop.orders_paused ? 'off' : 'on');
+  $('pauseText').textContent = shop.orders_paused ? `${t('pausedNow')}${shop.pause_message ? ': ' + shop.pause_message : ''}` : '● ' + t('takingOrders');
+  $('pauseToggle').textContent = shop.orders_paused ? t('resumeBtn') : t('pauseBtn');
+}
+$('pauseToggle').addEventListener('click', async () => {
+  const upd = shop.orders_paused ? { orders_paused: false } : { orders_paused: true, pause_message: (prompt(t('pausePrompt'), shop.pause_message || '') ?? null) };
+  if (upd.pause_message === null && !shop.orders_paused) return;          // cancelled the prompt
+  if (upd.pause_message !== undefined) upd.pause_message = String(upd.pause_message).trim().slice(0, 200) || null;
+  const { error } = await sb.from('shops').update(upd).eq('id', shop.id);
+  if (error) return fail(error);
+  Object.assign(shop, upd); renderPauseBar(); renderShopForm(); toast(t('saved'));
+});
 
 /* ---------- Stock ---------- */
 function renderStock() {
@@ -514,6 +620,28 @@ function renderPrices() {
     ot.appendChild(tr);
   });
 }
+async function renderHolds() {
+  if (!hasOps()) { $('holdsCard').hidden = true; return; }
+  const { data, error } = await sb.from('price_holds').select('*').eq('shop_id', shop.id).eq('status', 'pending').order('created_at');
+  const list = error ? [] : (data || []);
+  $('holdsCard').hidden = !list.length;
+  const box = $('holdsList'); box.innerHTML = '';
+  list.forEach(h => {
+    const c = h.code ? (LINES[h.line] || []).find(x => x.code === h.code) : null;
+    const row = document.createElement('div'); row.className = 'row'; row.style.margin = '8px 0';
+    row.innerHTML = `<span class="grow"><b>${esc(h.line)}</b> ${esc(h.code ? h.code + ' ' + (c ? c.name : '') : '(' + t('wholeLine') + ')')}<br>
+      <span class="muted">${h.old_price == null ? '–' : money(h.old_price, shop.currency)} → <b>${h.new_price == null ? '–' : money(h.new_price, shop.currency)}</b> (${esc(h.reason || '')})</span></span>
+      <button class="small ok">${t('approve')}</button><button class="small secondary no">${t('reject')}</button>`;
+    const decide = async yes => {
+      const { error } = await sb.rpc('decide_price_hold', { p_id: h.id, p_approve: yes });
+      if (error) return fail(error);
+      toast(t('saved')); await refreshShopData(); renderHolds();
+    };
+    row.querySelector('.ok').addEventListener('click', () => decide(true));
+    row.querySelector('.no').addEventListener('click', () => decide(false));
+    box.appendChild(row);
+  });
+}
 function fillOvCodes() { $('ovCodes').innerHTML = (LINES[$('ovLine').value] || []).map(c => `<option value="${esc(c.code)}">${esc(c.name)}</option>`).join(''); }
 $('ovLine').addEventListener('change', fillOvCodes);
 $('addLineBtn').addEventListener('click', async () => {
@@ -540,29 +668,111 @@ function renderShopForm() {
   $('fDelivers').checked = !!d; $('deliveryFields').hidden = !d;
   $('fFee').value = d ? (d.fee ?? '') : ''; $('fFreeOver').value = d ? (d.freeOver ?? '') : ''; $('fNote').value = d ? (d.note || '') : '';
   $('lockedNote').textContent = t('lockedNote') + ` (${shop.city} · ${shop.currency})`;
+  const ops = hasOps();
+  ['opsCard', 'notifyCard', 'billCard'].forEach(id => { $(id).hidden = !ops; });
+  $('updateNote').hidden = ops;
+  if (ops) {
+    $('fPaused').checked = !!shop.orders_paused; $('fPauseMsg').value = shop.pause_message || ''; $('fPauseMsgWrap').hidden = !shop.orders_paused;
+    $('fHold').innerHTML = [1, 2, 3, 4, 5, 7, 10, 14, 21, 30].map(n => `<option value="${n}">${n} ${t('days')}</option>`).join('');
+    $('fHold').value = String(shop.hold_days || 7);
+    $('fPubPhone').value = shop.phone || ''; $('fAbout').value = shop.about || '';
+    drawHours(shop.opening_hours);
+    $('fNotifyPhone').value = priv.notify_phone || ''; $('fSms').checked = !!priv.notify_sms; $('fWa').checked = !!priv.notify_whatsapp;
+    $('fWeekly').checked = priv.weekly_summary !== false;
+    $('fBillName').value = priv.billing_name || ''; $('fBillVat').value = priv.billing_vat_no || '';
+    $('fBillAddr').value = priv.billing_address || ''; $('fBillEmail').value = priv.billing_email || '';
+  }
   sb.from('shop_integrations').select('provider, last_sync_at, sync_stock, sync_prices').eq('shop_id', shop.id).maybeSingle().then(({ data }) => {
     $('connectedNote').hidden = !data;
     if (data) $('connectedNote').textContent = t('connectedNote', { p: ({ shopify: 'Shopify', woocommerce: 'WooCommerce', csv: t('csvName') })[data.provider], when: ago(data.last_sync_at) });
   });
 }
 $('fDelivers').addEventListener('change', e => { $('deliveryFields').hidden = !e.target.checked; });
+$('fPaused').addEventListener('change', e => { $('fPauseMsgWrap').hidden = !e.target.checked; });
+const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+const DAY_NAMES = { en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], el: ['Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σάβ', 'Κυρ'] };
+// One row per day: closed, or open–close, optionally a second (afternoon) slot for split hours
+function drawHours(h) {
+  const g = $('hoursGrid'); g.innerHTML = '';
+  DAYS.forEach((d, i) => {
+    const sl = (h && h[d]) || (h ? [] : (i < 5 ? [['10:00', '20:00']] : i === 5 ? [['10:00', '16:00']] : []));
+    g.insertAdjacentHTML('beforeend', `<div class="hday">
+      <div class="hrow"><b>${(DAY_NAMES[lang] || DAY_NAMES.en)[i]}</b>
+        <input type="time" class="h1a" data-d="${d}" value="${sl[0] ? sl[0][0] : '10:00'}">–<input type="time" class="h1b" data-d="${d}" value="${sl[0] ? sl[0][1] : '20:00'}">
+        <label><input type="checkbox" class="hc" data-d="${d}" style="width:auto;margin:0" ${sl.length ? '' : 'checked'}> ${t('closedDay')}</label>
+        <label><input type="checkbox" class="hs" data-d="${d}" style="width:auto;margin:0" ${sl[1] ? 'checked' : ''}> ${t('split')}</label></div>
+      <div class="hrow pm"><b></b><input type="time" class="h2a" data-d="${d}" value="${sl[1] ? sl[1][0] : '17:30'}">–<input type="time" class="h2b" data-d="${d}" value="${sl[1] ? sl[1][1] : '21:00'}"></div></div>`);
+  });
+  const sync = () => DAYS.forEach(d => {
+    const closed = g.querySelector(`.hc[data-d=${d}]`).checked, split = g.querySelector(`.hs[data-d=${d}]`).checked;
+    g.querySelectorAll(`.h1a[data-d=${d}], .h1b[data-d=${d}]`).forEach(x => { x.disabled = closed; });
+    g.querySelector(`.hs[data-d=${d}]`).disabled = closed;
+    g.querySelector(`.h2a[data-d=${d}]`).closest('.pm').hidden = closed || !split;
+    g.querySelectorAll(`.h1a[data-d=${d}], .h1b[data-d=${d}]`).forEach(x => { x.style.visibility = closed ? 'hidden' : ''; });
+  });
+  g.addEventListener('change', sync); sync();
+}
+function readHours() {
+  const g = $('hoursGrid'), out = {};
+  DAYS.forEach(d => {
+    if (g.querySelector(`.hc[data-d=${d}]`).checked) { out[d] = []; return; }
+    const v = c => g.querySelector(`.${c}[data-d=${d}]`).value;
+    out[d] = [[v('h1a'), v('h1b')]];
+    if (g.querySelector(`.hs[data-d=${d}]`).checked && v('h2a') && v('h2b')) out[d].push([v('h2a'), v('h2b')]);
+    out[d] = out[d].filter(([a, b]) => a && b && a < b);
+  });
+  return out;
+}
 $('saveShop').addEventListener('click', async () => {
   const delivery = $('fDelivers').checked ? { fee: Number($('fFee').value || 0), freeOver: $('fFreeOver').value === '' ? null : Number($('fFreeOver').value), note: $('fNote').value.trim() } : null;
   const upd = { name: $('fName').value.trim() || shop.name, area: $('fArea').value.trim() || null, address: $('fAddress').value.trim() || null,
                 website: $('fWebsite').value.trim() || null, maps_url: $('fMaps').value.trim() || null, delivery };
   const pupd = { order_email: $('fOrderEmail').value.trim() || null, contact_name: $('fContact').value.trim() || null, contact_phone: $('fPhone').value.trim() || null };
+  if (hasOps()) {
+    Object.assign(upd, { orders_paused: $('fPaused').checked, pause_message: $('fPauseMsg').value.trim() || null, hold_days: Number($('fHold').value) || 7,
+      phone: $('fPubPhone').value.trim() || null, about: $('fAbout').value.trim() || null, opening_hours: readHours() });
+    Object.assign(pupd, { notify_phone: $('fNotifyPhone').value.trim() || null, notify_sms: $('fSms').checked, notify_whatsapp: $('fWa').checked,
+      weekly_summary: $('fWeekly').checked, billing_name: $('fBillName').value.trim() || null, billing_vat_no: $('fBillVat').value.trim() || null,
+      billing_address: $('fBillAddr').value.trim() || null, billing_email: $('fBillEmail').value.trim() || null });
+  }
   const [a, b] = await Promise.all([
     sb.from('shops').update(upd).eq('id', shop.id),
     sb.from('shop_private').update(pupd).eq('shop_id', shop.id),
   ]);
   if (a.error || b.error) return fail(a.error || b.error);
-  Object.assign(shop, upd); Object.assign(priv, pupd); toast(t('saved'));
+  Object.assign(shop, upd); Object.assign(priv, pupd); toast(t('saved')); renderPauseBar();
   const opt = [...$('shopSel').options].find(o => o.value === shop.id); if (opt) opt.textContent = shop.name;
 });
 
 /* ---------- Admin ---------- */
+async function renderHealth() {
+  const box = $('healthCard');
+  const [jobs, integs, holds] = await Promise.all([
+    sb.from('job_runs').select('started_at, status, details').order('started_at', { ascending: false }).limit(1),
+    sb.from('shop_integrations').select('shop_id, provider, last_status, last_sync_at, last_message, shops(name)'),
+    sb.from('price_holds').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+  ]);
+  const job = !jobs.error && jobs.data && jobs.data[0];
+  const syncs = (integs.data || []).map(i => `<div>${esc(i.shops ? i.shops.name : '')}: ${i.last_status === 'error' ? `<b style="color:var(--warn)">${esc(i.last_message || 'error')}</b>` : esc(ago(i.last_sync_at))}</div>`).join('');
+  box.innerHTML = `<div><b>${t('lastJobs')}:</b> ${jobs.error ? t('needsUpdate') : job ? `${esc(ago(job.started_at))} · <span style="color:${job.status === 'ok' ? 'var(--ok)' : 'var(--warn)'}">${esc(job.status || '…')}</span>` : t('lastJobsNone')}</div>
+    ${syncs ? `<div style="margin-top:6px"><b>${t('syncIssues')}:</b>${syncs}</div>` : ''}
+    ${holds.count ? `<div style="margin-top:6px;color:var(--warn)"><b>${t('pendingHolds', { n: holds.count })}</b></div>` : ''}
+    <div class="row" style="margin-top:10px"><button class="small secondary" id="hRun">${t('runJobs')}</button>
+      <input id="hPhone" type="tel" placeholder="${t('testPhone')}" style="width:auto;flex:1;margin:0"><button class="small secondary" id="hTest">${t('testEmail')}</button></div>
+    <details style="margin-top:12px"><summary><b>${t('keysTitle')}</b></summary><p class="note">${t('keysIntro')}</p>
+      <button class="small secondary" id="hKeys">${t('makeKeys')}</button><div id="hKeyOut"></div></details>`;
+  $('hRun').addEventListener('click', async () => { try { await callFn('ops', { action: 'run' }); toast(t('jobsDone')); renderHealth(); await loadOrders(); renderOrders(); } catch (e) { fail(e); } });
+  $('hTest').addEventListener('click', async () => { try { const r = await callFn('ops', { action: 'test', phone: $('hPhone').value.trim() || undefined }); toast(`email: ${r.email ? '✓' : '✗'}${r.text == null ? '' : ' · text: ' + (r.text ? '✓' : '✗')}`, !r.email); } catch (e) { fail(e); } });
+  $('hKeys').addEventListener('click', async () => {
+    const b64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const kp = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+    const pub = b64(await crypto.subtle.exportKey('raw', kp.publicKey)), jwk = await crypto.subtle.exportKey('jwk', kp.privateKey);
+    $('hKeyOut').innerHTML = `<p class="note">${t('keysPub')}</p><div class="keybox">${pub}</div><p class="note">${t('keysPriv')}</p><div class="keybox">${jwk.d}</div>`;
+  });
+}
 async function renderAdmin() {
   $('nCity').innerHTML = CITIES.map(c => `<option>${c}</option>`).join('');
+  renderHealth();
   const { data: privs } = await sb.from('shop_private').select('*');
   const pmap = new Map((privs || []).map(p => [p.shop_id, p]));
   const box = $('adminShops'); box.innerHTML = '';
@@ -578,6 +788,10 @@ async function renderAdmin() {
         <label class="field grow"><span>${t('feePerCan')}</span><input class="fee" type="number" step="0.01" min="0" value="${p.fee_per_can ?? 0.4}"></label>
         <label class="field grow"><span>${t('trialEnds')}</span><input class="trial" type="date" value="${p.trial_ends || ''}"></label>
       </div>
+      ${'payment_method' in p ? `<div class="row">
+        <label class="field grow"><span>${t('vatRate')}</span><input class="vat" type="number" step="0.01" min="0" max="30" value="${p.vat_rate ?? ''}"></label>
+        <label class="field grow"><span>${t('payMethod')}</span><select class="pm">${['bank_transfer', 'direct_debit', 'card'].map(m => `<option value="${m}" ${p.payment_method === m ? 'selected' : ''}>${t('pm_' + m)}</option>`).join('')}</select></label>
+        <label class="field grow"><span>${t('payRef')}</span><input class="pref" value="${esc(p.payment_ref || '')}"></label></div>` : ''}
       <div class="row"><input class="inv grow" type="email" placeholder="${t('inviteEmail')}" style="margin:0"><button class="small secondary invb">${t('invite')}</button></div>
       <details class="conn" style="margin-top:12px"><summary><b>${t('connTitle')}</b> <span class="pill connstate"></span></summary><div class="connbody"></div></details>`;
     const set = async upd => { const { error } = await sb.from('shops').update(upd).eq('id', s.id); if (error) return fail(error); Object.assign(s, upd); renderAdmin(); toast(t('saved')); };
@@ -586,9 +800,12 @@ async function renderAdmin() {
     d.querySelector('.offb').addEventListener('click', () => set({ is_live: false, is_demo: false }));
     const savePriv = async () => {
       const upd = { fee_per_can: Number(d.querySelector('.fee').value || 0), trial_ends: d.querySelector('.trial').value || null };
+      if (d.querySelector('.pm')) Object.assign(upd, { vat_rate: d.querySelector('.vat').value === '' ? null : Number(d.querySelector('.vat').value),
+        payment_method: d.querySelector('.pm').value, payment_ref: d.querySelector('.pref').value.trim() || null });
       const { error } = await sb.from('shop_private').update(upd).eq('shop_id', s.id); if (error) fail(error); else toast(t('saved'));
     };
     d.querySelector('.fee').addEventListener('change', savePriv); d.querySelector('.trial').addEventListener('change', savePriv);
+    d.querySelectorAll('.vat, .pm, .pref').forEach(x => x.addEventListener('change', savePriv));
     d.querySelector('.invb').addEventListener('click', async () => {
       const email = d.querySelector('.inv').value.trim(); if (!email) return;
       try { const r = await callFn('invite-staff', { shop_id: s.id, email }); toast(r.invited ? t('invited') : t('linked')); d.querySelector('.inv').value = ''; }
@@ -687,6 +904,7 @@ const REPORTS = [
   ['insight_brand_choice', 'repChoice', 'repChoiceDesc'],
   ['insight_top_cans', 'repTop', 'repTopDesc'],
   ['insight_murals', 'repMurals', 'repMuralsDesc'],
+  ['insight_bad_matches', 'repBad', 'repBadDesc'],
 ];
 function toCSV(rows) {
   if (!rows.length) return '';
@@ -719,6 +937,54 @@ function renderInsights() {
     box.appendChild(c);
   });
 }
+/* ---------- Billing: monthly statements ---------- */
+let statements = [];
+async function renderBilling() {
+  $('billAdmin').hidden = !isAdmin;
+  if (isAdmin && !$('billMonth').value) { const d = new Date(); d.setMonth(d.getMonth() - 1); $('billMonth').value = d.toISOString().slice(0, 7); }
+  let q = sb.from('billing_statements').select('*, shops(name)').order('period', { ascending: false }).limit(200);
+  if (!isAdmin) q = q.eq('shop_id', shop.id);
+  const { data, error } = await q;
+  const tb = $('billTable');
+  if (error) { tb.innerHTML = `<tr><td class="muted">${t('needsUpdate')}</td></tr>`; return; }
+  statements = data || [];
+  if (!statements.length) { tb.innerHTML = `<tr><td class="muted">${t('noStatements')}</td></tr>`; return; }
+  const monthTxt = p => new Date(p + 'T12:00:00Z').toLocaleDateString(lang === 'el' ? 'el-GR' : 'en-GB', { month: 'short', year: 'numeric' });
+  tb.innerHTML = `<tr><td><b>${t('stNumber')}</b></td>${isAdmin ? `<td><b>${t('shop')}</b></td>` : ''}<td><b>${t('month')}</b></td><td><b>${t('cans')}</b></td><td><b>${t('total')}</b></td><td><b>${t('status')}</b></td>${isAdmin ? '<td></td>' : ''}</tr>`;
+  statements.forEach(st => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${esc(st.number)}</td>${isAdmin ? `<td>${esc(st.shops ? st.shops.name : '')}</td>` : ''}<td>${monthTxt(st.period)}</td><td>${st.cans}</td>
+      <td><b>${money(Number(st.total), st.currency)}</b>${Number(st.trial_free) ? `<div class="note">−${money(Number(st.trial_free), st.currency)}</div>` : ''}</td>
+      <td>${isAdmin ? `<select class="bst" style="margin:0;width:auto">${['draft', 'sent', 'paid', 'disputed', 'waived'].map(x => `<option value="${x}" ${x === st.status ? 'selected' : ''}>${t('bs_' + x)}</option>`).join('')}</select>` : t('bs_' + st.status)}</td>
+      ${isAdmin ? `<td><div class="row" style="flex-wrap:nowrap"><button class="small secondary pv">${t('previewSt')}</button><button class="small em">${t('emailShop')}</button></div></td>` : ''}`;
+    if (isAdmin) {
+      tr.querySelector('.bst').addEventListener('change', async e => {
+        const upd = { status: e.target.value }; if (upd.status === 'paid') upd.paid_at = new Date().toISOString();
+        const { error } = await sb.from('billing_statements').update(upd).eq('id', st.id); if (error) fail(error); else toast(t('saved'));
+      });
+      tr.querySelector('.pv').addEventListener('click', async () => {
+        try { const r = await callFn('ops', { action: 'preview_statement', id: st.id });
+          $('billPreview').hidden = false; $('billPrevTitle').textContent = st.number; $('billFrame').srcdoc = r.html; } catch (e) { fail(e); }
+      });
+      tr.querySelector('.em').addEventListener('click', async () => {
+        try { const r = await callFn('ops', { action: 'send_statement', id: st.id }); toast(t('sentTo', { e: r.sent_to })); renderBilling(); } catch (e) { fail(e); }
+      });
+    }
+    tb.appendChild(tr);
+  });
+}
+$('billPrevClose').addEventListener('click', () => { $('billPreview').hidden = true; });
+$('makeStatements').addEventListener('click', async () => {
+  try { await callFn('ops', { action: 'statements', month: $('billMonth').value }); toast(t('saved')); renderBilling(); } catch (e) { fail(e); }
+});
+$('billCsv').addEventListener('click', () => {
+  if (!statements.length) return toast(t('noStatements'));
+  const rows = statements.map(s => ({ number: s.number, shop: s.shops ? s.shops.name : '', month: s.period.slice(0, 7), orders: s.orders, cans: s.cans,
+    fee: s.fee, trial_free: s.trial_free, fee_due: s.fee_due, vat_rate: s.vat_rate, vat: s.vat, total: s.total, currency: s.currency, status: s.status, sent_at: s.sent_at || '', paid_at: s.paid_at || '' }));
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([toCSV(rows)], { type: 'text/csv' }));
+  a.download = 'kromatch-statements.csv'; document.body.appendChild(a); a.click(); a.remove();
+});
+
 $('createShop').addEventListener('click', async () => {
   const name = $('nName').value.trim(); if (!name) return;
   const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + Math.random().toString(36).slice(2, 6);
