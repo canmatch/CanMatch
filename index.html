@@ -208,6 +208,7 @@
   .back-btn span:first-child { font-size: 1.6rem; line-height: 0.8; }
   .welcome { z-index: 45; }
   #orderDetail { z-index: 32; }
+  #shopSheet { z-index: 34; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
   .od-steps { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 0; }
   .od-steps li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; padding-bottom: 14px; position: relative; }
   .od-steps li::before { content: ''; position: absolute; left: 13px; top: 24px; bottom: 0; width: 2px; background: var(--line); }
@@ -274,6 +275,14 @@
   .d-actions .qty button { width: 32px; height: 32px; }
   .d-actions .qty span { min-width: 1.6em; text-align: center; font-weight: 800; }
   .match.d-skip { opacity: 0.5; }
+  .fam-head { list-style: none; font-weight: 800; font-size: 0.85rem; color: var(--muted); margin: 14px 0 -4px; }
+  .shade-box { grid-column: 1 / 4; display: grid; gap: 6px; }
+  .shade-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: center; font-size: 0.85rem; }
+  .shade-row .sw { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); }
+  .shade-row small { color: var(--muted); display: block; }
+  .fb-row { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .link-btn.quiet { font-weight: 400; font-size: 0.8rem; color: var(--muted); }
+  .sh-chips { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 4px 0 8px; font-size: 0.9rem; }
   .alt-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; padding: 5px 10px; }
   .alt-chip .dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line); display: inline-block; }
   #designCanvas { touch-action: none; -webkit-user-select: none; user-select: none; display: block; max-width: 100%; max-height: 50vh; margin: 0 auto; }
@@ -302,6 +311,30 @@
   .how-step h3 { margin: 6px 0 2px; font-size: 1.02rem; }
   .how-step p { margin: 0; color: var(--muted); font-size: 0.9rem; }
   @media (prefers-reduced-motion: reduce) { .sample { transition: none; } }
+  .fav-btn { background: none; border: 0; font-size: 1.25rem; line-height: 1; cursor: pointer; color: var(--muted); padding: 4px; }
+  .fav-btn[aria-pressed="true"] { color: #C9961A; }
+  .search-in { width: 100%; font: inherit; font-size: 1rem; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+  .find-list { display: grid; gap: 8px; margin-top: 10px; }
+  .find-row { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center; background: var(--bg); border-radius: 12px; padding: 8px 10px; }
+  .find-row .sw { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); }
+  .find-row .nm { font-weight: 700; } .find-row .mt { color: var(--muted); font-size: 0.82rem; }
+  .find-row .acts { display: flex; align-items: center; gap: 4px; }
+  .find-row .add { font: inherit; font-size: 0.85rem; font-weight: 700; border-radius: 999px; border: 1px solid var(--ink); background: var(--ink); color: var(--bg); padding: 6px 12px; cursor: pointer; }
+  .find-row .add[aria-pressed="true"] { background: none; color: var(--ink); }
+  .find-row .add:disabled { opacity: 0.45; cursor: default; }
+  .shop-card { background: var(--surface); border-radius: 16px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--line); }
+  .shop-card.focus { border: 2px solid var(--ink); }
+  .shop-card h3 { margin: 0 0 4px; font-size: 1.15rem; }
+  .open-line { font-weight: 700; font-size: 0.9rem; } .open-line.open::before, .open-line.closed::before { content: '●'; margin-right: 6px; }
+  .open-line.open::before { color: #1E8E3E; } .open-line.closed::before { color: #B3261E; }
+  .hours { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 6px 0 10px; }
+  .hours td { padding: 3px 0; } .hours td:last-child { text-align: right; } .hours tr.today td { font-weight: 800; }
+  .sell-list { display: grid; gap: 4px; font-size: 0.9rem; margin: 6px 0 10px; } .sell-list div { display: flex; justify-content: space-between; gap: 10px; }
+  .paused-note { background: #FCE8E6; color: #8C1D18; border-radius: 10px; padding: 8px 10px; font-size: 0.88rem; font-weight: 700; margin: 8px 0; }
+  .buy-from .link-btn { padding: 0 0 0 6px; font-size: 0.85rem; }
+  .collect-box { background: var(--surface); border-radius: 14px; padding: 12px 14px; margin: 12px 0; }
+  .collect-box b { display: block; margin-bottom: 8px; }
+  .danger-link { color: #B3261E !important; }
 </style>
 </head>
 <body>
@@ -309,7 +342,8 @@
   <h1>Kromatch</h1>
   <p class="tagline" data-i18n="taglineMatch"></p>
   <div class="loc-bar"><span aria-hidden="true">📍</span><span id="locText"></span>
-    <button type="button" class="link-btn" id="locChange" data-i18n="locChange"></button></div>
+    <button type="button" class="link-btn" id="locChange" data-i18n="locChange"></button>
+    <button type="button" class="link-btn" id="seeShops" data-i18n="seeShops" hidden></button></div>
   <label class="shop-pick" id="shopPick" hidden><span data-i18n="shopLabel"></span>
     <select id="shopPickSel"></select></label>
   <div class="loc-suggest" id="locSuggest" hidden><span id="locSuggestText"></span>
@@ -331,6 +365,14 @@
       <p data-i18n="homeMatchDesc"></p>
       <label class="primary"><span data-i18n="takePhoto"></span><input id="file" type="file" accept="image/*"></label>
       <p class="note" data-i18n="shootHint"></p>
+    </div>
+    <div class="home-card" id="findCard">
+      <div class="home-ico" aria-hidden="true">🔎</div>
+      <h2 data-i18n="searchTitle"></h2>
+      <p data-i18n="searchDesc"></p>
+      <input id="colorSearch" class="search-in" type="search" autocomplete="off" enterkeyhint="search" data-i18n-ph="searchPh">
+      <div class="find-list" id="searchList" aria-live="polite"></div>
+      <div id="favBox" hidden><h3 class="sub-h" data-i18n="favTitle"></h3><div class="find-list" id="favList"></div></div>
     </div>
   </section>
 
@@ -419,10 +461,27 @@
     <ol class="od-steps" id="odSteps"></ol>
     <div class="code-box"><span data-i18n="pickupCodeL"></span><b id="odCode"></b></div>
     <p class="note" id="odHow"></p>
+    <p class="note" id="odHold" hidden></p>
+    <p class="open-line" id="odOpen" hidden></p>
+    <div class="collect-box" id="odCollect" hidden><b data-i18n="collectQ"></b>
+      <div class="row-actions" style="margin:0"><button type="button" class="primary small" id="odYes" data-i18n="yesGot"></button>
+        <button type="button" class="secondary small" id="odNo" data-i18n="noDidnt"></button></div></div>
     <div id="odItems"></div>
+    <button type="button" class="secondary buy" id="odNotify" hidden data-i18n="notifyMe" style="margin-top:12px"></button>
     <div class="sheet-actions"><button type="button" class="secondary" id="odRefresh" data-i18n="refreshStatus"></button>
-      <a class="secondary" id="odMaps" target="_blank" rel="noopener" hidden data-i18n="directions" style="text-decoration:none"></a></div>
+      <a class="secondary" id="odMaps" target="_blank" rel="noopener" hidden data-i18n="directions" style="text-decoration:none"></a>
+      <button type="button" class="secondary" id="odShopInfo" hidden data-i18n="shopInfo"></button></div>
     <p class="note" id="odMsg" aria-live="polite"></p>
+    <div class="sheet-actions"><button type="button" class="link-btn danger-link" id="odCancel" hidden data-i18n="cancelOrder"></button></div>
+  </div>
+</div>
+
+<!-- Shops in the city: hours, address, what they sell -->
+<div class="sheet" id="shopSheet" hidden role="dialog" aria-modal="true" aria-labelledby="shopSheetTitle">
+  <div class="sheet-inner">
+    <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
+    <h2 id="shopSheetTitle"></h2>
+    <div id="shopCards"></div>
   </div>
 </div>
 
@@ -502,6 +561,10 @@
       <div class="photo-wrap" id="designWrap" style="margin-top:10px"><canvas id="designCanvas"></canvas></div>
       <label class="field" id="coloursField"><span id="numColoursLabel"></span>
         <input id="numColours" type="range" min="2" max="40" value="8" style="padding:0"></label>
+      <div class="sh-chips" id="shadingChips"><b data-i18n="shadingL"></b>
+        <button type="button" class="chip" data-sh="flat" data-i18n="shFlat"></button>
+        <button type="button" class="chip" data-sh="some" data-i18n="shSome"></button>
+        <button type="button" class="chip" data-sh="full" data-i18n="shFull"></button></div>
       <button type="button" class="link-btn" id="autoColours" data-i18n="backToAuto" hidden></button>
       <p class="note" data-i18n="usingFilters"></p>
       <button type="button" class="secondary filter-btn" id="dFilterBtn" aria-expanded="false" style="margin:6px 0 4px" data-i18n="filters"></button>
@@ -636,6 +699,7 @@
         <label class="toggle consent"><input type="checkbox" id="coRemember" checked> <span data-i18n="rememberMe"></span></label>
         <p class="note"><a href="privacy.html" target="_blank" rel="noopener" data-i18n="privacyLink"></a></p>
       </div>
+      <div id="coTurnstile" style="margin:12px 0" hidden></div>
       <div id="coTotals" class="cart-total"></div>
       <p class="hint" id="coMsg" aria-live="polite"></p>
       <button type="button" class="primary buy" id="placeOrder" data-i18n="placeOrder"></button>
@@ -650,6 +714,10 @@
         <div class="code-box"><span data-i18n="pickupCodeL"></span><b id="rdCode"></b></div>
         <p id="rdInfo"></p>
         <p class="note" id="rdEmail"></p>
+        <p class="note" id="rdHold"></p>
+        <p class="note" id="rdClosed" hidden></p>
+        <button type="button" class="secondary buy" id="rdNotify" hidden data-i18n="notifyMe"></button>
+        <p class="note" id="rdNotifyMsg" aria-live="polite"></p>
       </div>
       <div id="orderBody"></div>
       <div class="acc-card" id="accPrompt" hidden>
@@ -663,9 +731,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-16-conn"></script>
-<script src="shops.js?v=2026-11-16-conn"></script>
-<script src="config.js?v=2026-11-16-conn"></script>
+<script src="colors.js?v=2026-11-18-acc"></script>
+<script src="shops.js?v=2026-11-18-acc"></script>
+<script src="config.js?v=2026-11-18-acc"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -726,6 +794,8 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    shadingL: 'Shading', shFlat: 'Flat', shSome: 'Some', shFull: 'Full detail', shadesOf: '{fam} · {n} shades', fam_red: 'Reds', fam_orange: 'Oranges', fam_yellow: 'Yellows', fam_green: 'Greens', fam_teal: 'Teals', fam_blue: 'Blues', fam_purple: 'Purples', fam_pink: 'Pinks', fam_brown: 'Browns', fam_grey: 'Greys', fam_black: 'Blacks', fam_white: 'Whites', shadeBtn: 'Highlight & shadow', highlightL: 'Highlight', shadowL: 'Shadow', noShade: 'No lighter or darker can in this line.', addedShade: 'Added 1 can.', wrongMatch: 'Wrong match?', fbTooLight: 'Can is too light', fbTooDark: 'Can is too dark', fbWrong: 'Wrong colour', fbThanks: 'Thanks! This helps fix the colour data.',
+    st_expired: 'Expired', odExpiredNote: 'The shop held your cans until {date}, then put them back. You haven’t paid anything.', odCancelledByYou: 'You cancelled this order. You haven’t paid anything.', holdUntil: 'Held for you until {date}', cancelOrder: 'Cancel order', cancelConfirm: 'Cancel this order? The shop will put the cans back on the shelf.', orderCancelled: 'Order cancelled. The shop has been told.', collectQ: 'Did you collect your cans?', yesGot: 'Yes, I got them', noDidnt: 'No, I didn’t', collectThanks: 'Thanks! That helps keep Kromatch fair.', notifyMe: '🔔 Tell me when it’s ready', notifyOn: 'Notifications are on. We’ll tell you when your cans are ready.', notifyFail: 'Notifications aren’t available on this phone. You’ll still get an email.', notifyIos: 'On iPhone, first add Kromatch to your Home Screen (Share › Add to Home Screen), then open it from there.', notifyDenied: 'Notifications are blocked for Kromatch. You can allow them in your phone’s settings.', shopPaused: 'Not taking orders right now', openNow: 'Open now', closedNow: 'Closed now', untilT: 'until {time}', opensT: 'opens {when}', hoursT: 'Opening hours', closedDay: 'Closed', today: 'today', dMon: 'Mon', dTue: 'Tue', dWed: 'Wed', dThu: 'Thu', dFri: 'Fri', dSat: 'Sat', dSun: 'Sun', shopInfo: 'Shop info', seeShops: 'See shops', shopsIn: 'Shops in {city}', whatSell: 'What they sell', perCan: '{price} per can', deliversT: 'Delivers: {fee}', pickupOnlyS: 'Pickup only', holdInfo: 'Orders are held for {n} days.', websiteL: 'Website', testShopNote: 'Test shop: orders here are only a demo.', closedOrderNote: '{shop} is closed right now. They’ll see your order when they open.', searchTitle: 'Know the colour?', searchDesc: 'Search by colour name or code, like “RV-241”, “Shock Blue” or “#ff3300”.', searchPh: 'Name, code or #hex', searchNone: 'Nothing found. Try part of the name or the code.', searchMore: '{n} more. Type more to narrow it down.', favTitle: '★ Your favourites', favAdd: 'Add to favourites', favRemove: 'Remove from favourites', botCheck: 'Please tick the box to show you’re not a robot.', notInStock: 'out of stock here',
     shareDataNote: 'Only which colours are matched and which cans are chosen, with your city. Never your name, email, photos or location. Used to improve Kromatch and, in summary form, shared with paint makers.',
     shareData: 'Share anonymous colour data to help improve Kromatch',
     dataTitle: 'Usage data',
@@ -931,6 +1001,8 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    shadingL: 'Σκίαση', shFlat: 'Επίπεδη', shSome: 'Λίγη', shFull: 'Πλήρης', shadesOf: '{fam} · {n} αποχρώσεις', fam_red: 'Κόκκινα', fam_orange: 'Πορτοκαλί', fam_yellow: 'Κίτρινα', fam_green: 'Πράσινα', fam_teal: 'Τιρκουάζ', fam_blue: 'Μπλε', fam_purple: 'Μωβ', fam_pink: 'Ροζ', fam_brown: 'Καφέ', fam_grey: 'Γκρι', fam_black: 'Μαύρα', fam_white: 'Λευκά', shadeBtn: 'Φως & σκιά', highlightL: 'Φως', shadowL: 'Σκιά', noShade: 'Δεν υπάρχει πιο ανοιχτό ή πιο σκούρο σπρέι σε αυτή τη σειρά.', addedShade: 'Προστέθηκε 1 σπρέι.', wrongMatch: 'Λάθος αντιστοίχιση;', fbTooLight: 'Το σπρέι είναι πιο ανοιχτό', fbTooDark: 'Το σπρέι είναι πιο σκούρο', fbWrong: 'Λάθος χρώμα', fbThanks: 'Ευχαριστούμε! Αυτό βοηθά να διορθωθούν τα χρώματα.',
+    st_expired: 'Έληξε', odExpiredNote: 'Το κατάστημα κράτησε τα σπρέι σου έως {date} και μετά τα επέστρεψε στο ράφι. Δεν πλήρωσες τίποτα.', odCancelledByYou: 'Ακύρωσες αυτή την παραγγελία. Δεν πλήρωσες τίποτα.', holdUntil: 'Κρατιέται για σένα έως {date}', cancelOrder: 'Ακύρωση παραγγελίας', cancelConfirm: 'Να ακυρωθεί η παραγγελία; Το κατάστημα θα επιστρέψει τα σπρέι στο ράφι.', orderCancelled: 'Η παραγγελία ακυρώθηκε. Το κατάστημα ενημερώθηκε.', collectQ: 'Παρέλαβες τα σπρέι σου;', yesGot: 'Ναι, τα πήρα', noDidnt: 'Όχι, δεν τα πήρα', collectThanks: 'Ευχαριστούμε! Έτσι το Kromatch μένει δίκαιο για όλους.', notifyMe: '🔔 Ειδοποίησέ με όταν είναι έτοιμη', notifyOn: 'Οι ειδοποιήσεις είναι ενεργές. Θα σου πούμε όταν τα σπρέι είναι έτοιμα.', notifyFail: 'Οι ειδοποιήσεις δεν υποστηρίζονται σε αυτό το κινητό. Θα λάβεις email.', notifyIos: 'Σε iPhone, πρόσθεσε πρώτα το Kromatch στην Αρχική οθόνη (Κοινοποίηση › Προσθήκη στην οθόνη Αφετηρίας) και άνοιξέ το από εκεί.', notifyDenied: 'Οι ειδοποιήσεις για το Kromatch είναι αποκλεισμένες. Μπορείς να τις επιτρέψεις στις ρυθμίσεις του κινητού.', shopPaused: 'Δεν δέχεται παραγγελίες αυτή τη στιγμή', openNow: 'Ανοιχτό τώρα', closedNow: 'Κλειστό τώρα', untilT: 'έως {time}', opensT: 'ανοίγει {when}', hoursT: 'Ωράριο', closedDay: 'Κλειστό', today: 'σήμερα', dMon: 'Δευ', dTue: 'Τρι', dWed: 'Τετ', dThu: 'Πεμ', dFri: 'Παρ', dSat: 'Σάβ', dSun: 'Κυρ', shopInfo: 'Πληροφορίες καταστήματος', seeShops: 'Καταστήματα', shopsIn: 'Καταστήματα: {city}', whatSell: 'Τι πουλάει', perCan: '{price} το σπρέι', deliversT: 'Αποστολή: {fee}', pickupOnlyS: 'Μόνο παραλαβή', holdInfo: 'Οι παραγγελίες κρατιούνται {n} ημέρες.', websiteL: 'Ιστότοπος', testShopNote: 'Δοκιμαστικό κατάστημα: οι παραγγελίες εδώ είναι μόνο επίδειξη.', closedOrderNote: 'Το {shop} είναι κλειστό τώρα. Θα δει την παραγγελία σου μόλις ανοίξει.', searchTitle: 'Ξέρεις το χρώμα;', searchDesc: 'Ψάξε με όνομα ή κωδικό χρώματος, π.χ. «RV-241», «Shock Blue» ή «#ff3300».', searchPh: 'Όνομα, κωδικός ή #hex', searchNone: 'Δεν βρέθηκε τίποτα. Δοκίμασε μέρος του ονόματος ή τον κωδικό.', searchMore: 'Άλλα {n}. Γράψε περισσότερα για να περιορίσεις.', favTitle: '★ Τα αγαπημένα σου', favAdd: 'Προσθήκη στα αγαπημένα', favRemove: 'Αφαίρεση από τα αγαπημένα', botCheck: 'Τσέκαρε το κουτάκι για να δείξεις ότι δεν είσαι ρομπότ.', notInStock: 'εξαντλημένο εδώ',
     shareDataNote: 'Μόνο ποια χρώματα ταιριάζονται και ποια σπρέι επιλέγονται, μαζί με την πόλη σου. Ποτέ όνομα, email, φωτογραφίες ή τοποθεσία. Χρησιμοποιούνται για τη βελτίωση του Kromatch και, συγκεντρωτικά, κοινοποιούνται σε κατασκευαστές χρωμάτων.',
     shareData: 'Κοινοποίηση ανώνυμων δεδομένων χρωμάτων για τη βελτίωση του Kromatch',
     dataTitle: 'Δεδομένα χρήσης',
@@ -1136,6 +1208,8 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    shadingL: 'Ombrage', shFlat: 'Aplat', shSome: 'Léger', shFull: 'Détaillé', shadesOf: '{fam} · {n} nuances', fam_red: 'Rouges', fam_orange: 'Oranges', fam_yellow: 'Jaunes', fam_green: 'Verts', fam_teal: 'Turquoises', fam_blue: 'Bleus', fam_purple: 'Violets', fam_pink: 'Roses', fam_brown: 'Bruns', fam_grey: 'Gris', fam_black: 'Noirs', fam_white: 'Blancs', shadeBtn: 'Lumière et ombre', highlightL: 'Lumière', shadowL: 'Ombre', noShade: 'Pas de bombe plus claire ou plus foncée dans cette gamme.', addedShade: '1 bombe ajoutée.', wrongMatch: 'Mauvaise correspondance ?', fbTooLight: 'La bombe est trop claire', fbTooDark: 'La bombe est trop foncée', fbWrong: 'Mauvaise couleur', fbThanks: 'Merci ! Cela aide à corriger les couleurs.',
+    st_expired: 'Expirée', odExpiredNote: 'Le magasin a gardé vos bombes jusqu’au {date}, puis les a remises en rayon. Vous n’avez rien payé.', odCancelledByYou: 'Vous avez annulé cette commande. Vous n’avez rien payé.', holdUntil: 'Réservée pour vous jusqu’au {date}', cancelOrder: 'Annuler la commande', cancelConfirm: 'Annuler cette commande ? Le magasin remettra les bombes en rayon.', orderCancelled: 'Commande annulée. Le magasin a été prévenu.', collectQ: 'Avez-vous récupéré vos bombes ?', yesGot: 'Oui, je les ai', noDidnt: 'Non, pas encore', collectThanks: 'Merci ! Cela aide à garder Kromatch équitable.', notifyMe: '🔔 Me prévenir quand c’est prêt', notifyOn: 'Notifications activées. Nous vous préviendrons quand vos bombes seront prêtes.', notifyFail: 'Les notifications ne sont pas disponibles sur ce téléphone. Vous recevrez quand même un e-mail.', notifyIos: 'Sur iPhone, ajoutez d’abord Kromatch à l’écran d’accueil (Partager › Sur l’écran d’accueil), puis ouvrez-le depuis là.', notifyDenied: 'Les notifications sont bloquées pour Kromatch. Vous pouvez les autoriser dans les réglages du téléphone.', shopPaused: 'Ne prend pas de commandes pour le moment', openNow: 'Ouvert', closedNow: 'Fermé', untilT: 'jusqu’à {time}', opensT: 'ouvre {when}', hoursT: 'Horaires', closedDay: 'Fermé', today: 'aujourd’hui', dMon: 'lun', dTue: 'mar', dWed: 'mer', dThu: 'jeu', dFri: 'ven', dSat: 'sam', dSun: 'dim', shopInfo: 'Infos magasin', seeShops: 'Voir les magasins', shopsIn: 'Magasins à {city}', whatSell: 'Ce qu’ils vendent', perCan: '{price} la bombe', deliversT: 'Livraison : {fee}', pickupOnlyS: 'Retrait seulement', holdInfo: 'Les commandes sont gardées {n} jours.', websiteL: 'Site web', testShopNote: 'Magasin test : les commandes ici sont une démo.', closedOrderNote: '{shop} est fermé en ce moment. Il verra votre commande à l’ouverture.', searchTitle: 'Vous connaissez la couleur ?', searchDesc: 'Cherchez par nom ou code de couleur, par ex. « RV-241 », « Shock Blue » ou « #ff3300 ».', searchPh: 'Nom, code ou #hex', searchNone: 'Rien trouvé. Essayez une partie du nom ou le code.', searchMore: '{n} de plus. Précisez pour affiner.', favTitle: '★ Vos favoris', favAdd: 'Ajouter aux favoris', favRemove: 'Retirer des favoris', botCheck: 'Cochez la case pour montrer que vous n’êtes pas un robot.', notInStock: 'en rupture ici',
     shareDataNote: 'Seulement les couleurs recherchées et les bombes choisies, avec votre ville. Jamais votre nom, e-mail, photos ou position. Utilisé pour améliorer Kromatch et, sous forme agrégée, partagé avec des fabricants de peinture.',
     shareData: 'Partager des données de couleurs anonymes pour améliorer Kromatch',
     dataTitle: 'Données d’utilisation',
@@ -2198,6 +2272,7 @@ const t = key => (T[lang] && T[lang][key] !== undefined) ? T[lang][key] : T.en[k
 const pct = n => lang === 'fr' ? `${n}\u202f%` : (lang === 'de' || lang === 'es') ? `${n}\u00a0%` : `${n}%`;
 
 function applyLang() {
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   $('otherCity').placeholder = t('otherCityPh');
@@ -2454,6 +2529,8 @@ function showResults() {
     const pt = priceTag(p.brand, p.code);
     if (pt) { const d = document.createElement('div'); d.className = 'price-tag' + (pt.na ? ' na' : ''); d.textContent = pt.text;
       li.querySelector('.meta').after(d); }
+    li.querySelector('.score').appendChild(favButton(p));
+    li.appendChild(feedbackLink(p, hex, 'match', m));
     li.querySelector('.score b').textContent = pct(m);
     li.querySelector('.score span').textContent = label(m);
     const btn = li.querySelector('.add');
@@ -2551,6 +2628,82 @@ BRANDS.forEach(brand => {
 
 syncHardwareChips();
 
+/* ---------- Favourite colours ---------- */
+store.favs = Array.isArray(store.favs) ? store.favs : [];
+const isFav = id => store.favs.includes(id);
+function toggleFav(p) {
+  store.favs = isFav(p.id) ? store.favs.filter(x => x !== p.id) : [p.id].concat(store.favs).slice(0, 200);
+  save(); renderFavs();
+  clearTimeout(window.__favT); window.__favT = setTimeout(() => { if (typeof authSession !== 'undefined' && authSession) syncProfile(); }, 800);
+}
+function favButton(p, onChange) {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'fav-btn';
+  const sync = () => { b.setAttribute('aria-pressed', isFav(p.id)); b.textContent = isFav(p.id) ? '★' : '☆'; b.setAttribute('aria-label', t(isFav(p.id) ? 'favRemove' : 'favAdd')); };
+  b.addEventListener('click', e => { e.stopPropagation(); toggleFav(p); sync(); if (onChange) onChange(); });
+  sync(); return b;
+}
+// A compact can row: swatch, name, line · code, price at the local shop, star and add
+function findRow(p) {
+  const row = document.createElement('div'); row.className = 'find-row';
+  row.innerHTML = `<div class="sw" style="background:${p.hex}"></div><div><div class="nm"></div><div class="mt"></div><div class="mt pr"></div></div><div class="acts"><button type="button" class="add"></button></div>`;
+  row.querySelector('.nm').textContent = paintName(p);
+  row.querySelector('.mt').textContent = [p.brand, p.code, p.finish !== 'solid' ? t(p.finish) : ''].filter(Boolean).join(' · ');
+  const pt = priceTag(p.brand, p.code); row.querySelector('.pr').textContent = pt ? pt.text : '';
+  row.querySelector('.acts').prepend(favButton(p));
+  const add = row.querySelector('.add');
+  const sync = () => { const on = inList(p.id); add.setAttribute('aria-pressed', on); add.textContent = on ? t('inList') : t('addToList'); };
+  add.addEventListener('click', () => { addToList(p, p.hex); sync(); logEvent('add', { line: p.brand, code: p.code, name: p.name, qty: 1, source: 'search' }); });
+  sync(); return row;
+}
+function renderFavs() {
+  const favs = store.favs.map(id => PAINTS.find(p => p.id === id)).filter(Boolean);
+  $('favBox').hidden = !favs.length;
+  const box = $('favList'); box.innerHTML = '';
+  favs.forEach(p => box.appendChild(findRow(p)));
+}
+/* ---------- Search by colour name or code ---------- */
+const normCode = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const normWords = v => String(v || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+function searchPaints(q) {
+  const qc = normCode(q), qw = normWords(q);
+  if (qc.length < 2 && qw.length < 2) return [];
+  const out = [];
+  PAINTS.forEach(p => {
+    if (isHardware(p)) return;
+    const c = normCode(p.code), n = normWords(p.name), nf = normWords(p.name_fr), lineWords = normWords(p.brand);
+    let score = 0;
+    if (qc && c && c === qc) score = 100;
+    else if (qc.length >= 2 && c && c.startsWith(qc)) score = 80;
+    else if (qc.length >= 3 && c && c.includes(qc)) score = 60;
+    else if (n === qw || nf === qw) score = 90;
+    else if ((` ${n} `).includes(` ${qw}`) || (nf && (` ${nf} `).includes(` ${qw}`))) score = 70;
+    else if (n.includes(qw) || (nf && nf.includes(qw))) score = 50;
+    else {
+      // "mtn 94 blue": every word must appear in the line or the name
+      const words = qw.split(' ').filter(Boolean);
+      if (words.length > 1 && words.every(w => (lineWords + ' ' + n + ' ' + nf + ' ' + c.toLowerCase()).includes(w))) score = 40;
+    }
+    if (score) out.push({ p, score: score + (shopFor(p.brand, p.code) ? 5 : 0) });
+  });
+  return out.sort((a, b) => b.score - a.score || paintName(a.p).localeCompare(paintName(b.p))).map(x => x.p);
+}
+let searchTimer = null;
+function runSearch() {
+  const q = $('colorSearch').value.trim(), box = $('searchList'); box.innerHTML = '';
+  if (!q) return;
+  const rgb = /^#?[0-9a-f]{6}$/i.test(q) && /[a-f#]/i.test(q) ? parseHex(q) : null;
+  if (rgb && q.startsWith('#')) {          // a hex colour: match it like a photo
+    lastSample = rgb; $('empty').hidden = true; $('viewer').hidden = true; showResults();
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+  }
+  const hits = searchPaints(q);
+  if (!hits.length) { box.innerHTML = `<p class="note" style="margin:4px 0">${t('searchNone')}</p>`; logEvent('search_gap', { q: q.slice(0, 40).toLowerCase() }); return; }
+  hits.slice(0, 12).forEach(p => box.appendChild(findRow(p)));
+  if (hits.length > 12) { const m = document.createElement('p'); m.className = 'note'; m.style.margin = '4px 0'; m.textContent = t('searchMore').replace('{n}', hits.length - 12); box.appendChild(m); }
+}
+$('colorSearch').addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(runSearch, 200); });
+$('colorSearch').addEventListener('keydown', e => { if (e.key === 'Enter') { clearTimeout(searchTimer); runSearch(); e.target.blur(); } });
+
 /* ---------- Shopping list (several colours, several cans) ---------- */
 function addToList(p, target) {
   const item = store.list.find(i => i.id === p.id);
@@ -2565,7 +2718,7 @@ function renderListCount() {
 }
 function updateGoCart() {
   const n = store.list.reduce((a, i) => a + i.qty, 0);
-  const onPage = $('listSheet').hidden && $('settingsSheet').hidden && $('orderSheet').hidden && $('accountSheet').hidden && $('setup').hidden && $('orderDetail').hidden;
+  const onPage = $('listSheet').hidden && $('settingsSheet').hidden && $('orderSheet').hidden && $('accountSheet').hidden && $('setup').hidden && $('orderDetail').hidden && $('shopSheet').hidden;
   const show = n > 0 && onPage;
   $('goCart').hidden = !show; document.body.classList.toggle('has-go-cart', show);
   $('goCart').textContent = '🛒 ' + t('goToCart').replace('{n}', n === 1 ? t('oneCan') : t('cans').replace('{n}', n));
@@ -2579,7 +2732,9 @@ const normShop = sh => {
   const priced = l => typeof prices[l] === 'number' || Object.keys(overrides).some(k => k.startsWith(l + '|'));
   return { id: sh.id || null, name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery || null,
     demo: sh.demo !== false && sh.is_demo !== false, live: !!(sh.live || sh.is_live), lines: (sh.lines || []).filter(priced), prices,
-    overrides, out: new Set(sh.out || []) };
+    overrides, out: new Set(sh.out || []),
+    paused: !!sh.paused, pauseMsg: sh.pauseMsg || '', hours: sh.hours || null, tz: sh.tz || null, holdDays: sh.holdDays || 7,
+    phone: sh.phone || '', address: sh.address || '', mapsUrl: sh.mapsUrl || '', website: sh.website || '', about: sh.about || '' };
 };
 let SHOPS_ALL = (store.shopsCache && store.shopsCache.length ? store.shopsCache : (window.SHOPS || [])).map(normShop);
 const allCityShops = () => SHOPS_ALL.filter(sh => sh.city && sh.city === store.city);
@@ -2588,6 +2743,7 @@ const shopKey = sh => sh.id || sh.name;
 const cityShops = () => { const all = allCityShops(); const pref = store.shopPref && all.find(sh => shopKey(sh) === store.shopPref); return pref ? [pref] : all; };
 function renderShopPick() {
   const all = allCityShops(), sel = $('shopPickSel');
+  $('seeShops').hidden = !all.length;
   $('shopPick').hidden = all.length < 2;
   if (store.shopPref && !all.some(sh => shopKey(sh) === store.shopPref)) { store.shopPref = ''; save(); }
   if (all.length < 2) return;
@@ -2605,8 +2761,11 @@ async function loadLiveShops() {
     if (!r.ok) throw new Error(r.status); return r.json();
   };
   try {
+    // Newer shop details (hours, pause...) if the database has them; the basic list otherwise
+    const shopsQ = get('shops?select=id,name,city,currency,delivery,is_demo,is_live,sort_order,address,maps_url,website,phone,about,orders_paused,pause_message,opening_hours,timezone,hold_days&order=sort_order')
+      .catch(() => get('shops?select=id,name,city,currency,delivery,is_demo,is_live,sort_order&order=sort_order'));
     const [shops, lines, outs, ovs] = await Promise.all([
-      get('shops?select=id,name,city,currency,delivery,is_demo,is_live,sort_order&order=sort_order'),
+      shopsQ,
       get('shop_lines?select=shop_id,line,price'), get('stock_out?select=shop_id,line,code'),
       get('price_overrides?select=shop_id,line,code,price')]);
     const list = shops.filter(sh => sh.is_demo || sh.is_live).map(sh => ({
@@ -2614,7 +2773,9 @@ async function loadLiveShops() {
       lines: lines.filter(l => l.shop_id === sh.id).map(l => l.line),
       prices: Object.fromEntries(lines.filter(l => l.shop_id === sh.id).map(l => [l.line, l.price == null ? null : Number(l.price)])),
       overrides: Object.fromEntries(ovs.filter(o => o.shop_id === sh.id).map(o => [o.line + '|' + o.code, Number(o.price)])),
-      out: outs.filter(o => o.shop_id === sh.id).map(o => o.line + '|' + o.code) }));
+      out: outs.filter(o => o.shop_id === sh.id).map(o => o.line + '|' + o.code),
+      paused: !!sh.orders_paused, pauseMsg: sh.pause_message || '', hours: sh.opening_hours || null, tz: sh.timezone || null,
+      holdDays: sh.hold_days || 7, phone: sh.phone || '', address: sh.address || '', mapsUrl: sh.maps_url || '', website: sh.website || '', about: sh.about || '' }));
     // a city with a live shop shows only real shops there
     const liveCities = new Set(list.filter(sh => sh.live && !sh.demo).map(sh => sh.city));
     const shown = list.filter(sh => !(sh.demo && liveCities.has(sh.city)));
@@ -2624,6 +2785,68 @@ async function loadLiveShops() {
   } catch (e) { console.warn('Live shops unavailable, using saved copy', e); return false; }
 }
 const itemName = i => (lang === 'fr' && i.name_fr) ? cap(i.name_fr) : cap(i.name);
+/* ---------- Opening hours ---------- */
+// hours = {"mon":[["10:00","20:00"]], ..., "sun":[]}; times are the shop's local time
+const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+const dayLabel = k => t('d' + k[0].toUpperCase() + k.slice(1));
+const hasHours = h => h && typeof h === 'object' && DAY_KEYS.some(k => Array.isArray(h[k]));
+function shopClock(tz) {
+  try {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: tz || undefined, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+      .formatToParts(new Date()).map(x => [x.type, x.value]));
+    return { day: p.weekday.toLowerCase().slice(0, 3), hm: `${p.hour}:${p.minute}` };
+  } catch (e) { const d = new Date(); return { day: DAY_KEYS[(d.getDay() + 6) % 7], hm: d.toTimeString().slice(0, 5) }; }
+}
+// { open: true/false, text } or null when the shop hasn't set its hours
+function openStatus(hours, tz) {
+  if (!hasHours(hours)) return null;
+  const { day, hm } = shopClock(tz), di = DAY_KEYS.indexOf(day);
+  const today = (hours[day] || []);
+  const now = today.find(([a, b]) => a <= hm && hm < b);
+  if (now) return { open: true, text: `${t('openNow')} · ${t('untilT').replace('{time}', now[1])}` };
+  for (let n = 0; n < 7; n++) {
+    const k = DAY_KEYS[(di + n) % 7];
+    const slot = (hours[k] || []).find(([a]) => n > 0 || a > hm);
+    if (slot) return { open: false, text: `${t('closedNow')} · ${t('opensT').replace('{when}', (n === 0 ? t('today') : dayLabel(k)) + ' ' + slot[0])}` };
+  }
+  return { open: false, text: t('closedNow') };
+}
+function hoursTable(hours, tz) {
+  const { day } = shopClock(tz);
+  return '<table class="hours">' + DAY_KEYS.map(k => {
+    const sl = hours[k] || [];
+    return `<tr class="${k === day ? 'today' : ''}"><td>${dayLabel(k)}</td><td>${sl.length ? sl.map(x => x.join('–')).join(', ') : t('closedDay')}</td></tr>`;
+  }).join('') + '</table>';
+}
+const escHtml = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function openShops(focusKey) {
+  const shops = allCityShops();
+  $('shopSheetTitle').textContent = t('shopsIn').replace('{city}', cityName(store.city));
+  const box = $('shopCards'); box.innerHTML = '';
+  shops.forEach(sh => {
+    const c = document.createElement('section'); c.className = 'shop-card' + (shopKey(sh) === focusKey ? ' focus' : '');
+    const st = openStatus(sh.hours, sh.tz);
+    const maps = sh.mapsUrl || (sh.address ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(sh.name + ' ' + sh.address) : '');
+    const sells = sh.lines.map(l => { const p = sh.prices[l]; return `<div><span>${escHtml(l)}</span><b>${typeof p === 'number' ? t('perCan').replace('{price}', money(p, sh.currency)) : ''}</b></div>`; }).join('');
+    const d = sh.delivery;
+    c.innerHTML = `<h3>${escHtml(sh.name)}</h3>
+      ${sh.demo ? `<p class="note" style="margin:4px 0">${t('testShopNote')}</p>` : ''}
+      ${sh.paused ? `<div class="paused-note">${t('shopPaused')}${sh.pauseMsg ? ': ' + escHtml(sh.pauseMsg) : ''}</div>` : ''}
+      ${st ? `<p class="open-line ${st.open ? 'open' : 'closed'}" style="margin:6px 0">${escHtml(st.text)}</p>` : ''}
+      ${sh.about ? `<p style="margin:6px 0">${escHtml(sh.about)}</p>` : ''}
+      ${sh.address ? `<p class="muted" style="margin:6px 0">${escHtml(sh.address)}</p>` : ''}
+      ${hasHours(sh.hours) ? `<h4 class="sub-h">${t('hoursT')}</h4>${hoursTable(sh.hours, sh.tz)}` : ''}
+      ${sells ? `<h4 class="sub-h">${t('whatSell')}</h4><div class="sell-list">${sells}</div>` : ''}
+      <p class="note" style="margin:6px 0">${d ? t('deliversT').replace('{fee}', money(d.fee, sh.currency)) : t('pickupOnlyS')}${sh.live && !sh.demo ? ' · ' + t('holdInfo').replace('{n}', sh.holdDays) : ''}</p>
+      <div class="row-actions">${maps ? `<a class="secondary small" target="_blank" rel="noopener" style="text-decoration:none" href="${escHtml(maps)}">${t('directions')}</a>` : ''}
+        ${sh.website ? `<a class="secondary small" target="_blank" rel="noopener" style="text-decoration:none" href="${escHtml(/^https?:/.test(sh.website) ? sh.website : 'https://' + sh.website)}">${t('websiteL')}</a>` : ''}
+        ${sh.phone && !sh.demo ? `<a class="secondary small" style="text-decoration:none" href="tel:${escHtml(sh.phone.replace(/[^\d+]/g, ''))}">${escHtml(sh.phone)}</a>` : ''}</div>`;
+    box.appendChild(c);
+  });
+  $('shopSheet').hidden = false; $('shopSheet').scrollTop = 0;
+  const f = box.querySelector('.focus'); if (f) setTimeout(() => f.scrollIntoView({ block: 'start' }), 0);
+}
+$('seeShops').addEventListener('click', () => openShops());
 const cansText = n => n === 1 ? t('oneCan') : t('cans').replace('{n}', n);
 function money(v, cur) {
   const loc = { en: cur === 'EUR' ? 'en-IE' : cur === 'GBP' ? 'en-GB' : 'en-US', el: 'el-GR', fr: cur === 'CAD' ? 'fr-CA' : 'fr-FR', de: 'de-DE',
@@ -2696,9 +2919,14 @@ function renderList() {
     const items = itemsFor(shop); if (!items.length) return;
     const g = document.createElement('section'); g.className = 'shop-group';
     const head = document.createElement('div'); head.className = 'buy-from';
-    head.innerHTML = '<div class="shop-meta" style="color:var(--muted);font-size:0.85rem"></div><b></b>';
+    head.innerHTML = '<div class="shop-meta" style="color:var(--muted);font-size:0.85rem"></div><b></b><button type="button" class="link-btn"></button>';
     head.querySelector('.shop-meta').textContent = t('buyingFrom'); head.querySelector('b').textContent = shop.name;
+    head.querySelector('.link-btn').textContent = t('shopInfo');
+    head.querySelector('.link-btn').addEventListener('click', () => openShops(shopKey(shop)));
     g.appendChild(head);
+    if (shop.paused) { const pn = document.createElement('div'); pn.className = 'paused-note'; pn.textContent = t('shopPaused') + (shop.pauseMsg ? ': ' + shop.pauseMsg : ''); g.appendChild(pn); }
+    const os = openStatus(shop.hours, shop.tz);
+    if (os) { const ol = document.createElement('p'); ol.className = 'open-line ' + (os.open ? 'open' : 'closed'); ol.style.margin = '0 0 8px'; ol.textContent = os.text; g.appendChild(ol); }
     items.forEach(i => g.appendChild(itemRow(i, shop)));
     const { sum, unpriced, count } = totalsFor(shop);
     const tot = document.createElement('div'); tot.className = 'cart-total';
@@ -2708,7 +2936,8 @@ function renderList() {
     tot.querySelector('small').textContent = [unpricedText(sum, unpriced), t('priceNote')].filter(Boolean).join(' · ');
     g.appendChild(tot);
     const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'primary buy';
-    btn.textContent = t('buyNow').replace('{shop}', shop.name);
+    btn.textContent = shop.paused ? t('shopPaused') : t('buyNow').replace('{shop}', shop.name);
+    btn.disabled = !!shop.paused;
     btn.addEventListener('click', () => openOrder(shop));
     g.appendChild(btn);
     box.appendChild(g);
@@ -2802,8 +3031,30 @@ function renderCheckout() {
   const u = unpricedText(tt.sum, tt.unpriced); if (u) { const sm = document.createElement('small'); sm.textContent = u; box.appendChild(sm); }
   $('coMsg').textContent = '';
 }
+// One key per checkout: if the order is sent twice (double tap, bad signal) the shop still gets it once
+let coKey = null, tsWidget = null, tsToken = '';
+const newKey = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }));
+function setupBotCheck(shop) {
+  const key = CFG && CFG.turnstileSiteKey;
+  $('coTurnstile').hidden = !key || shop.demo;
+  if (!key || shop.demo) return;
+  const draw = () => {
+    if (!window.turnstile) return;
+    if (tsWidget !== null) { try { window.turnstile.reset(tsWidget); } catch (e) {} tsToken = ''; return; }
+    tsWidget = window.turnstile.render('#coTurnstile', { sitekey: key, theme: 'auto', language: lang,
+      callback: tok => { tsToken = tok; }, 'expired-callback': () => { tsToken = ''; }, 'error-callback': () => { tsToken = ''; } });
+  };
+  if (window.turnstile) { draw(); return; }
+  if (!document.getElementById('tsScript')) {
+    const sc = document.createElement('script'); sc.id = 'tsScript'; sc.async = true;
+    sc.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; sc.onload = draw; document.head.appendChild(sc);
+  }
+}
 function openOrder(shop) {
-  coShop = shop; coMethod = 'pickup';
+  if (shop.paused) return;
+  coShop = shop; coMethod = 'pickup'; coKey = newKey();
+  setupBotCheck(shop);
   $('checkoutView').hidden = false; $('doneView').hidden = true;
   renderCheckout(); $('orderSheet').hidden = false; $('orderSheet').scrollTop = 0;
 }
@@ -2855,6 +3106,7 @@ async function placeRealOrder(shop) {
   if (!name) { $('coMsg').textContent = t('needName'); $('coName').focus(); return; }
   if (!phone && !email) { $('coMsg').textContent = t('needContact'); $('coPhone').focus(); return; }
   if (!$('coConsent').checked) { $('coMsg').textContent = t('needConsent'); return; }
+  if (CFG.turnstileSiteKey && !tsToken) { $('coMsg').textContent = t('botCheck'); return; }
   const remember = $('coRemember').checked;
   if (remember) { store.account = Object.assign(store.account || {}, { name, phone, email }); save(); if (authSession) syncProfile(); }
   const items = itemsFor(shop);
@@ -2862,18 +3114,20 @@ async function placeRealOrder(shop) {
   try {
     const r = await fetch(`${CFG.functionsUrl}/create-order`, { method: 'POST',
       headers: Object.assign({ 'Content-Type': 'application/json', apikey: CFG.supabaseKey }, authSession ? { Authorization: 'Bearer ' + authSession.access_token } : {}),
-      body: JSON.stringify({ shop_id: shop.id, method: coMethod, consent: true, lang,
+      body: JSON.stringify({ shop_id: shop.id, method: coMethod, consent: true, lang, idempotency_key: coKey, turnstile_token: tsToken || undefined,
         customer: { name, phone, email, address: coMethod === 'delivery' ? store.account.address : '' },
         items: items.map(i => ({ line: i.brand, code: i.code, name: i.name, hex: i.hex, target_hex: i.targets[i.targets.length - 1], qty: i.qty })) }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) {
-      $('coMsg').textContent = t('sendFail').replace('{m}', j.error || r.status);
+      $('coMsg').textContent = j.code === 'bot_check' ? t('botCheck') : t('sendFail').replace('{m}', j.error || r.status);
+      if (j.code === 'bot_check' || CFG.turnstileSiteKey) setupBotCheck(shop);    // a bot-check pass works once
       if (r.status === 409) { await loadLiveShops(); renderList(); }
       return;
     }
+    coKey = newKey();
     // Remember the order on this phone and take its cans out of the cart
     store.orders = [{ id: j.order_id, token: j.public_token, no: j.order_no, code: j.pickup_code, shop: shop.name, method: coMethod,
-                      currency: shop.currency, total: j.total, created: new Date().toISOString(), status: 'new',
+                      currency: shop.currency, total: j.total, created: new Date().toISOString(), status: 'new', expires: j.expires_at || null,
                       items: items.map(i => ({ line: i.brand, code: i.code, name: itemName(i), qty: i.qty, unit_price: priceOf(shop, i.brand, i.code) })) }]
                       .concat(store.orders || []).slice(0, 30);
     logEvent('order', { demo: false, method: coMethod, currency: shop.currency, items: items.map(i => ({ line: i.brand, code: i.code, name: i.name, qty: i.qty })) });
@@ -2884,6 +3138,11 @@ async function placeRealOrder(shop) {
     $('rdCode').textContent = j.pickup_code;
     $('rdInfo').textContent = coMethod === 'delivery' ? t('deliveryInfo') : t('showCode');
     $('rdEmail').textContent = email ? t('emailSentTo').replace('{email}', email) : '';
+    $('rdHold').textContent = j.expires_at ? t('holdUntil').replace('{date}', fmtWhen(j.expires_at)) : '';
+    const osDone = openStatus(shop.hours, shop.tz);
+    $('rdClosed').hidden = !(osDone && !osDone.open); $('rdClosed').textContent = t('closedOrderNote').replace('{shop}', shop.name);
+    $('rdNotify').hidden = !pushPossible(); $('rdNotifyMsg').textContent = '';
+    $('rdNotify').onclick = () => turnOnNotify(store.orders[0], $('rdNotify'), $('rdNotifyMsg'));
     if (!remember) { store.account = Object.assign(store.account || {}, { name: '', phone: '', email: '' }); save(); ['coName', 'coPhone', 'coEmail'].forEach(id => { $(id).value = ''; }); }
     $('accPrompt').hidden = !!authSession || !!store.accountPromptDone;
     const body = $('orderBody'); body.innerHTML = '';
@@ -2900,6 +3159,33 @@ async function placeRealOrder(shop) {
   } catch (e) {
     $('coMsg').textContent = t('sendFail').replace('{m}', t('offline'));
   } finally { btn.disabled = false; }
+}
+
+const fmtWhen = iso => { try { return new Date(iso).toLocaleString(lang, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return iso; } };
+/* ---------- Phone notifications ("your cans are ready") ---------- */
+const isIos = /iP(hone|ad|od)/.test(navigator.userAgent);
+const standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const pushPossible = () => !!(CFG && CFG.vapidPublicKey && 'serviceWorker' in navigator && (('PushManager' in window) || isIos));
+function b64ToBytes(b64) {
+  const pad = '='.repeat((4 - b64.length % 4) % 4), raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from(raw, c => c.charCodeAt(0));
+}
+async function turnOnNotify(o, btn, msgEl) {
+  if (!o || !o.token) return;
+  if (isIos && !standalone) { msgEl.textContent = t('notifyIos'); return; }
+  if (!('PushManager' in window) || !('Notification' in window)) { msgEl.textContent = t('notifyFail'); return; }
+  try {
+    btn.disabled = true;
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { msgEl.textContent = t('notifyDenied'); return; }
+    const reg = await navigator.serviceWorker.ready;
+    const sub = (await reg.pushManager.getSubscription()) || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(CFG.vapidPublicKey) });
+    const r = await fetch(`${CFG.functionsUrl}/order-action`, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey },
+      body: JSON.stringify({ action: 'notify', order_id: o.id, token: o.token, subscription: sub.toJSON() }) });
+    if (!r.ok) throw new Error(r.status);
+    o.notify = true; save(); btn.hidden = true; msgEl.textContent = t('notifyOn');
+  } catch (e) { msgEl.textContent = t('notifyFail'); }
+  finally { btn.disabled = false; }
 }
 
 /* ---------- My orders (saved on this phone) ---------- */
@@ -3001,10 +3287,21 @@ function loadDesignFile(file) {
 function extractPalette(data, k) {
   const d = data.data, n = data.width * data.height;
   const step = Math.max(1, Math.floor(n / 40000));
+  const W = data.width, H = data.height;
+  const labAt = (x, y) => { const o = (y * W + x) * 4; return rgbToLab(d[o], d[o + 1], d[o + 2]); };
+  const e = (a, b) => Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
+  // An edge pixel sits between two different colours (a blend from smoothing or compression).
+  // It isn't a paint colour, so it's left out. Thin lines are kept: there both sides match each other.
+  const between = (p, a, b) => { const ab = e(a, b); return ab > 12 && e(p, a) > 6 && e(p, b) > 6 && e(p, a) + e(p, b) < ab * 1.35; };
   const pts = [];
   for (let i = 0; i < n; i += step) {
     const o = i * 4; if (d[o + 3] < 128) continue;          // skip transparent background
-    pts.push(rgbToLab(d[o], d[o + 1], d[o + 2]));
+    const lab = rgbToLab(d[o], d[o + 1], d[o + 2]);
+    const x = i % W, y = (i - x) / W;
+    if (x >= 2 && x < W - 2 && y >= 2 && y < H - 2 &&
+        (between(lab, labAt(x - 2, y), labAt(x + 2, y)) || between(lab, labAt(x, y - 2), labAt(x, y + 2)) ||
+         between(lab, labAt(x - 2, y - 2), labAt(x + 2, y + 2)) || between(lab, labAt(x - 2, y + 2), labAt(x + 2, y - 2)))) continue;
+    pts.push(lab);
   }
   if (!pts.length) return [];
   k = Math.min(k, pts.length);
@@ -3036,27 +3333,85 @@ function extractPalette(data, k) {
 }
 // Detect how many distinct colours a design really has: start with many groups, then merge
 // groups that look the same and fold in tiny groups (anti-aliased edges, specks).
+const SHADING = { flat: 15, some: 8, full: 4.5 };   // how different two shades must be to count as separate cans
+let shading = (store.shading in SHADING) ? store.shading : 'some';
 function detectPalette(data) {
   let cl = extractPalette(data, 40).map(c => ({ lab: c.lab.slice(), share: c.share }));
-  const MERGE = 8, MIN_SHARE = 0.006;
+  const MERGE = SHADING[shading], MIN_SHARE = 0.006, DETAIL = 15, SPECK = 0.0008;
   const mergeInto = (a, b) => { const w = a.share + b.share;
     a.lab = a.lab.map((v, i) => (v * a.share + b.lab[i] * b.share) / w); a.share = w; };
   for (;;) {
     let bi = -1, bj = -1, bd = Infinity;
     for (let i = 0; i < cl.length; i++) for (let j = i + 1; j < cl.length; j++) {
-      const d = deltaE2000(cl[i].lab, cl[j].lab); if (d < bd) { bd = d; bi = i; bj = j; } }
+      let d = deltaE2000(cl[i].lab, cl[j].lab);
+      if (cl[i].lab[0] < 20 && cl[j].lab[0] < 20) d *= 0.4;   // near-blacks: any tint is invisible on a wall
+      if (d < bd) { bd = d; bi = i; bj = j; } }
     if (bd >= MERGE || bi < 0) break;
     mergeInto(cl[bi], cl[bj]); cl.splice(bj, 1);
   }
   cl.sort((a, b) => b.share - a.share);
   for (let i = cl.length - 1; i > 0; i--) {
     if (cl[i].share >= MIN_SHARE || cl.length <= 2) continue;
-    // fold a tiny group into its closest neighbour (its share counts toward that colour's cans)
+    // A small group that looks like a neighbour is folded into it (its share counts toward that colour's cans).
+    // A small group that is clearly its own colour (white highlights, a small accent) is kept: it still needs a can.
     let bj = 0, bd = Infinity;
     for (let j = 0; j < cl.length; j++) if (j !== i) { const d = deltaE2000(cl[i].lab, cl[j].lab); if (d < bd) { bd = d; bj = j; } }
+    if (bd >= DETAIL && cl[i].share >= SPECK) continue;
     cl[bj].share += cl[i].share; cl.splice(i, 1);
   }
   return cl.sort((a, b) => b.share - a.share);
+}
+// Put shades of the same colour together (light to dark), the biggest colour family first
+function groupFamilies(list) {
+  list.forEach(c => { c.family = colourFamily(c.lab).family; });
+  const tot = {}; list.forEach(c => { tot[c.family] = (tot[c.family] || 0) + c.share; });
+  return list.slice().sort((a, b) => (tot[b.family] - tot[a.family]) || (a.family < b.family ? -1 : a.family > b.family ? 1 : 0) || (b.lab[0] - a.lab[0]));
+}
+function renderShadingChips() {
+  document.querySelectorAll('#shadingChips .chip').forEach(c => c.setAttribute('aria-pressed', autoColours && c.dataset.sh === shading ? 'true' : 'false'));
+}
+document.querySelectorAll('#shadingChips .chip').forEach(c => c.addEventListener('click', () => {
+  shading = c.dataset.sh; store.shading = shading; save(); autoColours = true; runDesign();
+}));
+// Lighter and darker cans in the same line, for highlights and shadows
+const lch = lab => { const C = Math.hypot(lab[1], lab[2]); let h = Math.atan2(lab[2], lab[1]) * 180 / Math.PI; if (h < 0) h += 360; return [lab[0], C, h]; };
+function shadeFor(p, dir) {
+  const [L, C, h] = lch(p.lab);
+  let best = null, bs = Infinity;
+  PAINTS.forEach(q => {
+    if (q.brand !== p.brand || q.id === p.id || q.finish !== p.finish) return;
+    const [L2, C2, h2] = lch(q.lab), dL = (L2 - L) * dir;
+    if (dL < 6 || dL > 32) return;
+    let dh = Math.abs(h2 - h); if (dh > 180) dh = 360 - dh;
+    if (C < 8 ? C2 > 12 : (dh > 28 || C2 < C * 0.35)) return;          // greys stay grey; colours keep their hue
+    const score = Math.abs(dL - 15) + (C < 8 ? C2 : dh * 0.7) + Math.abs(C2 - C) * 0.15 + (shopFor(q.brand, q.code) ? 0 : 6);
+    if (score < bs) { bs = score; best = q; }
+  });
+  return best;
+}
+/* ---------- "Wrong match?" feedback (always sent when someone taps it; no personal data) ---------- */
+function sendFeedback(data) {
+  if (!CFG) return;
+  fetch(`${CFG.supabaseUrl}/rest/v1/events`, { method: 'POST', keepalive: true,
+    headers: { apikey: CFG.supabaseKey, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify([{ kind: 'feedback', city: store.city || null, lang, session: SESSION, data }]) }).catch(() => {});
+}
+function feedbackLink(p, targetHex, source, pctVal) {
+  const wrap = document.createElement('div'); wrap.className = 'fb-row';
+  const open = document.createElement('button'); open.type = 'button'; open.className = 'link-btn quiet'; open.textContent = t('wrongMatch');
+  wrap.appendChild(open);
+  open.addEventListener('click', () => {
+    open.hidden = true;
+    [['too_light', 'fbTooLight'], ['too_dark', 'fbTooDark'], ['wrong_colour', 'fbWrong']].forEach(([issue, key]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip alt-chip'; b.textContent = t(key);
+      b.addEventListener('click', () => {
+        sendFeedback({ issue, line: p.brand, code: p.code || p.name, can_hex: p.hex, target_hex: targetHex, pct: pctVal, source });
+        wrap.innerHTML = ''; const n = document.createElement('span'); n.className = 'note'; n.style.margin = '0'; n.textContent = t('fbThanks'); wrap.appendChild(n);
+      });
+      wrap.appendChild(b);
+    });
+  });
+  return wrap;
 }
 function labToHex(lab) {
   // Lab -> sRGB (D65), for showing the design's own colours
@@ -3092,6 +3447,8 @@ function runDesign() {
   setDesignMode(false);
   if (autoColours) { clusters = detectPalette(designOrig); $('numColours').value = clusters.length; }
   else clusters = extractPalette(designOrig, +$('numColours').value);
+  clusters = groupFamilies(clusters);
+  renderShadingChips();
   updateColoursLabel();
   const cands = candidatePaints();
   clusters.forEach(c => {
@@ -3162,7 +3519,12 @@ function renderPalette() {
   $('coverageNote').textContent = t('coverageNote').replace('{c}', COVERAGE_M2);
   const totals = {};  // per currency
   let totalCans = 0;
+  const famCount = {}; clusters.forEach(c => { if (c.family) famCount[c.family] = (famCount[c.family] || 0) + 1; });
   clusters.forEach((c, i) => {
+    if (c.family && famCount[c.family] > 1 && (i === 0 || clusters[i - 1].family !== c.family)) {
+      const h = document.createElement('li'); h.className = 'fam-head';
+      h.textContent = t('shadesOf').replace('{fam}', t('fam_' + c.family)).replace('{n}', famCount[c.family]); ol.appendChild(h);
+    }
     const li = document.createElement('li'); li.className = 'match';
     const opt = c.options[picks[i]];
     if (!opt) { li.textContent = t('noMatches'); ol.appendChild(li); return; }
@@ -3177,7 +3539,8 @@ function renderPalette() {
         <div class="qty"><button type="button" class="minus" aria-label="−">−</button><span></span><button type="button" class="plus" aria-label="+">+</button></div>
         <button type="button" class="add add-one"></button>
         <button type="button" class="link-btn more-btn"></button>
-      </div><div class="alts" hidden></div>`;
+        <button type="button" class="link-btn shade-btn"></button>
+      </div><div class="alts" hidden></div><div class="shade-box" hidden></div>`;
     li.querySelector('.name').textContent = paintName(p);
     li.querySelector('.meta').textContent = [p.brand, codesMode ? c.hex : t('ofDesign').replace('{p}', Math.max(1, Math.round(c.share * 100)))].filter(Boolean).join(', ');
     li.querySelector('.price-tag').textContent = [shop && typeof price === 'number' ? (qty > 1 ? `${money(price * qty, shop.currency)} (${money(price, shop.currency)} ${t('each')})` : money(price, shop.currency)) : (shop ? t('priceAtShop') : ''),
@@ -3189,6 +3552,22 @@ function renderPalette() {
     one.addEventListener('click', () => { for (let k = 0; k < qty; k++) addToList(p, c.hex); logEvent('add', { line: p.brand, code: p.code, name: p.name, qty, source: 'design' }); $('designMsg').textContent = (qty === 1 ? t('addedOne') : t('addedAll').replace('{n}', qty)); });
     if (qty === 0) li.classList.add('d-skip');
     li.querySelector('.score b').textContent = pct(m); li.querySelector('.score span').textContent = label(m);
+    const sbtn = li.querySelector('.shade-btn'), sbox = li.querySelector('.shade-box');
+    sbtn.textContent = t('shadeBtn');
+    sbtn.addEventListener('click', () => {
+      sbox.hidden = !sbox.hidden; if (sbox.hidden || sbox.childElementCount) return;
+      const rows = [['highlightL', shadeFor(p, 1)], ['shadowL', shadeFor(p, -1)]].filter(x => x[1]);
+      if (!rows.length) { sbox.innerHTML = `<p class="note" style="margin:0">${t('noShade')}</p>`; return; }
+      rows.forEach(([key, q]) => {
+        const r = document.createElement('div'); r.className = 'shade-row';
+        r.innerHTML = `<span class="sw" style="background:${q.hex}"></span><div><b></b><small></small></div><button type="button" class="chip alt-chip">+ 1</button>`;
+        r.querySelector('b').textContent = `${t(key)}: ${paintName(q)}`;
+        const pt = priceTag(q.brand, q.code); r.querySelector('small').textContent = [q.brand, q.code, pt ? pt.text : ''].filter(Boolean).join(' · ');
+        r.querySelector('button').addEventListener('click', () => { addToList(q, q.hex); logEvent('add', { line: q.brand, code: q.code, name: q.name, qty: 1, source: 'shade' }); $('designMsg').textContent = t('addedShade'); });
+        sbox.appendChild(r);
+      });
+    });
+    li.appendChild(feedbackLink(p, c.hex, 'design', m));
     const btn = li.querySelector('.more-btn'), alts = li.querySelector('.alts');
     btn.textContent = t('otherOptions');
     btn.addEventListener('click', () => { alts.hidden = !alts.hidden; });
@@ -3372,13 +3751,15 @@ $('accDelete').addEventListener('click', async () => {
     renderSettings(); renderMyDesigns(); $('setMsg').textContent = t('accDeleted');
   } catch (e) { $('setMsg').textContent = t('offline'); }
 });
+let favSync = true;   // switched off if the database doesn't have favourites yet
 async function syncProfile() {
   if (!authSession) return;
   const a = store.account || {};
   await fetch(`${CFG.supabaseUrl}/rest/v1/profiles?on_conflict=user_id`, { method: 'POST',
     headers: Object.assign(restAuth(), { Prefer: 'resolution=merge-duplicates' }),
-    body: JSON.stringify({ user_id: authSession.user.id, name: a.name || null, phone: a.phone || null,
-      email: a.email || authSession.user.email || null, address: a.address || null }) }).catch(() => {});
+    body: JSON.stringify(Object.assign({ user_id: authSession.user.id, name: a.name || null, phone: a.phone || null,
+      email: a.email || authSession.user.email || null, address: a.address || null }, favSync ? { favourites: store.favs } : {})) })
+    .then(r => { if (!r.ok && favSync) { favSync = false; syncProfile(); } }).catch(() => {});
 }
 async function afterSignIn() {
   renderAccountSection();
@@ -3391,6 +3772,7 @@ async function afterSignIn() {
     const local = store.account || {};
     store.account = Object.assign({}, local, prof ? { name: prof.name || local.name, phone: prof.phone || local.phone,
       email: prof.email || local.email || authSession.user.email, address: prof.address || local.address } : { email: local.email || authSession.user.email });
+    if (prof && Array.isArray(prof.favourites)) { store.favs = [...new Set(store.favs.concat(prof.favourites))].slice(0, 200); renderFavs(); }
     save(); await syncProfile();
   } catch (e) {}
   // Move orders made on this phone into the account
@@ -3403,13 +3785,14 @@ async function afterSignIn() {
 async function loadAccountOrders() {
   if (!authSession) return;
   try {
-    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/orders?select=id,order_no,status,pickup_code,created_at,shops(name)&order=created_at.desc&limit=30`, { headers: restAuth() });
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/orders?select=id,order_no,status,pickup_code,created_at,public_token,shops(name)&order=created_at.desc&limit=30`, { headers: restAuth() });
     if (!r.ok) return;
     const rows = await r.json();
     const mine = store.orders || [];
     rows.forEach(x => {
       const o = mine.find(m => m.id === x.id);
       const v = { id: x.id, no: x.order_no, code: x.pickup_code, shop: x.shops ? x.shops.name : '', status: x.status, created: x.created_at };
+      if (x.public_token) v.token = x.public_token;
       if (o) Object.assign(o, v); else mine.push(v);
     });
     mine.sort((a, b) => String(b.created || '').localeCompare(String(a.created || '')));
@@ -3490,7 +3873,22 @@ function renderOrderDetail(o, full) {
   $('odHow').textContent = method === 'delivery' ? t('deliveryInfo') : t('showCode');
   // progress line
   const st = (full && full.status) || o.status || 'new';
-  const failed = st === 'not_available' || st === 'cancelled';
+  const failed = st === 'not_available' || st === 'cancelled' || st === 'expired';
+  const expires = (full && full.expires_at) || o.expires;
+  $('odHold').hidden = !(expires && (st === 'new' || st === 'ready'));
+  if (expires) $('odHold').textContent = t('holdUntil').replace('{date}', fmtWhen(expires));
+  const os = shopInfo ? openStatus(shopInfo.opening_hours, shopInfo.timezone) : null;
+  $('odOpen').hidden = !(os && (st === 'new' || st === 'ready'));
+  if (os) { $('odOpen').textContent = os.text; $('odOpen').className = 'open-line ' + (os.open ? 'open' : 'closed'); }
+  const open = st === 'new' || st === 'ready';
+  // Cancel, notifications and "Did you collect?" need the newer server functions; until they're installed, hide them
+  const newServer = !!(full && 'expires_at' in full);
+  $('odCancel').hidden = !(newServer && open && o.token && !o.demo);
+  $('odNotify').hidden = !(newServer && open && o.token && !o.demo && !o.notify && pushPossible());
+  const answered = (full && full.customer_collected) || o.collected;
+  $('odCollect').hidden = !(newServer && st === 'picked_up' && o.token && !answered && method === 'pickup');
+  const live = shopInfo && SHOPS_ALL.find(x => x.name === shopInfo.name);
+  $('odShopInfo').hidden = !live; $('odShopInfo').onclick = () => openShops(live ? shopKey(live) : undefined);
   const steps = [['new', t('odSent'), full && full.created_at], ['ready', method === 'delivery' ? t('odOnWay') : t('st_ready'), full && full.ready_at],
                  ['picked_up', method === 'delivery' ? t('odDelivered') : t('st_picked_up'), full && full.picked_up_at]];
   const order = ['new', 'ready', 'picked_up'];
@@ -3507,7 +3905,9 @@ function renderOrderDetail(o, full) {
   if (failed) {
     const li = document.createElement('li'); li.className = 'bad now';
     li.innerHTML = `<span class="od-dot">!</span><div><b></b><small></small></div>`;
-    li.querySelector('b').textContent = t('st_' + st); li.querySelector('small').textContent = t('odFailedNote');
+    li.querySelector('b').textContent = t('st_' + st);
+    li.querySelector('small').textContent = st === 'expired' ? t('odExpiredNote').replace('{date}', expires ? fmtWhen(expires) : '')
+      : (st === 'cancelled' && full && full.cancelled_by === 'customer') ? t('odCancelledByYou') : t('odFailedNote');
     ol.appendChild(li);
   }
   // cans
@@ -3538,11 +3938,14 @@ async function refreshOrderDetail() {
         body: JSON.stringify({ order_id: o.id, token: o.token }) });
       const j = await r.json(); if (j.ok) full = j.order;
     } else if (authSession) {
-      const r = await fetch(`${CFG.supabaseUrl}/rest/v1/orders?select=*,shops(name,address,maps_url),order_items(*)&id=eq.${o.id}`, { headers: restAuth() });
+      let r = await fetch(`${CFG.supabaseUrl}/rest/v1/orders?select=*,shops(name,address,maps_url,opening_hours,timezone),order_items(*)&id=eq.${o.id}`, { headers: restAuth() });
+      if (!r.ok) r = await fetch(`${CFG.supabaseUrl}/rest/v1/orders?select=*,shops(name,address,maps_url),order_items(*)&id=eq.${o.id}`, { headers: restAuth() });
       const rows = r.ok ? await r.json() : []; full = rows[0] || null;
+      if (full && full.public_token) o.token = full.public_token;
     }
     if (!full) { $('odMsg').textContent = t('odNotFound'); return; }
-    Object.assign(o, { status: full.status, no: full.order_no || o.no, code: full.pickup_code || o.code, shop: (full.shops && full.shops.name) || o.shop });
+    Object.assign(o, { status: full.status, no: full.order_no || o.no, code: full.pickup_code || o.code, shop: (full.shops && full.shops.name) || o.shop,
+      expires: full.expires_at || o.expires, collected: full.customer_collected || o.collected });
     save(); renderOrderDetail(o, full); renderMyOrders();
   } catch (e) { $('odMsg').textContent = t('offline'); }
 }
@@ -3552,6 +3955,25 @@ function openOrderDetail(o) {
   refreshOrderDetail();
 }
 $('odRefresh').addEventListener('click', refreshOrderDetail);
+async function orderAction(o, body) {
+  const r = await fetch(`${CFG.functionsUrl}/order-action`, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey },
+    body: JSON.stringify(Object.assign({ order_id: o.id, token: o.token }, body)) });
+  const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || r.status); return j;
+}
+$('odCancel').addEventListener('click', async () => {
+  const o = odCurrent; if (!o || !confirm(t('cancelConfirm'))) return;
+  $('odCancel').disabled = true;
+  try { await orderAction(o, { action: 'cancel' }); o.status = 'cancelled'; save(); $('odMsg').textContent = t('orderCancelled'); await refreshOrderDetail(); $('odMsg').textContent = t('orderCancelled'); }
+  catch (e) { $('odMsg').textContent = String(e.message || t('offline')); }
+  finally { $('odCancel').disabled = false; }
+});
+async function answerCollected(o, answer) {
+  try { await orderAction(o, { action: 'collected', answer }); o.collected = answer; save(); $('odCollect').hidden = true; $('odMsg').textContent = t('collectThanks'); }
+  catch (e) { $('odMsg').textContent = t('offline'); }
+}
+$('odYes').addEventListener('click', () => answerCollected(odCurrent, 'yes'));
+$('odNo').addEventListener('click', () => answerCollected(odCurrent, 'no'));
+$('odNotify').addEventListener('click', () => turnOnNotify(odCurrent, $('odNotify'), $('odMsg')));
 
 /* ---------- Anonymous usage data (helps paint brands; no personal data) ---------- */
 // Only colours, cans, city and language are sent. No names, emails, accounts, photos or precise locations.
@@ -3602,7 +4024,7 @@ function renderSettings() {
 $('openSettings').addEventListener('click', () => { $('listSheet').hidden = true; $('designSheet').hidden = true; renderSettings(); $('setMsg').textContent = ''; $('settingsSheet').hidden = false; setTab('openSettings'); });
 $('closeSettings').addEventListener('click', () => navBack());
 document.querySelectorAll('.set-lang').forEach(b => b.addEventListener('click', () => {
-  lang = b.dataset.lang; store.lang = lang; save(); applyLang(); renderSettings();
+  lang = b.dataset.lang; store.lang = lang; save(); applyLang(); renderSettings(); renderFavs();
 }));
 $('setCity').addEventListener('change', e => {
   store.city = e.target.value; store.cityAuto = false; if (store.city !== 'other') store.cityOther = '';
@@ -3695,7 +4117,8 @@ async function refreshLive(force) {
   if (!$('listSheet').hidden) renderList();
   renderListCount();
 }
-refreshLive(true);
+refreshLive(true).then(renderFavs);
+renderFavs();
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
   refreshLive(false);
@@ -3703,6 +4126,20 @@ document.addEventListener('visibilitychange', () => {
   if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => {});
 });
 setInterval(() => { if (document.visibilityState === 'visible') refreshLive(true); }, 120000);
+// Opening a link while the app is already open (e.g. tapping a notification) re-runs the links below
+window.addEventListener('hashchange', () => { if (/^#(order|collected)-/.test(location.hash)) location.reload(); });
+// Link from an email: "Did you collect?"  #collected-<id>-<token>-yes|no
+(() => {
+  const m = location.hash.match(/^#collected-([0-9a-f-]{36})-([0-9a-f-]{36})-(yes|no)$/i);
+  if (!m) return;
+  history.replaceState(null, '', location.pathname);
+  store.orders = store.orders || [];
+  let o = store.orders.find(x => x.id === m[1]);
+  if (!o) { o = { id: m[1], token: m[2], no: '…', code: '…', shop: '', status: 'picked_up' }; store.orders.unshift(o); }
+  o.token = m[2]; save();
+  openOrderDetail(o);
+  answerCollected(o, m[3].toLowerCase());
+})();
 // Link from a confirmation email: #order-<id>-<token>
 (() => {
   const m = location.hash.match(/^#order-([0-9a-f-]{36})-([0-9a-f-]{36})$/i);
@@ -3711,6 +4148,7 @@ setInterval(() => { if (document.visibilityState === 'visible') refreshLive(true
   if (!store.orders.some(o => o.id === m[1])) store.orders.unshift({ id: m[1], token: m[2], no: '…', code: '…', shop: '', status: 'new' });
   save(); history.replaceState(null, '', location.pathname);
   $('openList').click();
+  setTimeout(() => openOrderDetail(store.orders.find(x => x.id === m[1])), 0);
   fetch(`${CFG.functionsUrl}/get-order`, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey },
     body: JSON.stringify({ order_id: m[1], token: m[2] }) }).then(r => r.json()).then(j => {
       if (!j.ok) return; const o = store.orders.find(x => x.id === m[1]);
@@ -3719,7 +4157,7 @@ setInterval(() => { if (document.visibilityState === 'visible') refreshLive(true
 })();
 
 /* ---------- Back navigation (on-screen Back button and the phone's back gesture) ---------- */
-const NAV_SHEETS = ['designSheet', 'listSheet', 'settingsSheet', 'accountSheet', 'orderSheet', 'orderDetail', 'setup'];
+const NAV_SHEETS = ['designSheet', 'listSheet', 'settingsSheet', 'accountSheet', 'orderSheet', 'orderDetail', 'shopSheet', 'setup'];
 let navRestoring = false, navTimer = null;
 const navSnap = () => NAV_SHEETS.filter(id => !$(id).hidden);
 function navApply(list) {
