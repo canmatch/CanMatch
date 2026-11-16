@@ -802,6 +802,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    shoppingAt: 'Shopping at {shop}', allShopsLink: 'See all shops',
     tabHome: 'Home', codeSent: 'We emailed you a sign-in code. Type it here (or tap the link in the email).', codeLabel: 'Code from the email', codeVerify: 'Sign in', codeBad: 'That code didn’t work. Check it, or send a new one.', codeResend: 'Send a new code', accNoPassword: 'No password needed. We’ll email you a sign-in code.', checkSpam: 'Not there? Check your spam folder.',
     shadingL: 'Shading', shFlat: 'Flat', shSome: 'Some', shFull: 'Full detail', shadesOf: '{fam} · {n} shades', fam_red: 'Reds', fam_orange: 'Oranges', fam_yellow: 'Yellows', fam_green: 'Greens', fam_teal: 'Teals', fam_blue: 'Blues', fam_purple: 'Purples', fam_pink: 'Pinks', fam_brown: 'Browns', fam_grey: 'Greys', fam_black: 'Blacks', fam_white: 'Whites', shadeBtn: 'Highlight & shadow', highlightL: 'Highlight', shadowL: 'Shadow', noShade: 'No lighter or darker can in this line.', addedShade: 'Added 1 can.', wrongMatch: 'Wrong match?', fbTooLight: 'Can is too light', fbTooDark: 'Can is too dark', fbWrong: 'Wrong colour', fbThanks: 'Thanks! This helps fix the colour data.',
     st_expired: 'Expired', odExpiredNote: 'The shop held your cans until {date}, then put them back. You haven’t paid anything.', odCancelledByYou: 'You cancelled this order. You haven’t paid anything.', holdUntil: 'Held for you until {date}', cancelOrder: 'Cancel order', cancelConfirm: 'Cancel this order? The shop will put the cans back on the shelf.', orderCancelled: 'Order cancelled. The shop has been told.', collectQ: 'Did you collect your cans?', yesGot: 'Yes, I got them', noDidnt: 'No, I didn’t', collectThanks: 'Thanks! That helps keep Kromatch fair.', notifyMe: '🔔 Tell me when it’s ready', notifyOn: 'Notifications are on. We’ll tell you when your cans are ready.', notifyFail: 'Notifications aren’t available on this phone. You’ll still get an email.', notifyIos: 'On iPhone, first add Kromatch to your Home Screen (Share › Add to Home Screen), then open it from there.', notifyDenied: 'Notifications are blocked for Kromatch. You can allow them in your phone’s settings.', shopPaused: 'Not taking orders right now', openNow: 'Open now', closedNow: 'Closed now', untilT: 'until {time}', opensT: 'opens {when}', hoursT: 'Opening hours', closedDay: 'Closed', today: 'today', dMon: 'Mon', dTue: 'Tue', dWed: 'Wed', dThu: 'Thu', dFri: 'Fri', dSat: 'Sat', dSun: 'Sun', shopInfo: 'Shop info', seeShops: 'See shops', shopsIn: 'Shops in {city}', whatSell: 'What they sell', perCan: '{price} per can', deliversT: 'Delivers: {fee}', pickupOnlyS: 'Pickup only', holdInfo: 'Orders are held for {n} days.', websiteL: 'Website', testShopNote: 'Test shop: orders here are only a demo.', closedOrderNote: '{shop} is closed right now. They’ll see your order when they open.', searchTitle: 'Know the colour?', searchDesc: 'Search by colour name or code, like “RV-241”, “Shock Blue” or “#ff3300”.', searchPh: 'Name, code or #hex', searchNone: 'Nothing found. Try part of the name or the code.', searchMore: '{n} more. Type more to narrow it down.', favTitle: '★ Your favourites', favAdd: 'Add to favourites', favRemove: 'Remove from favourites', botCheck: 'Please tick the box to show you’re not a robot.', notInStock: 'out of stock here',
@@ -1010,6 +1011,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    shoppingAt: 'Αγορές από: {shop}', allShopsLink: 'Όλα τα καταστήματα',
     tabHome: 'Αρχική', codeSent: 'Σου στείλαμε κωδικό σύνδεσης στο email. Γράψ’ τον εδώ (ή πάτα τον σύνδεσμο στο email).', codeLabel: 'Κωδικός από το email', codeVerify: 'Σύνδεση', codeBad: 'Ο κωδικός δεν δούλεψε. Έλεγξέ τον ή ζήτα νέο.', codeResend: 'Στείλε νέο κωδικό', accNoPassword: 'Χωρίς κωδικό πρόσβασης. Θα σου στείλουμε κωδικό σύνδεσης στο email.', checkSpam: 'Δεν ήρθε; Δες και στα ανεπιθύμητα.',
     shadingL: 'Σκίαση', shFlat: 'Επίπεδη', shSome: 'Λίγη', shFull: 'Πλήρης', shadesOf: '{fam} · {n} αποχρώσεις', fam_red: 'Κόκκινα', fam_orange: 'Πορτοκαλί', fam_yellow: 'Κίτρινα', fam_green: 'Πράσινα', fam_teal: 'Τιρκουάζ', fam_blue: 'Μπλε', fam_purple: 'Μωβ', fam_pink: 'Ροζ', fam_brown: 'Καφέ', fam_grey: 'Γκρι', fam_black: 'Μαύρα', fam_white: 'Λευκά', shadeBtn: 'Φως & σκιά', highlightL: 'Φως', shadowL: 'Σκιά', noShade: 'Δεν υπάρχει πιο ανοιχτό ή πιο σκούρο σπρέι σε αυτή τη σειρά.', addedShade: 'Προστέθηκε 1 σπρέι.', wrongMatch: 'Λάθος αντιστοίχιση;', fbTooLight: 'Το σπρέι είναι πιο ανοιχτό', fbTooDark: 'Το σπρέι είναι πιο σκούρο', fbWrong: 'Λάθος χρώμα', fbThanks: 'Ευχαριστούμε! Αυτό βοηθά να διορθωθούν τα χρώματα.',
     st_expired: 'Έληξε', odExpiredNote: 'Το κατάστημα κράτησε τα σπρέι σου έως {date} και μετά τα επέστρεψε στο ράφι. Δεν πλήρωσες τίποτα.', odCancelledByYou: 'Ακύρωσες αυτή την παραγγελία. Δεν πλήρωσες τίποτα.', holdUntil: 'Κρατιέται για σένα έως {date}', cancelOrder: 'Ακύρωση παραγγελίας', cancelConfirm: 'Να ακυρωθεί η παραγγελία; Το κατάστημα θα επιστρέψει τα σπρέι στο ράφι.', orderCancelled: 'Η παραγγελία ακυρώθηκε. Το κατάστημα ενημερώθηκε.', collectQ: 'Παρέλαβες τα σπρέι σου;', yesGot: 'Ναι, τα πήρα', noDidnt: 'Όχι, δεν τα πήρα', collectThanks: 'Ευχαριστούμε! Έτσι το Kromatch μένει δίκαιο για όλους.', notifyMe: '🔔 Ειδοποίησέ με όταν είναι έτοιμη', notifyOn: 'Οι ειδοποιήσεις είναι ενεργές. Θα σου πούμε όταν τα σπρέι είναι έτοιμα.', notifyFail: 'Οι ειδοποιήσεις δεν υποστηρίζονται σε αυτό το κινητό. Θα λάβεις email.', notifyIos: 'Σε iPhone, πρόσθεσε πρώτα το Kromatch στην Αρχική οθόνη (Κοινοποίηση › Προσθήκη στην οθόνη Αφετηρίας) και άνοιξέ το από εκεί.', notifyDenied: 'Οι ειδοποιήσεις για το Kromatch είναι αποκλεισμένες. Μπορείς να τις επιτρέψεις στις ρυθμίσεις του κινητού.', shopPaused: 'Δεν δέχεται παραγγελίες αυτή τη στιγμή', openNow: 'Ανοιχτό τώρα', closedNow: 'Κλειστό τώρα', untilT: 'έως {time}', opensT: 'ανοίγει {when}', hoursT: 'Ωράριο', closedDay: 'Κλειστό', today: 'σήμερα', dMon: 'Δευ', dTue: 'Τρι', dWed: 'Τετ', dThu: 'Πεμ', dFri: 'Παρ', dSat: 'Σάβ', dSun: 'Κυρ', shopInfo: 'Πληροφορίες καταστήματος', seeShops: 'Καταστήματα', shopsIn: 'Καταστήματα: {city}', whatSell: 'Τι πουλάει', perCan: '{price} το σπρέι', deliversT: 'Αποστολή: {fee}', pickupOnlyS: 'Μόνο παραλαβή', holdInfo: 'Οι παραγγελίες κρατιούνται {n} ημέρες.', websiteL: 'Ιστότοπος', testShopNote: 'Δοκιμαστικό κατάστημα: οι παραγγελίες εδώ είναι μόνο επίδειξη.', closedOrderNote: 'Το {shop} είναι κλειστό τώρα. Θα δει την παραγγελία σου μόλις ανοίξει.', searchTitle: 'Ξέρεις το χρώμα;', searchDesc: 'Ψάξε με όνομα ή κωδικό χρώματος, π.χ. «RV-241», «Shock Blue» ή «#ff3300».', searchPh: 'Όνομα, κωδικός ή #hex', searchNone: 'Δεν βρέθηκε τίποτα. Δοκίμασε μέρος του ονόματος ή τον κωδικό.', searchMore: 'Άλλα {n}. Γράψε περισσότερα για να περιορίσεις.', favTitle: '★ Τα αγαπημένα σου', favAdd: 'Προσθήκη στα αγαπημένα', favRemove: 'Αφαίρεση από τα αγαπημένα', botCheck: 'Τσέκαρε το κουτάκι για να δείξεις ότι δεν είσαι ρομπότ.', notInStock: 'εξαντλημένο εδώ',
@@ -1218,6 +1220,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    shoppingAt: 'Vous achetez chez {shop}', allShopsLink: 'Voir tous les magasins',
     tabHome: 'Accueil', codeSent: 'Nous vous avons envoyé un code de connexion. Saisissez-le ici (ou touchez le lien dans l’e-mail).', codeLabel: 'Code reçu par e-mail', codeVerify: 'Se connecter', codeBad: 'Ce code ne fonctionne pas. Vérifiez-le ou demandez-en un nouveau.', codeResend: 'Envoyer un nouveau code', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un code de connexion par e-mail.', checkSpam: 'Rien reçu ? Regardez dans les indésirables.',
     shadingL: 'Ombrage', shFlat: 'Aplat', shSome: 'Léger', shFull: 'Détaillé', shadesOf: '{fam} · {n} nuances', fam_red: 'Rouges', fam_orange: 'Oranges', fam_yellow: 'Jaunes', fam_green: 'Verts', fam_teal: 'Turquoises', fam_blue: 'Bleus', fam_purple: 'Violets', fam_pink: 'Roses', fam_brown: 'Bruns', fam_grey: 'Gris', fam_black: 'Noirs', fam_white: 'Blancs', shadeBtn: 'Lumière et ombre', highlightL: 'Lumière', shadowL: 'Ombre', noShade: 'Pas de bombe plus claire ou plus foncée dans cette gamme.', addedShade: '1 bombe ajoutée.', wrongMatch: 'Mauvaise correspondance ?', fbTooLight: 'La bombe est trop claire', fbTooDark: 'La bombe est trop foncée', fbWrong: 'Mauvaise couleur', fbThanks: 'Merci ! Cela aide à corriger les couleurs.',
     st_expired: 'Expirée', odExpiredNote: 'Le magasin a gardé vos bombes jusqu’au {date}, puis les a remises en rayon. Vous n’avez rien payé.', odCancelledByYou: 'Vous avez annulé cette commande. Vous n’avez rien payé.', holdUntil: 'Réservée pour vous jusqu’au {date}', cancelOrder: 'Annuler la commande', cancelConfirm: 'Annuler cette commande ? Le magasin remettra les bombes en rayon.', orderCancelled: 'Commande annulée. Le magasin a été prévenu.', collectQ: 'Avez-vous récupéré vos bombes ?', yesGot: 'Oui, je les ai', noDidnt: 'Non, pas encore', collectThanks: 'Merci ! Cela aide à garder Kromatch équitable.', notifyMe: '🔔 Me prévenir quand c’est prêt', notifyOn: 'Notifications activées. Nous vous préviendrons quand vos bombes seront prêtes.', notifyFail: 'Les notifications ne sont pas disponibles sur ce téléphone. Vous recevrez quand même un e-mail.', notifyIos: 'Sur iPhone, ajoutez d’abord Kromatch à l’écran d’accueil (Partager › Sur l’écran d’accueil), puis ouvrez-le depuis là.', notifyDenied: 'Les notifications sont bloquées pour Kromatch. Vous pouvez les autoriser dans les réglages du téléphone.', shopPaused: 'Ne prend pas de commandes pour le moment', openNow: 'Ouvert', closedNow: 'Fermé', untilT: 'jusqu’à {time}', opensT: 'ouvre {when}', hoursT: 'Horaires', closedDay: 'Fermé', today: 'aujourd’hui', dMon: 'lun', dTue: 'mar', dWed: 'mer', dThu: 'jeu', dFri: 'ven', dSat: 'sam', dSun: 'dim', shopInfo: 'Infos magasin', seeShops: 'Voir les magasins', shopsIn: 'Magasins à {city}', whatSell: 'Ce qu’ils vendent', perCan: '{price} la bombe', deliversT: 'Livraison : {fee}', pickupOnlyS: 'Retrait seulement', holdInfo: 'Les commandes sont gardées {n} jours.', websiteL: 'Site web', testShopNote: 'Magasin test : les commandes ici sont une démo.', closedOrderNote: '{shop} est fermé en ce moment. Il verra votre commande à l’ouverture.', searchTitle: 'Vous connaissez la couleur ?', searchDesc: 'Cherchez par nom ou code de couleur, par ex. « RV-241 », « Shock Blue » ou « #ff3300 ».', searchPh: 'Nom, code ou #hex', searchNone: 'Rien trouvé. Essayez une partie du nom ou le code.', searchMore: '{n} de plus. Précisez pour affiner.', favTitle: '★ Vos favoris', favAdd: 'Ajouter aux favoris', favRemove: 'Retirer des favoris', botCheck: 'Cochez la case pour montrer que vous n’êtes pas un robot.', notInStock: 'en rupture ici',
@@ -2737,11 +2740,29 @@ function updateGoCart() {
 $('goCart').addEventListener('click', () => $('openList').click());
 /* ---------- Shops in the chosen city, prices ---------- */
 // Shops come from the live database when online; shops.js (or the last saved copy) is the fallback
+const slugify = v => String(v || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+/* ---------- Shop links: kromatch.com/?shop=<shop> opens the app set to that one shop ----------
+   For a QR code at the counter, or a link on the shop's website/Instagram. The visitor can still tap "See all shops". */
+const LINK_SHOP = slugify(new URLSearchParams(location.search).get('shop') || '');
+let lockedShop = null, linkTried = false;
+function applyShopLink() {
+  if (!LINK_SHOP || lockedShop || linkTried === 'off') return;
+  const sh = SHOPS_ALL.find(x => x.slug === LINK_SHOP || x.id === LINK_SHOP);
+  if (!sh) return;
+  lockedShop = sh;
+  if (store.city !== sh.city) store.city = sh.city;
+  store.shopPref = shopKey(sh); save();
+}
+function unlockShop() {
+  lockedShop = null; linkTried = 'off';
+  const u = new URL(location.href); u.searchParams.delete('shop'); history.replaceState(null, '', u.pathname + u.search + u.hash);
+  updateLocBar();
+}
 const normShop = sh => {
   const prices = sh.prices || {}, overrides = sh.overrides || {};
   // Only lines with a price are shown and orderable; a colour with its own price keeps its line visible
   const priced = l => typeof prices[l] === 'number' || Object.keys(overrides).some(k => k.startsWith(l + '|'));
-  return { id: sh.id || null, name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery || null,
+  return { id: sh.id || null, slug: sh.slug || slugify(sh.name), name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery || null,
     demo: sh.demo !== false && sh.is_demo !== false, live: !!(sh.live || sh.is_live), lines: (sh.lines || []).filter(priced), prices,
     overrides, out: new Set(sh.out || []),
     paused: !!sh.paused, pauseMsg: sh.pauseMsg || '', hours: sh.hours || null, tz: sh.tz || null, holdDays: sh.holdDays || 7,
@@ -2755,7 +2776,7 @@ const cityShops = () => { const all = allCityShops(); const pref = store.shopPre
 function renderShopPick() {
   const all = allCityShops(), sel = $('shopPickSel');
   $('seeShops').hidden = !all.length;
-  $('shopPick').hidden = all.length < 2;
+  $('shopPick').hidden = all.length < 2 || !!lockedShop;      // a shop link keeps you at that shop
   if (store.shopPref && !all.some(sh => shopKey(sh) === store.shopPref)) { store.shopPref = ''; save(); }
   if (all.length < 2) return;
   sel.innerHTML = `<option value="">${t('allShopsIn').replace('{city}', cityName(store.city))}</option>` +
@@ -2773,14 +2794,14 @@ async function loadLiveShops() {
   };
   try {
     // Newer shop details (hours, pause...) if the database has them; the basic list otherwise
-    const shopsQ = get('shops?select=id,name,city,currency,delivery,is_demo,is_live,sort_order,address,maps_url,website,phone,about,orders_paused,pause_message,opening_hours,timezone,hold_days&order=sort_order')
-      .catch(() => get('shops?select=id,name,city,currency,delivery,is_demo,is_live,sort_order&order=sort_order'));
+    const shopsQ = get('shops?select=id,slug,name,city,currency,delivery,is_demo,is_live,sort_order,address,maps_url,website,phone,about,orders_paused,pause_message,opening_hours,timezone,hold_days&order=sort_order')
+      .catch(() => get('shops?select=id,slug,name,city,currency,delivery,is_demo,is_live,sort_order&order=sort_order'));
     const [shops, lines, outs, ovs] = await Promise.all([
       shopsQ,
       get('shop_lines?select=shop_id,line,price'), get('stock_out?select=shop_id,line,code'),
       get('price_overrides?select=shop_id,line,code,price')]);
     const list = shops.filter(sh => sh.is_demo || sh.is_live).map(sh => ({
-      id: sh.id, name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery, demo: sh.is_demo, live: sh.is_live,
+      id: sh.id, slug: sh.slug || '', name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery, demo: sh.is_demo, live: sh.is_live,
       lines: lines.filter(l => l.shop_id === sh.id).map(l => l.line),
       prices: Object.fromEntries(lines.filter(l => l.shop_id === sh.id).map(l => [l.line, l.price == null ? null : Number(l.price)])),
       overrides: Object.fromEntries(ovs.filter(o => o.shop_id === sh.id).map(o => [o.line + '|' + o.code, Number(o.price)])),
@@ -4101,7 +4122,14 @@ function distKm(a1, o1, a2, o2) {
   return 12742 * Math.asin(Math.sqrt(h));
 }
 function updateLocBar() {
-  $('locText').textContent = store.city ? t('locNear').replace('{city}', cityName(store.city)) : t('locNoCity');
+  applyShopLink();
+  if (lockedShop) {
+    $('locText').textContent = t('shoppingAt').replace('{shop}', lockedShop.name);
+    $('locChange').textContent = t('allShopsLink');
+  } else {
+    $('locText').textContent = store.city ? t('locNear').replace('{city}', cityName(store.city)) : t('locNoCity');
+    $('locChange').textContent = t('locChange');
+  }
   renderShopPick();
 }
 $('shopPickSel').addEventListener('change', e => {
@@ -4120,7 +4148,10 @@ $('locSwitch').addEventListener('click', () => {
   updateLocBar(); if (lastSample) showResults();
 });
 $('locKeep').addEventListener('click', () => { store.dismissTz = suggestCity; save(); $('locSuggest').hidden = true; });
-$('locChange').addEventListener('click', () => $('openSettings').click());
+$('locChange').addEventListener('click', () => {
+  if (lockedShop) { unlockShop(); if (lastSample) showResults(); rematchDesign(); renderListCount(); return; }
+  $('openSettings').click();
+});
 $('useLocation').addEventListener('click', () => {
   if (!navigator.geolocation) { $('locMsg').textContent = t('locDenied'); return; }
   $('locMsg').textContent = t('locFinding');
@@ -4153,7 +4184,9 @@ async function refreshLive(force) {
   if (refreshing || (!force && Date.now() - lastRefresh < 30000)) return;
   refreshing = true;
   const before = JSON.stringify(store.shopsCache || null);
-  const ok = await loadLiveShops(); renderShopPick();
+  const wasLocked = !!lockedShop;
+  const ok = await loadLiveShops(); updateLocBar();
+  if (!wasLocked && lockedShop) { if (lastSample) showResults(); rematchDesign(); renderListCount(); }
   refreshing = false; lastRefresh = Date.now();
   if (!ok || (!force && JSON.stringify(store.shopsCache || null) === before)) return;   // nothing changed
   if (lastSample && !$('results').hidden) showResults();

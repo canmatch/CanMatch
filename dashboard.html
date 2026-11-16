@@ -203,6 +203,13 @@
         <label class="field"><span data-t="contactName"></span><input id="fContact"></label>
         <label class="field"><span data-t="contactPhone"></span><input id="fPhone" type="tel"></label>
       </div>
+      <div class="card" id="linkCard">
+        <h3 style="margin-top:0" data-t="linkTitle"></h3>
+        <p class="note" data-t="linkIntro"></p>
+        <div class="row"><input id="shopLink" readonly class="grow" style="margin:0"><button class="small secondary" id="copyLink" data-t="copy"></button></div>
+        <div class="row" style="margin-top:10px;align-items:flex-start"><img id="shopQr" alt="QR code" width="160" height="160" style="background:#fff;padding:8px;border-radius:10px">
+          <div class="grow"><p class="note" style="margin-top:0" data-t="qrIntro"></p><button class="small secondary" id="dlQr" data-t="downloadQr"></button></div></div>
+      </div>
       <div class="card" id="opsCard">
         <h3 style="margin-top:0" data-t="hoursCard"></h3>
         <label class="row nowrap" style="font-weight:700"><input type="checkbox" id="fPaused" style="width:auto;margin:0"> <span data-t="pausedLabel"></span></label>
@@ -285,6 +292,7 @@
 <div class="toast" id="toast" hidden role="status"></div>
 <div id="printArea" aria-hidden="true"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script src="config.js?v=2026-11-19-ux"></script>
 <script src="colors.js?v=2026-11-19-ux"></script>
@@ -292,6 +300,7 @@
 /* ---------- Text (English and Greek) ---------- */
 const TX = {
   en: {
+    linkTitle: 'Your Kromatch link and QR code', linkIntro: 'Opens Kromatch set to your shop: only your cans and prices. Put it on your website, Instagram or a poster at the counter.', copy: 'Copy', copied: 'Copied', qrIntro: 'Customers scan this to plan a mural or match a colour with your cans, then reserve them.', downloadQr: 'Download QR (for printing)',
     codeSent: 'We emailed you a login code (check spam too). Type it here, or tap the link in the email.', codeLabel: 'Code from the email', codeVerify: 'Log in', codeBad: 'That code didn’t work. Check it, or send a new one.',
     repBad: 'Reported wrong matches', repBadDesc: 'Cans testers flagged as not matching (too light, too dark or wrong colour). Fix these colours first.',
     st_expired: 'Expired', heldUntil: 'Held until {d}', byCustomer: 'cancelled by the customer', custYes: 'Customer confirmed they collected', custNo: 'Customer says they did NOT collect', printSlip: 'Print slip', slipTitle: 'Kromatch order', items: 'Cans', pickupBy: 'Collect by', takingOrders: 'Taking orders', pausedNow: 'Orders paused', pauseBtn: 'Pause orders', resumeBtn: 'Take orders again', pausePrompt: 'Message for customers (optional), e.g. “Back on Monday”', hoursCard: 'Opening hours & orders', closedDay: 'Closed', split: '+ afternoon', holdDays: 'Hold orders for', days: 'days', publicPhone: 'Shop phone (shown in the app)', about: 'Short description (shown in the app)', pausedLabel: 'Pause orders (customers can still see your shop)', pauseMsg: 'Message while paused', notifyCard: 'How you hear about orders', notifyPhone: 'Mobile for order alerts', notifySms: 'Text me (SMS) for new orders', notifyWa: 'WhatsApp me for new orders', weekly: 'Weekly summary email (Monday mornings)', billingCard: 'Billing details', billingName: 'Business name', billingVat: 'VAT number (ΑΦΜ)', billingAddr: 'Billing address', billingEmail: 'Email for statements (if different)', needsUpdate: 'Install the latest database update to use this.', holdsTitle: 'Price changes waiting for approval', holdsIntro: 'These prices in your shop system changed a lot (more than 30%), so Kromatch kept the old price. Approve if the new price is right.', approve: 'Approve', reject: 'Reject', wholeLine: 'all colours', tabBilling: 'Billing', billingIntro: 'What you owe Kromatch each month: orders collected × fee per can, after any free trial.', month: 'Month', makeStatements: 'Make statements', stNumber: 'Statement', orders: 'Orders', cans: 'Cans', fee: 'Fee', vat: 'VAT', status: 'Status', bs_draft: 'Draft', bs_sent: 'Sent', bs_paid: 'Paid', bs_disputed: 'Disputed', bs_waived: 'Waived', previewSt: 'Preview', emailShop: 'Email to shop', sentTo: 'Sent to {e}', noStatements: 'No statements yet.', downloadCsv: 'Download CSV', health: 'System health', lastJobs: 'Hourly jobs', lastJobsNone: 'Not run yet. Check the schedule (step 6 of the guide).', runJobs: 'Run jobs now', testEmail: 'Send me a test email', testPhone: 'Test text to (optional)', keysTitle: 'Notification keys', keysIntro: 'Phone notifications need a pair of keys. Make them here once (they’re created in your browser, not sent anywhere).', makeKeys: 'Make keys', keysPub: 'Public key: paste into config.js as vapidPublicKey', keysPriv: 'Private key: paste into Supabase secrets as VAPID_PRIVATE_KEY (and the public one as VAPID_PUBLIC_KEY). Don’t share it.', vatRate: 'VAT % (empty = automatic)', payMethod: 'Payment', pm_bank_transfer: 'Bank transfer', pm_direct_debit: 'Direct debit', pm_card: 'Card', payRef: 'Mandate / customer ID', syncIssues: 'Shop connections', ok: 'OK', pendingHolds: '{n} price change(s) waiting', jobsDone: 'Jobs ran.', slipFooter: 'Collected? Mark it “Picked up” in the dashboard with the customer’s code.',
@@ -323,6 +332,7 @@ const TX = {
     makeDemo: 'Make demo', switchOff: 'Switch off', created: 'Shop created. Invite its staff below.'
   },
   el: {
+    linkTitle: 'Ο σύνδεσμος και ο κωδικός QR σου', linkIntro: 'Ανοίγει το Kromatch ρυθμισμένο στο κατάστημά σου: μόνο τα δικά σου σπρέι και τιμές. Βάλ’ τον στο site, στο Instagram ή σε αφίσα στο ταμείο.', copy: 'Αντιγραφή', copied: 'Αντιγράφηκε', qrIntro: 'Οι πελάτες το σκανάρουν για να σχεδιάσουν τοιχογραφία ή να βρουν χρώμα με τα δικά σου σπρέι και να τα κρατήσουν.', downloadQr: 'Λήψη QR (για εκτύπωση)',
     codeSent: 'Σου στείλαμε κωδικό σύνδεσης (δες και στα ανεπιθύμητα). Γράψ’ τον εδώ ή πάτα τον σύνδεσμο στο email.', codeLabel: 'Κωδικός από το email', codeVerify: 'Σύνδεση', codeBad: 'Ο κωδικός δεν δούλεψε. Έλεγξέ τον ή ζήτα νέο.',
     repBad: 'Αναφορές λάθος αντιστοίχισης', repBadDesc: 'Σπρέι που οι δοκιμαστές σημείωσαν ότι δεν ταιριάζουν (πιο ανοιχτό, πιο σκούρο ή λάθος χρώμα). Διόρθωσε πρώτα αυτά.',
     st_expired: 'Έληξε', heldUntil: 'Κρατιέται έως {d}', byCustomer: 'ακυρώθηκε από τον πελάτη', custYes: 'Ο πελάτης επιβεβαίωσε ότι παρέλαβε', custNo: 'Ο πελάτης λέει ότι ΔΕΝ παρέλαβε', printSlip: 'Εκτύπωση', slipTitle: 'Παραγγελία Kromatch', items: 'Σπρέι', pickupBy: 'Παραλαβή έως', takingOrders: 'Δεχόμαστε παραγγελίες', pausedNow: 'Παραγγελίες σε παύση', pauseBtn: 'Παύση παραγγελιών', resumeBtn: 'Ξανά παραγγελίες', pausePrompt: 'Μήνυμα για τους πελάτες (προαιρετικό), π.χ. «Επιστρέφουμε τη Δευτέρα»', hoursCard: 'Ωράριο & παραγγελίες', closedDay: 'Κλειστά', split: '+ απόγευμα', holdDays: 'Κράτηση παραγγελιών για', days: 'ημέρες', publicPhone: 'Τηλέφωνο καταστήματος (φαίνεται στην εφαρμογή)', about: 'Σύντομη περιγραφή (φαίνεται στην εφαρμογή)', pausedLabel: 'Παύση παραγγελιών (οι πελάτες βλέπουν ακόμα το κατάστημα)', pauseMsg: 'Μήνυμα κατά την παύση', notifyCard: 'Πώς μαθαίνεις για τις παραγγελίες', notifyPhone: 'Κινητό για ειδοποιήσεις', notifySms: 'Στείλε μου SMS για νέες παραγγελίες', notifyWa: 'Στείλε μου WhatsApp για νέες παραγγελίες', weekly: 'Εβδομαδιαία σύνοψη με email (Δευτέρα πρωί)', billingCard: 'Στοιχεία τιμολόγησης', billingName: 'Επωνυμία', billingVat: 'ΑΦΜ', billingAddr: 'Διεύθυνση τιμολόγησης', billingEmail: 'Email για καταστάσεις (αν διαφέρει)', needsUpdate: 'Εγκατέστησε την τελευταία ενημέρωση βάσης για να το χρησιμοποιήσεις.', holdsTitle: 'Αλλαγές τιμών που περιμένουν έγκριση', holdsIntro: 'Αυτές οι τιμές στο σύστημά σου άλλαξαν πολύ (πάνω από 30%), οπότε το Kromatch κράτησε την παλιά τιμή. Έγκρινε αν η νέα τιμή είναι σωστή.', approve: 'Έγκριση', reject: 'Απόρριψη', wholeLine: 'όλα τα χρώματα', tabBilling: 'Χρεώσεις', billingIntro: 'Τι οφείλεις στο Kromatch κάθε μήνα: παραληφθείσες παραγγελίες × χρέωση ανά σπρέι, μετά τη δωρεάν περίοδο.', month: 'Μήνας', makeStatements: 'Δημιουργία καταστάσεων', stNumber: 'Κατάσταση', orders: 'Παραγγελίες', cans: 'Σπρέι', fee: 'Χρέωση', vat: 'ΦΠΑ', status: 'Κατάσταση', bs_draft: 'Πρόχειρη', bs_sent: 'Στάλθηκε', bs_paid: 'Πληρώθηκε', bs_disputed: 'Αμφισβητείται', bs_waived: 'Χαρίστηκε', previewSt: 'Προεπισκόπηση', emailShop: 'Αποστολή στο κατάστημα', sentTo: 'Στάλθηκε στο {e}', noStatements: 'Δεν υπάρχουν καταστάσεις ακόμα.', downloadCsv: 'Λήψη CSV', health: 'Κατάσταση συστήματος', lastJobs: 'Ωριαίες εργασίες', lastJobsNone: 'Δεν έχουν τρέξει ακόμα. Έλεγξε το πρόγραμμα (βήμα 6 του οδηγού).', runJobs: 'Εκτέλεση τώρα', testEmail: 'Στείλε μου δοκιμαστικό email', testPhone: 'Δοκιμαστικό SMS σε (προαιρετικό)', keysTitle: 'Κλειδιά ειδοποιήσεων', keysIntro: 'Οι ειδοποιήσεις στο κινητό χρειάζονται ένα ζεύγος κλειδιών. Φτιάξ’ τα εδώ μία φορά (δημιουργούνται στον browser σου, δεν στέλνονται πουθενά).', makeKeys: 'Δημιουργία κλειδιών', keysPub: 'Δημόσιο κλειδί: βάλ’ το στο config.js ως vapidPublicKey', keysPriv: 'Ιδιωτικό κλειδί: βάλ’ το στα Supabase secrets ως VAPID_PRIVATE_KEY (και το δημόσιο ως VAPID_PUBLIC_KEY). Μην το μοιραστείς.', vatRate: 'ΦΠΑ % (κενό = αυτόματα)', payMethod: 'Πληρωμή', pm_bank_transfer: 'Τραπεζική μεταφορά', pm_direct_debit: 'Πάγια εντολή', pm_card: 'Κάρτα', payRef: 'Αριθμός εντολής / πελάτη', syncIssues: 'Συνδέσεις καταστημάτων', ok: 'OK', pendingHolds: '{n} αλλαγή(ές) τιμής σε αναμονή', jobsDone: 'Οι εργασίες έτρεξαν.', slipFooter: 'Παραλήφθηκε; Σημείωσέ το «Παραλήφθηκε» στο dashboard με τον κωδικό του πελάτη.',
@@ -553,6 +563,31 @@ async function setStatus(o, status, code) {
   } catch (e) { toast(/match/i.test(e.message) ? t('codeWrong') : t('error', { m: e.message }), true); }
 }
 
+/* ---------- The shop's own link and QR code (opens Kromatch set to this shop) ---------- */
+const shopUrl = () => `${location.origin}/?shop=${encodeURIComponent(shop.slug || shop.id)}`;
+function qrCanvas(text, px) {
+  const qr = window.qrcode(0, 'M'); qr.addData(text); qr.make();
+  const n = qr.getModuleCount(), quiet = 4, size = (n + quiet * 2) * px, c = document.createElement('canvas');
+  c.width = c.height = size; const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, size, size); g.fillStyle = '#000';
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (qr.isDark(y, x)) g.fillRect((x + quiet) * px, (y + quiet) * px, px, px);
+  return c;
+}
+function drawShopLink() {
+  if (!shop) return;
+  $('shopLink').value = shopUrl();
+  if (window.qrcode) $('shopQr').src = qrCanvas(shopUrl(), 6).toDataURL('image/png');
+  $('linkCard').hidden = !window.qrcode && !shop.slug;
+}
+$('copyLink').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(shopUrl()); toast(t('copied')); } catch (e) { $('shopLink').select(); }
+});
+$('dlQr').addEventListener('click', () => {
+  if (!window.qrcode) return;
+  const a = document.createElement('a'); a.href = qrCanvas(shopUrl(), 20).toDataURL('image/png');    // large enough to print on a poster
+  a.download = `kromatch-qr-${shop.slug || 'shop'}.png`; document.body.appendChild(a); a.click(); a.remove();
+});
+
 /* ---------- Pause orders (quick switch on the Orders tab) ---------- */
 function renderPauseBar() {
   $('pauseBar').hidden = !hasOps() || !shop.is_live;
@@ -687,6 +722,7 @@ function renderShopForm() {
   $('fDelivers').checked = !!d; $('deliveryFields').hidden = !d;
   $('fFee').value = d ? (d.fee ?? '') : ''; $('fFreeOver').value = d ? (d.freeOver ?? '') : ''; $('fNote').value = d ? (d.note || '') : '';
   $('lockedNote').textContent = t('lockedNote') + ` (${shop.city} · ${shop.currency})`;
+  drawShopLink();
   const ops = hasOps();
   ['opsCard', 'notifyCard', 'billCard'].forEach(id => { $(id).hidden = !ops; });
   $('updateNote').hidden = ops;
