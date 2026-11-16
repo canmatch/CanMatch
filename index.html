@@ -352,6 +352,7 @@
       <button type="button" class="primary small" id="locSwitch" data-i18n="locSwitch"></button>
       <button type="button" class="secondary small" id="locKeep"></button></div></div></div>
 
+  <button type="button" class="link-btn" id="backToMatch" data-i18n="backToMatch" hidden style="margin:4px 0 10px"></button>
   <section id="empty" class="home-cards">
     <div class="home-card">
       <div class="home-ico" aria-hidden="true">🎨</div>
@@ -802,6 +803,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    backToMatch: 'Back to your colour match ›',
     shoppingAt: 'Shopping at {shop}', allShopsLink: 'See all shops',
     tabHome: 'Home', codeSent: 'We emailed you a sign-in code. Type it here (or tap the link in the email).', codeLabel: 'Code from the email', codeVerify: 'Sign in', codeBad: 'That code didn’t work. Check it, or send a new one.', codeResend: 'Send a new code', accNoPassword: 'No password needed. We’ll email you a sign-in code.', checkSpam: 'Not there? Check your spam folder.',
     shadingL: 'Shading', shFlat: 'Flat', shSome: 'Some', shFull: 'Full detail', shadesOf: '{fam} · {n} shades', fam_red: 'Reds', fam_orange: 'Oranges', fam_yellow: 'Yellows', fam_green: 'Greens', fam_teal: 'Teals', fam_blue: 'Blues', fam_purple: 'Purples', fam_pink: 'Pinks', fam_brown: 'Browns', fam_grey: 'Greys', fam_black: 'Blacks', fam_white: 'Whites', shadeBtn: 'Highlight & shadow', highlightL: 'Highlight', shadowL: 'Shadow', noShade: 'No lighter or darker can in this line.', addedShade: 'Added 1 can.', wrongMatch: 'Wrong match?', fbTooLight: 'Can is too light', fbTooDark: 'Can is too dark', fbWrong: 'Wrong colour', fbThanks: 'Thanks! This helps fix the colour data.',
@@ -1011,6 +1013,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    backToMatch: 'Πίσω στην αντιστοίχιση χρώματος ›',
     shoppingAt: 'Αγορές από: {shop}', allShopsLink: 'Όλα τα καταστήματα',
     tabHome: 'Αρχική', codeSent: 'Σου στείλαμε κωδικό σύνδεσης στο email. Γράψ’ τον εδώ (ή πάτα τον σύνδεσμο στο email).', codeLabel: 'Κωδικός από το email', codeVerify: 'Σύνδεση', codeBad: 'Ο κωδικός δεν δούλεψε. Έλεγξέ τον ή ζήτα νέο.', codeResend: 'Στείλε νέο κωδικό', accNoPassword: 'Χωρίς κωδικό πρόσβασης. Θα σου στείλουμε κωδικό σύνδεσης στο email.', checkSpam: 'Δεν ήρθε; Δες και στα ανεπιθύμητα.',
     shadingL: 'Σκίαση', shFlat: 'Επίπεδη', shSome: 'Λίγη', shFull: 'Πλήρης', shadesOf: '{fam} · {n} αποχρώσεις', fam_red: 'Κόκκινα', fam_orange: 'Πορτοκαλί', fam_yellow: 'Κίτρινα', fam_green: 'Πράσινα', fam_teal: 'Τιρκουάζ', fam_blue: 'Μπλε', fam_purple: 'Μωβ', fam_pink: 'Ροζ', fam_brown: 'Καφέ', fam_grey: 'Γκρι', fam_black: 'Μαύρα', fam_white: 'Λευκά', shadeBtn: 'Φως & σκιά', highlightL: 'Φως', shadowL: 'Σκιά', noShade: 'Δεν υπάρχει πιο ανοιχτό ή πιο σκούρο σπρέι σε αυτή τη σειρά.', addedShade: 'Προστέθηκε 1 σπρέι.', wrongMatch: 'Λάθος αντιστοίχιση;', fbTooLight: 'Το σπρέι είναι πιο ανοιχτό', fbTooDark: 'Το σπρέι είναι πιο σκούρο', fbWrong: 'Λάθος χρώμα', fbThanks: 'Ευχαριστούμε! Αυτό βοηθά να διορθωθούν τα χρώματα.',
@@ -1220,6 +1223,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    backToMatch: 'Revenir à votre correspondance ›',
     shoppingAt: 'Vous achetez chez {shop}', allShopsLink: 'Voir tous les magasins',
     tabHome: 'Accueil', codeSent: 'Nous vous avons envoyé un code de connexion. Saisissez-le ici (ou touchez le lien dans l’e-mail).', codeLabel: 'Code reçu par e-mail', codeVerify: 'Se connecter', codeBad: 'Ce code ne fonctionne pas. Vérifiez-le ou demandez-en un nouveau.', codeResend: 'Envoyer un nouveau code', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un code de connexion par e-mail.', checkSpam: 'Rien reçu ? Regardez dans les indésirables.',
     shadingL: 'Ombrage', shFlat: 'Aplat', shSome: 'Léger', shFull: 'Détaillé', shadesOf: '{fam} · {n} nuances', fam_red: 'Rouges', fam_orange: 'Oranges', fam_yellow: 'Jaunes', fam_green: 'Verts', fam_teal: 'Turquoises', fam_blue: 'Bleus', fam_purple: 'Violets', fam_pink: 'Roses', fam_brown: 'Bruns', fam_grey: 'Gris', fam_black: 'Noirs', fam_white: 'Blancs', shadeBtn: 'Lumière et ombre', highlightL: 'Lumière', shadowL: 'Ombre', noShade: 'Pas de bombe plus claire ou plus foncée dans cette gamme.', addedShade: '1 bombe ajoutée.', wrongMatch: 'Mauvaise correspondance ?', fbTooLight: 'La bombe est trop claire', fbTooDark: 'La bombe est trop foncée', fbWrong: 'Mauvaise couleur', fbThanks: 'Merci ! Cela aide à corriger les couleurs.',
@@ -2360,7 +2364,7 @@ function loadFile(file) {
     $('results').hidden = true; $('resetLight').hidden = true; $('cancelLight').hidden = true; $('fixLight').hidden = false;
     rebuildShown(); setHint('tap');
     URL.revokeObjectURL(url);
-    $('empty').hidden = true; $('viewer').hidden = false;
+    $('empty').hidden = true; $('viewer').hidden = false; $('backToMatch').hidden = true;
   };
   img.onerror = () => alert(t('badImage'));
   img.src = url;
@@ -3250,11 +3254,23 @@ function renderMyOrders() {
 function setTab(id) {
   ['tabMatch', 'openDesign', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });
 }
+// Home always shows the two options. A colour match in progress isn't lost: "Back to your colour match" reopens it.
 function goMatch() {
   placeFilters('match'); placeLoc('home');
   $('listSheet').hidden = true; $('settingsSheet').hidden = true; $('designSheet').hidden = true; setTab('tabMatch');
-  if (lastSample) showResults(); renderListCount();
+  showHomeCards(); renderListCount();
 }
+function showHomeCards() {
+  const hadPhoto = !$('viewer').hidden || !$('results').hidden || !!originalData;
+  $('viewer').hidden = true; $('results').hidden = true; $('empty').hidden = false;
+  $('backToMatch').hidden = !hadPhoto;
+  window.scrollTo(0, 0);
+}
+$('backToMatch').addEventListener('click', () => {
+  $('backToMatch').hidden = true; $('empty').hidden = true;
+  if (originalData) $('viewer').hidden = false;
+  if (lastSample) showResults();
+});
 $('tabMatch').addEventListener('click', goMatch);
 $('openList').addEventListener('click', () => { $('settingsSheet').hidden = true; $('designSheet').hidden = true; renderList(); $('listSheet').hidden = false; setTab('openList'); });
 $('closeList').addEventListener('click', () => navBack());
@@ -3745,7 +3761,11 @@ $('dlRangeAse')?.addEventListener('click', () => { const r = rangePaints(); down
 
 /* ---------- Design tab ---------- */
 $('openDesign').addEventListener('click', () => { openDesignTab(); if (designOrig) runDesign(); });
-$('homeDesignFile').addEventListener('change', e => { openDesignTab(); loadDesignFile(e.target.files[0]); e.target.value = ''; });
+// Uploading from Home opens Design at the top, so the shop controls and the new design are in view
+$('homeDesignFile').addEventListener('change', e => {
+  openDesignTab(); $('designSheet').scrollTop = 0; loadDesignFile(e.target.files[0]); e.target.value = '';
+  setTimeout(() => { $('designSheet').scrollTop = 0; }, 400);
+});
 $('designPromptBtn').addEventListener('click', () => { openDesignTab(); if (designOrig) runDesign(); });
 
 
