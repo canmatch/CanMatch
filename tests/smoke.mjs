@@ -39,6 +39,7 @@ console.log('App');
   const { page, errors } = await open('index.html');
   if (await page.isVisible('#welcomeStart')) await page.click('#welcomeStart');
   check(await page.isVisible('#empty'), 'home screen shows');
+  await page.evaluate(() => { document.getElementById('findCard').hidden = false; });   // search is hidden for now; still tested
   await page.fill('#colorSearch', 'RV-241'); await page.waitForTimeout(400);
   const rows = await page.locator('#searchList .find-row').count();
   check(rows > 0, `search finds cans (${rows})`);
