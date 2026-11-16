@@ -341,7 +341,8 @@
 <main id="app">
   <h1>Kromatch</h1>
   <p class="tagline" data-i18n="taglineMatch"></p>
-  <div class="loc-bar"><span aria-hidden="true">📍</span><span id="locText"></span>
+  <div id="locSlotHome"></div>
+  <div id="locBlock"><div class="loc-bar"><span aria-hidden="true">📍</span><span id="locText"></span>
     <button type="button" class="link-btn" id="locChange" data-i18n="locChange"></button>
     <button type="button" class="link-btn" id="seeShops" data-i18n="seeShops" hidden></button></div>
   <label class="shop-pick" id="shopPick" hidden><span data-i18n="shopLabel"></span>
@@ -349,7 +350,7 @@
   <div class="loc-suggest" id="locSuggest" hidden><span id="locSuggestText"></span>
     <div class="row-actions" style="margin-top:8px">
       <button type="button" class="primary small" id="locSwitch" data-i18n="locSwitch"></button>
-      <button type="button" class="secondary small" id="locKeep"></button></div></div>
+      <button type="button" class="secondary small" id="locKeep"></button></div></div></div>
 
   <section id="empty" class="home-cards">
     <div class="home-card">
@@ -366,7 +367,7 @@
       <label class="primary"><span data-i18n="takePhoto"></span><input id="file" type="file" accept="image/*"></label>
       <p class="note" data-i18n="shootHint"></p>
     </div>
-    <div class="home-card" id="findCard">
+    <div class="home-card" id="findCard" hidden>
       <div class="home-ico" aria-hidden="true">🔎</div>
       <h2 data-i18n="searchTitle"></h2>
       <p data-i18n="searchDesc"></p>
@@ -429,8 +430,8 @@
 
 <button type="button" class="go-cart" id="goCart" hidden></button>
 <nav class="tabbar" aria-label="Kromatch">
+  <button type="button" class="tab" id="tabMatch" aria-current="page"><span class="tab-ico" aria-hidden="true">⌂</span><span data-i18n="tabHome"></span></button>
   <button type="button" class="tab" id="openDesign"><span class="tab-ico" aria-hidden="true">✎</span><span data-i18n="tabDesign"></span></button>
-  <button type="button" class="tab" id="tabMatch" aria-current="page"><span class="tab-ico" aria-hidden="true">◎</span><span data-i18n="tabMatch"></span></button>
   <button type="button" class="tab" id="openList"><span class="tab-ico" aria-hidden="true">🛒<span class="badge" id="listCount">0</span></span><span data-i18n="list"></span></button>
   <button type="button" class="tab" id="openSettings"><span class="tab-ico" aria-hidden="true">⚙</span><span data-i18n="settings"></span></button>
 </nav>
@@ -495,6 +496,12 @@
     <label class="field"><span data-i18n="email"></span><input id="accSignEmail" type="email" autocomplete="email"></label>
     <button type="button" class="primary buy" id="accEmailBtn" data-i18n="continueEmail"></button>
     <p class="note" data-i18n="accNoPassword"></p>
+    <div id="accCodeBox" hidden>
+      <p class="hint ok" data-i18n="codeSent"></p>
+      <label class="field"><span data-i18n="codeLabel"></span><input id="accCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" style="font-size:1.4rem;letter-spacing:4px"></label>
+      <button type="button" class="primary buy" id="accCodeBtn" data-i18n="codeVerify"></button>
+      <p class="note"><span data-i18n="checkSpam"></span> <button type="button" class="link-btn" id="accResend" data-i18n="codeResend"></button></p>
+    </div>
     <div class="sheet-actions" id="accSocial">
       <button type="button" class="secondary buy" id="accGoogle" data-i18n="continueGoogle" hidden></button>
       <button type="button" class="secondary buy" id="accApple" data-i18n="continueApple" hidden></button>
@@ -542,6 +549,7 @@
     <button type="button" class="back-btn" data-back><span aria-hidden="true">‹</span> <span data-i18n="back"></span></button>
     <h2 id="designTitle" data-i18n="designTitle"></h2>
     <p class="tagline" data-i18n="designIntro"></p>
+    <div id="locSlotDesign"></div>
     <label class="primary"><span data-i18n="uploadDesign"></span><input id="designFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
     <p class="note" data-i18n="designTip"></p>
     <div class="wall-box">
@@ -731,9 +739,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-18-acc"></script>
-<script src="shops.js?v=2026-11-18-acc"></script>
-<script src="config.js?v=2026-11-18-acc"></script>
+<script src="colors.js?v=2026-11-19-ux"></script>
+<script src="shops.js?v=2026-11-19-ux"></script>
+<script src="config.js?v=2026-11-19-ux"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -794,6 +802,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    tabHome: 'Home', codeSent: 'We emailed you a sign-in code. Type it here (or tap the link in the email).', codeLabel: 'Code from the email', codeVerify: 'Sign in', codeBad: 'That code didn’t work. Check it, or send a new one.', codeResend: 'Send a new code', accNoPassword: 'No password needed. We’ll email you a sign-in code.', checkSpam: 'Not there? Check your spam folder.',
     shadingL: 'Shading', shFlat: 'Flat', shSome: 'Some', shFull: 'Full detail', shadesOf: '{fam} · {n} shades', fam_red: 'Reds', fam_orange: 'Oranges', fam_yellow: 'Yellows', fam_green: 'Greens', fam_teal: 'Teals', fam_blue: 'Blues', fam_purple: 'Purples', fam_pink: 'Pinks', fam_brown: 'Browns', fam_grey: 'Greys', fam_black: 'Blacks', fam_white: 'Whites', shadeBtn: 'Highlight & shadow', highlightL: 'Highlight', shadowL: 'Shadow', noShade: 'No lighter or darker can in this line.', addedShade: 'Added 1 can.', wrongMatch: 'Wrong match?', fbTooLight: 'Can is too light', fbTooDark: 'Can is too dark', fbWrong: 'Wrong colour', fbThanks: 'Thanks! This helps fix the colour data.',
     st_expired: 'Expired', odExpiredNote: 'The shop held your cans until {date}, then put them back. You haven’t paid anything.', odCancelledByYou: 'You cancelled this order. You haven’t paid anything.', holdUntil: 'Held for you until {date}', cancelOrder: 'Cancel order', cancelConfirm: 'Cancel this order? The shop will put the cans back on the shelf.', orderCancelled: 'Order cancelled. The shop has been told.', collectQ: 'Did you collect your cans?', yesGot: 'Yes, I got them', noDidnt: 'No, I didn’t', collectThanks: 'Thanks! That helps keep Kromatch fair.', notifyMe: '🔔 Tell me when it’s ready', notifyOn: 'Notifications are on. We’ll tell you when your cans are ready.', notifyFail: 'Notifications aren’t available on this phone. You’ll still get an email.', notifyIos: 'On iPhone, first add Kromatch to your Home Screen (Share › Add to Home Screen), then open it from there.', notifyDenied: 'Notifications are blocked for Kromatch. You can allow them in your phone’s settings.', shopPaused: 'Not taking orders right now', openNow: 'Open now', closedNow: 'Closed now', untilT: 'until {time}', opensT: 'opens {when}', hoursT: 'Opening hours', closedDay: 'Closed', today: 'today', dMon: 'Mon', dTue: 'Tue', dWed: 'Wed', dThu: 'Thu', dFri: 'Fri', dSat: 'Sat', dSun: 'Sun', shopInfo: 'Shop info', seeShops: 'See shops', shopsIn: 'Shops in {city}', whatSell: 'What they sell', perCan: '{price} per can', deliversT: 'Delivers: {fee}', pickupOnlyS: 'Pickup only', holdInfo: 'Orders are held for {n} days.', websiteL: 'Website', testShopNote: 'Test shop: orders here are only a demo.', closedOrderNote: '{shop} is closed right now. They’ll see your order when they open.', searchTitle: 'Know the colour?', searchDesc: 'Search by colour name or code, like “RV-241”, “Shock Blue” or “#ff3300”.', searchPh: 'Name, code or #hex', searchNone: 'Nothing found. Try part of the name or the code.', searchMore: '{n} more. Type more to narrow it down.', favTitle: '★ Your favourites', favAdd: 'Add to favourites', favRemove: 'Remove from favourites', botCheck: 'Please tick the box to show you’re not a robot.', notInStock: 'out of stock here',
     shareDataNote: 'Only which colours are matched and which cans are chosen, with your city. Never your name, email, photos or location. Used to improve Kromatch and, in summary form, shared with paint makers.',
@@ -812,12 +821,12 @@ const T = {
     viewOrder: 'View order',
     goToCart: 'Go to cart · {n}',
     holdOriginal: 'This is your design painted with the cans below. Touch and hold it to see your original.',
-    taglineMatch: 'Find the right can for any colour.',
+    taglineMatch: 'Plan a mural, or find the right can for any colour.',
     allShopsIn: 'All shops in {city}',
     shopLabel: 'Shop',
     addedOne: 'Added 1 can to your cart.',
     back: 'Back',
-    welcomeP1: 'Match a colour from any photo', welcomeP2: 'Plan a whole mural from your sketch', welcomeP3: 'Reserve the cans at a shop near you', welcomeStart: 'Start', privacyLink: 'Privacy policy', rememberMe: 'Remember my details on this phone', accPromptTitle: 'Keep your orders and designs', accPromptText: 'Create a free account to track orders and save designs on any device.', accCreate: 'Create free account', notNow: 'Not now', accTitle: 'Your Kromatch account', accBenefits: 'Free. Track your orders and save your designs on any phone or computer.', continueEmail: 'Continue with email', continueGoogle: 'Continue with Google', continueApple: 'Continue with Apple', accLinkSent: 'Check your email and tap the link to sign in.', accError: 'Couldn’t send the link: {m}', accNoPassword: 'No password needed. We’ll email you a sign-in link.', signedInAs: 'Signed in as {email}', signOut: 'Sign out', deleteAccount: 'Delete account', deleteConfirm: 'Delete your account, saved designs and profile? Orders already sent to shops stay with the shops. This can’t be undone.', accDeleted: 'Your account was deleted.', accOrSignIn: 'Create account or sign in', accLocalNote: 'Without an account, your details stay only on this phone.', accSyncedNote: 'Your details are saved to your account.', saveDesign: 'Save design', designNamePrompt: 'Name this design', myDesigns: 'My designs', openDesign: 'Open', designSaved: 'Design saved.', signInToSave: 'Create a free account to save designs.', noDesigns: 'No saved designs yet.',
+    welcomeP1: 'Match a colour from any photo', welcomeP2: 'Plan a mural from your sketch', welcomeP3: 'Reserve the cans at a shop near you', welcomeStart: 'Start', privacyLink: 'Privacy policy', rememberMe: 'Remember my details on this phone', accPromptTitle: 'Keep your orders and designs', accPromptText: 'Create a free account to track orders and save designs on any device.', accCreate: 'Create free account', notNow: 'Not now', accTitle: 'Your Kromatch account', accBenefits: 'Free. Track your orders and save your designs on any phone or computer.', continueEmail: 'Continue with email', continueGoogle: 'Continue with Google', continueApple: 'Continue with Apple', accLinkSent: 'Check your email and tap the link to sign in.', accError: 'Couldn’t send the link: {m}', accNoPassword: 'No password needed. We’ll email you a sign-in link.', signedInAs: 'Signed in as {email}', signOut: 'Sign out', deleteAccount: 'Delete account', deleteConfirm: 'Delete your account, saved designs and profile? Orders already sent to shops stay with the shops. This can’t be undone.', accDeleted: 'Your account was deleted.', accOrSignIn: 'Create account or sign in', accLocalNote: 'Without an account, your details stay only on this phone.', accSyncedNote: 'Your details are saved to your account.', saveDesign: 'Save design', designNamePrompt: 'Name this design', myDesigns: 'My designs', openDesign: 'Open', designSaved: 'Design saved.', signInToSave: 'Create a free account to save designs.', noDesigns: 'No saved designs yet.',
     yourDetails: 'Your details', consentL: 'I agree to share my name and contact details with {shop} for this order.', needName: 'Please enter your name.', needContact: 'Please enter a phone number or email.', needConsent: 'Please tick the box to share your details with the shop.', sending: 'Sending your order…', sendFail: 'Couldn’t send the order: {m}', orderSent: 'Order sent to {shop}', orderNo: 'Order #{n}', pickupCodeL: 'Pickup code', showCode: 'Show this code in the shop when you collect your cans. You pay in the shop.', deliveryInfo: 'The shop will deliver your cans. You pay on delivery.', emailSentTo: 'A confirmation was sent to {email}.', myOrders: 'My orders', checkStatus: 'Check status', offline: 'no connection, please try again', st_new: 'Sent to shop', st_ready: 'Ready to collect', st_picked_up: 'Collected', st_not_available: 'Not available', st_cancelled: 'Cancelled',
     wallQ: 'How big is the wall?',
     wallWhy: 'Optional. Fill it in to see how many cans of each colour you need.',
@@ -831,14 +840,14 @@ const T = {
     homeMatchDesc: 'Photograph any colour and find the closest can.',
     homeDesignDesc: 'Upload a sketch and get every can you need for the mural.',
     homeDesignNote: 'From Procreate, Photoshop or Illustrator, as PNG or JPG.',
-    designPromptQ: 'Planning a whole piece?',
+    designPromptQ: 'Planning a piece?',
     designPromptBtn: 'Upload your design',
-    s5t: 'Planning a whole piece? Use Design',
+    s5t: 'Planning a piece? Use Design',
     s5d: 'Upload your sketch. Kromatch finds every colour, matches cans and works out how many you need for the wall.',
     autoDetected: 'detected automatically',
     backToAuto: 'Detect colours automatically',
     tabDesign: 'Design',
-    designTitle: 'Plan a whole mural',
+    designTitle: 'Plan a mural',
     designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. Kromatch finds its colours, matches cans and works out how many you need.',
     uploadDesign: 'Upload a design',
     designTip: 'Export as PNG or JPG. The file’s exact colours are used, so no lighting fix is needed.',
@@ -946,7 +955,7 @@ const T = {
     otherCityPh: 'Type your city',
     noShops: 'No shops are listed for your city yet.',
     noCity: 'Choose your city in Settings to see shops near you.',
-    tagline: 'Find the right can for any colour, or plan a whole mural.',
+    tagline: 'Plan a mural, or find the right can for any colour.',
     takePhoto: 'Take or choose a photo',
     shootHint: 'Shoot in daylight, straight on, without flash.',
     tapHint: 'Touch the colour you want to match. Slide your finger to adjust, then let go.',
@@ -1001,6 +1010,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    tabHome: 'Αρχική', codeSent: 'Σου στείλαμε κωδικό σύνδεσης στο email. Γράψ’ τον εδώ (ή πάτα τον σύνδεσμο στο email).', codeLabel: 'Κωδικός από το email', codeVerify: 'Σύνδεση', codeBad: 'Ο κωδικός δεν δούλεψε. Έλεγξέ τον ή ζήτα νέο.', codeResend: 'Στείλε νέο κωδικό', accNoPassword: 'Χωρίς κωδικό πρόσβασης. Θα σου στείλουμε κωδικό σύνδεσης στο email.', checkSpam: 'Δεν ήρθε; Δες και στα ανεπιθύμητα.',
     shadingL: 'Σκίαση', shFlat: 'Επίπεδη', shSome: 'Λίγη', shFull: 'Πλήρης', shadesOf: '{fam} · {n} αποχρώσεις', fam_red: 'Κόκκινα', fam_orange: 'Πορτοκαλί', fam_yellow: 'Κίτρινα', fam_green: 'Πράσινα', fam_teal: 'Τιρκουάζ', fam_blue: 'Μπλε', fam_purple: 'Μωβ', fam_pink: 'Ροζ', fam_brown: 'Καφέ', fam_grey: 'Γκρι', fam_black: 'Μαύρα', fam_white: 'Λευκά', shadeBtn: 'Φως & σκιά', highlightL: 'Φως', shadowL: 'Σκιά', noShade: 'Δεν υπάρχει πιο ανοιχτό ή πιο σκούρο σπρέι σε αυτή τη σειρά.', addedShade: 'Προστέθηκε 1 σπρέι.', wrongMatch: 'Λάθος αντιστοίχιση;', fbTooLight: 'Το σπρέι είναι πιο ανοιχτό', fbTooDark: 'Το σπρέι είναι πιο σκούρο', fbWrong: 'Λάθος χρώμα', fbThanks: 'Ευχαριστούμε! Αυτό βοηθά να διορθωθούν τα χρώματα.',
     st_expired: 'Έληξε', odExpiredNote: 'Το κατάστημα κράτησε τα σπρέι σου έως {date} και μετά τα επέστρεψε στο ράφι. Δεν πλήρωσες τίποτα.', odCancelledByYou: 'Ακύρωσες αυτή την παραγγελία. Δεν πλήρωσες τίποτα.', holdUntil: 'Κρατιέται για σένα έως {date}', cancelOrder: 'Ακύρωση παραγγελίας', cancelConfirm: 'Να ακυρωθεί η παραγγελία; Το κατάστημα θα επιστρέψει τα σπρέι στο ράφι.', orderCancelled: 'Η παραγγελία ακυρώθηκε. Το κατάστημα ενημερώθηκε.', collectQ: 'Παρέλαβες τα σπρέι σου;', yesGot: 'Ναι, τα πήρα', noDidnt: 'Όχι, δεν τα πήρα', collectThanks: 'Ευχαριστούμε! Έτσι το Kromatch μένει δίκαιο για όλους.', notifyMe: '🔔 Ειδοποίησέ με όταν είναι έτοιμη', notifyOn: 'Οι ειδοποιήσεις είναι ενεργές. Θα σου πούμε όταν τα σπρέι είναι έτοιμα.', notifyFail: 'Οι ειδοποιήσεις δεν υποστηρίζονται σε αυτό το κινητό. Θα λάβεις email.', notifyIos: 'Σε iPhone, πρόσθεσε πρώτα το Kromatch στην Αρχική οθόνη (Κοινοποίηση › Προσθήκη στην οθόνη Αφετηρίας) και άνοιξέ το από εκεί.', notifyDenied: 'Οι ειδοποιήσεις για το Kromatch είναι αποκλεισμένες. Μπορείς να τις επιτρέψεις στις ρυθμίσεις του κινητού.', shopPaused: 'Δεν δέχεται παραγγελίες αυτή τη στιγμή', openNow: 'Ανοιχτό τώρα', closedNow: 'Κλειστό τώρα', untilT: 'έως {time}', opensT: 'ανοίγει {when}', hoursT: 'Ωράριο', closedDay: 'Κλειστό', today: 'σήμερα', dMon: 'Δευ', dTue: 'Τρι', dWed: 'Τετ', dThu: 'Πεμ', dFri: 'Παρ', dSat: 'Σάβ', dSun: 'Κυρ', shopInfo: 'Πληροφορίες καταστήματος', seeShops: 'Καταστήματα', shopsIn: 'Καταστήματα: {city}', whatSell: 'Τι πουλάει', perCan: '{price} το σπρέι', deliversT: 'Αποστολή: {fee}', pickupOnlyS: 'Μόνο παραλαβή', holdInfo: 'Οι παραγγελίες κρατιούνται {n} ημέρες.', websiteL: 'Ιστότοπος', testShopNote: 'Δοκιμαστικό κατάστημα: οι παραγγελίες εδώ είναι μόνο επίδειξη.', closedOrderNote: 'Το {shop} είναι κλειστό τώρα. Θα δει την παραγγελία σου μόλις ανοίξει.', searchTitle: 'Ξέρεις το χρώμα;', searchDesc: 'Ψάξε με όνομα ή κωδικό χρώματος, π.χ. «RV-241», «Shock Blue» ή «#ff3300».', searchPh: 'Όνομα, κωδικός ή #hex', searchNone: 'Δεν βρέθηκε τίποτα. Δοκίμασε μέρος του ονόματος ή τον κωδικό.', searchMore: 'Άλλα {n}. Γράψε περισσότερα για να περιορίσεις.', favTitle: '★ Τα αγαπημένα σου', favAdd: 'Προσθήκη στα αγαπημένα', favRemove: 'Αφαίρεση από τα αγαπημένα', botCheck: 'Τσέκαρε το κουτάκι για να δείξεις ότι δεν είσαι ρομπότ.', notInStock: 'εξαντλημένο εδώ',
     shareDataNote: 'Μόνο ποια χρώματα ταιριάζονται και ποια σπρέι επιλέγονται, μαζί με την πόλη σου. Ποτέ όνομα, email, φωτογραφίες ή τοποθεσία. Χρησιμοποιούνται για τη βελτίωση του Kromatch και, συγκεντρωτικά, κοινοποιούνται σε κατασκευαστές χρωμάτων.',
@@ -1019,12 +1029,12 @@ const T = {
     viewOrder: 'Προβολή παραγγελίας',
     goToCart: 'Στο καλάθι · {n}',
     holdOriginal: 'Αυτό είναι το σχέδιό σου με τα σπρέι παρακάτω. Άγγιξε και κράτα για να δεις το αρχικό.',
-    taglineMatch: 'Βρες το σωστό σπρέι για κάθε χρώμα.',
+    taglineMatch: 'Σχεδίασε μια τοιχογραφία ή βρες το σωστό σπρέι για κάθε χρώμα.',
     allShopsIn: 'Όλα τα καταστήματα ({city})',
     shopLabel: 'Κατάστημα',
     addedOne: 'Προστέθηκε 1 σπρέι στο καλάθι σου.',
     back: 'Πίσω',
-    welcomeP1: 'Ταίριαξε ένα χρώμα από οποιαδήποτε φωτογραφία', welcomeP2: 'Σχεδίασε ολόκληρη τοιχογραφία από το σκίτσο σου', welcomeP3: 'Κράτησε τα σπρέι σε κατάστημα κοντά σου', welcomeStart: 'Ξεκίνα', privacyLink: 'Πολιτική απορρήτου', rememberMe: 'Να θυμάται τα στοιχεία μου σε αυτό το κινητό', accPromptTitle: 'Κράτα τις παραγγελίες και τα σχέδιά σου', accPromptText: 'Φτιάξε δωρεάν λογαριασμό για να βλέπεις τις παραγγελίες σου και να αποθηκεύεις σχέδια σε κάθε συσκευή.', accCreate: 'Δωρεάν λογαριασμός', notNow: 'Όχι τώρα', accTitle: 'Ο λογαριασμός σου στο Kromatch', accBenefits: 'Δωρεάν. Παρακολούθησε τις παραγγελίες σου και αποθήκευσε τα σχέδιά σου σε κάθε κινητό ή υπολογιστή.', continueEmail: 'Συνέχεια με email', continueGoogle: 'Συνέχεια με Google', continueApple: 'Συνέχεια με Apple', accLinkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.', accError: 'Ο σύνδεσμος δεν στάλθηκε: {m}', accNoPassword: 'Χωρίς κωδικό. Θα σου στείλουμε σύνδεσμο σύνδεσης στο email.', signedInAs: 'Συνδεδεμένος ως {email}', signOut: 'Αποσύνδεση', deleteAccount: 'Διαγραφή λογαριασμού', deleteConfirm: 'Να διαγραφούν ο λογαριασμός, τα σχέδια και το προφίλ σου; Οι παραγγελίες που έχουν ήδη σταλεί μένουν στα καταστήματα. Δεν αναιρείται.', accDeleted: 'Ο λογαριασμός σου διαγράφηκε.', accOrSignIn: 'Δημιουργία λογαριασμού ή σύνδεση', accLocalNote: 'Χωρίς λογαριασμό, τα στοιχεία σου μένουν μόνο σε αυτό το κινητό.', accSyncedNote: 'Τα στοιχεία σου αποθηκεύονται στον λογαριασμό σου.', saveDesign: 'Αποθήκευση σχεδίου', designNamePrompt: 'Δώσε όνομα στο σχέδιο', myDesigns: 'Τα σχέδιά μου', openDesign: 'Άνοιγμα', designSaved: 'Το σχέδιο αποθηκεύτηκε.', signInToSave: 'Φτιάξε δωρεάν λογαριασμό για να αποθηκεύεις σχέδια.', noDesigns: 'Δεν υπάρχουν ακόμα αποθηκευμένα σχέδια.',
+    welcomeP1: 'Ταίριαξε ένα χρώμα από οποιαδήποτε φωτογραφία', welcomeP2: 'Σχεδίασε τοιχογραφία από το σκίτσο σου', welcomeP3: 'Κράτησε τα σπρέι σε κατάστημα κοντά σου', welcomeStart: 'Ξεκίνα', privacyLink: 'Πολιτική απορρήτου', rememberMe: 'Να θυμάται τα στοιχεία μου σε αυτό το κινητό', accPromptTitle: 'Κράτα τις παραγγελίες και τα σχέδιά σου', accPromptText: 'Φτιάξε δωρεάν λογαριασμό για να βλέπεις τις παραγγελίες σου και να αποθηκεύεις σχέδια σε κάθε συσκευή.', accCreate: 'Δωρεάν λογαριασμός', notNow: 'Όχι τώρα', accTitle: 'Ο λογαριασμός σου στο Kromatch', accBenefits: 'Δωρεάν. Παρακολούθησε τις παραγγελίες σου και αποθήκευσε τα σχέδιά σου σε κάθε κινητό ή υπολογιστή.', continueEmail: 'Συνέχεια με email', continueGoogle: 'Συνέχεια με Google', continueApple: 'Συνέχεια με Apple', accLinkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.', accError: 'Ο σύνδεσμος δεν στάλθηκε: {m}', accNoPassword: 'Χωρίς κωδικό. Θα σου στείλουμε σύνδεσμο σύνδεσης στο email.', signedInAs: 'Συνδεδεμένος ως {email}', signOut: 'Αποσύνδεση', deleteAccount: 'Διαγραφή λογαριασμού', deleteConfirm: 'Να διαγραφούν ο λογαριασμός, τα σχέδια και το προφίλ σου; Οι παραγγελίες που έχουν ήδη σταλεί μένουν στα καταστήματα. Δεν αναιρείται.', accDeleted: 'Ο λογαριασμός σου διαγράφηκε.', accOrSignIn: 'Δημιουργία λογαριασμού ή σύνδεση', accLocalNote: 'Χωρίς λογαριασμό, τα στοιχεία σου μένουν μόνο σε αυτό το κινητό.', accSyncedNote: 'Τα στοιχεία σου αποθηκεύονται στον λογαριασμό σου.', saveDesign: 'Αποθήκευση σχεδίου', designNamePrompt: 'Δώσε όνομα στο σχέδιο', myDesigns: 'Τα σχέδιά μου', openDesign: 'Άνοιγμα', designSaved: 'Το σχέδιο αποθηκεύτηκε.', signInToSave: 'Φτιάξε δωρεάν λογαριασμό για να αποθηκεύεις σχέδια.', noDesigns: 'Δεν υπάρχουν ακόμα αποθηκευμένα σχέδια.',
     yourDetails: 'Τα στοιχεία σου', consentL: 'Συμφωνώ να μοιραστώ το όνομα και τα στοιχεία επικοινωνίας μου με το {shop} για αυτή την παραγγελία.', needName: 'Γράψε το όνομά σου.', needContact: 'Γράψε τηλέφωνο ή email.', needConsent: 'Τσέκαρε το κουτάκι για να μοιραστείς τα στοιχεία σου με το κατάστημα.', sending: 'Αποστολή παραγγελίας…', sendFail: 'Η παραγγελία δεν στάλθηκε: {m}', orderSent: 'Η παραγγελία στάλθηκε στο {shop}', orderNo: 'Παραγγελία #{n}', pickupCodeL: 'Κωδικός παραλαβής', showCode: 'Δείξε αυτόν τον κωδικό στο κατάστημα όταν παραλάβεις τα σπρέι. Πληρώνεις στο κατάστημα.', deliveryInfo: 'Το κατάστημα θα σου στείλει τα σπρέι. Πληρώνεις κατά την παράδοση.', emailSentTo: 'Στάλθηκε επιβεβαίωση στο {email}.', myOrders: 'Οι παραγγελίες μου', checkStatus: 'Έλεγχος κατάστασης', offline: 'δεν υπάρχει σύνδεση, δοκίμασε ξανά', st_new: 'Στάλθηκε στο κατάστημα', st_ready: 'Έτοιμη για παραλαβή', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
     wallQ: 'Πόσο μεγάλος είναι ο τοίχος;',
     wallWhy: 'Προαιρετικό. Συμπλήρωσέ το για να δεις πόσα σπρέι από κάθε χρώμα χρειάζεσαι.',
@@ -1045,7 +1055,7 @@ const T = {
     autoDetected: 'εντοπίστηκαν αυτόματα',
     backToAuto: 'Αυτόματος εντοπισμός χρωμάτων',
     tabDesign: 'Σχέδιο',
-    designTitle: 'Σχεδίασε ολόκληρη τοιχογραφία',
+    designTitle: 'Σχεδίασε τοιχογραφία',
     designIntro: 'Ανέβασε ένα σχέδιο από Procreate, Photoshop ή Illustrator. Το Kromatch βρίσκει τα χρώματά του, τα ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι.',
     uploadDesign: 'Ανέβασε σχέδιο',
     designTip: 'Κάνε εξαγωγή σε PNG ή JPG. Χρησιμοποιούνται τα ακριβή χρώματα του αρχείου, οπότε δεν χρειάζεται διόρθωση φωτισμού.',
@@ -1153,7 +1163,7 @@ const T = {
     otherCityPh: 'Γράψε την πόλη σου',
     noShops: 'Δεν υπάρχουν ακόμα καταστήματα για την πόλη σου.',
     noCity: 'Διάλεξε την πόλη σου στις Ρυθμίσεις για να δεις καταστήματα κοντά σου.',
-    tagline: 'Βρες το σωστό σπρέι για κάθε χρώμα ή σχεδίασε ολόκληρη τοιχογραφία.',
+    tagline: 'Σχεδίασε μια τοιχογραφία ή βρες το σωστό σπρέι για κάθε χρώμα.',
     takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία',
     shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
     tapHint: 'Άγγιξε το χρώμα που θέλεις. Σύρε το δάχτυλο για να το ρυθμίσεις και μετά άφησέ το.',
@@ -1208,6 +1218,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    tabHome: 'Accueil', codeSent: 'Nous vous avons envoyé un code de connexion. Saisissez-le ici (ou touchez le lien dans l’e-mail).', codeLabel: 'Code reçu par e-mail', codeVerify: 'Se connecter', codeBad: 'Ce code ne fonctionne pas. Vérifiez-le ou demandez-en un nouveau.', codeResend: 'Envoyer un nouveau code', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un code de connexion par e-mail.', checkSpam: 'Rien reçu ? Regardez dans les indésirables.',
     shadingL: 'Ombrage', shFlat: 'Aplat', shSome: 'Léger', shFull: 'Détaillé', shadesOf: '{fam} · {n} nuances', fam_red: 'Rouges', fam_orange: 'Oranges', fam_yellow: 'Jaunes', fam_green: 'Verts', fam_teal: 'Turquoises', fam_blue: 'Bleus', fam_purple: 'Violets', fam_pink: 'Roses', fam_brown: 'Bruns', fam_grey: 'Gris', fam_black: 'Noirs', fam_white: 'Blancs', shadeBtn: 'Lumière et ombre', highlightL: 'Lumière', shadowL: 'Ombre', noShade: 'Pas de bombe plus claire ou plus foncée dans cette gamme.', addedShade: '1 bombe ajoutée.', wrongMatch: 'Mauvaise correspondance ?', fbTooLight: 'La bombe est trop claire', fbTooDark: 'La bombe est trop foncée', fbWrong: 'Mauvaise couleur', fbThanks: 'Merci ! Cela aide à corriger les couleurs.',
     st_expired: 'Expirée', odExpiredNote: 'Le magasin a gardé vos bombes jusqu’au {date}, puis les a remises en rayon. Vous n’avez rien payé.', odCancelledByYou: 'Vous avez annulé cette commande. Vous n’avez rien payé.', holdUntil: 'Réservée pour vous jusqu’au {date}', cancelOrder: 'Annuler la commande', cancelConfirm: 'Annuler cette commande ? Le magasin remettra les bombes en rayon.', orderCancelled: 'Commande annulée. Le magasin a été prévenu.', collectQ: 'Avez-vous récupéré vos bombes ?', yesGot: 'Oui, je les ai', noDidnt: 'Non, pas encore', collectThanks: 'Merci ! Cela aide à garder Kromatch équitable.', notifyMe: '🔔 Me prévenir quand c’est prêt', notifyOn: 'Notifications activées. Nous vous préviendrons quand vos bombes seront prêtes.', notifyFail: 'Les notifications ne sont pas disponibles sur ce téléphone. Vous recevrez quand même un e-mail.', notifyIos: 'Sur iPhone, ajoutez d’abord Kromatch à l’écran d’accueil (Partager › Sur l’écran d’accueil), puis ouvrez-le depuis là.', notifyDenied: 'Les notifications sont bloquées pour Kromatch. Vous pouvez les autoriser dans les réglages du téléphone.', shopPaused: 'Ne prend pas de commandes pour le moment', openNow: 'Ouvert', closedNow: 'Fermé', untilT: 'jusqu’à {time}', opensT: 'ouvre {when}', hoursT: 'Horaires', closedDay: 'Fermé', today: 'aujourd’hui', dMon: 'lun', dTue: 'mar', dWed: 'mer', dThu: 'jeu', dFri: 'ven', dSat: 'sam', dSun: 'dim', shopInfo: 'Infos magasin', seeShops: 'Voir les magasins', shopsIn: 'Magasins à {city}', whatSell: 'Ce qu’ils vendent', perCan: '{price} la bombe', deliversT: 'Livraison : {fee}', pickupOnlyS: 'Retrait seulement', holdInfo: 'Les commandes sont gardées {n} jours.', websiteL: 'Site web', testShopNote: 'Magasin test : les commandes ici sont une démo.', closedOrderNote: '{shop} est fermé en ce moment. Il verra votre commande à l’ouverture.', searchTitle: 'Vous connaissez la couleur ?', searchDesc: 'Cherchez par nom ou code de couleur, par ex. « RV-241 », « Shock Blue » ou « #ff3300 ».', searchPh: 'Nom, code ou #hex', searchNone: 'Rien trouvé. Essayez une partie du nom ou le code.', searchMore: '{n} de plus. Précisez pour affiner.', favTitle: '★ Vos favoris', favAdd: 'Ajouter aux favoris', favRemove: 'Retirer des favoris', botCheck: 'Cochez la case pour montrer que vous n’êtes pas un robot.', notInStock: 'en rupture ici',
     shareDataNote: 'Seulement les couleurs recherchées et les bombes choisies, avec votre ville. Jamais votre nom, e-mail, photos ou position. Utilisé pour améliorer Kromatch et, sous forme agrégée, partagé avec des fabricants de peinture.',
@@ -1226,12 +1237,12 @@ const T = {
     viewOrder: 'Voir la commande',
     goToCart: 'Voir le panier · {n}',
     holdOriginal: 'Voici votre dessin avec les bombes ci-dessous. Touchez et maintenez pour voir l’original.',
-    taglineMatch: 'Trouvez la bonne bombe pour chaque couleur.',
+    taglineMatch: 'Préparez une fresque, ou trouvez la bonne bombe pour chaque couleur.',
     allShopsIn: 'Tous les magasins à {city}',
     shopLabel: 'Magasin',
     addedOne: '1 bombe ajoutée au panier.',
     back: 'Retour',
-    welcomeP1: 'Trouvez une couleur à partir de n’importe quelle photo', welcomeP2: 'Préparez toute une fresque à partir de votre croquis', welcomeP3: 'Réservez les bombes dans un magasin près de chez vous', welcomeStart: 'Commencer', privacyLink: 'Politique de confidentialité', rememberMe: 'Mémoriser mes coordonnées sur ce téléphone', accPromptTitle: 'Gardez vos commandes et vos projets', accPromptText: 'Créez un compte gratuit pour suivre vos commandes et enregistrer vos projets sur tous vos appareils.', accCreate: 'Créer un compte gratuit', notNow: 'Pas maintenant', accTitle: 'Votre compte Kromatch', accBenefits: 'Gratuit. Suivez vos commandes et enregistrez vos projets sur n’importe quel téléphone ou ordinateur.', continueEmail: 'Continuer avec un e-mail', continueGoogle: 'Continuer avec Google', continueApple: 'Continuer avec Apple', accLinkSent: 'Consultez vos e-mails et touchez le lien pour vous connecter.', accError: 'Le lien n’a pas pu être envoyé\u00a0: {m}', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un lien de connexion par e-mail.', signedInAs: 'Connecté en tant que {email}', signOut: 'Se déconnecter', deleteAccount: 'Supprimer le compte', deleteConfirm: 'Supprimer votre compte, vos projets et votre profil\u202f? Les commandes déjà envoyées restent chez les magasins. Action irréversible.', accDeleted: 'Votre compte a été supprimé.', accOrSignIn: 'Créer un compte ou se connecter', accLocalNote: 'Sans compte, vos coordonnées restent uniquement sur ce téléphone.', accSyncedNote: 'Vos coordonnées sont enregistrées dans votre compte.', saveDesign: 'Enregistrer le projet', designNamePrompt: 'Nommez ce projet', myDesigns: 'Mes projets', openDesign: 'Ouvrir', designSaved: 'Projet enregistré.', signInToSave: 'Créez un compte gratuit pour enregistrer vos projets.', noDesigns: 'Aucun projet enregistré.',
+    welcomeP1: 'Trouvez une couleur à partir de n’importe quelle photo', welcomeP2: 'Préparez une fresque à partir de votre croquis', welcomeP3: 'Réservez les bombes dans un magasin près de chez vous', welcomeStart: 'Commencer', privacyLink: 'Politique de confidentialité', rememberMe: 'Mémoriser mes coordonnées sur ce téléphone', accPromptTitle: 'Gardez vos commandes et vos projets', accPromptText: 'Créez un compte gratuit pour suivre vos commandes et enregistrer vos projets sur tous vos appareils.', accCreate: 'Créer un compte gratuit', notNow: 'Pas maintenant', accTitle: 'Votre compte Kromatch', accBenefits: 'Gratuit. Suivez vos commandes et enregistrez vos projets sur n’importe quel téléphone ou ordinateur.', continueEmail: 'Continuer avec un e-mail', continueGoogle: 'Continuer avec Google', continueApple: 'Continuer avec Apple', accLinkSent: 'Consultez vos e-mails et touchez le lien pour vous connecter.', accError: 'Le lien n’a pas pu être envoyé\u00a0: {m}', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un lien de connexion par e-mail.', signedInAs: 'Connecté en tant que {email}', signOut: 'Se déconnecter', deleteAccount: 'Supprimer le compte', deleteConfirm: 'Supprimer votre compte, vos projets et votre profil\u202f? Les commandes déjà envoyées restent chez les magasins. Action irréversible.', accDeleted: 'Votre compte a été supprimé.', accOrSignIn: 'Créer un compte ou se connecter', accLocalNote: 'Sans compte, vos coordonnées restent uniquement sur ce téléphone.', accSyncedNote: 'Vos coordonnées sont enregistrées dans votre compte.', saveDesign: 'Enregistrer le projet', designNamePrompt: 'Nommez ce projet', myDesigns: 'Mes projets', openDesign: 'Ouvrir', designSaved: 'Projet enregistré.', signInToSave: 'Créez un compte gratuit pour enregistrer vos projets.', noDesigns: 'Aucun projet enregistré.',
     yourDetails: 'Vos coordonnées', consentL: 'J’accepte de partager mon nom et mes coordonnées avec {shop} pour cette commande.', needName: 'Veuillez saisir votre nom.', needContact: 'Veuillez saisir un téléphone ou un e-mail.', needConsent: 'Cochez la case pour partager vos coordonnées avec le magasin.', sending: 'Envoi de la commande…', sendFail: 'La commande n’a pas pu être envoyée\u00a0: {m}', orderSent: 'Commande envoyée à {shop}', orderNo: 'Commande n°{n}', pickupCodeL: 'Code de retrait', showCode: 'Montrez ce code en magasin pour récupérer vos bombes. Vous payez en magasin.', deliveryInfo: 'Le magasin vous livrera. Vous payez à la livraison.', emailSentTo: 'Une confirmation a été envoyée à {email}.', myOrders: 'Mes commandes', checkStatus: 'Voir le statut', offline: 'pas de connexion, réessayez', st_new: 'Envoyée au magasin', st_ready: 'Prête à retirer', st_picked_up: 'Retirée', st_not_available: 'Indisponible', st_cancelled: 'Annulée',
     wallQ: 'Quelle taille fait le mur ?',
     wallWhy: 'Facultatif. Renseignez-le pour voir combien de bombes de chaque couleur il vous faut.',
@@ -1245,14 +1256,14 @@ const T = {
     homeMatchDesc: 'Photographiez n’importe quelle couleur et trouvez la bombe la plus proche.',
     homeDesignDesc: 'Importez un croquis et obtenez toutes les bombes nécessaires pour la fresque.',
     homeDesignNote: 'Depuis Procreate, Photoshop ou Illustrator, en PNG ou JPG.',
-    designPromptQ: 'Vous préparez toute une fresque ?',
+    designPromptQ: 'Vous préparez une fresque ?',
     designPromptBtn: 'Importez votre dessin',
     s5t: 'Toute une fresque ? Utilisez Projet',
     s5d: 'Importez votre croquis. Kromatch trouve chaque couleur, l’associe à des bombes et calcule combien il en faut pour le mur.',
     autoDetected: 'détectées automatiquement',
     backToAuto: 'Détecter les couleurs automatiquement',
     tabDesign: 'Projet',
-    designTitle: 'Préparer toute une fresque',
+    designTitle: 'Préparer une fresque',
     designIntro: 'Importez un croquis depuis Procreate, Photoshop ou Illustrator. Kromatch trouve ses couleurs, les associe à des bombes et calcule combien il vous en faut.',
     uploadDesign: 'Importer un dessin',
     designTip: 'Exportez en PNG ou JPG. Les couleurs exactes du fichier sont utilisées : pas besoin de corriger l’éclairage.',
@@ -1360,7 +1371,7 @@ const T = {
     otherCityPh: 'Saisissez votre ville',
     noShops: 'Aucun magasin n’est encore référencé pour votre ville.',
     noCity: 'Choisissez votre ville dans Réglages pour voir les magasins proches.',
-    tagline: 'Trouvez la bonne bombe pour chaque couleur, ou préparez toute une fresque.',
+    tagline: 'Préparez une fresque, ou trouvez la bonne bombe pour chaque couleur.',
     takePhoto: 'Prendre ou choisir une photo',
     shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
     tapHint: 'Touchez la couleur voulue. Glissez le doigt pour ajuster, puis relâchez.',
@@ -3219,7 +3230,7 @@ function setTab(id) {
   ['tabMatch', 'openDesign', 'openList', 'openSettings'].forEach(x => { if (x === id) $(x).setAttribute('aria-current', 'page'); else $(x).removeAttribute('aria-current'); });
 }
 function goMatch() {
-  placeFilters('match');
+  placeFilters('match'); placeLoc('home');
   $('listSheet').hidden = true; $('settingsSheet').hidden = true; $('designSheet').hidden = true; setTab('tabMatch');
   if (lastSample) showResults(); renderListCount();
 }
@@ -3258,12 +3269,19 @@ const dCanvas = $('designCanvas'), dCtx = dCanvas.getContext('2d', { willReadFre
 let designOrig = null, designMap = null;
 
 $('designFile').addEventListener('change', e => loadDesignFile(e.target.files[0]));
+// The location and shop controls sit on Home, and move to the top of Design when you're there
+function placeLoc(where) {
+  const slot = $(where === 'design' ? 'locSlotDesign' : 'locSlotHome');
+  if ($('locBlock').previousElementSibling !== slot) slot.after($('locBlock'));
+}
+// Whenever Design closes (back button, another tab), the controls go back to Home
+new MutationObserver(() => { if ($('designSheet').hidden) placeLoc('home'); }).observe($('designSheet'), { attributes: true, attributeFilter: ['hidden'] });
 function placeFilters(where) {
   const slot = $(where === 'design' ? 'filterSlotDesign' : 'filterSlotMatch');
   if ($('filterPanel').previousElementSibling !== slot) slot.after($('filterPanel'));
 }
 function openDesignTab() {
-  placeFilters('design'); updateFilterBtn();
+  placeFilters('design'); placeLoc('design'); updateFilterBtn();
   $('listSheet').hidden = true; $('settingsSheet').hidden = true;
   fillRangeSelect(); $('designSheet').hidden = false; setTab('openDesign');
 }
@@ -3519,9 +3537,17 @@ function renderPalette() {
   $('coverageNote').textContent = t('coverageNote').replace('{c}', COVERAGE_M2);
   const totals = {};  // per currency
   let totalCans = 0;
-  const famCount = {}; clusters.forEach(c => { if (c.family) famCount[c.family] = (famCount[c.family] || 0) + 1; });
-  clusters.forEach((c, i) => {
-    if (c.family && famCount[c.family] > 1 && (i === 0 || clusters[i - 1].family !== c.family)) {
+  const famCount = {}, famShare = {};
+  clusters.forEach(c => { if (c.family) { famCount[c.family] = (famCount[c.family] || 0) + 1; famShare[c.family] = (famShare[c.family] || 0) + c.share; } });
+  // Biggest colour family first; inside each family, the closest match first (it shows how good the matches are)
+  const bestD = c => (c.options && c.options[0]) ? c.options[0].d : 99;
+  const order = clusters.map((_, i) => i).sort((a, b) => {
+    const A = clusters[a], B = clusters[b];
+    return ((famShare[B.family] || 0) - (famShare[A.family] || 0)) || String(A.family || '').localeCompare(String(B.family || '')) || (bestD(A) - bestD(B));
+  });
+  order.forEach((i, k) => {
+    const c = clusters[i];
+    if (c.family && famCount[c.family] > 1 && (k === 0 || clusters[order[k - 1]].family !== c.family)) {
       const h = document.createElement('li'); h.className = 'fam-head';
       h.textContent = t('shadesOf').replace('{fam}', t('fam_' + c.family)).replace('{n}', famCount[c.family]); ol.appendChild(h);
     }
@@ -3710,7 +3736,7 @@ const restAuth = () => ({ apikey: CFG.supabaseKey, Authorization: 'Bearer ' + au
 function openAccount(reasonKey) {
   $('accReason').textContent = t(reasonKey || 'accBenefits');
   $('accSignEmail').value = (store.account && store.account.email) || '';
-  $('accMsg').textContent = '';
+  $('accMsg').textContent = ''; $('accCodeBox').hidden = true;
   $('accGoogle').hidden = !(CFG && CFG.google); $('accApple').hidden = !(CFG && CFG.apple);
   $('accountSheet').hidden = false;
 }
@@ -3719,13 +3745,32 @@ $('accOpen').addEventListener('click', () => openAccount());
 $('accPromptYes').addEventListener('click', () => { store.accountPromptDone = true; save(); $('accPrompt').hidden = true; openAccount(); });
 $('accPromptNo').addEventListener('click', () => { store.accountPromptDone = true; save(); $('accPrompt').hidden = true; });
 const backHere = () => location.origin + location.pathname;
-$('accEmailBtn').addEventListener('click', async () => {
+// Signing in: we email a short code that's typed straight into the app, so nothing is lost
+// (a link would reopen the app, sometimes in another browser, and the design in progress would be gone).
+// The email still contains a link too, for people who prefer tapping.
+let afterSignInDo = null;
+async function sendCode() {
   const email = $('accSignEmail').value.trim(); if (!email || !authClient) return;
-  $('accEmailBtn').disabled = true;
+  $('accEmailBtn').disabled = true; $('accMsg').textContent = '';
   const { error } = await authClient.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: backHere() } });
   $('accEmailBtn').disabled = false;
-  $('accMsg').textContent = error ? t('accError').replace('{m}', error.message) : t('accLinkSent');
-});
+  if (error) { $('accMsg').textContent = t('accError').replace('{m}', error.message); return; }
+  $('accCodeBox').hidden = false; $('accCode').value = ''; $('accCode').focus();
+}
+$('accEmailBtn').addEventListener('click', sendCode);
+$('accResend').addEventListener('click', sendCode);
+$('accSignEmail').addEventListener('keydown', e => { if (e.key === 'Enter') sendCode(); });
+async function verifyCode() {
+  const email = $('accSignEmail').value.trim(), token = $('accCode').value.replace(/\D/g, '');
+  if (!email || token.length < 6 || !authClient) return;
+  $('accCodeBtn').disabled = true;
+  const { error } = await authClient.auth.verifyOtp({ email, token, type: 'email' });
+  $('accCodeBtn').disabled = false;
+  if (error) { $('accMsg').textContent = t('codeBad'); return; }
+  $('accMsg').textContent = '';
+}
+$('accCodeBtn').addEventListener('click', verifyCode);
+$('accCode').addEventListener('keydown', e => { if (e.key === 'Enter') verifyCode(); });
 ['google', 'apple'].forEach(provider => $('acc' + provider[0].toUpperCase() + provider.slice(1)).addEventListener('click', async () => {
   if (!authClient) return;
   const { error } = await authClient.auth.signInWithOAuth({ provider, options: { redirectTo: backHere() } });
@@ -3781,6 +3826,7 @@ async function afterSignIn() {
       body: JSON.stringify({ p_order: o.id, p_token: o.token }) }).catch(() => {});
   }
   await loadAccountOrders(); renderMyDesigns(); if (!$('settingsSheet').hidden) renderSettings();
+  if (afterSignInDo) { const f = afterSignInDo; afterSignInDo = null; setTimeout(f, 50); }
 }
 async function loadAccountOrders() {
   if (!authSession) return;
@@ -3803,7 +3849,7 @@ async function loadAccountOrders() {
 /* ---------- Saved designs (account) ---------- */
 $('saveDesignBtn').addEventListener('click', async () => {
   if (!clusters.length) return;
-  if (!authSession) { openAccount('signInToSave'); return; }
+  if (!authSession) { afterSignInDo = () => $('saveDesignBtn').click(); openAccount('signInToSave'); return; }
   const name = (prompt(t('designNamePrompt'), '') || '').trim().slice(0, 80); if (!name) return;
   const data = { source: codesMode ? 'codes' : 'image',
     colours: clusters.map((c, i) => ({ hex: c.hex, share: c.share, pick: c.options[picks[i]] ? c.options[picks[i]].p.id : null })),
@@ -3856,7 +3902,7 @@ if (authClient) {
 }
 
 /* ---------- Welcome (first open only) ---------- */
-if (!store.welcomed) $('welcome').hidden = false;
+// (The separate start page is gone: Home now shows both options and the shop controls straight away.)
 $('welcomeStart').addEventListener('click', () => { store.welcomed = true; save(); $('welcome').hidden = true; });
 
 
