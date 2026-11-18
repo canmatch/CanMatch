@@ -577,6 +577,7 @@
       <p class="note" data-i18n="holdOriginal" style="margin:14px 0 0"></p>
       <div class="photo-wrap" id="designWrap" style="margin-top:10px"><canvas id="designCanvas"></canvas><canvas id="gridCanvas" hidden></canvas></div>
       <label class="tool-row" id="gridRow"><input type="checkbox" id="gridOn"> <span id="gridLabel"></span></label>
+      <p class="note" id="gridStretch" hidden style="margin:0 0 8px"></p>
       <label class="field" id="coloursField"><span id="numColoursLabel"></span>
         <input id="numColours" type="range" min="2" max="40" value="8" style="padding:0"></label>
       <div class="sh-chips" id="shadingChips"><b data-i18n="shadingL"></b>
@@ -598,7 +599,7 @@
       </div>
       <p class="hint ok" id="designMsg" aria-live="polite"></p>
 
-      <button type="button" class="secondary" id="shareListBtn" data-i18n="shareList" style="margin-top:12px"></button>
+      <button type="button" class="secondary" id="shareListBtn" data-i18n="sharePaintList" style="margin-top:12px"></button>
       <button type="button" class="secondary" id="saveDesignBtn" data-i18n="saveDesign" style="margin-top:8px"></button>
     </div>
 
@@ -815,7 +816,8 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
-    surfaceL: 'Surface', sfSmooth: 'Smooth', sfBrick: 'Brick', sfRough: 'Rough concrete', coverageNote2: 'Estimate assumes about {c} m² per can per coat on a smooth wall, plus 10% for overspray. Brick and rough walls take more.', oneLineL: 'Use one paint line for the whole piece', oneLineBest: 'Best line for this design: {line}', gridL: 'Show a grid ({n} squares)', gridNeedsWall: 'Enter the wall size to show a grid.', shareList: 'Share paint list', shareMade: 'Paint list ready.', plWall: 'Wall: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} cans', plAt: 'Prices at {shop}', plFooter: 'Made with Kromatch · kromatch.com', plTitle: 'Paint list',
+    gridStretch: 'Your design is a different shape from the wall, so it will be stretched to fit. For true squares, crop the design to the wall’s shape first ({w} × {h}).',
+    surfaceL: 'Surface', sfSmooth: 'Smooth', sfBrick: 'Brick', sfRough: 'Rough concrete', coverageNote2: 'Estimate assumes about {c} m² per can per coat on a smooth wall, plus 10% for overspray. Brick and rough walls take more.', oneLineL: 'Use one paint line for the whole piece', oneLineBest: 'Best line for this design: {line}', gridL: 'Show a grid ({n} squares)', gridNeedsWall: 'Enter the wall size to show a grid.', sharePaintList: 'Share paint list', shareMade: 'Paint list ready.', plWall: 'Wall: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} cans', plAt: 'Prices at {shop}', plFooter: 'Made with Kromatch · kromatch.com', plTitle: 'Paint list',
     backToMatch: 'Back to your colour match ›',
     shoppingAt: 'Shopping at {shop}', allShopsLink: 'See all shops',
     tabHome: 'Home', codeSent: 'We emailed you a sign-in code. Type it here (or tap the link in the email).', codeLabel: 'Code from the email', codeVerify: 'Sign in', codeBad: 'That code didn’t work. Check it, or send a new one.', codeResend: 'Send a new code', accNoPassword: 'No password needed. We’ll email you a sign-in code.', checkSpam: 'Not there? Check your spam folder.',
@@ -1026,7 +1028,8 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
-    surfaceL: 'Επιφάνεια', sfSmooth: 'Λεία', sfBrick: 'Τούβλο', sfRough: 'Τραχύ μπετό', coverageNote2: 'Η εκτίμηση υποθέτει περίπου {c} m² ανά σπρέι ανά χέρι σε λείο τοίχο, συν 10% για τη διασπορά. Τούβλο και τραχύς τοίχος θέλουν περισσότερο.', oneLineL: 'Μία σειρά χρωμάτων για όλο το έργο', oneLineBest: 'Καλύτερη σειρά για αυτό το σχέδιο: {line}', gridL: 'Πλέγμα (τετράγωνα {n})', gridNeedsWall: 'Γράψε το μέγεθος του τοίχου για να δεις πλέγμα.', shareList: 'Κοινοποίηση λίστας χρωμάτων', shareMade: 'Η λίστα είναι έτοιμη.', plWall: 'Τοίχος: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Σύνολο', plCans: '{n} σπρέι', plAt: 'Τιμές στο {shop}', plFooter: 'Φτιαγμένο με το Kromatch · kromatch.com', plTitle: 'Λίστα χρωμάτων',
+    gridStretch: 'Το σχέδιο έχει άλλες αναλογίες από τον τοίχο, οπότε θα τεντωθεί για να χωρέσει. Για σωστά τετράγωνα, κόψε πρώτα το σχέδιο στις αναλογίες του τοίχου ({w} × {h}).',
+    surfaceL: 'Επιφάνεια', sfSmooth: 'Λεία', sfBrick: 'Τούβλο', sfRough: 'Τραχύ μπετό', coverageNote2: 'Η εκτίμηση υποθέτει περίπου {c} m² ανά σπρέι ανά χέρι σε λείο τοίχο, συν 10% για τη διασπορά. Τούβλο και τραχύς τοίχος θέλουν περισσότερο.', oneLineL: 'Μία σειρά χρωμάτων για όλο το έργο', oneLineBest: 'Καλύτερη σειρά για αυτό το σχέδιο: {line}', gridL: 'Πλέγμα (τετράγωνα {n})', gridNeedsWall: 'Γράψε το μέγεθος του τοίχου για να δεις πλέγμα.', sharePaintList: 'Κοινοποίηση λίστας χρωμάτων', shareMade: 'Η λίστα είναι έτοιμη.', plWall: 'Τοίχος: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Σύνολο', plCans: '{n} σπρέι', plAt: 'Τιμές στο {shop}', plFooter: 'Φτιαγμένο με το Kromatch · kromatch.com', plTitle: 'Λίστα χρωμάτων',
     backToMatch: 'Πίσω στην αντιστοίχιση χρώματος ›',
     shoppingAt: 'Αγορές από: {shop}', allShopsLink: 'Όλα τα καταστήματα',
     tabHome: 'Αρχική', codeSent: 'Σου στείλαμε κωδικό σύνδεσης στο email. Γράψ’ τον εδώ (ή πάτα τον σύνδεσμο στο email).', codeLabel: 'Κωδικός από το email', codeVerify: 'Σύνδεση', codeBad: 'Ο κωδικός δεν δούλεψε. Έλεγξέ τον ή ζήτα νέο.', codeResend: 'Στείλε νέο κωδικό', accNoPassword: 'Χωρίς κωδικό πρόσβασης. Θα σου στείλουμε κωδικό σύνδεσης στο email.', checkSpam: 'Δεν ήρθε; Δες και στα ανεπιθύμητα.',
@@ -1237,7 +1240,8 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
-    surfaceL: 'Surface', sfSmooth: 'Lisse', sfBrick: 'Brique', sfRough: 'Béton brut', coverageNote2: 'Estimation basée sur environ {c} m² par bombe et par couche sur un mur lisse, plus 10 % de perte. La brique et les murs bruts en demandent plus.', oneLineL: 'Une seule gamme pour toute la pièce', oneLineBest: 'Meilleure gamme pour ce dessin : {line}', gridL: 'Afficher une grille (carrés de {n})', gridNeedsWall: 'Indiquez la taille du mur pour afficher une grille.', shareList: 'Partager la liste de peinture', shareMade: 'Liste prête.', plWall: 'Mur : {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} bombes', plAt: 'Prix chez {shop}', plFooter: 'Créé avec Kromatch · kromatch.com', plTitle: 'Liste de peinture',
+    gridStretch: 'Votre dessin n’a pas les mêmes proportions que le mur, il sera donc étiré. Pour de vrais carrés, recadrez d’abord le dessin aux proportions du mur ({w} × {h}).',
+    surfaceL: 'Surface', sfSmooth: 'Lisse', sfBrick: 'Brique', sfRough: 'Béton brut', coverageNote2: 'Estimation basée sur environ {c} m² par bombe et par couche sur un mur lisse, plus 10 % de perte. La brique et les murs bruts en demandent plus.', oneLineL: 'Une seule gamme pour toute la pièce', oneLineBest: 'Meilleure gamme pour ce dessin : {line}', gridL: 'Afficher une grille (carrés de {n})', gridNeedsWall: 'Indiquez la taille du mur pour afficher une grille.', sharePaintList: 'Partager la liste de peinture', shareMade: 'Liste prête.', plWall: 'Mur : {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} bombes', plAt: 'Prix chez {shop}', plFooter: 'Créé avec Kromatch · kromatch.com', plTitle: 'Liste de peinture',
     backToMatch: 'Revenir à votre correspondance ›',
     shoppingAt: 'Vous achetez chez {shop}', allShopsLink: 'Voir tous les magasins',
     tabHome: 'Accueil', codeSent: 'Nous vous avons envoyé un code de connexion. Saisissez-le ici (ou touchez le lien dans l’e-mail).', codeLabel: 'Code reçu par e-mail', codeVerify: 'Se connecter', codeBad: 'Ce code ne fonctionne pas. Vérifiez-le ou demandez-en un nouveau.', codeResend: 'Envoyer un nouveau code', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un code de connexion par e-mail.', checkSpam: 'Rien reçu ? Regardez dans les indésirables.',
@@ -3600,18 +3604,28 @@ function paintGrid(ctx, W, H, scale = 1) {
     ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 3 * scale; ctx.beginPath(); ctx.moveTo(0, Y); ctx.lineTo(W, Y); ctx.stroke();
     ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.2 * scale; ctx.beginPath(); ctx.moveTo(0, Y); ctx.lineTo(W, Y); ctx.stroke();
   }
-  // square numbers along the top and left edge (A, B, C… across; 1, 2, 3… down)
-  ctx.font = `700 ${Math.max(10, Math.round(Math.min(px, py) * g.step * 0.22))}px Archivo, sans-serif`;
-  ctx.textBaseline = 'top'; ctx.lineWidth = 3 * scale; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.fillStyle = '#fff';
-  let col = 0; for (let x = 0; x < g.w - 1e-6; x += g.step, col++) { const s = String.fromCharCode(65 + (col % 26)); const X = x * px + 4 * scale; ctx.strokeText(s, X, 4 * scale); ctx.fillText(s, X, 4 * scale); }
-  let row = 1; for (let y = 0; y < g.h - 1e-6; y += g.step, row++) { if (row === 1) continue; const s = String(row); const Y = y * py + 4 * scale; ctx.strokeText(s, 4 * scale, Y); ctx.fillText(s, 4 * scale, Y); }
+  // letters across the top and numbers down the left, centred in each square (A1 = top-left square)
+  const cellPx = Math.min(px, py) * g.step;
+  ctx.font = `700 ${Math.max(10, Math.min(Math.round(cellPx * 0.16), Math.round(24 * scale)))}px Archivo, sans-serif`;
+  ctx.lineWidth = 3 * scale; ctx.strokeStyle = 'rgba(0,0,0,.75)'; ctx.fillStyle = '#fff'; ctx.lineJoin = 'round';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  let col = 0; for (let x = 0; x < g.w - 1e-6; x += g.step, col++) {
+    const X = (x + Math.min(g.step, g.w - x) / 2) * px, s = String.fromCharCode(65 + (col % 26)); ctx.strokeText(s, X, 3 * scale); ctx.fillText(s, X, 3 * scale); }
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  let row = 1; for (let y = 0; y < g.h - 1e-6; y += g.step, row++) {
+    const Y = (y + Math.min(g.step, g.h - y) / 2) * py, s = String(row); ctx.strokeText(s, 4 * scale, Y); ctx.fillText(s, 4 * scale, Y); }
   ctx.restore();
 }
 function drawGrid() {
   updateGridLabel();
   const c = $('gridCanvas'), d = $('designCanvas');
   const on = $('gridOn').checked && !codesMode && !!designOrig;
-  c.hidden = !on; if (!on) return;
+  c.hidden = !on;
+  // warn when the design's proportions don't match the wall's (the squares would come out as rectangles)
+  const g = gridStep(), ratioWall = g.w / g.h, ratioImg = designOrig ? designOrig.width / designOrig.height : ratioWall;
+  const off = on && Math.abs(ratioImg / ratioWall - 1) > 0.06;
+  $('gridStretch').hidden = !off; if (off) $('gridStretch').textContent = t('gridStretch').replace('{w}', g.w).replace('{h}', g.h + ' ' + g.unit);
+  if (!on) return;
   c.width = d.width; c.height = d.height; c.style.width = d.clientWidth + 'px'; c.style.height = d.clientHeight + 'px';
   const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height);
   paintGrid(ctx, c.width, c.height, Math.max(1, c.width / Math.max(1, d.clientWidth)));
@@ -4037,19 +4051,24 @@ async function makePaintList() {
   g.fillStyle = '#F4F2EE'; g.font = '700 24px Archivo, sans-serif'; g.textAlign = 'center'; g.fillText(t('plFooter'), W / 2, H - 46); g.textAlign = 'left';
   // the same list as text, for apps that only take text
   const text = rows.map(({ o, qty }) => `${qty} × ${o.p.brand} ${o.p.code || ''} ${paintName(o.p)}`.replace(/\s+/g, ' ')).join('\n') + `\n${t('plTotal')}: ${t('plCans').replace('{n}', cans)}${totTxt ? ' · ' + totTxt : ''}\nhttps://kromatch.com`;
-  return { blob: await new Promise(r => cv.toBlob(r, 'image/png')), text };
+  let gridBlob = null;
+  if (img && $('gridOn').checked) gridBlob = await new Promise(r => img.toBlob(r, 'image/png'));
+  return { blob: await new Promise(r => cv.toBlob(r, 'image/png')), gridBlob, text };
 }
 $('shareListBtn').addEventListener('click', async () => {
   if (!clusters.length) return;
   $('shareListBtn').disabled = true;
   try {
-    const { blob, text } = await makePaintList();
-    const file = new File([blob], 'kromatch-paint-list.png', { type: 'image/png' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: 'Kromatch', text });
+    const { blob, gridBlob, text } = await makePaintList();
+    const files = [new File([blob], 'kromatch-paint-list.png', { type: 'image/png' })];
+    if (gridBlob) files.push(new File([gridBlob], 'kromatch-grid.png', { type: 'image/png' }));
+    if (navigator.canShare && navigator.canShare({ files })) {
+      await navigator.share({ files, title: 'Kromatch', text });
     } else {
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'kromatch-paint-list.png';
-      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      files.forEach((f, k) => setTimeout(() => {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name;
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      }, k * 400));
     }
     $('designMsg').textContent = t('shareMade');
   } catch (e) { if (e && e.name !== 'AbortError') $('designMsg').textContent = String(e.message || e); }
