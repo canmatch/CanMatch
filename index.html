@@ -753,9 +753,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-20-mural"></script>
-<script src="shops.js?v=2026-11-20-mural"></script>
-<script src="config.js?v=2026-11-20-mural"></script>
+<script src="colors.js?v=2026-11-20-grid"></script>
+<script src="shops.js?v=2026-11-20-grid"></script>
+<script src="config.js?v=2026-11-20-grid"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -3626,12 +3626,17 @@ function drawGrid() {
   const off = on && Math.abs(ratioImg / ratioWall - 1) > 0.06;
   $('gridStretch').hidden = !off; if (off) $('gridStretch').textContent = t('gridStretch').replace('{w}', g.w).replace('{h}', g.h + ' ' + g.unit);
   if (!on) return;
-  c.width = d.width; c.height = d.height; c.style.width = d.clientWidth + 'px'; c.style.height = d.clientHeight + 'px';
+  // sit exactly on top of the design picture (it's centred, so it isn't always at the left edge)
+  c.width = d.width; c.height = d.height;
+  c.style.left = d.offsetLeft + 'px'; c.style.top = d.offsetTop + 'px';
+  c.style.width = d.clientWidth + 'px'; c.style.height = d.clientHeight + 'px';
   const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height);
   paintGrid(ctx, c.width, c.height, Math.max(1, c.width / Math.max(1, d.clientWidth)));
 }
 $('gridOn').addEventListener('change', drawGrid);
 window.addEventListener('resize', () => { if (!$('gridCanvas').hidden) drawGrid(); });
+// redraw whenever the picture changes size on screen (new design, sheet opening, phone rotating)
+if (window.ResizeObserver) new ResizeObserver(() => { if ($('gridOn').checked) drawGrid(); }).observe($('designCanvas'));
 function drawDesign() {
   if (!designOrig || codesMode) return;
   if (designView === 'orig' || !clusters.length) { dCtx.putImageData(designOrig, 0, 0); }
