@@ -206,6 +206,14 @@
               display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
   .code-box b { font-stretch: 125%; font-weight: 900; font-size: 1.8rem; letter-spacing: 0.03em; }
   .my-order { background: var(--surface); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+  .past-orders { border-top: 1px solid var(--line); margin-top: 22px; padding-top: 6px; }
+  .active-order { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer;
+    background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; padding: 12px 14px; margin: 0 0 10px; }
+  .active-order.ready { background: var(--ink); color: var(--bg); }
+  .active-order .ao-main { flex: 1; min-width: 0; }
+  .active-order .ao-main b { display: block; }
+  .active-order .ao-sub { font-size: 0.85rem; opacity: 0.85; }
+  .active-order .ao-code { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.06em; }
   .my-order .row-actions { margin-top: 6px; }
   .back-btn { font: inherit; font-weight: 700; font-size: 0.95rem; background: none; border: 0; color: var(--ink);
               padding: 6px 2px; margin: 0 0 4px -2px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
@@ -697,10 +705,8 @@
       <h2 id="listTitle" data-i18n="listTitle"></h2>
       <button type="button" class="icon-btn" id="closeList" hidden data-i18n="done"></button>
     </div>
-    <section id="myOrders" hidden>
-      <h3 class="sub-h" data-i18n="myOrders"></h3>
-      <div id="myOrdersList"></div>
-    </section>
+    <!-- orders waiting to be collected: on top, so the pickup code is right there at the counter -->
+    <section id="activeOrders" hidden><div id="activeOrdersList"></div></section>
     <div id="cartEmpty" class="empty" hidden>
       <p data-i18n="listEmpty"></p>
     </div>
@@ -714,6 +720,11 @@
         <p class="hint ok" id="listMsg" aria-live="polite"></p>
       </div>
     </div>
+    <!-- past orders: below the cart -->
+    <section id="myOrders" class="past-orders" hidden>
+      <h3 class="sub-h" data-i18n="myOrders"></h3>
+      <div id="myOrdersList"></div>
+    </section>
   </div>
 </div>
 
@@ -773,9 +784,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-20-smooth"></script>
-<script src="shops.js?v=2026-11-20-smooth"></script>
-<script src="config.js?v=2026-11-20-smooth"></script>
+<script src="colors.js?v=2026-11-20-orders"></script>
+<script src="shops.js?v=2026-11-20-orders"></script>
+<script src="config.js?v=2026-11-20-orders"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -836,6 +847,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    aoReady: 'Ready to collect at {shop}', aoSent: 'Sent to {shop}',
     updateCart: 'Update cart', cartUpdated: 'Cart updated: {n} cans from this design.', designUpdated: 'Design updated.', continueDesign: 'Continue your last design →',
     homeOneQ: 'Just need one colour?', homeOneLink: 'Match it from a photo',
     gridStretch: 'Your design is a different shape from the wall ({w} × {h}), so it would come out stretched.', cropFit: 'Crop to fit', cropHint: 'Drag to choose the part of your design that goes on the wall.', cropUse: 'Use this', cropDone: 'Cropped to the wall’s shape.', cropAdjust: 'Adjust', cropUndo: 'Undo',
@@ -1050,6 +1062,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    aoReady: 'Έτοιμη για παραλαβή: {shop}', aoSent: 'Στάλθηκε: {shop}',
     updateCart: 'Ενημέρωση καλαθιού', cartUpdated: 'Το καλάθι ενημερώθηκε: {n} σπρέι από αυτό το σχέδιο.', designUpdated: 'Το σχέδιο ενημερώθηκε.', continueDesign: 'Συνέχισε το τελευταίο σου σχέδιο →',
     homeOneQ: 'Χρειάζεσαι μόνο ένα χρώμα;', homeOneLink: 'Βρες το από φωτογραφία',
     gridStretch: 'Το σχέδιο έχει άλλο σχήμα από τον τοίχο ({w} × {h}), οπότε θα έβγαινε τεντωμένο.', cropFit: 'Κόψ’ το να ταιριάζει', cropHint: 'Σύρε για να διαλέξεις ποιο κομμάτι του σχεδίου μπαίνει στον τοίχο.', cropUse: 'Αυτό', cropDone: 'Κομμένο στο σχήμα του τοίχου.', cropAdjust: 'Αλλαγή', cropUndo: 'Αναίρεση',
@@ -1264,6 +1277,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    aoReady: 'Prête à retirer chez {shop}', aoSent: 'Envoyée à {shop}',
     updateCart: 'Mettre à jour le panier', cartUpdated: 'Panier mis à jour : {n} bombes pour ce dessin.', designUpdated: 'Projet mis à jour.', continueDesign: 'Reprendre votre dernier dessin →',
     homeOneQ: 'Juste une couleur ?', homeOneLink: 'Trouvez-la avec une photo',
     gridStretch: 'Votre dessin n’a pas la même forme que le mur ({w} × {h}), il serait donc étiré.', cropFit: 'Recadrer', cropHint: 'Faites glisser pour choisir la partie du dessin qui ira sur le mur.', cropUse: 'Valider', cropDone: 'Recadré à la forme du mur.', cropAdjust: 'Ajuster', cropUndo: 'Annuler',
@@ -1478,6 +1492,7 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    aoReady: 'Abholbereit bei {shop}', aoSent: 'An {shop} gesendet',
     updateCart: 'Warenkorb aktualisieren', cartUpdated: 'Warenkorb aktualisiert: {n} Dosen aus diesem Design.', designUpdated: 'Design aktualisiert.', continueDesign: 'Mit deinem letzten Design weitermachen →',
     homeOneQ: 'Nur eine Farbe?', homeOneLink: 'Per Foto abgleichen',
     shareDataNote: 'Nur welche Farben abgeglichen und welche Dosen gewählt werden, mit deiner Stadt. Nie Name, E-Mail, Fotos oder Standort. Wird zur Verbesserung von Kromatch genutzt und zusammengefasst mit Farbherstellern geteilt.',
@@ -1685,6 +1700,7 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    aoReady: 'Lista para recoger en {shop}', aoSent: 'Enviado a {shop}',
     updateCart: 'Actualizar carrito', cartUpdated: 'Carrito actualizado: {n} sprays de este diseño.', designUpdated: 'Diseño actualizado.', continueDesign: 'Seguir con tu último diseño →',
     homeOneQ: '¿Solo necesitas un color?', homeOneLink: 'Encuéntralo con una foto',
     shareDataNote: 'Solo qué colores se buscan y qué sprays se eligen, con tu ciudad. Nunca tu nombre, correo, fotos ni ubicación. Se usa para mejorar Kromatch y, de forma agregada, se comparte con fabricantes de pintura.',
@@ -1892,6 +1908,7 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    aoReady: 'Pronto da ritirare da {shop}', aoSent: 'Inviato a {shop}',
     updateCart: 'Aggiorna carrello', cartUpdated: 'Carrello aggiornato: {n} bombolette da questo progetto.', designUpdated: 'Progetto aggiornato.', continueDesign: 'Continua il tuo ultimo progetto →',
     homeOneQ: 'Ti serve solo un colore?', homeOneLink: 'Trovalo da una foto',
     shareDataNote: 'Solo quali colori vengono abbinati e quali bombolette scelte, con la tua città. Mai nome, email, foto o posizione. Usati per migliorare Kromatch e, in forma aggregata, condivisi con i produttori di vernici.',
@@ -2099,6 +2116,7 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    aoReady: 'Pronto para retirar em {shop}', aoSent: 'Enviado para {shop}',
     updateCart: 'Atualizar carrinho', cartUpdated: 'Carrinho atualizado: {n} sprays deste projeto.', designUpdated: 'Projeto atualizado.', continueDesign: 'Continuar seu último projeto →',
     homeOneQ: 'Só precisas de uma cor?', homeOneLink: 'Encontra-a com uma foto',
     shareDataNote: 'Apenas quais cores são buscadas e quais sprays são escolhidos, com sua cidade. Nunca seu nome, e-mail, fotos ou localização. Usado para melhorar o Kromatch e, de forma agregada, compartilhado com fabricantes de tinta.',
@@ -2997,8 +3015,27 @@ function itemRow(i, shop) {
   row.querySelector('.remove').addEventListener('click', () => { store.list = store.list.filter(x => x !== i); save(); renderList(); renderListCount(); });
   return row;
 }
+let ordersCheckedAt = 0;
+async function refreshActiveOrders() {
+  if (Date.now() - ordersCheckedAt < 30000) return; ordersCheckedAt = Date.now();
+  const act = (store.orders || []).filter(o => orderActive(o) && o.id && o.token && !o.demo).slice(0, 3);
+  if (!act.length || !CFG || !CFG.functionsUrl) return;
+  let changed = false;
+  await Promise.all(act.map(async o => {
+    try {
+      const r = await fetch(`${CFG.functionsUrl}/get-order`, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CFG.supabaseKey },
+        body: JSON.stringify({ order_id: o.id, token: o.token }) });
+      const j = await r.json();
+      if (j.ok && j.order) {
+        if (j.order.status && j.order.status !== o.status) { o.status = j.order.status; changed = true; }
+        if (j.order.expires_at && j.order.expires_at !== o.expires) { o.expires = j.order.expires_at; changed = true; }
+      }
+    } catch (e) {}
+  }));
+  if (changed) { save(); renderMyOrders(); }
+}
 function renderList() {
-  renderMyOrders();
+  renderMyOrders(); refreshActiveOrders();
   const empty = store.list.length === 0;
   $('cartEmpty').hidden = !empty; $('cartFull').hidden = empty; $('listMsg').textContent = '';
   const box = $('cartGroups'); box.innerHTML = '';
@@ -3284,8 +3321,30 @@ async function turnOnNotify(o, btn, msgEl) {
 }
 
 /* ---------- My orders (saved on this phone) ---------- */
+// An order is still "active" while the shop is getting it ready or holding it for you
+function orderActive(o) {
+  if (!['new', 'ready'].includes(o.status || 'new')) return false;
+  if (o.expires && new Date(o.expires) < new Date()) return false;
+  if (!o.expires && o.created && Date.now() - new Date(o.created) > 14 * 864e5) return false;   // very old with no news: treat as past
+  return true;
+}
 function renderMyOrders() {
-  const list = store.orders || [];
+  const all = store.orders || [];
+  const active = all.filter(orderActive), list = all.filter(o => !orderActive(o));
+  // on top: what's waiting to be collected
+  const top = $('activeOrdersList'); top.innerHTML = '';
+  $('activeOrders').hidden = !active.length;
+  active.slice(0, 3).forEach(o => {
+    const ready = o.status === 'ready';
+    const el = document.createElement('button'); el.type = 'button'; el.className = 'active-order' + (ready ? ' ready' : '');
+    el.innerHTML = '<div class="ao-main"><b></b><div class="ao-sub"></div></div><div class="ao-code"></div>';
+    el.querySelector('b').textContent = t(ready ? 'aoReady' : 'aoSent').replace('{shop}', o.shop || '');
+    el.querySelector('.ao-sub').textContent = `#${o.no} · ${t('pickupCodeL')}`;
+    el.querySelector('.ao-code').textContent = o.code || '';
+    el.addEventListener('click', () => openOrderDetail(o));
+    top.appendChild(el);
+  });
+  // below the cart: past orders
   $('myOrders').hidden = !list.length;
   const box = $('myOrdersList'); box.innerHTML = '';
   list.slice(0, 10).forEach(o => {
