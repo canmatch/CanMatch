@@ -374,6 +374,7 @@
       <p data-i18n="homeDesignDesc"></p>
       <label class="primary"><span data-i18n="uploadDesign"></span><input id="homeDesignFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
       <p class="note" data-i18n="homeDesignNote"></p>
+      <button type="button" class="link-btn" id="continueDesign" data-i18n="continueDesign" hidden style="display:block;margin:10px 0 0;padding:4px 0"></button>
     </div>
     <!-- secondary: matching a single colour -->
     <div class="home-one" id="homeOne">
@@ -613,7 +614,7 @@
       <div id="estimateBox">
       <p class="note" id="coverageNote"></p>
       <div class="cart-total" id="designTotal"></div>
-      <button type="button" class="primary buy" id="addAll" data-i18n="addAll"></button>
+      <button type="button" class="primary buy" id="addAll"></button>
       </div>
       <p class="hint ok" id="designMsg" aria-live="polite"></p>
 
@@ -772,9 +773,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-20-copy"></script>
-<script src="shops.js?v=2026-11-20-copy"></script>
-<script src="config.js?v=2026-11-20-copy"></script>
+<script src="colors.js?v=2026-11-20-smooth"></script>
+<script src="shops.js?v=2026-11-20-smooth"></script>
+<script src="config.js?v=2026-11-20-smooth"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -835,6 +836,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    updateCart: 'Update cart', cartUpdated: 'Cart updated: {n} cans from this design.', designUpdated: 'Design updated.', continueDesign: 'Continue your last design →',
     homeOneQ: 'Just need one colour?', homeOneLink: 'Match it from a photo',
     gridStretch: 'Your design is a different shape from the wall ({w} × {h}), so it would come out stretched.', cropFit: 'Crop to fit', cropHint: 'Drag to choose the part of your design that goes on the wall.', cropUse: 'Use this', cropDone: 'Cropped to the wall’s shape.', cropAdjust: 'Adjust', cropUndo: 'Undo',
     surfaceL: 'Surface', sfSmooth: 'Smooth', sfBrick: 'Brick', sfRough: 'Rough concrete', coverageNote2: 'Estimate assumes about {c} m² per can per coat on a smooth wall, plus 10% for overspray. Brick and rough walls take more.', oneLineL: 'Use one paint line for the whole piece', oneLineBest: 'Best line for this design: {line}', gridL: 'Show a grid ({n} squares)', gridNeedsWall: 'Enter the wall size to show a grid.', sharePaintList: 'Share paint list', shareMade: 'Paint list ready.', plWall: 'Wall: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} cans', plAt: 'Prices at {shop}', plFooter: 'Made with Kromatch · kromatch.com', plTitle: 'Paint list',
@@ -1048,6 +1050,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    updateCart: 'Ενημέρωση καλαθιού', cartUpdated: 'Το καλάθι ενημερώθηκε: {n} σπρέι από αυτό το σχέδιο.', designUpdated: 'Το σχέδιο ενημερώθηκε.', continueDesign: 'Συνέχισε το τελευταίο σου σχέδιο →',
     homeOneQ: 'Χρειάζεσαι μόνο ένα χρώμα;', homeOneLink: 'Βρες το από φωτογραφία',
     gridStretch: 'Το σχέδιο έχει άλλο σχήμα από τον τοίχο ({w} × {h}), οπότε θα έβγαινε τεντωμένο.', cropFit: 'Κόψ’ το να ταιριάζει', cropHint: 'Σύρε για να διαλέξεις ποιο κομμάτι του σχεδίου μπαίνει στον τοίχο.', cropUse: 'Αυτό', cropDone: 'Κομμένο στο σχήμα του τοίχου.', cropAdjust: 'Αλλαγή', cropUndo: 'Αναίρεση',
     surfaceL: 'Επιφάνεια', sfSmooth: 'Λεία', sfBrick: 'Τούβλο', sfRough: 'Τραχύ μπετό', coverageNote2: 'Η εκτίμηση υποθέτει περίπου {c} m² ανά σπρέι ανά χέρι σε λείο τοίχο, συν 10% για τη διασπορά. Τούβλο και τραχύς τοίχος θέλουν περισσότερο.', oneLineL: 'Μία σειρά χρωμάτων για όλο το έργο', oneLineBest: 'Καλύτερη σειρά για αυτό το σχέδιο: {line}', gridL: 'Πλέγμα (τετράγωνα {n})', gridNeedsWall: 'Γράψε το μέγεθος του τοίχου για να δεις πλέγμα.', sharePaintList: 'Κοινοποίηση λίστας χρωμάτων', shareMade: 'Η λίστα είναι έτοιμη.', plWall: 'Τοίχος: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Σύνολο', plCans: '{n} σπρέι', plAt: 'Τιμές στο {shop}', plFooter: 'Φτιαγμένο με το Kromatch · kromatch.com', plTitle: 'Λίστα χρωμάτων',
@@ -1261,6 +1264,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    updateCart: 'Mettre à jour le panier', cartUpdated: 'Panier mis à jour : {n} bombes pour ce dessin.', designUpdated: 'Projet mis à jour.', continueDesign: 'Reprendre votre dernier dessin →',
     homeOneQ: 'Juste une couleur ?', homeOneLink: 'Trouvez-la avec une photo',
     gridStretch: 'Votre dessin n’a pas la même forme que le mur ({w} × {h}), il serait donc étiré.', cropFit: 'Recadrer', cropHint: 'Faites glisser pour choisir la partie du dessin qui ira sur le mur.', cropUse: 'Valider', cropDone: 'Recadré à la forme du mur.', cropAdjust: 'Ajuster', cropUndo: 'Annuler',
     surfaceL: 'Surface', sfSmooth: 'Lisse', sfBrick: 'Brique', sfRough: 'Béton brut', coverageNote2: 'Estimation basée sur environ {c} m² par bombe et par couche sur un mur lisse, plus 10 % de perte. La brique et les murs bruts en demandent plus.', oneLineL: 'Une seule gamme pour toute la pièce', oneLineBest: 'Meilleure gamme pour ce dessin : {line}', gridL: 'Afficher une grille (carrés de {n})', gridNeedsWall: 'Indiquez la taille du mur pour afficher une grille.', sharePaintList: 'Partager la liste de peinture', shareMade: 'Liste prête.', plWall: 'Mur : {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} bombes', plAt: 'Prix chez {shop}', plFooter: 'Créé avec Kromatch · kromatch.com', plTitle: 'Liste de peinture',
@@ -1474,6 +1478,7 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    updateCart: 'Warenkorb aktualisieren', cartUpdated: 'Warenkorb aktualisiert: {n} Dosen aus diesem Design.', designUpdated: 'Design aktualisiert.', continueDesign: 'Mit deinem letzten Design weitermachen →',
     homeOneQ: 'Nur eine Farbe?', homeOneLink: 'Per Foto abgleichen',
     shareDataNote: 'Nur welche Farben abgeglichen und welche Dosen gewählt werden, mit deiner Stadt. Nie Name, E-Mail, Fotos oder Standort. Wird zur Verbesserung von Kromatch genutzt und zusammengefasst mit Farbherstellern geteilt.',
     shareData: 'Anonyme Farbdaten teilen, um Kromatch zu verbessern',
@@ -1680,6 +1685,7 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    updateCart: 'Actualizar carrito', cartUpdated: 'Carrito actualizado: {n} sprays de este diseño.', designUpdated: 'Diseño actualizado.', continueDesign: 'Seguir con tu último diseño →',
     homeOneQ: '¿Solo necesitas un color?', homeOneLink: 'Encuéntralo con una foto',
     shareDataNote: 'Solo qué colores se buscan y qué sprays se eligen, con tu ciudad. Nunca tu nombre, correo, fotos ni ubicación. Se usa para mejorar Kromatch y, de forma agregada, se comparte con fabricantes de pintura.',
     shareData: 'Compartir datos de color anónimos para mejorar Kromatch',
@@ -1886,6 +1892,7 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    updateCart: 'Aggiorna carrello', cartUpdated: 'Carrello aggiornato: {n} bombolette da questo progetto.', designUpdated: 'Progetto aggiornato.', continueDesign: 'Continua il tuo ultimo progetto →',
     homeOneQ: 'Ti serve solo un colore?', homeOneLink: 'Trovalo da una foto',
     shareDataNote: 'Solo quali colori vengono abbinati e quali bombolette scelte, con la tua città. Mai nome, email, foto o posizione. Usati per migliorare Kromatch e, in forma aggregata, condivisi con i produttori di vernici.',
     shareData: 'Condividi dati anonimi sui colori per migliorare Kromatch',
@@ -2092,6 +2099,7 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    updateCart: 'Atualizar carrinho', cartUpdated: 'Carrinho atualizado: {n} sprays deste projeto.', designUpdated: 'Projeto atualizado.', continueDesign: 'Continuar seu último projeto →',
     homeOneQ: 'Só precisas de uma cor?', homeOneLink: 'Encontra-a com uma foto',
     shareDataNote: 'Apenas quais cores são buscadas e quais sprays são escolhidos, com sua cidade. Nunca seu nome, e-mail, fotos ou localização. Usado para melhorar o Kromatch e, de forma agregada, compartilhado com fabricantes de tinta.',
     shareData: 'Compartilhar dados de cores anônimos para melhorar o Kromatch',
@@ -2349,6 +2357,7 @@ function applyLang() {
   if (typeof updateLocBar === 'function' && $('locText')) try { updateLocBar(); } catch (e) {}
   renderListCount();
   if (lastSample) showResults();
+  if (typeof updateAddAllLabel === 'function' && $('addAll')) try { updateAddAllLabel(); } catch (e) {}
 }
 
 /* ---------- Setup: language → location → tips ---------- */
@@ -2640,12 +2649,16 @@ function toggleFilters(btn, where) {
 $('filterBtn').addEventListener('click', () => toggleFilters($('filterBtn'), 'match'));
 $('dFilterBtn').addEventListener('click', () => toggleFilters($('dFilterBtn'), 'design'));
 // When filters change, re-match the open design with the cans now allowed (keeps its colours)
-function rematchDesign() {
+function rematchDesign(keep = true) {
   if ($('designSheet').hidden || typeof clusters === 'undefined' || !clusters.length) return;
-  if (codesMode && !designOrig) { runCodes(clusters.map(c => c.hex), clusters.map(c => c.share)); updateFilterBtn(); return; }
+  // the cans the person picked, so they survive when the list of allowed cans changes
+  const was = keep ? clusters.map((c, i) => c.options[picks[i]] ? c.options[picks[i]].p.id : null) : null;
+  const qtyWas = keep ? Object.assign({}, qtyOverride) : {};
+  if (codesMode && !designOrig) { runCodes(clusters.map(c => c.hex), clusters.map(c => c.share), was); qtyOverride = qtyWas; renderPalette(); updateFilterBtn(); return; }
   const cands = designCands(clusters.map(c => c.lab), clusters.map(c => c.share)); showOneLineNote();
   clusters.forEach(c => { c.options = cands.map(p => ({ p, d: deltaE2000(c.lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5); });
-  picks = clusters.map(() => 0); qtyOverride = {};
+  picks = clusters.map((c, i) => { const k = was ? c.options.findIndex(o => o.p.id === was[i]) : -1; return k >= 0 ? k : 0; });
+  qtyOverride = qtyWas;
   drawDesign(); renderPalette(); updateFilterBtn();
 }
 
@@ -3350,7 +3363,7 @@ function showOneLineNote() {
 $('oneLine').addEventListener('change', e => {
   oneLine = e.target.checked;
   if (codesMode && clusters.length) { runCodes(clusters.map(c => c.hex), clusters.map(c => c.share)); return; }
-  rematchDesign();
+  rematchDesign(false);
 });
 function candidatePaints() {
   return PAINTS.filter(p => activeBrands.has(p.brand) && (includeSpecial || p.finish === 'solid')
@@ -3378,6 +3391,9 @@ const COVERAGE_M2 = 2;            // m² per 400 ml can per coat (typical; varie
 let designImg = null, designPixels = null, clusters = [], picks = [], designView = 'cans';
 const dCanvas = $('designCanvas'), dCtx = dCanvas.getContext('2d', { willReadFrequently: true });
 let designOrig = null, designMap = null;
+// the design being worked on: an id (for the cart), a small copy of its picture (for saving), and its saved copy in the account, if any
+let designUid = '', designImgData = '', savedDesignId = null, restoringDesign = false;
+const newUid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 
 $('designFile').addEventListener('change', e => loadDesignFile(e.target.files[0]));
 // The location and shop controls sit on Home, and move to the top of Design when you're there
@@ -3473,7 +3489,8 @@ function loadDesignFile(file) {
   if (!file) return;
   const url = URL.createObjectURL(file), img = new Image();
   img.onload = () => {
-    designImg = img; crop = null; closeCrop(); buildDesignPixels(); URL.revokeObjectURL(url); autoColours = true; designSerial++; estimateOn = false; setDesignMode(false);
+    designImg = img; crop = null; closeCrop(); buildDesignPixels(); URL.revokeObjectURL(url);
+    designUid = newUid(); savedDesignId = null; designImgData = imageToData(img); autoColours = true; designSerial++; estimateOn = false; setDesignMode(false);
     $('designBody').hidden = false; runDesign();
   };
   img.onerror = () => alert(t('badImage'));
@@ -3639,11 +3656,12 @@ function runCodes(hexes, shares, pickIds) {
   $('designBody').hidden = false; renderPalette();
 }
 
-function runDesign() {
+function runDesign(given) {
   if (codesMode && clusters.length && !designOrig) { runCodes(clusters.map(c => c.hex)); return; }
   if (!designOrig) return;
   setDesignMode(false);
-  if (autoColours) { clusters = detectPalette(designOrig); $('numColours').value = clusters.length; }
+  if (given) { clusters = given.map((c, k) => ({ lab: rgbToLab(...hexToRgb(c.hex)), share: c.share, src: k })); $('numColours').value = clusters.length; }   // reopening: the saved colours exactly
+  else if (autoColours) { clusters = detectPalette(designOrig); $('numColours').value = clusters.length; }
   else clusters = extractPalette(designOrig, +$('numColours').value);
   clusters = groupFamilies(clusters);
   renderShadingChips();
@@ -3775,12 +3793,12 @@ function scheduleDesignLog() {
   }, 6000);
 }
 function renderPalette() {
-  scheduleDesignLog();
+  scheduleDesignLog(); saveDraftSoon();
   estimateOn = wallArea() > 0;
   $('coverageNote').hidden = !estimateOn;
   const ol = $('paletteList'); ol.innerHTML = ''; $('designMsg').textContent = '';
   $('coverageNote').textContent = t('coverageNote2').replace('{c}', COVERAGE_M2);
-  drawGrid();
+  drawGrid(); updateAddAllLabel();
   const totals = {};  // per currency
   let totalCans = 0;
   const famCount = {}, famShare = {};
@@ -3874,11 +3892,26 @@ dCanvas.addEventListener('pointerdown', e => { e.preventDefault(); showOrig(true
 ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => dCanvas.addEventListener(ev, () => { if (designView === 'orig') showOrig(false); }));
 dCanvas.addEventListener('contextmenu', e => e.preventDefault());
 $('viewCans').addEventListener('click', () => { designView = 'cans'; drawDesign(); });
+// The cans this design put in the cart, so pressing the button again updates them instead of adding a second set
+function designInCart() {
+  const a = store.designAdded;
+  return !!(a && a.uid === designUid && Object.keys(a.items || {}).some(id => store.list.some(i => i.id === id)));
+}
+function updateAddAllLabel() { $('addAll').textContent = t(designInCart() ? 'updateCart' : 'addAll'); }
 $('addAll').addEventListener('click', () => {
-  let n = 0;
+  const updating = designInCart();
+  if (updating) {
+    // take out what this design added last time (only what's still in the cart)
+    Object.entries(store.designAdded.items).forEach(([id, q]) => {
+      const it = store.list.find(i => i.id === id); if (!it) return;
+      it.qty -= Math.min(q, it.qty); if (it.qty <= 0) store.list = store.list.filter(x => x !== it);
+    });
+  }
+  let n = 0; const items = {};
   clusters.forEach((c, i) => { const o = c.options[picks[i]]; if (!o) return; const q = qtyFor(i, c); for (let k = 0; k < q; k++) addToList(o.p, c.hex); n += q;
-    if (q) logEvent('add', { line: o.p.brand, code: o.p.code, name: o.p.name, qty: q, source: 'design' }); });
-  $('designMsg').textContent = (n === 1 ? t('addedOne') : t('addedAll').replace('{n}', n));
+    if (q) { items[o.p.id] = (items[o.p.id] || 0) + q; if (!updating) logEvent('add', { line: o.p.brand, code: o.p.code, name: o.p.name, qty: q, source: 'design' }); } });
+  store.designAdded = { uid: designUid, items }; save(); renderListCount(); updateAddAllLabel();
+  $('designMsg').textContent = updating ? t('cartUpdated').replace('{n}', n) : (n === 1 ? t('addedOne') : t('addedAll').replace('{n}', n));
 });
 
 /* ---------- Palette files for design apps ---------- */
@@ -3969,14 +4002,94 @@ $('dlRangeProcreate')?.addEventListener('click', () => { const r = rangePaints()
 $('dlRangeAse')?.addEventListener('click', () => { const r = rangePaints(); download(`${r.title.replace(/[\\/:*?"<>|]/g, '-')}.ase`, makeASE(r.title, r.list)); });
 
 /* ---------- Design tab ---------- */
-$('openDesign').addEventListener('click', () => { openDesignTab(); if (designOrig) runDesign(); });
+$('openDesign').addEventListener('click', () => { openDesignTab(); if (clusters.length) rematchDesign(); });
 // Uploading from Home opens Design at the top, so the shop controls and the new design are in view
 $('homeDesignFile').addEventListener('change', e => {
   openDesignTab(); $('designSheet').scrollTop = 0; loadDesignFile(e.target.files[0]); e.target.value = '';
   setTimeout(() => { $('designSheet').scrollTop = 0; }, 400);
 });
-$('designPromptBtn').addEventListener('click', () => { openDesignTab(); if (designOrig) runDesign(); });
+$('designPromptBtn').addEventListener('click', () => { openDesignTab(); if (clusters.length) rematchDesign(); });
 
+
+
+/* ---------- Keeping the design: on this phone (draft) and in the account (Save design) ---------- */
+// A smaller copy of the picture: JPEG, or PNG when it has a transparent background
+function imageToData(img, MAX = 1000) {
+  const sc = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * sc)); c.height = Math.max(1, Math.round(img.naturalHeight * sc));
+  const g = c.getContext('2d'); g.drawImage(img, 0, 0, c.width, c.height);
+  let alpha = false;
+  try { const d = g.getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4 * 7) if (d[i] < 250) { alpha = true; break; } } catch (e) {}
+  const out = alpha ? c.toDataURL('image/png') : c.toDataURL('image/jpeg', 0.85);
+  return out.length > 1200000 && MAX > 500 ? imageToData(img, Math.round(MAX * 0.7)) : out;   // keep it light to save and sync
+}
+function designData() {
+  return { v: 2, uid: designUid, source: codesMode ? 'codes' : 'image',
+    colours: clusters.map((c, i) => ({ hex: c.hex, share: c.share, pick: c.options[picks[i]] ? c.options[picks[i]].p.id : null })),
+    wall: { w: $('wallW').value, h: $('wallH').value, unit: $('wallUnit').value, coats: $('wallCoats').value, surface: $('wallSurface').value },
+    img: codesMode ? '' : designImgData, crop, auto: autoColours, num: +$('numColours').value, shading, oneLine,
+    grid: $('gridOn').checked, qty: qtyOverride };
+}
+const DRAFT_KEY = 'kromatch:draft';
+let draftTimer = null;
+function saveDraftSoon() {
+  if (restoringDesign) return;
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(() => {
+    if (!clusters.length) return;
+    const d = Object.assign(designData(), { savedId: savedDesignId });
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); }
+    catch (e) { try { d.img = ''; localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch (e2) {} }   // phone storage full: keep the colours at least
+    $('continueDesign').hidden = false;
+  }, 600);
+}
+// Put a saved design (or this phone's last design) back exactly as it was
+function restoreDesign(d, savedId) {
+  return new Promise(resolve => {
+    restoringDesign = true;
+    const w = d.wall || {};
+    $('wallW').value = w.w || ''; $('wallH').value = w.h || '';
+    if (w.unit) $('wallUnit').value = w.unit; if (w.coats) $('wallCoats').value = w.coats; if (w.surface) $('wallSurface').value = w.surface;
+    oneLine = !!d.oneLine; $('oneLine').checked = oneLine;
+    if (d.shading && d.shading in SHADING) shading = d.shading;
+    designUid = d.uid || newUid(); savedDesignId = savedId || d.savedId || null;
+    const cs = d.colours || [];
+    const finish = () => {
+      $('gridOn').checked = !!d.grid; restoringDesign = false;
+      designLogged = designSerial;                       // reopening isn't a new design for the stats
+      $('designBody').hidden = false; renderPalette(); $('continueDesign').hidden = false; resolve();
+    };
+    if (!d.img) { runCodes(cs.map(c => c.hex), cs.map(c => c.share), cs.map(c => c.pick)); if (d.qty) qtyOverride = d.qty; finish(); return; }
+    const img = new Image();
+    img.onload = () => {
+      designImg = img; designImgData = d.img; crop = d.crop || null; closeCrop(); buildDesignPixels();
+      autoColours = d.auto !== false; if (!autoColours && d.num) $('numColours').value = d.num;
+      estimateOn = false; setDesignMode(false);
+      // use the saved colours as they were (re-detecting could split them slightly differently), then put the chosen cans back
+      runDesign(cs.length ? cs : undefined);
+      const same = clusters.length === cs.length, q = {};
+      clusters.forEach((c, i) => {
+        const src = c.src != null ? cs[c.src] : null;
+        if (src && d.qty && d.qty[c.src] != null) q[i] = d.qty[c.src];
+        if (!src || !src.pick) return;
+        let k = c.options.findIndex(o => o.p.id === src.pick);
+        if (k < 0) { const pp = PAINTS.find(x => x.id === src.pick); if (pp) { c.options.unshift({ p: pp, d: deltaE2000(c.lab, pp.lab) }); k = 0; } }
+        if (k >= 0) picks[i] = k;
+      });
+      if (same) qtyOverride = q;
+      drawDesign(); finish();
+    };
+    img.onerror = () => { runCodes(cs.map(c => c.hex), cs.map(c => c.share), cs.map(c => c.pick)); finish(); };
+    img.src = d.img;
+  });
+}
+$('continueDesign').addEventListener('click', () => { openDesignTab(); $('designSheet').scrollTop = 0; if (clusters.length) rematchDesign(); });
+// Opening the app again brings back the last design (it stays on this phone only)
+setTimeout(() => {
+  if (clusters.length) return;
+  let d = null; try { d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) {}
+  if (d && (d.colours || []).length) restoreDesign(d);
+}, 0);
 
 /* ---------- Optional accounts (email link, Google, Apple) ---------- */
 const authClient = (window.supabase && CFG) ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey,
@@ -4179,22 +4292,30 @@ $('shareListBtn').addEventListener('click', async () => {
 $('saveDesignBtn').addEventListener('click', async () => {
   if (!clusters.length) return;
   if (!authSession) { afterSignInDo = () => $('saveDesignBtn').click(); openAccount('signInToSave'); return; }
-  const name = (prompt(t('designNamePrompt'), '') || '').trim().slice(0, 80); if (!name) return;
-  const data = { source: codesMode ? 'codes' : 'image',
-    colours: clusters.map((c, i) => ({ hex: c.hex, share: c.share, pick: c.options[picks[i]] ? c.options[picks[i]].p.id : null })),
-    wall: { w: $('wallW').value, h: $('wallH').value, unit: $('wallUnit').value, coats: $('wallCoats').value } };
+  const data = designData();
   try {
-    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs`, { method: 'POST', headers: Object.assign(restAuth(), { Prefer: 'return=minimal' }),
+    if (savedDesignId) {
+      // already saved: update it (same name), no second copy
+      const r = await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs?id=eq.${encodeURIComponent(savedDesignId)}`, { method: 'PATCH',
+        headers: Object.assign(restAuth(), { Prefer: 'return=representation' }), body: JSON.stringify({ data }) });
+      if (!r.ok) throw new Error(r.status);
+      const rows = await r.json().catch(() => []);
+      if (rows.length) { $('designMsg').textContent = t('designUpdated'); saveDraftSoon(); renderMyDesigns(); return; }
+      savedDesignId = null;                      // it was deleted meanwhile: save it as new
+    }
+    const name = (prompt(t('designNamePrompt'), '') || '').trim().slice(0, 80); if (!name) return;
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs?select=id`, { method: 'POST', headers: Object.assign(restAuth(), { Prefer: 'return=representation' }),
       body: JSON.stringify({ user_id: authSession.user.id, name, data }) });
     if (!r.ok) throw new Error(r.status);
-    $('designMsg').textContent = t('designSaved'); renderMyDesigns();
+    const rows = await r.json().catch(() => []); savedDesignId = rows[0] && rows[0].id || null;
+    $('designMsg').textContent = t('designSaved'); saveDraftSoon(); renderMyDesigns();
   } catch (e) { $('designMsg').textContent = t('sendFail').replace('{m}', t('offline')); }
 });
 async function renderMyDesigns() {
   const box = $('myDesignsList');
   if (!authSession) { $('myDesigns').hidden = true; return; }
   try {
-    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs?select=id,name,data,created_at&order=created_at.desc&limit=50`, { headers: restAuth() });
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs?select=id,name,created_at,colours:data->colours&order=updated_at.desc&limit=50`, { headers: restAuth() });
     const rows = r.ok ? await r.json() : [];
     $('myDesigns').hidden = false; box.innerHTML = '';
     if (!rows.length) { box.innerHTML = `<p class="note">${t('noDesigns')}</p>`; return; }
@@ -4203,17 +4324,18 @@ async function renderMyDesigns() {
       el.innerHTML = `<div><b></b><div class="dots"></div></div><div class="row-actions" style="margin:0">
         <button type="button" class="secondary small op"></button><button type="button" class="link-btn rm"></button></div>`;
       el.querySelector('b').textContent = d.name;
-      (d.data.colours || []).slice(0, 12).forEach(c => { const sp = document.createElement('span'); sp.style.background = c.hex; el.querySelector('.dots').appendChild(sp); });
+      (d.colours || []).slice(0, 12).forEach(c => { const sp = document.createElement('span'); sp.style.background = c.hex; el.querySelector('.dots').appendChild(sp); });
       el.querySelector('.op').textContent = t('openDesign');
       el.querySelector('.rm').textContent = t('remove');
-      el.querySelector('.op').addEventListener('click', () => {
-        const cs = d.data.colours || [];
-        const w = d.data.wall || {};
-        $('wallW').value = w.w || ''; $('wallH').value = w.h || ''; if (w.unit) $('wallUnit').value = w.unit; if (w.coats) $('wallCoats').value = w.coats;
-        runCodes(cs.map(c => c.hex), cs.map(c => c.share), cs.map(c => c.pick));
-        $('designBody').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.querySelector('.op').addEventListener('click', async () => {
+        const r = await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs?id=eq.${encodeURIComponent(d.id)}&select=data`, { headers: restAuth() }).catch(() => null);
+        const rows = r && r.ok ? await r.json() : [];
+        if (!rows.length) { $('designMsg').textContent = t('sendFail').replace('{m}', t('offline')); return; }
+        await restoreDesign(rows[0].data, d.id); saveDraftSoon();
+        $('designSheet').scrollTop = 0;
       });
       el.querySelector('.rm').addEventListener('click', async () => {
+        if (d.id === savedDesignId) savedDesignId = null;
         await fetch(`${CFG.supabaseUrl}/rest/v1/saved_designs?id=eq.${d.id}`, { method: 'DELETE', headers: restAuth() }).catch(() => {});
         renderMyDesigns();
       });
@@ -4545,7 +4667,9 @@ window.addEventListener('hashchange', () => { if (/^#(order|collected)-/.test(lo
 
 /* ---------- Back navigation (on-screen Back button and the phone's back gesture) ---------- */
 const NAV_SHEETS = ['designSheet', 'listSheet', 'settingsSheet', 'accountSheet', 'orderSheet', 'orderDetail', 'shopSheet', 'setup'];
-let navRestoring = false, navTimer = null;
+let navRestoring = false, navTimer = null, navIgnorePop = false;
+const TAB_SHEETS = ['designSheet', 'listSheet', 'settingsSheet'];
+const isTabLevel = l => l.length === 1 && TAB_SHEETS.includes(l[0]);
 const navSnap = () => NAV_SHEETS.filter(id => !$(id).hidden);
 function navApply(list) {
   navRestoring = true;
@@ -4567,13 +4691,17 @@ const navObserver = new MutationObserver(() => {
   if (navRestoring) return;
   clearTimeout(navTimer);
   navTimer = setTimeout(() => {
-    const cur = navSnap(), st = history.state || {};
-    if (JSON.stringify(cur) === JSON.stringify(st.nav || [])) return;
-    history.pushState({ nav: cur, depth: (st.depth || 0) + 1 }, '');
+    const cur = navSnap(), st = history.state || {}, prev = st.nav || [];
+    if (JSON.stringify(cur) === JSON.stringify(prev)) return;
+    // one tab to another: swap the entry, so Back goes Home instead of through every tab you visited
+    if (isTabLevel(prev) && isTabLevel(cur)) { history.replaceState({ nav: cur, depth: st.depth || 0, tab: true }, ''); return; }
+    // from a tab straight back Home: step back instead of adding an entry (so Back on Home leaves the app as expected)
+    if (!cur.length && st.tab && (st.depth || 0) === 1) { navIgnorePop = true; history.back(); return; }
+    history.pushState({ nav: cur, depth: (st.depth || 0) + 1, tab: !prev.length && isTabLevel(cur) }, '');
   }, 0);
 });
 NAV_SHEETS.forEach(id => navObserver.observe($(id), { attributes: true, attributeFilter: ['hidden'] }));
-window.addEventListener('popstate', e => navApply((e.state && e.state.nav) || []));
+window.addEventListener('popstate', e => { if (navIgnorePop) { navIgnorePop = false; return; } navApply((e.state && e.state.nav) || []); });
 document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', navBack));
 </script>
 <script>
