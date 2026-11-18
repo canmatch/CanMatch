@@ -273,6 +273,11 @@
   .tool-row input { width: auto; margin: 0; }
   #designWrap { position: relative; }
   #gridCanvas { position: absolute; left: 0; top: 0; pointer-events: none; }
+  #cropCanvas { display: block; max-width: 100%; max-height: 50vh; margin: 0 auto; border-radius: 12px; touch-action: none; cursor: grab; }
+  .crop-btns { display: flex; gap: 8px; }
+  .crop-warn { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 10px; }
+  .crop-warn .note { margin: 0; flex: 1 1 200px; }
+  .crop-note { margin: 0 0 8px; } .crop-note .link-btn { font-size: 0.85rem; }
   .wall-row select, .wall-row input { padding: 12px 8px !important; }
   .wall-row .field { margin-top: 8px; font-size: 0.9rem; }
   .alts { grid-column: 1 / 4; display: flex; flex-wrap: wrap; gap: 6px; }
@@ -574,10 +579,20 @@
 
     <div id="designBody" hidden>
       <div id="viewChips" hidden><button type="button" id="viewOrig"></button><button type="button" id="viewCans"></button></div>
-      <p class="note" data-i18n="holdOriginal" style="margin:14px 0 0"></p>
+      <p class="note" id="holdNote" data-i18n="holdOriginal" style="margin:14px 0 0"></p>
+      <div id="cropBox" hidden style="margin-top:10px">
+        <canvas id="cropCanvas"></canvas>
+        <p class="note" data-i18n="cropHint" style="margin:8px 0"></p>
+        <div class="crop-btns"><button type="button" class="primary small" id="cropUse" data-i18n="cropUse"></button>
+          <button type="button" class="secondary small" id="cropCancel" data-i18n="cancel"></button></div>
+      </div>
       <div class="photo-wrap" id="designWrap" style="margin-top:10px"><canvas id="designCanvas"></canvas><canvas id="gridCanvas" hidden></canvas></div>
       <label class="tool-row" id="gridRow"><input type="checkbox" id="gridOn"> <span id="gridLabel"></span></label>
-      <p class="note" id="gridStretch" hidden style="margin:0 0 8px"></p>
+      <div class="crop-warn" id="gridStretch" hidden><p class="note" id="gridStretchText"></p>
+        <button type="button" class="primary small" id="cropBtn" data-i18n="cropFit"></button></div>
+      <p class="note crop-note" id="cropNote" hidden><span data-i18n="cropDone"></span>
+        <button type="button" class="link-btn" id="cropAdjust" data-i18n="cropAdjust"></button>
+        <button type="button" class="link-btn" id="cropUndo" data-i18n="cropUndo"></button></p>
       <label class="field" id="coloursField"><span id="numColoursLabel"></span>
         <input id="numColours" type="range" min="2" max="40" value="8" style="padding:0"></label>
       <div class="sh-chips" id="shadingChips"><b data-i18n="shadingL"></b>
@@ -753,9 +768,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-20-grid"></script>
-<script src="shops.js?v=2026-11-20-grid"></script>
-<script src="config.js?v=2026-11-20-grid"></script>
+<script src="colors.js?v=2026-11-20-crop"></script>
+<script src="shops.js?v=2026-11-20-crop"></script>
+<script src="config.js?v=2026-11-20-crop"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -816,7 +831,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
-    gridStretch: 'Your design is a different shape from the wall, so it will be stretched to fit. For true squares, crop the design to the wall’s shape first ({w} × {h}).',
+    gridStretch: 'Your design is a different shape from the wall ({w} × {h}), so it would come out stretched.', cropFit: 'Crop to fit', cropHint: 'Drag to choose the part of your design that goes on the wall.', cropUse: 'Use this', cropDone: 'Cropped to the wall’s shape.', cropAdjust: 'Adjust', cropUndo: 'Undo',
     surfaceL: 'Surface', sfSmooth: 'Smooth', sfBrick: 'Brick', sfRough: 'Rough concrete', coverageNote2: 'Estimate assumes about {c} m² per can per coat on a smooth wall, plus 10% for overspray. Brick and rough walls take more.', oneLineL: 'Use one paint line for the whole piece', oneLineBest: 'Best line for this design: {line}', gridL: 'Show a grid ({n} squares)', gridNeedsWall: 'Enter the wall size to show a grid.', sharePaintList: 'Share paint list', shareMade: 'Paint list ready.', plWall: 'Wall: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} cans', plAt: 'Prices at {shop}', plFooter: 'Made with Kromatch · kromatch.com', plTitle: 'Paint list',
     backToMatch: 'Back to your colour match ›',
     shoppingAt: 'Shopping at {shop}', allShopsLink: 'See all shops',
@@ -1028,7 +1043,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
-    gridStretch: 'Το σχέδιο έχει άλλες αναλογίες από τον τοίχο, οπότε θα τεντωθεί για να χωρέσει. Για σωστά τετράγωνα, κόψε πρώτα το σχέδιο στις αναλογίες του τοίχου ({w} × {h}).',
+    gridStretch: 'Το σχέδιο έχει άλλο σχήμα από τον τοίχο ({w} × {h}), οπότε θα έβγαινε τεντωμένο.', cropFit: 'Κόψ’ το να ταιριάζει', cropHint: 'Σύρε για να διαλέξεις ποιο κομμάτι του σχεδίου μπαίνει στον τοίχο.', cropUse: 'Αυτό', cropDone: 'Κομμένο στο σχήμα του τοίχου.', cropAdjust: 'Αλλαγή', cropUndo: 'Αναίρεση',
     surfaceL: 'Επιφάνεια', sfSmooth: 'Λεία', sfBrick: 'Τούβλο', sfRough: 'Τραχύ μπετό', coverageNote2: 'Η εκτίμηση υποθέτει περίπου {c} m² ανά σπρέι ανά χέρι σε λείο τοίχο, συν 10% για τη διασπορά. Τούβλο και τραχύς τοίχος θέλουν περισσότερο.', oneLineL: 'Μία σειρά χρωμάτων για όλο το έργο', oneLineBest: 'Καλύτερη σειρά για αυτό το σχέδιο: {line}', gridL: 'Πλέγμα (τετράγωνα {n})', gridNeedsWall: 'Γράψε το μέγεθος του τοίχου για να δεις πλέγμα.', sharePaintList: 'Κοινοποίηση λίστας χρωμάτων', shareMade: 'Η λίστα είναι έτοιμη.', plWall: 'Τοίχος: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Σύνολο', plCans: '{n} σπρέι', plAt: 'Τιμές στο {shop}', plFooter: 'Φτιαγμένο με το Kromatch · kromatch.com', plTitle: 'Λίστα χρωμάτων',
     backToMatch: 'Πίσω στην αντιστοίχιση χρώματος ›',
     shoppingAt: 'Αγορές από: {shop}', allShopsLink: 'Όλα τα καταστήματα',
@@ -1240,7 +1255,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
-    gridStretch: 'Votre dessin n’a pas les mêmes proportions que le mur, il sera donc étiré. Pour de vrais carrés, recadrez d’abord le dessin aux proportions du mur ({w} × {h}).',
+    gridStretch: 'Votre dessin n’a pas la même forme que le mur ({w} × {h}), il serait donc étiré.', cropFit: 'Recadrer', cropHint: 'Faites glisser pour choisir la partie du dessin qui ira sur le mur.', cropUse: 'Valider', cropDone: 'Recadré à la forme du mur.', cropAdjust: 'Ajuster', cropUndo: 'Annuler',
     surfaceL: 'Surface', sfSmooth: 'Lisse', sfBrick: 'Brique', sfRough: 'Béton brut', coverageNote2: 'Estimation basée sur environ {c} m² par bombe et par couche sur un mur lisse, plus 10 % de perte. La brique et les murs bruts en demandent plus.', oneLineL: 'Une seule gamme pour toute la pièce', oneLineBest: 'Meilleure gamme pour ce dessin : {line}', gridL: 'Afficher une grille (carrés de {n})', gridNeedsWall: 'Indiquez la taille du mur pour afficher une grille.', sharePaintList: 'Partager la liste de peinture', shareMade: 'Liste prête.', plWall: 'Mur : {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} bombes', plAt: 'Prix chez {shop}', plFooter: 'Créé avec Kromatch · kromatch.com', plTitle: 'Liste de peinture',
     backToMatch: 'Revenir à votre correspondance ›',
     shoppingAt: 'Vous achetez chez {shop}', allShopsLink: 'Voir tous les magasins',
@@ -3370,16 +3385,83 @@ function openDesignTab() {
   $('listSheet').hidden = true; $('settingsSheet').hidden = true;
   fillRangeSelect(); $('designSheet').hidden = false; setTab('openDesign');
 }
+// ---- Crop to the wall's shape ----
+// crop = null (whole picture) or { cx, cy }: where the kept part is centred, as a fraction of the picture
+let crop = null, cropDraft = null;
+function wallRatio() { const w = parseFloat($('wallW').value) || 0, h = parseFloat($('wallH').value) || 0; return w > 0 && h > 0 ? w / h : 0; }
+// the part of the full picture that's kept, in picture pixels
+function cropRect(img, c, ratio) {
+  const W = img.naturalWidth, H = img.naturalHeight;
+  if (!c || !ratio) return { x: 0, y: 0, w: W, h: H };
+  let w = W, h = H;
+  if (W / H > ratio) w = H * ratio; else h = W / ratio;
+  const x = Math.min(W - w, Math.max(0, c.cx * W - w / 2)), y = Math.min(H - h, Math.max(0, c.cy * H - h / 2));
+  return { x, y, w, h };
+}
+function buildDesignPixels() {
+  const img = designImg, r = cropRect(img, crop, wallRatio());
+  const MAX = 900, sc = Math.min(1, MAX / Math.max(r.w, r.h));
+  dCanvas.width = Math.max(1, Math.round(r.w * sc)); dCanvas.height = Math.max(1, Math.round(r.h * sc));
+  dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
+  dCtx.drawImage(img, r.x, r.y, r.w, r.h, 0, 0, dCanvas.width, dCanvas.height);
+  designOrig = dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height);
+}
+function drawCropEditor() {
+  const c = $('cropCanvas'), img = designImg, MAX = 900, sc = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+  c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
+  const g = c.getContext('2d'), r = cropRect(img, cropDraft, wallRatio());
+  g.drawImage(img, 0, 0, c.width, c.height);
+  g.fillStyle = 'rgba(0,0,0,.6)';
+  const x = r.x * sc, y = r.y * sc, w = r.w * sc, h = r.h * sc;
+  g.fillRect(0, 0, c.width, y); g.fillRect(0, y + h, c.width, c.height - y - h);
+  g.fillRect(0, y, x, h); g.fillRect(x + w, y, c.width - x - w, h);
+  const lw = Math.max(2, c.width / 250);
+  g.strokeStyle = '#fff'; g.lineWidth = lw; g.strokeRect(x + lw / 2, y + lw / 2, w - lw, h - lw);
+}
+function openCrop() {
+  cropDraft = crop ? { ...crop } : { cx: 0.5, cy: 0.5 };
+  $('cropBox').hidden = false; $('designWrap').hidden = true; $('gridRow').hidden = true; $('holdNote').hidden = true;
+  drawCropEditor(); drawGrid();
+}
+function closeCrop() {
+  $('cropBox').hidden = true; $('designWrap').hidden = !!codesMode; $('gridRow').hidden = false; $('holdNote').hidden = false;
+}
+$('cropBtn').addEventListener('click', openCrop);
+$('cropAdjust').addEventListener('click', openCrop);
+$('cropCancel').addEventListener('click', () => { closeCrop(); drawGrid(); });
+$('cropUse').addEventListener('click', () => { crop = cropDraft; closeCrop(); buildDesignPixels(); designSerial++; runDesign(); });
+$('cropUndo').addEventListener('click', () => { crop = null; buildDesignPixels(); designSerial++; runDesign(); });
+(() => {
+  const c = $('cropCanvas'); let start = null;
+  c.addEventListener('pointerdown', e => { e.preventDefault(); c.setPointerCapture(e.pointerId); start = { x: e.clientX, y: e.clientY, cx: cropDraft.cx, cy: cropDraft.cy }; });
+  c.addEventListener('pointermove', e => {
+    if (!start) return;
+    const b = c.getBoundingClientRect(), img = designImg, ratio = wallRatio();
+    // keep the centre inside the range where the frame still fits on the picture
+    const r = cropRect(img, { cx: .5, cy: .5 }, ratio), hw = r.w / img.naturalWidth / 2, hh = r.h / img.naturalHeight / 2;
+    cropDraft.cx = Math.min(1 - hw, Math.max(hw, start.cx + (e.clientX - start.x) / b.width));
+    cropDraft.cy = Math.min(1 - hh, Math.max(hh, start.cy + (e.clientY - start.y) / b.height));
+    drawCropEditor();
+  });
+  ['pointerup', 'pointercancel'].forEach(ev => c.addEventListener(ev, () => { start = null; }));
+})();
+// a new wall shape re-crops the design automatically (keeping the same spot)
+let recropTimer = null;
+function recropSoon() {
+  if (!crop || !designImg) return;
+  clearTimeout(recropTimer);
+  recropTimer = setTimeout(() => {
+    if (!$('cropBox').hidden) { drawCropEditor(); return; }
+    if (!wallRatio()) return;
+    buildDesignPixels(); designSerial++; runDesign();
+  }, 500);
+}
+
 function loadDesignFile(file) {
   if (!file) return;
   const url = URL.createObjectURL(file), img = new Image();
   img.onload = () => {
-    const MAX = 900, sc = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
-    dCanvas.width = Math.max(1, Math.round(img.naturalWidth * sc)); dCanvas.height = Math.max(1, Math.round(img.naturalHeight * sc));
-    dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
-    dCtx.drawImage(img, 0, 0, dCanvas.width, dCanvas.height);
-    designOrig = dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height);
-    designImg = img; URL.revokeObjectURL(url); autoColours = true; designSerial++; estimateOn = false; setDesignMode(false);
+    designImg = img; crop = null; closeCrop(); buildDesignPixels(); URL.revokeObjectURL(url); autoColours = true; designSerial++; estimateOn = false; setDesignMode(false);
     $('designBody').hidden = false; runDesign();
   };
   img.onerror = () => alert(t('badImage'));
@@ -3529,6 +3611,7 @@ let autoColours = true, estimateOn = false, codesMode = false;
 function setDesignMode(codes) {
   codesMode = codes;
   ['designWrap', 'coloursField'].forEach(id => { $(id).hidden = codes; });
+  if (codes) $('cropBox').hidden = true; else if (!$('cropBox').hidden) $('designWrap').hidden = true;
   if (codes) $('autoColours').hidden = true;
 }
 function runCodes(hexes, shares, pickIds) {
@@ -3624,7 +3707,9 @@ function drawGrid() {
   // warn when the design's proportions don't match the wall's (the squares would come out as rectangles)
   const g = gridStep(), ratioWall = g.w / g.h, ratioImg = designOrig ? designOrig.width / designOrig.height : ratioWall;
   const off = on && Math.abs(ratioImg / ratioWall - 1) > 0.06;
-  $('gridStretch').hidden = !off; if (off) $('gridStretch').textContent = t('gridStretch').replace('{w}', g.w).replace('{h}', g.h + ' ' + g.unit);
+  $('gridStretch').hidden = !off || !$('cropBox').hidden;
+  if (off) $('gridStretchText').textContent = t('gridStretch').replace('{w}', g.w).replace('{h}', g.h + ' ' + g.unit);
+  $('cropNote').hidden = !crop || !$('cropBox').hidden;
   if (!on) return;
   // sit exactly on top of the design picture (it's centred, so it isn't always at the left edge)
   c.width = d.width; c.height = d.height;
@@ -3769,7 +3854,7 @@ function updateColoursLabel() {
 $('numColours').addEventListener('input', () => { autoColours = false; updateColoursLabel(); });
 $('numColours').addEventListener('change', () => { autoColours = false; runDesign(); });
 $('autoColours').addEventListener('click', () => { autoColours = true; runDesign(); });
-['wallW', 'wallH', 'wallUnit', 'wallCoats', 'wallSurface'].forEach(id => { const f = () => { qtyOverride = {}; renderPalette(); }; $(id).addEventListener('input', f); $(id).addEventListener('change', f); });
+['wallW', 'wallH', 'wallUnit', 'wallCoats', 'wallSurface'].forEach(id => { const f = () => { qtyOverride = {}; renderPalette(); if (id === 'wallW' || id === 'wallH') recropSoon(); if (!$('cropBox').hidden) drawCropEditor(); }; $(id).addEventListener('input', f); $(id).addEventListener('change', f); });
 $('viewOrig').addEventListener('click', () => { designView = 'orig'; drawDesign(); });
 // Touch and hold the preview to compare with the original
 const showOrig = on => { designView = on ? 'orig' : 'cans'; drawDesign(); };
