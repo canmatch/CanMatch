@@ -5,16 +5,16 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kromatch</title>
-<meta name="description" content="Plan a mural, or find the right can for any colour.">
+<meta name="description" content="Plan your piece and get every spray can you need from a shop near you. Upload a mural or graffiti design, or match any single colour from a photo.">
 <!-- Link preview (WhatsApp, Messages, Instagram, Facebook...) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Kromatch">
-<meta property="og:description" content="Plan a mural, or find the right can for any colour. Order online or pick up at a shop near you.">
+<meta property="og:description" content="Upload your sketch and get every spray can you need. Order online or pick up at a shop near you.">
 <meta property="og:url" content="https://kromatch.com/">
-<meta property="og:image" content="https://kromatch.com/og-image.png?v=2">
+<meta property="og:image" content="https://kromatch.com/og-image.png?v=3">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Kromatch: plan a mural, or find the right can for any colour">
+<meta property="og:image:alt" content="Kromatch: plan your piece, get every can">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Browser tab and home-screen icons -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -76,6 +76,8 @@
   .home-card p { margin: 0 0 14px; }
   .home-card .note { margin: 10px 0 0; }
   .home-card label.primary { width: 100%; }
+  .home-one { display: flex; align-items: center; gap: 10px; padding: 4px 18px; color: var(--muted); font-size: 0.95rem; }
+  .home-one .one-link { position: relative; padding: 4px 2px; font-size: 0.95rem; }
   .home-ico { font-size: 1.8rem; line-height: 1; }
   .design-prompt { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface);
                    border-radius: 14px; padding: 12px 14px; margin-top: 16px; }
@@ -371,12 +373,11 @@
       <label class="primary"><span data-i18n="uploadDesign"></span><input id="homeDesignFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
       <p class="note" data-i18n="homeDesignNote"></p>
     </div>
-    <div class="home-card">
-      <div class="home-ico" aria-hidden="true">📷</div>
-      <h2 data-i18n="homeMatchTitle"></h2>
-      <p data-i18n="homeMatchDesc"></p>
-      <label class="primary"><span data-i18n="takePhoto"></span><input id="file" type="file" accept="image/*"></label>
-      <p class="note" data-i18n="shootHint"></p>
+    <!-- secondary: matching a single colour -->
+    <div class="home-one" id="homeOne">
+      <span aria-hidden="true">📷</span>
+      <span><span data-i18n="homeOneQ"></span>
+        <label class="link-btn one-link"><span data-i18n="homeOneLink"></span><input id="file" type="file" accept="image/*"></label></span>
     </div>
     <div class="home-card" id="findCard" hidden>
       <div class="home-ico" aria-hidden="true">🔎</div>
@@ -768,9 +769,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-20-crop"></script>
-<script src="shops.js?v=2026-11-20-crop"></script>
-<script src="config.js?v=2026-11-20-crop"></script>
+<script src="colors.js?v=2026-11-20-tag"></script>
+<script src="shops.js?v=2026-11-20-tag"></script>
+<script src="config.js?v=2026-11-20-tag"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -831,6 +832,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    homeOneQ: 'Just need one colour?', homeOneLink: 'Match it from a photo',
     gridStretch: 'Your design is a different shape from the wall ({w} × {h}), so it would come out stretched.', cropFit: 'Crop to fit', cropHint: 'Drag to choose the part of your design that goes on the wall.', cropUse: 'Use this', cropDone: 'Cropped to the wall’s shape.', cropAdjust: 'Adjust', cropUndo: 'Undo',
     surfaceL: 'Surface', sfSmooth: 'Smooth', sfBrick: 'Brick', sfRough: 'Rough concrete', coverageNote2: 'Estimate assumes about {c} m² per can per coat on a smooth wall, plus 10% for overspray. Brick and rough walls take more.', oneLineL: 'Use one paint line for the whole piece', oneLineBest: 'Best line for this design: {line}', gridL: 'Show a grid ({n} squares)', gridNeedsWall: 'Enter the wall size to show a grid.', sharePaintList: 'Share paint list', shareMade: 'Paint list ready.', plWall: 'Wall: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} cans', plAt: 'Prices at {shop}', plFooter: 'Made with Kromatch · kromatch.com', plTitle: 'Paint list',
     backToMatch: 'Back to your colour match ›',
@@ -854,7 +856,7 @@ const T = {
     viewOrder: 'View order',
     goToCart: 'Go to cart · {n}',
     holdOriginal: 'This is your design painted with the cans below. Touch and hold it to see your original.',
-    taglineMatch: 'Plan a mural, or find the right can for any colour.',
+    taglineMatch: 'Plan your piece. Get every can.',
     allShopsIn: 'All shops in {city}',
     shopLabel: 'Shop',
     addedOne: 'Added 1 can to your cart.',
@@ -988,7 +990,7 @@ const T = {
     otherCityPh: 'Type your city',
     noShops: 'No shops are listed for your city yet.',
     noCity: 'Choose your city in Settings to see shops near you.',
-    tagline: 'Plan a mural, or find the right can for any colour.',
+    tagline: 'Plan your piece. Get every can.',
     takePhoto: 'Take or choose a photo',
     shootHint: 'Shoot in daylight, straight on, without flash.',
     tapHint: 'Touch the colour you want to match. Slide your finger to adjust, then let go.',
@@ -1043,6 +1045,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    homeOneQ: 'Χρειάζεσαι μόνο ένα χρώμα;', homeOneLink: 'Βρες το από φωτογραφία',
     gridStretch: 'Το σχέδιο έχει άλλο σχήμα από τον τοίχο ({w} × {h}), οπότε θα έβγαινε τεντωμένο.', cropFit: 'Κόψ’ το να ταιριάζει', cropHint: 'Σύρε για να διαλέξεις ποιο κομμάτι του σχεδίου μπαίνει στον τοίχο.', cropUse: 'Αυτό', cropDone: 'Κομμένο στο σχήμα του τοίχου.', cropAdjust: 'Αλλαγή', cropUndo: 'Αναίρεση',
     surfaceL: 'Επιφάνεια', sfSmooth: 'Λεία', sfBrick: 'Τούβλο', sfRough: 'Τραχύ μπετό', coverageNote2: 'Η εκτίμηση υποθέτει περίπου {c} m² ανά σπρέι ανά χέρι σε λείο τοίχο, συν 10% για τη διασπορά. Τούβλο και τραχύς τοίχος θέλουν περισσότερο.', oneLineL: 'Μία σειρά χρωμάτων για όλο το έργο', oneLineBest: 'Καλύτερη σειρά για αυτό το σχέδιο: {line}', gridL: 'Πλέγμα (τετράγωνα {n})', gridNeedsWall: 'Γράψε το μέγεθος του τοίχου για να δεις πλέγμα.', sharePaintList: 'Κοινοποίηση λίστας χρωμάτων', shareMade: 'Η λίστα είναι έτοιμη.', plWall: 'Τοίχος: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Σύνολο', plCans: '{n} σπρέι', plAt: 'Τιμές στο {shop}', plFooter: 'Φτιαγμένο με το Kromatch · kromatch.com', plTitle: 'Λίστα χρωμάτων',
     backToMatch: 'Πίσω στην αντιστοίχιση χρώματος ›',
@@ -1066,7 +1069,7 @@ const T = {
     viewOrder: 'Προβολή παραγγελίας',
     goToCart: 'Στο καλάθι · {n}',
     holdOriginal: 'Αυτό είναι το σχέδιό σου με τα σπρέι παρακάτω. Άγγιξε και κράτα για να δεις το αρχικό.',
-    taglineMatch: 'Σχεδίασε μια τοιχογραφία ή βρες το σωστό σπρέι για κάθε χρώμα.',
+    taglineMatch: 'Σχεδίασε το κομμάτι σου. Βρες κάθε σπρέι.',
     allShopsIn: 'Όλα τα καταστήματα ({city})',
     shopLabel: 'Κατάστημα',
     addedOne: 'Προστέθηκε 1 σπρέι στο καλάθι σου.',
@@ -1200,7 +1203,7 @@ const T = {
     otherCityPh: 'Γράψε την πόλη σου',
     noShops: 'Δεν υπάρχουν ακόμα καταστήματα για την πόλη σου.',
     noCity: 'Διάλεξε την πόλη σου στις Ρυθμίσεις για να δεις καταστήματα κοντά σου.',
-    tagline: 'Σχεδίασε μια τοιχογραφία ή βρες το σωστό σπρέι για κάθε χρώμα.',
+    tagline: 'Σχεδίασε το κομμάτι σου. Βρες κάθε σπρέι.',
     takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία',
     shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
     tapHint: 'Άγγιξε το χρώμα που θέλεις. Σύρε το δάχτυλο για να το ρυθμίσεις και μετά άφησέ το.',
@@ -1255,6 +1258,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    homeOneQ: 'Juste une couleur ?', homeOneLink: 'Trouvez-la avec une photo',
     gridStretch: 'Votre dessin n’a pas la même forme que le mur ({w} × {h}), il serait donc étiré.', cropFit: 'Recadrer', cropHint: 'Faites glisser pour choisir la partie du dessin qui ira sur le mur.', cropUse: 'Valider', cropDone: 'Recadré à la forme du mur.', cropAdjust: 'Ajuster', cropUndo: 'Annuler',
     surfaceL: 'Surface', sfSmooth: 'Lisse', sfBrick: 'Brique', sfRough: 'Béton brut', coverageNote2: 'Estimation basée sur environ {c} m² par bombe et par couche sur un mur lisse, plus 10 % de perte. La brique et les murs bruts en demandent plus.', oneLineL: 'Une seule gamme pour toute la pièce', oneLineBest: 'Meilleure gamme pour ce dessin : {line}', gridL: 'Afficher une grille (carrés de {n})', gridNeedsWall: 'Indiquez la taille du mur pour afficher une grille.', sharePaintList: 'Partager la liste de peinture', shareMade: 'Liste prête.', plWall: 'Mur : {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} bombes', plAt: 'Prix chez {shop}', plFooter: 'Créé avec Kromatch · kromatch.com', plTitle: 'Liste de peinture',
     backToMatch: 'Revenir à votre correspondance ›',
@@ -1278,7 +1282,7 @@ const T = {
     viewOrder: 'Voir la commande',
     goToCart: 'Voir le panier · {n}',
     holdOriginal: 'Voici votre dessin avec les bombes ci-dessous. Touchez et maintenez pour voir l’original.',
-    taglineMatch: 'Préparez une fresque, ou trouvez la bonne bombe pour chaque couleur.',
+    taglineMatch: 'Préparez votre pièce. Trouvez chaque bombe.',
     allShopsIn: 'Tous les magasins à {city}',
     shopLabel: 'Magasin',
     addedOne: '1 bombe ajoutée au panier.',
@@ -1412,7 +1416,7 @@ const T = {
     otherCityPh: 'Saisissez votre ville',
     noShops: 'Aucun magasin n’est encore référencé pour votre ville.',
     noCity: 'Choisissez votre ville dans Réglages pour voir les magasins proches.',
-    tagline: 'Préparez une fresque, ou trouvez la bonne bombe pour chaque couleur.',
+    tagline: 'Préparez votre pièce. Trouvez chaque bombe.',
     takePhoto: 'Prendre ou choisir une photo',
     shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
     tapHint: 'Touchez la couleur voulue. Glissez le doigt pour ajuster, puis relâchez.',
@@ -1467,6 +1471,7 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    homeOneQ: 'Nur eine Farbe?', homeOneLink: 'Per Foto abgleichen',
     shareDataNote: 'Nur welche Farben abgeglichen und welche Dosen gewählt werden, mit deiner Stadt. Nie Name, E-Mail, Fotos oder Standort. Wird zur Verbesserung von Kromatch genutzt und zusammengefasst mit Farbherstellern geteilt.',
     shareData: 'Anonyme Farbdaten teilen, um Kromatch zu verbessern',
     dataTitle: 'Nutzungsdaten',
@@ -1483,7 +1488,7 @@ const T = {
     viewOrder: 'Bestellung ansehen',
     goToCart: 'Zum Warenkorb · {n}',
     holdOriginal: 'Das ist dein Design mit den Dosen unten. Halte es gedrückt, um das Original zu sehen.',
-    taglineMatch: 'Finde die richtige Dose für jede Farbe.',
+    taglineMatch: 'Plane dein Piece. Finde jede Dose.',
     allShopsIn: 'Alle Shops in {city}',
     shopLabel: 'Shop',
     addedOne: '1 Dose zum Warenkorb hinzugefügt.',
@@ -1617,7 +1622,7 @@ const T = {
     otherCityPh: 'Stadt eingeben',
     noShops: 'Für deine Stadt sind noch keine Shops eingetragen.',
     noCity: 'Wähle in den Einstellungen deine Stadt, um Shops in der Nähe zu sehen.',
-    tagline: 'Finde die richtige Dose für jede Farbe oder plane ein ganzes Wandbild.',
+    tagline: 'Plane dein Piece. Finde jede Dose.',
     takePhoto: 'Foto aufnehmen oder auswählen',
     shootHint: 'Bei Tageslicht, gerade von vorn, ohne Blitz fotografieren.',
     tapHint: 'Berühre die Farbe, die du abgleichen willst. Zum Anpassen den Finger schieben, dann loslassen.',
@@ -1672,6 +1677,7 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    homeOneQ: '¿Solo necesitas un color?', homeOneLink: 'Encuéntralo con una foto',
     shareDataNote: 'Solo qué colores se buscan y qué sprays se eligen, con tu ciudad. Nunca tu nombre, correo, fotos ni ubicación. Se usa para mejorar Kromatch y, de forma agregada, se comparte con fabricantes de pintura.',
     shareData: 'Compartir datos de color anónimos para mejorar Kromatch',
     dataTitle: 'Datos de uso',
@@ -1688,7 +1694,7 @@ const T = {
     viewOrder: 'Ver pedido',
     goToCart: 'Ir al carrito · {n}',
     holdOriginal: 'Este es tu diseño pintado con los sprays de abajo. Mantén pulsado para ver el original.',
-    taglineMatch: 'Encuentra el spray adecuado para cada color.',
+    taglineMatch: 'Planea tu pieza. Encuentra cada spray.',
     allShopsIn: 'Todas las tiendas de {city}',
     shopLabel: 'Tienda',
     addedOne: 'Se añadió 1 spray al carrito.',
@@ -1822,7 +1828,7 @@ const T = {
     otherCityPh: 'Escribe tu ciudad',
     noShops: 'Todavía no hay tiendas para tu ciudad.',
     noCity: 'Elige tu ciudad en Ajustes para ver tiendas cerca de ti.',
-    tagline: 'Encuentra el spray adecuado para cada color o planifica un mural entero.',
+    tagline: 'Planea tu pieza. Encuentra cada spray.',
     takePhoto: 'Haz o elige una foto',
     shootHint: 'Con luz de día, de frente y sin flash.',
     tapHint: 'Toca el color que quieres encontrar. Desliza el dedo para ajustar y luego suelta.',
@@ -1877,6 +1883,7 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    homeOneQ: 'Ti serve solo un colore?', homeOneLink: 'Trovalo da una foto',
     shareDataNote: 'Solo quali colori vengono abbinati e quali bombolette scelte, con la tua città. Mai nome, email, foto o posizione. Usati per migliorare Kromatch e, in forma aggregata, condivisi con i produttori di vernici.',
     shareData: 'Condividi dati anonimi sui colori per migliorare Kromatch',
     dataTitle: 'Dati di utilizzo',
@@ -1893,7 +1900,7 @@ const T = {
     viewOrder: 'Vedi ordine',
     goToCart: 'Vai al carrello · {n}',
     holdOriginal: 'Questo è il tuo progetto con le bombolette qui sotto. Tieni premuto per vedere l’originale.',
-    taglineMatch: 'Trova la bomboletta giusta per ogni colore.',
+    taglineMatch: 'Progetta il tuo pezzo. Trova ogni bomboletta.',
     allShopsIn: 'Tutti i negozi a {city}',
     shopLabel: 'Negozio',
     addedOne: '1 bomboletta aggiunta al carrello.',
@@ -2027,7 +2034,7 @@ const T = {
     otherCityPh: 'Scrivi la tua città',
     noShops: 'Non ci sono ancora negozi per la tua città.',
     noCity: 'Scegli la tua città nelle Impostazioni per vedere i negozi vicini.',
-    tagline: 'Trova la bomboletta giusta per ogni colore o pianifica un intero murale.',
+    tagline: 'Progetta il tuo pezzo. Trova ogni bomboletta.',
     takePhoto: 'Scatta o scegli una foto',
     shootHint: 'Alla luce del giorno, di fronte, senza flash.',
     tapHint: 'Tocca il colore da abbinare. Scorri il dito per regolare, poi rilascia.',
@@ -2082,6 +2089,7 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    homeOneQ: 'Só precisas de uma cor?', homeOneLink: 'Encontra-a com uma foto',
     shareDataNote: 'Apenas quais cores são buscadas e quais sprays são escolhidos, com sua cidade. Nunca seu nome, e-mail, fotos ou localização. Usado para melhorar o Kromatch e, de forma agregada, compartilhado com fabricantes de tinta.',
     shareData: 'Compartilhar dados de cores anônimos para melhorar o Kromatch',
     dataTitle: 'Dados de uso',
@@ -2098,7 +2106,7 @@ const T = {
     viewOrder: 'Ver pedido',
     goToCart: 'Ir ao carrinho · {n}',
     holdOriginal: 'Este é o seu projeto pintado com os sprays abaixo. Toque e segure para ver o original.',
-    taglineMatch: 'Encontre o spray certo para cada cor.',
+    taglineMatch: 'Planeje sua peça. Encontre cada spray.',
     allShopsIn: 'Todas as lojas em {city}',
     shopLabel: 'Loja',
     addedOne: '1 spray adicionado ao carrinho.',
@@ -2232,7 +2240,7 @@ const T = {
     otherCityPh: 'Digite sua cidade',
     noShops: 'Ainda não há lojas para a sua cidade.',
     noCity: 'Escolha sua cidade nos Ajustes para ver lojas perto de você.',
-    tagline: 'Encontre o spray certo para cada cor ou planeje um mural inteiro.',
+    tagline: 'Planeje sua peça. Encontre cada spray.',
     takePhoto: 'Tire ou escolha uma foto',
     shootHint: 'Com luz do dia, de frente e sem flash.',
     tapHint: 'Toque na cor que quer encontrar. Deslize o dedo para ajustar e solte.',
