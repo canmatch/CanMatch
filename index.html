@@ -267,7 +267,12 @@
   .codes-box summary { font-weight: 700; cursor: pointer; }
   .codes-box textarea { width: 100%; margin: 10px 0; font: inherit; padding: 10px; border-radius: 10px;
                         border: 2px solid var(--line); background: var(--bg); color: var(--ink); }
-  .wall-row { display: grid; grid-template-columns: 1fr 1fr 70px 104px; gap: 6px; }
+  .wall-row { display: grid; grid-template-columns: 1fr 1fr 70px; gap: 6px; }
+  .wall-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .tool-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 0.92rem; }
+  .tool-row input { width: auto; margin: 0; }
+  #designWrap { position: relative; }
+  #gridCanvas { position: absolute; left: 0; top: 0; pointer-events: none; }
   .wall-row select, .wall-row input { padding: 12px 8px !important; }
   .wall-row .field { margin-top: 8px; font-size: 0.9rem; }
   .alts { grid-column: 1 / 4; display: flex; flex-wrap: wrap; gap: 6px; }
@@ -560,6 +565,9 @@
         <label class="field"><span data-i18n="width"></span><input id="wallW" type="number" min="0" step="0.1" placeholder="4" inputmode="decimal"></label>
         <label class="field"><span data-i18n="height"></span><input id="wallH" type="number" min="0" step="0.1" placeholder="2.5" inputmode="decimal"></label>
         <label class="field"><span>&nbsp;</span><select id="wallUnit"><option value="m">m</option><option value="ft">ft</option></select></label>
+      </div>
+      <div class="wall-row2">
+        <label class="field"><span data-i18n="surfaceL"></span><select id="wallSurface"><option value="smooth" data-i18n="sfSmooth"></option><option value="brick" data-i18n="sfBrick"></option><option value="rough" data-i18n="sfRough"></option></select></label>
         <label class="field"><span data-i18n="coats"></span><select id="wallCoats"><option value="1" data-i18n="oneCoat"></option><option value="2" data-i18n="twoCoats"></option></select></label>
       </div>
     </div>
@@ -567,7 +575,8 @@
     <div id="designBody" hidden>
       <div id="viewChips" hidden><button type="button" id="viewOrig"></button><button type="button" id="viewCans"></button></div>
       <p class="note" data-i18n="holdOriginal" style="margin:14px 0 0"></p>
-      <div class="photo-wrap" id="designWrap" style="margin-top:10px"><canvas id="designCanvas"></canvas></div>
+      <div class="photo-wrap" id="designWrap" style="margin-top:10px"><canvas id="designCanvas"></canvas><canvas id="gridCanvas" hidden></canvas></div>
+      <label class="tool-row" id="gridRow"><input type="checkbox" id="gridOn"> <span id="gridLabel"></span></label>
       <label class="field" id="coloursField"><span id="numColoursLabel"></span>
         <input id="numColours" type="range" min="2" max="40" value="8" style="padding:0"></label>
       <div class="sh-chips" id="shadingChips"><b data-i18n="shadingL"></b>
@@ -578,6 +587,8 @@
       <p class="note" data-i18n="usingFilters"></p>
       <button type="button" class="secondary filter-btn" id="dFilterBtn" aria-expanded="false" style="margin:6px 0 4px" data-i18n="filters"></button>
       <div id="filterSlotDesign"></div>
+      <label class="tool-row"><input type="checkbox" id="oneLine"> <span data-i18n="oneLineL"></span></label>
+      <p class="note" id="oneLineNote" hidden style="margin:0 0 6px"></p>
 
       <ol class="matches" id="paletteList"></ol>
       <div id="estimateBox">
@@ -587,7 +598,8 @@
       </div>
       <p class="hint ok" id="designMsg" aria-live="polite"></p>
 
-      <button type="button" class="secondary" id="saveDesignBtn" data-i18n="saveDesign" style="margin-top:12px"></button>
+      <button type="button" class="secondary" id="shareListBtn" data-i18n="shareList" style="margin-top:12px"></button>
+      <button type="button" class="secondary" id="saveDesignBtn" data-i18n="saveDesign" style="margin-top:8px"></button>
     </div>
 
     <section id="myDesigns" hidden>
@@ -740,9 +752,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-19-ux"></script>
-<script src="shops.js?v=2026-11-19-ux"></script>
-<script src="config.js?v=2026-11-19-ux"></script>
+<script src="colors.js?v=2026-11-20-mural"></script>
+<script src="shops.js?v=2026-11-20-mural"></script>
+<script src="config.js?v=2026-11-20-mural"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -803,6 +815,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    surfaceL: 'Surface', sfSmooth: 'Smooth', sfBrick: 'Brick', sfRough: 'Rough concrete', coverageNote2: 'Estimate assumes about {c} m² per can per coat on a smooth wall, plus 10% for overspray. Brick and rough walls take more.', oneLineL: 'Use one paint line for the whole piece', oneLineBest: 'Best line for this design: {line}', gridL: 'Show a grid ({n} squares)', gridNeedsWall: 'Enter the wall size to show a grid.', shareList: 'Share paint list', shareMade: 'Paint list ready.', plWall: 'Wall: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} cans', plAt: 'Prices at {shop}', plFooter: 'Made with Kromatch · kromatch.com', plTitle: 'Paint list',
     backToMatch: 'Back to your colour match ›',
     shoppingAt: 'Shopping at {shop}', allShopsLink: 'See all shops',
     tabHome: 'Home', codeSent: 'We emailed you a sign-in code. Type it here (or tap the link in the email).', codeLabel: 'Code from the email', codeVerify: 'Sign in', codeBad: 'That code didn’t work. Check it, or send a new one.', codeResend: 'Send a new code', accNoPassword: 'No password needed. We’ll email you a sign-in code.', checkSpam: 'Not there? Check your spam folder.',
@@ -1013,6 +1026,7 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    surfaceL: 'Επιφάνεια', sfSmooth: 'Λεία', sfBrick: 'Τούβλο', sfRough: 'Τραχύ μπετό', coverageNote2: 'Η εκτίμηση υποθέτει περίπου {c} m² ανά σπρέι ανά χέρι σε λείο τοίχο, συν 10% για τη διασπορά. Τούβλο και τραχύς τοίχος θέλουν περισσότερο.', oneLineL: 'Μία σειρά χρωμάτων για όλο το έργο', oneLineBest: 'Καλύτερη σειρά για αυτό το σχέδιο: {line}', gridL: 'Πλέγμα (τετράγωνα {n})', gridNeedsWall: 'Γράψε το μέγεθος του τοίχου για να δεις πλέγμα.', shareList: 'Κοινοποίηση λίστας χρωμάτων', shareMade: 'Η λίστα είναι έτοιμη.', plWall: 'Τοίχος: {w} × {h} {u} · {surface} · {coats}', plTotal: 'Σύνολο', plCans: '{n} σπρέι', plAt: 'Τιμές στο {shop}', plFooter: 'Φτιαγμένο με το Kromatch · kromatch.com', plTitle: 'Λίστα χρωμάτων',
     backToMatch: 'Πίσω στην αντιστοίχιση χρώματος ›',
     shoppingAt: 'Αγορές από: {shop}', allShopsLink: 'Όλα τα καταστήματα',
     tabHome: 'Αρχική', codeSent: 'Σου στείλαμε κωδικό σύνδεσης στο email. Γράψ’ τον εδώ (ή πάτα τον σύνδεσμο στο email).', codeLabel: 'Κωδικός από το email', codeVerify: 'Σύνδεση', codeBad: 'Ο κωδικός δεν δούλεψε. Έλεγξέ τον ή ζήτα νέο.', codeResend: 'Στείλε νέο κωδικό', accNoPassword: 'Χωρίς κωδικό πρόσβασης. Θα σου στείλουμε κωδικό σύνδεσης στο email.', checkSpam: 'Δεν ήρθε; Δες και στα ανεπιθύμητα.',
@@ -1223,6 +1237,7 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    surfaceL: 'Surface', sfSmooth: 'Lisse', sfBrick: 'Brique', sfRough: 'Béton brut', coverageNote2: 'Estimation basée sur environ {c} m² par bombe et par couche sur un mur lisse, plus 10 % de perte. La brique et les murs bruts en demandent plus.', oneLineL: 'Une seule gamme pour toute la pièce', oneLineBest: 'Meilleure gamme pour ce dessin : {line}', gridL: 'Afficher une grille (carrés de {n})', gridNeedsWall: 'Indiquez la taille du mur pour afficher une grille.', shareList: 'Partager la liste de peinture', shareMade: 'Liste prête.', plWall: 'Mur : {w} × {h} {u} · {surface} · {coats}', plTotal: 'Total', plCans: '{n} bombes', plAt: 'Prix chez {shop}', plFooter: 'Créé avec Kromatch · kromatch.com', plTitle: 'Liste de peinture',
     backToMatch: 'Revenir à votre correspondance ›',
     shoppingAt: 'Vous achetez chez {shop}', allShopsLink: 'Voir tous les magasins',
     tabHome: 'Accueil', codeSent: 'Nous vous avons envoyé un code de connexion. Saisissez-le ici (ou touchez le lien dans l’e-mail).', codeLabel: 'Code reçu par e-mail', codeVerify: 'Se connecter', codeBad: 'Ce code ne fonctionne pas. Vérifiez-le ou demandez-en un nouveau.', codeResend: 'Envoyer un nouveau code', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un code de connexion par e-mail.', checkSpam: 'Rien reçu ? Regardez dans les indésirables.',
@@ -2597,7 +2612,8 @@ $('dFilterBtn').addEventListener('click', () => toggleFilters($('dFilterBtn'), '
 // When filters change, re-match the open design with the cans now allowed (keeps its colours)
 function rematchDesign() {
   if ($('designSheet').hidden || typeof clusters === 'undefined' || !clusters.length) return;
-  const cands = candidatePaints();
+  if (codesMode && !designOrig) { runCodes(clusters.map(c => c.hex), clusters.map(c => c.share)); updateFilterBtn(); return; }
+  const cands = designCands(clusters.map(c => c.lab), clusters.map(c => c.share)); showOneLineNote();
   clusters.forEach(c => { c.options = cands.map(p => ({ p, d: deltaE2000(c.lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5); });
   picks = clusters.map(() => 0); qtyOverride = {};
   drawDesign(); renderPalette(); updateFilterBtn();
@@ -3278,6 +3294,34 @@ $('clearList').addEventListener('click', () => { store.list = []; save(); render
 $('shareList').addEventListener('click', () => shareText(listText(), t('listHeader'), $('listMsg')));
 
 /* ---------- Candidate cans (same filters as the Match tab) ---------- */
+// "One paint line for the whole piece": pick the line whose cans match this design best overall
+let oneLine = false, oneLineName = '';
+function designCands(labs, shares) {
+  const cands = candidatePaints();
+  oneLineName = '';
+  if (!oneLine || !labs.length) return cands;
+  const byLine = {};
+  cands.forEach(p => { (byLine[p.brand] = byLine[p.brand] || []).push(p); });
+  let best = null, bs = Infinity;
+  Object.entries(byLine).forEach(([line, list]) => {
+    // every colour counts (small details too), bigger areas a bit more
+    let score = 0;
+    labs.forEach((lab, i) => { let d = Infinity; list.forEach(p => { const x = deltaE2000(lab, p.lab); if (x < d) d = x; }); score += d * (0.5 + (shares[i] || 0)); });
+    if (score < bs) { bs = score; best = line; }
+  });
+  if (!best) return cands;
+  oneLineName = best;
+  return byLine[best];
+}
+function showOneLineNote() {
+  $('oneLineNote').hidden = !(oneLine && oneLineName);
+  $('oneLineNote').textContent = t('oneLineBest').replace('{line}', oneLineName);
+}
+$('oneLine').addEventListener('change', e => {
+  oneLine = e.target.checked;
+  if (codesMode && clusters.length) { runCodes(clusters.map(c => c.hex), clusters.map(c => c.share)); return; }
+  rematchDesign();
+});
 function candidatePaints() {
   return PAINTS.filter(p => activeBrands.has(p.brand) && (includeSpecial || p.finish === 'solid')
     && (includeHardware || !isHardware(p))
@@ -3485,7 +3529,7 @@ function setDesignMode(codes) {
 }
 function runCodes(hexes, shares, pickIds) {
   setDesignMode(true); designOrig = null; estimateOn = false;
-  const cands = candidatePaints();
+  const cands = designCands(hexes.map(h => rgbToLab(...hexToRgb(h))), hexes.map((h, n) => shares && shares[n] ? shares[n] : 1 / hexes.length)); showOneLineNote();
   clusters = hexes.map((hex, n) => { const lab = rgbToLab(...hexToRgb(hex));
     const options = cands.map(p => ({ p, d: deltaE2000(lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5);
     const want = pickIds && pickIds[n];
@@ -3505,7 +3549,7 @@ function runDesign() {
   clusters = groupFamilies(clusters);
   renderShadingChips();
   updateColoursLabel();
-  const cands = candidatePaints();
+  const cands = designCands(clusters.map(c => c.lab), clusters.map(c => c.share)); showOneLineNote();
   clusters.forEach(c => {
     c.hex = labToHex(c.lab);
     c.options = cands.map(p => ({ p, d: deltaE2000(c.lab, p.lab) })).sort((a, b) => a.d - b.d).slice(0, 5);
@@ -3529,6 +3573,51 @@ function runDesign() {
   }
   drawDesign(); renderPalette();
 }
+// Grid in real-world units over the design, for scaling it up on the wall (1 m or 1 ft squares; bigger on huge walls)
+function gridStep() {
+  const w = parseFloat($('wallW').value) || 0, h = parseFloat($('wallH').value) || 0, big = Math.max(w, h);
+  const unit = $('wallUnit').value;
+  const step = big > 40 ? 5 : big > 16 ? 2 : 1;
+  return { w, h, step, unit, label: step + ' ' + unit };
+}
+function updateGridLabel() {
+  const g = gridStep(), ok = g.w > 0 && g.h > 0;
+  $('gridLabel').textContent = ok ? t('gridL').replace('{n}', g.label) : t('gridNeedsWall');
+  $('gridOn').disabled = !ok;
+  if (!ok) $('gridOn').checked = false;
+}
+function paintGrid(ctx, W, H, scale = 1) {
+  const g = gridStep(); if (!(g.w > 0 && g.h > 0)) return;
+  const px = W / g.w, py = H / g.h;
+  ctx.save();
+  for (let x = 0, n = 0; x <= g.w + 1e-6; x += g.step, n++) {
+    const X = Math.round(x * px) + 0.5;
+    ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 3 * scale; ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, H); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.2 * scale; ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, H); ctx.stroke();
+  }
+  for (let y = 0; y <= g.h + 1e-6; y += g.step) {
+    const Y = Math.round(y * py) + 0.5;
+    ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 3 * scale; ctx.beginPath(); ctx.moveTo(0, Y); ctx.lineTo(W, Y); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.2 * scale; ctx.beginPath(); ctx.moveTo(0, Y); ctx.lineTo(W, Y); ctx.stroke();
+  }
+  // square numbers along the top and left edge (A, B, C… across; 1, 2, 3… down)
+  ctx.font = `700 ${Math.max(10, Math.round(Math.min(px, py) * g.step * 0.22))}px Archivo, sans-serif`;
+  ctx.textBaseline = 'top'; ctx.lineWidth = 3 * scale; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.fillStyle = '#fff';
+  let col = 0; for (let x = 0; x < g.w - 1e-6; x += g.step, col++) { const s = String.fromCharCode(65 + (col % 26)); const X = x * px + 4 * scale; ctx.strokeText(s, X, 4 * scale); ctx.fillText(s, X, 4 * scale); }
+  let row = 1; for (let y = 0; y < g.h - 1e-6; y += g.step, row++) { if (row === 1) continue; const s = String(row); const Y = y * py + 4 * scale; ctx.strokeText(s, 4 * scale, Y); ctx.fillText(s, 4 * scale, Y); }
+  ctx.restore();
+}
+function drawGrid() {
+  updateGridLabel();
+  const c = $('gridCanvas'), d = $('designCanvas');
+  const on = $('gridOn').checked && !codesMode && !!designOrig;
+  c.hidden = !on; if (!on) return;
+  c.width = d.width; c.height = d.height; c.style.width = d.clientWidth + 'px'; c.style.height = d.clientHeight + 'px';
+  const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height);
+  paintGrid(ctx, c.width, c.height, Math.max(1, c.width / Math.max(1, d.clientWidth)));
+}
+$('gridOn').addEventListener('change', drawGrid);
+window.addEventListener('resize', () => { if (!$('gridCanvas').hidden) drawGrid(); });
 function drawDesign() {
   if (!designOrig || codesMode) return;
   if (designView === 'orig' || !clusters.length) { dCtx.putImageData(designOrig, 0, 0); }
@@ -3545,9 +3634,12 @@ function wallArea() {
   const w = parseFloat($('wallW').value) || 0, h = parseFloat($('wallH').value) || 0;
   const a = w * h; return $('wallUnit').value === 'ft' ? a * 0.092903 : a;
 }
+// Paint needed goes up on rough walls; 10% extra covers overspray and touch-ups
+const SURFACE_FACTOR = { smooth: 1, brick: 1.5, rough: 1.3 };
+const OVERSPRAY = 1.1;
 function cansFor(share) {
-  const coats = +$('wallCoats').value;
-  return Math.max(1, Math.ceil(wallArea() * share * coats / COVERAGE_M2));
+  const coats = +$('wallCoats').value, surface = SURFACE_FACTOR[$('wallSurface').value] || 1;
+  return Math.max(1, Math.ceil(wallArea() * share * coats * surface * OVERSPRAY / COVERAGE_M2 - 0.05));
 }
 let qtyOverride = {};
 const qtyFor = (i, c) => qtyOverride[i] != null ? qtyOverride[i] : (estimateOn ? cansFor(c.share) : 1);
@@ -3571,7 +3663,8 @@ function renderPalette() {
   estimateOn = wallArea() > 0;
   $('coverageNote').hidden = !estimateOn;
   const ol = $('paletteList'); ol.innerHTML = ''; $('designMsg').textContent = '';
-  $('coverageNote').textContent = t('coverageNote').replace('{c}', COVERAGE_M2);
+  $('coverageNote').textContent = t('coverageNote2').replace('{c}', COVERAGE_M2);
+  drawGrid();
   const totals = {};  // per currency
   let totalCans = 0;
   const famCount = {}, famShare = {};
@@ -3657,7 +3750,7 @@ function updateColoursLabel() {
 $('numColours').addEventListener('input', () => { autoColours = false; updateColoursLabel(); });
 $('numColours').addEventListener('change', () => { autoColours = false; runDesign(); });
 $('autoColours').addEventListener('click', () => { autoColours = true; runDesign(); });
-['wallW', 'wallH', 'wallUnit', 'wallCoats'].forEach(id => { const f = () => { qtyOverride = {}; renderPalette(); }; $(id).addEventListener('input', f); $(id).addEventListener('change', f); });
+['wallW', 'wallH', 'wallUnit', 'wallCoats', 'wallSurface'].forEach(id => { const f = () => { qtyOverride = {}; renderPalette(); }; $(id).addEventListener('input', f); $(id).addEventListener('change', f); });
 $('viewOrig').addEventListener('click', () => { designView = 'orig'; drawDesign(); });
 // Touch and hold the preview to compare with the original
 const showOrig = on => { designView = on ? 'orig' : 'cans'; drawDesign(); };
@@ -3888,6 +3981,80 @@ async function loadAccountOrders() {
 }
 
 /* ---------- Saved designs (account) ---------- */
+// A ready-made paint list image: the design, every can with its code, quantity and price, and the total.
+// Shared through the phone's share sheet (WhatsApp, email…) or downloaded on a computer.
+function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+async function makePaintList() {
+  try { await document.fonts.load('900 40px Archivo'); await document.fonts.load('500 20px Archivo'); } catch (e) {}
+  const rows = clusters.map((c, i) => ({ c, o: c.options[picks[i]], qty: qtyFor(i, c) })).filter(r => r.o && r.qty > 0);
+  const W = 1080, pad = 56, rowH = 76;
+  // the design picture ("with cans" colours), with the grid if it's on
+  let img = null, ih = 0;
+  if (designOrig && !codesMode) {
+    img = document.createElement('canvas'); img.width = designOrig.width; img.height = designOrig.height;
+    const ictx = img.getContext('2d'); const prev = designView; designView = 'cans'; drawDesign(); ictx.drawImage($('designCanvas'), 0, 0); designView = prev; drawDesign();
+    if ($('gridOn').checked) paintGrid(ictx, img.width, img.height, Math.max(1, img.width / 600));
+    ih = Math.round((W - pad * 2) * img.height / img.width); if (ih > 760) ih = 760;
+  }
+  const H = pad + 70 + 46 + (img ? ih + 30 : 0) + rows.length * rowH + 150 + pad;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+  g.fillStyle = '#F4F2EE'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#161616'; g.font = '900 52px Archivo, sans-serif'; g.textBaseline = 'top'; g.fillText('Kromatch', pad, pad);
+  g.font = '600 28px Archivo, sans-serif'; g.fillStyle = '#555'; g.textAlign = 'right'; g.fillText(t('plTitle'), W - pad, pad + 16); g.textAlign = 'left';
+  let y = pad + 74;
+  const est = wallArea() > 0;
+  if (est) {
+    const coatsTxt = $('wallCoats').selectedOptions[0].textContent, surfTxt = $('wallSurface').selectedOptions[0].textContent;
+    g.font = '500 24px Archivo, sans-serif'; g.fillStyle = '#444';
+    g.fillText(t('plWall').replace('{w}', $('wallW').value).replace('{h}', $('wallH').value).replace('{u}', $('wallUnit').value).replace('{surface}', surfTxt).replace('{coats}', coatsTxt), pad, y);
+  }
+  y += 46;
+  if (img) {
+    const iw = Math.round(ih * img.width / img.height), ix = pad + Math.round((W - pad * 2 - iw) / 2);
+    g.save(); roundRect(g, ix, y, iw, ih, 18); g.clip(); g.drawImage(img, ix, y, iw, ih); g.restore();
+    y += ih + 30;
+  }
+  const totals = {}; let cans = 0; const shops = new Set();
+  rows.forEach(({ c, o, qty }) => {
+    const p = o.p, shop = shopFor(p.brand, p.code), price = priceOf(shop, p.brand, p.code);
+    if (shop && typeof price === 'number') { totals[shop.currency] = (totals[shop.currency] || 0) + price * qty; shops.add(shop.name); }
+    cans += qty;
+    g.fillStyle = '#fff'; roundRect(g, pad, y + 6, W - pad * 2, rowH - 12, 14); g.fill();
+    g.fillStyle = p.hex; roundRect(g, pad + 14, y + 16, 44, 44, 10); g.fill(); g.strokeStyle = 'rgba(0,0,0,.12)'; g.lineWidth = 1; g.stroke();
+    g.fillStyle = '#161616'; g.font = '700 26px Archivo, sans-serif'; g.fillText(paintName(p).slice(0, 34), pad + 76, y + 14);
+    g.fillStyle = '#666'; g.font = '500 20px Archivo, sans-serif'; g.fillText([p.brand, p.code].filter(Boolean).join(' · '), pad + 76, y + 44);
+    g.textAlign = 'right'; g.fillStyle = '#161616'; g.font = '800 28px Archivo, sans-serif'; g.fillText('× ' + qty, W - pad - 130, y + 22);
+    g.font = '600 22px Archivo, sans-serif'; g.fillStyle = '#444'; g.fillText(typeof price === 'number' ? money(price * qty, shop.currency) : '', W - pad - 16, y + 26); g.textAlign = 'left';
+    y += rowH;
+  });
+  y += 16;
+  g.fillStyle = '#161616'; g.font = '900 34px Archivo, sans-serif';
+  const totTxt = Object.entries(totals).map(([cur, v]) => money(v, cur)).join(' + ');
+  g.fillText(t('plTotal') + ': ' + t('plCans').replace('{n}', cans) + (totTxt ? ' · ' + totTxt : ''), pad, y);
+  g.font = '500 22px Archivo, sans-serif'; g.fillStyle = '#555';
+  if (shops.size) g.fillText(t('plAt').replace('{shop}', [...shops].join(', ')), pad, y + 48);
+  g.fillStyle = '#161616'; g.fillRect(0, H - 64, W, 64);
+  g.fillStyle = '#F4F2EE'; g.font = '700 24px Archivo, sans-serif'; g.textAlign = 'center'; g.fillText(t('plFooter'), W / 2, H - 46); g.textAlign = 'left';
+  // the same list as text, for apps that only take text
+  const text = rows.map(({ o, qty }) => `${qty} × ${o.p.brand} ${o.p.code || ''} ${paintName(o.p)}`.replace(/\s+/g, ' ')).join('\n') + `\n${t('plTotal')}: ${t('plCans').replace('{n}', cans)}${totTxt ? ' · ' + totTxt : ''}\nhttps://kromatch.com`;
+  return { blob: await new Promise(r => cv.toBlob(r, 'image/png')), text };
+}
+$('shareListBtn').addEventListener('click', async () => {
+  if (!clusters.length) return;
+  $('shareListBtn').disabled = true;
+  try {
+    const { blob, text } = await makePaintList();
+    const file = new File([blob], 'kromatch-paint-list.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: 'Kromatch', text });
+    } else {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'kromatch-paint-list.png';
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    }
+    $('designMsg').textContent = t('shareMade');
+  } catch (e) { if (e && e.name !== 'AbortError') $('designMsg').textContent = String(e.message || e); }
+  finally { $('shareListBtn').disabled = false; }
+});
 $('saveDesignBtn').addEventListener('click', async () => {
   if (!clusters.length) return;
   if (!authSession) { afterSignInDo = () => $('saveDesignBtn').click(); openAccount('signInToSave'); return; }
