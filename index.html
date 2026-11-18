@@ -11,7 +11,7 @@
 <meta property="og:title" content="Kromatch">
 <meta property="og:description" content="Upload your sketch and get every spray can you need. Order online or pick up at a shop near you.">
 <meta property="og:url" content="https://kromatch.com/">
-<meta property="og:image" content="https://kromatch.com/og-image.png?v=3">
+<meta property="og:image" content="https://kromatch.com/og-image.png?v=4">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Kromatch: plan your piece, get every can">
@@ -48,6 +48,8 @@
 
   .topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   h1 { font-stretch: 125%; font-weight: 900; font-size: 2.1rem; line-height: 1; letter-spacing: -0.01em; margin: 6px 0; }
+  /* the name as a logo: written "Kromatch" (so screen readers say it right), shown in caps */
+  .wordmark { text-transform: uppercase; letter-spacing: -0.005em; }
   .tagline { margin: 4px 0 20px; color: var(--muted); }
   .icon-btns { display: flex; gap: 6px; }
   .icon-btn { font: inherit; font-size: 0.85rem; font-weight: 700; background: transparent; color: var(--ink);
@@ -351,7 +353,7 @@
 </head>
 <body>
 <main id="app">
-  <h1>Kromatch</h1>
+  <h1 class="wordmark">Kromatch</h1>
   <p class="tagline" data-i18n="taglineMatch"></p>
   <div id="locSlotHome"></div>
   <div id="locBlock"><div class="loc-bar"><span aria-hidden="true">📍</span><span id="locText"></span>
@@ -452,7 +454,7 @@
 <div class="sheet welcome" id="welcome" hidden role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
   <div class="sheet-inner welcome-inner">
     <img src="icon-512.png" alt="" class="welcome-logo" width="112" height="112">
-    <h1 id="welcomeTitle">Kromatch</h1>
+    <h1 id="welcomeTitle" class="wordmark">Kromatch</h1>
     <p class="welcome-tag" data-i18n="tagline"></p>
     <ul class="welcome-points">
       <li><span aria-hidden="true">🎨</span><span data-i18n="welcomeP2"></span></li>
@@ -681,6 +683,7 @@
       <button type="button" class="secondary" id="setEmpty" data-i18n="clearList"></button>
     </div>
     <p class="note"><a href="privacy.html" data-i18n="privacyLink"></a></p>
+    <p class="note" id="copyright" style="margin-top:4px">© 2026 Kromatch</p>
     <p class="hint ok" id="setMsg" aria-live="polite"></p>
   </div>
 </div>
@@ -769,9 +772,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-20-tag"></script>
-<script src="shops.js?v=2026-11-20-tag"></script>
-<script src="config.js?v=2026-11-20-tag"></script>
+<script src="colors.js?v=2026-11-20-copy"></script>
+<script src="shops.js?v=2026-11-20-copy"></script>
+<script src="config.js?v=2026-11-20-copy"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -2822,7 +2825,7 @@ const shopKey = sh => sh.id || sh.name;
 const cityShops = () => { const all = allCityShops(); const pref = store.shopPref && all.find(sh => shopKey(sh) === store.shopPref); return pref ? [pref] : all; };
 function renderShopPick() {
   const all = allCityShops(), sel = $('shopPickSel');
-  $('seeShops').hidden = !all.length;
+  $('seeShops').hidden = true;  // taken off Home for now: the shop selector covers it, and the cart links to each shop's info
   $('shopPick').hidden = all.length < 2 || !!lockedShop;      // a shop link keeps you at that shop
   if (store.shopPref && !all.some(sh => shopKey(sh) === store.shopPref)) { store.shopPref = ''; save(); }
   if (all.length < 2) return;
@@ -3434,6 +3437,7 @@ function openCrop() {
 function closeCrop() {
   $('cropBox').hidden = true; $('designWrap').hidden = !!codesMode; $('gridRow').hidden = false; $('holdNote').hidden = false;
 }
+$('copyright').textContent = '© ' + Math.max(2026, new Date().getFullYear()) + ' Kromatch';
 $('cropBtn').addEventListener('click', openCrop);
 $('cropAdjust').addEventListener('click', openCrop);
 $('cropCancel').addEventListener('click', () => { closeCrop(); drawGrid(); });
@@ -4111,7 +4115,7 @@ async function makePaintList() {
   const H = pad + 70 + 46 + (img ? ih + 30 : 0) + rows.length * rowH + 150 + pad;
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
   g.fillStyle = '#F4F2EE'; g.fillRect(0, 0, W, H);
-  g.fillStyle = '#161616'; g.font = '900 52px Archivo, sans-serif'; g.textBaseline = 'top'; g.fillText('Kromatch', pad, pad);
+  g.fillStyle = '#161616'; g.font = '900 52px Archivo, sans-serif'; g.textBaseline = 'top'; if ('fontStretch' in g) g.fontStretch = 'expanded'; g.fillText('KROMATCH', pad, pad); if ('fontStretch' in g) g.fontStretch = 'normal';
   g.font = '600 28px Archivo, sans-serif'; g.fillStyle = '#555'; g.textAlign = 'right'; g.fillText(t('plTitle'), W - pad, pad + 16); g.textAlign = 'left';
   let y = pad + 74;
   const est = wallArea() > 0;
