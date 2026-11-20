@@ -252,6 +252,7 @@
     <!-- Billing -->
     <div id="tab-billing" hidden>
       <p class="note" data-t="billingIntro"></p>
+      <div class="card" id="myPlan" hidden style="font-weight:600"></div>
       <div class="card" id="billAdmin" hidden>
         <div class="row"><label class="field grow" style="margin:0"><span data-t="month"></span><input id="billMonth" type="month"></label>
           <button class="small" id="makeStatements" data-t="makeStatements" style="align-self:flex-end"></button>
@@ -295,8 +296,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script src="config.js?v=2026-11-19-ux"></script>
-<script src="colors.js?v=2026-11-19-ux"></script>
+<script src="config.js?v=2026-11-20-plans"></script>
+<script src="colors.js?v=2026-11-20-plans"></script>
 <script>
 /* ---------- Text (English and Greek) ---------- */
 const TX = {
@@ -328,7 +329,9 @@ const TX = {
     freeOver: 'Free delivery over (leave empty for never)', deliveryNote: 'Note (e.g. courier, within Greece)', save: 'Save',
     saved: 'Saved.', error: 'Something went wrong: {m}', lockedNote: 'City and currency are set by Kromatch. Ask us to change them.',
     allShops: 'All shops', newShop: 'Add a shop', cityKey: 'City', currency: 'Currency', createShop: 'Create shop',
-    demo: 'Demo', live: 'Live', off: 'Off', feePerCan: 'Fee per can', trialEnds: 'Free until', inviteEmail: 'Invite staff (email)',
+    demo: 'Demo', live: 'Live', off: 'Off', plan: 'Plan', plan_per_can: 'Per can', plan_capped: 'Per can, with monthly cap', plan_monthly: 'Monthly', feeCap: 'Monthly cap', monthlyFee: 'Monthly fee',
+    planPerCanTxt: '{f} per can collected', planCappedTxt: '{f} per can collected, never more than {c} a month', planMonthlyTxt: '{m} a month',
+    yourPlan: 'Your plan: {p}.', freeUntil: 'Free until {d}.', feePerCan: 'Fee per can', trialEnds: 'Free until', inviteEmail: 'Invite staff (email)',
     invite: 'Invite', invited: 'Invitation sent.', linked: 'Existing login linked to this shop.', makeLive: 'Make live',
     makeDemo: 'Make demo', switchOff: 'Switch off', created: 'Shop created. Invite its staff below.'
   },
@@ -360,12 +363,20 @@ const TX = {
     freeOver: 'Δωρεάν παράδοση άνω των (κενό για ποτέ)', deliveryNote: 'Σημείωση (π.χ. courier, εντός Ελλάδας)', save: 'Αποθήκευση',
     saved: 'Αποθηκεύτηκε.', error: 'Κάτι πήγε στραβά: {m}', lockedNote: 'Την πόλη και το νόμισμα τα ορίζει το Kromatch. Ζήτησέ μας να τα αλλάξουμε.',
     allShops: 'Όλα τα καταστήματα', newShop: 'Προσθήκη καταστήματος', cityKey: 'Πόλη', currency: 'Νόμισμα', createShop: 'Δημιουργία καταστήματος',
-    demo: 'Επίδειξη', live: 'Ενεργό', off: 'Ανενεργό', feePerCan: 'Χρέωση ανά σπρέι', trialEnds: 'Δωρεάν έως', inviteEmail: 'Πρόσκληση προσωπικού (email)',
+    demo: 'Επίδειξη', live: 'Ενεργό', off: 'Ανενεργό', plan: 'Πακέτο', plan_per_can: 'Ανά σπρέι', plan_capped: 'Ανά σπρέι, με μηνιαίο όριο', plan_monthly: 'Μηνιαίο', feeCap: 'Μηνιαίο όριο', monthlyFee: 'Μηνιαία χρέωση',
+    planPerCanTxt: '{f} ανά σπρέι που παραλήφθηκε', planCappedTxt: '{f} ανά σπρέι που παραλήφθηκε, έως {c} τον μήνα', planMonthlyTxt: '{m} τον μήνα',
+    yourPlan: 'Το πακέτο σου: {p}.', freeUntil: 'Δωρεάν έως {d}.', feePerCan: 'Χρέωση ανά σπρέι', trialEnds: 'Δωρεάν έως', inviteEmail: 'Πρόσκληση προσωπικού (email)',
     invite: 'Πρόσκληση', invited: 'Η πρόσκληση στάλθηκε.', linked: 'Ο υπάρχων λογαριασμός συνδέθηκε με το κατάστημα.', makeLive: 'Ενεργοποίηση',
     makeDemo: 'Επίδειξη', switchOff: 'Απενεργοποίηση', created: 'Το κατάστημα δημιουργήθηκε. Πρόσκαλεσε το προσωπικό του παρακάτω.'
   }
 };
-let lang = localStorage.getItem('kromatch:dashLang') || ((navigator.language || 'en').startsWith('el') ? 'el' : 'en');
+let lang = (() => {   // the language picked here before, otherwise the first one in the device's list that the dashboard speaks
+  let saved = null; try { saved = localStorage.getItem('kromatch:dashLang'); } catch (_) {}
+  if (saved === 'en' || saved === 'el') return saved;
+  const prefs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'en'];
+  for (const p of prefs) { const c = String(p).slice(0, 2).toLowerCase(); if (c === 'en' || c === 'el') return c; }
+  return 'en';
+})();
 const t = (k, vars) => { let s = (TX[lang] && TX[lang][k]) || TX.en[k] || k; if (vars) for (const v in vars) s = s.replace('{' + v + '}', vars[v]); return s; };
 const $ = id => document.getElementById(id);
 function applyLang() {
@@ -841,9 +852,15 @@ async function renderAdmin() {
         <button class="small live">${t('makeLive')}</button><button class="small secondary demo">${t('makeDemo')}</button><button class="small danger offb">${t('switchOff')}</button>
       </div>
       <div class="row">
-        <label class="field grow"><span>${t('feePerCan')}</span><input class="fee" type="number" step="0.01" min="0" value="${p.fee_per_can ?? 0.4}"></label>
+        <label class="field grow"><span>${t('plan')}</span><select class="plan">${['per_can', 'capped', 'monthly'].map(x => `<option value="${x}" ${(p.plan || 'per_can') === x ? 'selected' : ''}>${t('plan_' + x)}</option>`).join('')}</select></label>
         <label class="field grow"><span>${t('trialEnds')}</span><input class="trial" type="date" value="${p.trial_ends || ''}"></label>
       </div>
+      <div class="row">
+        <label class="field grow pc"><span>${t('feePerCan')}</span><input class="fee" type="number" step="0.01" min="0" value="${p.fee_per_can ?? 0.4}"></label>
+        <label class="field grow cap"><span>${t('feeCap')}</span><input class="capv" type="number" step="1" min="0" value="${p.fee_cap ?? ''}"></label>
+        <label class="field grow mo"><span>${t('monthlyFee')}</span><input class="mfee" type="number" step="1" min="0" value="${p.monthly_fee ?? ''}"></label>
+      </div>
+      <p class="note plantxt" style="margin:0 0 8px"></p>
       ${'payment_method' in p ? `<div class="row">
         <label class="field grow"><span>${t('vatRate')}</span><input class="vat" type="number" step="0.01" min="0" max="30" value="${p.vat_rate ?? ''}"></label>
         <label class="field grow"><span>${t('payMethod')}</span><select class="pm">${['bank_transfer', 'direct_debit', 'card'].map(m => `<option value="${m}" ${p.payment_method === m ? 'selected' : ''}>${t('pm_' + m)}</option>`).join('')}</select></label>
@@ -854,13 +871,25 @@ async function renderAdmin() {
     d.querySelector('.live').addEventListener('click', () => set({ is_live: true, is_demo: false }));
     d.querySelector('.demo').addEventListener('click', () => set({ is_live: false, is_demo: true }));
     d.querySelector('.offb').addEventListener('click', () => set({ is_live: false, is_demo: false }));
+    // show only the price fields the chosen plan uses, and the plan in words
+    const showPlan = () => {
+      const pl = d.querySelector('.plan').value;
+      d.querySelector('.pc').hidden = pl === 'monthly'; d.querySelector('.cap').hidden = pl !== 'capped'; d.querySelector('.mo').hidden = pl !== 'monthly';
+      d.querySelector('.plantxt').textContent = planText({ plan: pl, fee_per_can: d.querySelector('.fee').value, fee_cap: d.querySelector('.capv').value, monthly_fee: d.querySelector('.mfee').value }, s.currency);
+    };
+    showPlan();
     const savePriv = async () => {
-      const upd = { fee_per_can: Number(d.querySelector('.fee').value || 0), trial_ends: d.querySelector('.trial').value || null };
+      showPlan();
+      const num = sel => d.querySelector(sel).value === '' ? null : Number(d.querySelector(sel).value);
+      const upd = { fee_per_can: Number(d.querySelector('.fee').value || 0), trial_ends: d.querySelector('.trial').value || null,
+        plan: d.querySelector('.plan').value, fee_cap: num('.capv'), monthly_fee: num('.mfee') };
+      if ((upd.trial_ends || null) !== (p.trial_ends || null)) upd.trial_reminded_at = null;   // new trial date: remind again before it ends
       if (d.querySelector('.pm')) Object.assign(upd, { vat_rate: d.querySelector('.vat').value === '' ? null : Number(d.querySelector('.vat').value),
         payment_method: d.querySelector('.pm').value, payment_ref: d.querySelector('.pref').value.trim() || null });
-      const { error } = await sb.from('shop_private').update(upd).eq('shop_id', s.id); if (error) fail(error); else toast(t('saved'));
+      const { error } = await sb.from('shop_private').update(upd).eq('shop_id', s.id); if (error) fail(error); else { Object.assign(p, upd); toast(t('saved')); }
     };
-    d.querySelector('.fee').addEventListener('change', savePriv); d.querySelector('.trial').addEventListener('change', savePriv);
+    d.querySelectorAll('.fee, .trial, .plan, .capv, .mfee').forEach(x => x.addEventListener('change', savePriv));
+    d.querySelectorAll('.fee, .capv, .mfee').forEach(x => x.addEventListener('input', showPlan));
     d.querySelectorAll('.vat, .pm, .pref').forEach(x => x.addEventListener('change', savePriv));
     d.querySelector('.invb').addEventListener('click', async () => {
       const email = d.querySelector('.inv').value.trim(); if (!email) return;
@@ -995,7 +1024,22 @@ function renderInsights() {
 }
 /* ---------- Billing: monthly statements ---------- */
 let statements = [];
+function planText(p, cur) {
+  const pl = (p && p.plan) || 'per_can', m = v => money(Number(v || 0), cur);
+  if (pl === 'monthly') return t('planMonthlyTxt', { m: m(p.monthly_fee) });
+  if (pl === 'capped' && p.fee_cap !== '' && p.fee_cap != null) return t('planCappedTxt', { f: m(p.fee_per_can), c: m(p.fee_cap) });
+  return t('planPerCanTxt', { f: m(p.fee_per_can) });
+}
 async function renderBilling() {
+  // the shop sees its plan and trial date at the top
+  if (!isAdmin && shop) {
+    const { data: pp } = await sb.from('shop_private').select('plan, fee_per_can, fee_cap, monthly_fee, trial_ends').eq('shop_id', shop.id).maybeSingle();
+    if (pp && 'plan' in pp) {
+      const trial = pp.trial_ends && pp.trial_ends >= new Date().toISOString().slice(0, 10)
+        ? ' ' + t('freeUntil', { d: new Date(pp.trial_ends + 'T12:00:00Z').toLocaleDateString(lang === 'el' ? 'el-GR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) }) : '';
+      $('myPlan').hidden = false; $('myPlan').textContent = t('yourPlan', { p: planText(pp, shop.currency) }) + trial;
+    }
+  }
   $('billAdmin').hidden = !isAdmin;
   if (isAdmin && !$('billMonth').value) { const d = new Date(); d.setMonth(d.getMonth() - 1); $('billMonth').value = d.toISOString().slice(0, 7); }
   let q = sb.from('billing_statements').select('*, shops(name)').order('period', { ascending: false }).limit(200);

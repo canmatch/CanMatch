@@ -784,9 +784,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-20-orders"></script>
-<script src="shops.js?v=2026-11-20-orders"></script>
-<script src="config.js?v=2026-11-20-orders"></script>
+<script src="colors.js?v=2026-11-20-lang"></script>
+<script src="shops.js?v=2026-11-20-lang"></script>
+<script src="config.js?v=2026-11-20-lang"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -2355,8 +2355,14 @@ if (store.city && (!['athens','thessaloniki','paris','berlin','barcelona','lisbo
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {} }
 
 const $ = id => document.getElementById(id);
-let lang = store.lang || (navigator.language || 'en').slice(0, 2);
-if (!T[lang] || (ACTIVE_LANGS && !ACTIVE_LANGS.includes(lang))) lang = 'en';
+// Language: the one the person picked in Settings, otherwise the first language in their phone's list that Kromatch speaks
+const langOk = c => !!T[c] && (!ACTIVE_LANGS || ACTIVE_LANGS.includes(c));
+function phoneLang() {
+  const prefs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'en'];
+  for (const p of prefs) { const c = String(p).slice(0, 2).toLowerCase(); if (langOk(c)) return c; }
+  return 'en';
+}
+let lang = store.lang && langOk(store.lang) ? store.lang : phoneLang();
 const t = key => (T[lang] && T[lang][key] !== undefined) ? T[lang][key] : T.en[key];
 const pct = n => lang === 'fr' ? `${n}\u202f%` : (lang === 'de' || lang === 'es') ? `${n}\u00a0%` : `${n}%`;
 
@@ -3251,7 +3257,7 @@ async function placeRealOrder(shop) {
         items: items.map(i => ({ line: i.brand, code: i.code, name: i.name, hex: i.hex, target_hex: i.targets[i.targets.length - 1], qty: i.qty })) }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) {
-      $('coMsg').textContent = j.code === 'bot_check' ? t('botCheck') : t('sendFail').replace('{m}', j.error || r.status);
+      $('coMsg').textContent = j.code === 'bot_check' ? t('botCheck') : j.code === 'too_many_open' ? (j.error || t('sendFail').replace('{m}', r.status)) : t('sendFail').replace('{m}', j.error || r.status);
       if (j.code === 'bot_check' || CFG.turnstileSiteKey) setupBotCheck(shop);    // a bot-check pass works once
       if (r.status === 409) { await loadLiveShops(); renderList(); }
       return;
