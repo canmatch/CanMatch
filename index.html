@@ -410,6 +410,9 @@
     <button type="button" class="link-btn" id="seeShops" data-i18n="seeShops" hidden></button></div>
   <label class="shop-pick" id="shopPick" hidden><span data-i18n="shopLabel"></span>
     <select id="shopPickSel"></select></label>
+  <!-- no city known yet: choose it right here -->
+  <label class="shop-pick" id="cityPick" hidden><span data-i18n="cityLabel"></span>
+    <select id="cityPickSel"></select></label>
   <div class="loc-suggest" id="locSuggest" hidden><span id="locSuggestText"></span>
     <div class="row-actions" style="margin-top:8px">
       <button type="button" class="primary small" id="locSwitch" data-i18n="locSwitch"></button>
@@ -4686,6 +4689,11 @@ $('closeSettings').addEventListener('click', () => navBack());
 document.querySelectorAll('.set-lang').forEach(b => b.addEventListener('click', () => {
   lang = b.dataset.lang; store.lang = lang; save(); applyLang(); renderSettings(); renderFavs();
 }));
+$('cityPickSel').addEventListener('change', e => {
+  if (!e.target.value) return;
+  store.city = e.target.value; store.cityAuto = false; if (store.city !== 'other') store.cityOther = '';
+  save(); updateLocBar(); renderListCount(); if (lastSample) showResults(); rematchDesign();
+});
 $('setCity').addEventListener('change', e => {
   store.city = e.target.value; store.cityAuto = false; if (store.city !== 'other') store.cityOther = '';
   save(); renderSettings(); updateLocBar(); $('locMsg').textContent = '';
@@ -4723,6 +4731,8 @@ function updateLocBar() {
     $('locText').textContent = store.city ? t('locNear').replace('{city}', cityName(store.city)) : t('locNoCity');
     $('locChange').textContent = t('locChange');
   }
+  $('cityPick').hidden = !!store.city || !!lockedShop;
+  if (!$('cityPick').hidden) fillCitySelect($('cityPickSel'), '');
   renderShopPick();
 }
 $('shopPickSel').addEventListener('change', e => {
