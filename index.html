@@ -11,10 +11,10 @@
 <meta property="og:title" content="Kromatch">
 <meta property="og:description" content="Upload your sketch and get every spray can you need. Order online or pick up at a shop near you.">
 <meta property="og:url" content="https://kromatch.com/">
-<meta property="og:image" content="https://kromatch.com/og-image.png?v=4">
+<meta property="og:image" content="https://kromatch.com/og-image.png?v=8">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Kromatch: plan your piece, get every can">
+<meta property="og:image:alt" content="Kromatch: match every colour, get every can">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Browser tab and home-screen icons -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -51,6 +51,37 @@
   /* the name as a logo: written "Kromatch" (so screen readers say it right), shown in caps */
   .wordmark { text-transform: uppercase; letter-spacing: -0.005em; }
   .tagline { margin: 4px 0 20px; color: var(--muted); }
+  /* Home: a bigger name, a tagline with character, and one line on what Kromatch is for */
+  :root { --font-display: "Archivo", system-ui, sans-serif; --font-accent: "Archivo", system-ui, sans-serif; }
+  .hero { margin: 8px 0 18px; }
+  .hero .wordmark { font-family: var(--font-display); font-size: clamp(2.7rem, 11vw, 3.4rem); margin: 4px 0 6px; }
+  .hero .tagline { font-family: var(--font-accent); color: var(--ink); font-size: 1.2rem; font-weight: 800; line-height: 1.22; margin: 0 0 10px; white-space: pre-line; }
+  .hero-line { margin: 0; font-size: 1.02rem; color: var(--ink); opacity: 0.82; max-width: 34em; }
+  .how { list-style: none; counter-reset: how; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 16px 0 0; padding: 0; }
+  .how li { counter-increment: how; display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; font-weight: 700; line-height: 1.25; }
+  .how li span::before { content: counter(how) ". "; }
+  .how-pic { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 8px; color: var(--ink); position: relative; }
+  .how-pic svg { display: block; width: 100%; height: auto; }
+  .how li:not(:last-child) .how-pic::after { content: '→'; position: absolute; right: -12px; top: 50%; transform: translateY(-50%);
+    font-weight: 900; font-size: 1rem; color: var(--ink); background: var(--bg); border-radius: 50%; width: 16px; text-align: center; line-height: 16px; z-index: 1; }
+  @media (min-width: 960px) { .how { gap: 18px; margin-top: 24px; } .how li { font-size: 0.95rem; } .how li:not(:last-child) .how-pic::after { right: -16px; } }
+  .home-card h2 { font-family: var(--font-display); }
+  .home-ico { color: var(--ink); }
+  .one-ico { display: inline-flex; color: var(--ink); }
+  /* wide screens: name and explanation on the left, the upload card on the right */
+  @media (min-width: 960px) {
+    main#app:has(> #empty:not([hidden])) { max-width: 1120px; display: grid; grid-template-columns: minmax(0, 1fr) 480px;
+      column-gap: 64px; align-items: start; padding-top: max(56px, 12vh); }
+    main#app:has(> #empty:not([hidden])) > * { grid-column: 1 / -1; }
+    main#app:has(> #empty:not([hidden])) > .hero { grid-column: 1; grid-row: 1 / span 3; }
+    main#app:has(> #empty:not([hidden])) > #locSlotHome { grid-column: 2; grid-row: 1; }
+    main#app:has(> #empty:not([hidden])) > #locBlock { grid-column: 2; grid-row: 1; margin-top: 18px; }
+    main#app:has(> #empty:not([hidden])) > #empty { grid-column: 2; grid-row: 2; align-self: start; }
+    main#app:has(> #empty:not([hidden])) .loc-bar { margin-top: 0; }
+    .hero .wordmark { font-size: clamp(3.4rem, 5vw, 4.4rem); }
+    .hero .tagline { font-size: 1.9rem; }
+    .hero-line { font-size: 1.15rem; }
+  }
   .icon-btns { display: flex; gap: 6px; }
   .icon-btn { font: inherit; font-size: 0.85rem; font-weight: 700; background: transparent; color: var(--ink);
               border: 2px solid var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; position: relative; }
@@ -78,9 +109,9 @@
   .home-card p { margin: 0 0 14px; }
   .home-card .note { margin: 10px 0 0; }
   .home-card label.primary { width: 100%; }
-  .home-one { display: flex; align-items: center; gap: 10px; padding: 4px 18px; color: var(--muted); font-size: 0.95rem; }
+  .home-one { display: flex; align-items: center; gap: 10px; padding: 4px 18px; color: var(--ink); font-size: 1rem; }
   .home-one .one-link { position: relative; padding: 4px 2px; font-size: 0.95rem; }
-  .home-ico { font-size: 1.8rem; line-height: 1; }
+  .home-ico { line-height: 1; }
   .design-prompt { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface);
                    border-radius: 14px; padding: 12px 14px; margin-top: 16px; }
   .design-prompt b { font-size: 0.95rem; }
@@ -206,6 +237,8 @@
               display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
   .code-box b { font-stretch: 125%; font-weight: 900; font-size: 1.8rem; letter-spacing: 0.03em; }
   .my-order { background: var(--surface); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+  .design-head { display: flex; align-items: center; gap: 10px; margin: 14px 0 6px; font-size: 0.95rem; }
+  .design-head img { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
   .past-orders { border-top: 1px solid var(--line); margin-top: 22px; padding-top: 6px; }
   .active-order { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer;
     background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; padding: 12px 14px; margin: 0 0 10px; }
@@ -361,8 +394,17 @@
 </head>
 <body>
 <main id="app">
-  <h1 class="wordmark">Kromatch</h1>
-  <p class="tagline" data-i18n="taglineMatch"></p>
+  <header class="hero">
+    <h1 class="wordmark">Kromatch</h1>
+    <p class="tagline" data-i18n="taglineMatch"></p>
+    <p class="hero-line" data-i18n="heroLine"></p>
+    <!-- how it works, in three pictures -->
+    <ol class="how">
+      <li><div class="how-pic"><svg viewBox="0 0 96 72" aria-hidden="true"><rect x="3" y="3" width="90" height="66" rx="8" fill="#F7F7F5" stroke="currentColor" stroke-width="3"/><rect x="9" y="9" width="78" height="54" rx="4" fill="#2A6FDB"/><circle cx="62" cy="28" r="11" fill="#F5B700"/><path d="M9 52 Q30 34 48 46 T87 40 V63 H9 Z" fill="#1FA6A0"/><path d="M9 58 Q36 48 60 56 T87 54 V63 H9 Z" fill="#D3473A"/></svg></div><span data-i18n="how1"></span></li>
+      <li><div class="how-pic"><svg viewBox="0 0 96 72" aria-hidden="true"><g transform="translate(1 0)"><rect x="2" y="22" width="18" height="38" rx="4" fill="#2A6FDB"/><path d="M3 24 Q3 14 11 14 Q19 14 19 24 Z" fill="#F7F7F5" stroke="currentColor" stroke-width="2"/><rect x="7.5" y="7" width="7" height="7" rx="2" fill="#F7F7F5" stroke="currentColor" stroke-width="2"/><rect x="2" y="22" width="18" height="38" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><text x="11" y="70" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">×4</text></g><g transform="translate(25 0)"><rect x="2" y="22" width="18" height="38" rx="4" fill="#1FA6A0"/><path d="M3 24 Q3 14 11 14 Q19 14 19 24 Z" fill="#F7F7F5" stroke="currentColor" stroke-width="2"/><rect x="7.5" y="7" width="7" height="7" rx="2" fill="#F7F7F5" stroke="currentColor" stroke-width="2"/><rect x="2" y="22" width="18" height="38" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><text x="11" y="70" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">×2</text></g><g transform="translate(49 0)"><rect x="2" y="22" width="18" height="38" rx="4" fill="#D3473A"/><path d="M3 24 Q3 14 11 14 Q19 14 19 24 Z" fill="#F7F7F5" stroke="currentColor" stroke-width="2"/><rect x="7.5" y="7" width="7" height="7" rx="2" fill="#F7F7F5" stroke="currentColor" stroke-width="2"/><rect x="2" y="22" width="18" height="38" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><text x="11" y="70" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">×1</text></g><g transform="translate(73 0)"><rect x="2" y="22" width="18" height="38" rx="4" fill="#F5B700"/><path d="M3 24 Q3 14 11 14 Q19 14 19 24 Z" fill="#F7F7F5" stroke="currentColor" stroke-width="2"/><rect x="7.5" y="7" width="7" height="7" rx="2" fill="#F7F7F5" stroke="currentColor" stroke-width="2"/><rect x="2" y="22" width="18" height="38" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><text x="11" y="70" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">×1</text></g></svg></div><span data-i18n="how2"></span></li>
+      <li><div class="how-pic"><svg viewBox="0 0 96 72" aria-hidden="true"><path d="M14 30 H82 V66 H14 Z" fill="#F7F7F5" stroke="currentColor" stroke-width="3"/><path d="M10 30 L18 14 H78 L86 30 Z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M26 14 L22 30 M42 14 L40 30 M54 14 L56 30 M70 14 L74 30" stroke="#F7F7F5" stroke-width="3"/><rect x="24" y="40" width="20" height="26" fill="#C9C8C3" stroke="currentColor" stroke-width="2.5"/><rect x="52" y="40" width="22" height="14" fill="#E9E8E4" stroke="currentColor" stroke-width="2.5"/><path d="M78 2 C70 2 66 8 66 13 C66 21 78 30 78 30 S90 21 90 13 C90 8 86 2 78 2 Z" fill="#D3473A" stroke="#F7F7F5" stroke-width="3"/><circle cx="78" cy="13" r="4" fill="#F7F7F5"/></svg></div><span data-i18n="how3"></span></li>
+    </ol>
+  </header>
   <div id="locSlotHome"></div>
   <div id="locBlock"><div class="loc-bar"><span aria-hidden="true">📍</span><span id="locText"></span>
     <button type="button" class="link-btn" id="locChange" data-i18n="locChange"></button>
@@ -377,7 +419,7 @@
   <button type="button" class="link-btn" id="backToMatch" data-i18n="backToMatch" hidden style="margin:4px 0 10px"></button>
   <section id="empty" class="home-cards">
     <div class="home-card">
-      <div class="home-ico" aria-hidden="true">🎨</div>
+      <div class="home-ico"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="9" width="10" height="13" rx="2"/><path d="M8 9c0-2 1.8-3 4-3s4 1 4 3"/><rect x="10" y="2.5" width="4" height="3.5" rx="1"/><path d="M17.5 3.5l2-1M18 6h2.5M17.5 8.5l2 1"/></svg></div>
       <h2 data-i18n="designTitle"></h2>
       <p data-i18n="homeDesignDesc"></p>
       <label class="primary"><span data-i18n="uploadDesign"></span><input id="homeDesignFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
@@ -386,7 +428,7 @@
     </div>
     <!-- secondary: matching a single colour -->
     <div class="home-one" id="homeOne">
-      <span aria-hidden="true">📷</span>
+      <span class="one-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
       <span><span data-i18n="homeOneQ"></span>
         <label class="link-btn one-link"><span data-i18n="homeOneLink"></span><input id="file" type="file" accept="image/*"></label></span>
     </div>
@@ -784,9 +826,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-20-lang"></script>
-<script src="shops.js?v=2026-11-20-lang"></script>
-<script src="config.js?v=2026-11-20-lang"></script>
+<script src="colors.js?v=2026-11-23-piece"></script>
+<script src="shops.js?v=2026-11-23-piece"></script>
+<script src="config.js?v=2026-11-23-piece"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -847,6 +889,9 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    how1: 'Upload your sketch', how2: 'See which cans you need, and how many', how3: 'Order or pick up nearby',
+    designN: 'Design {n}', otherCans: 'Other cans',
+    heroLine: 'Stop guessing colours and can counts. Kromatch finds the right can for every colour in your design, tells you how many you need, and where to buy them nearby.',
     aoReady: 'Ready to collect at {shop}', aoSent: 'Sent to {shop}',
     updateCart: 'Update cart', cartUpdated: 'Cart updated: {n} cans from this design.', designUpdated: 'Design updated.', continueDesign: 'Continue your last design →',
     homeOneQ: 'Just need one colour?', homeOneLink: 'Match it from a photo',
@@ -873,7 +918,7 @@ const T = {
     viewOrder: 'View order',
     goToCart: 'Go to cart · {n}',
     holdOriginal: 'This is your design painted with the cans below. Touch and hold it to see your original.',
-    taglineMatch: 'Plan your piece. Get every can.',
+    taglineMatch: 'Match every colour. Get every can.',
     allShopsIn: 'All shops in {city}',
     shopLabel: 'Shop',
     addedOne: 'Added 1 can to your cart.',
@@ -899,7 +944,7 @@ const T = {
     autoDetected: 'detected automatically',
     backToAuto: 'Detect colours automatically',
     tabDesign: 'Design',
-    designTitle: 'Plan a mural',
+    designTitle: 'Plan a piece',
     designIntro: 'Upload a sketch from Procreate, Photoshop or Illustrator. Kromatch finds its colours, matches cans and works out how many you need.',
     uploadDesign: 'Upload a design',
     designTip: 'Export as PNG or JPG. The file’s exact colours are used, so no lighting fix is needed.',
@@ -1007,7 +1052,7 @@ const T = {
     otherCityPh: 'Type your city',
     noShops: 'No shops are listed for your city yet.',
     noCity: 'Choose your city in Settings to see shops near you.',
-    tagline: 'Plan your piece. Get every can.',
+    tagline: 'Match every colour. Get every can.',
     takePhoto: 'Take or choose a photo',
     shootHint: 'Shoot in daylight, straight on, without flash.',
     tapHint: 'Touch the colour you want to match. Slide your finger to adjust, then let go.',
@@ -1062,6 +1107,9 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    how1: 'Ανέβασε το σκίτσο σου', how2: 'Δες ποια σπρέι χρειάζεσαι και πόσα', how3: 'Παράγγειλε ή παράλαβε κοντά σου',
+    designN: 'Σχέδιο {n}', otherCans: 'Άλλα σπρέι',
+    heroLine: 'Τέλος οι μαντεψιές για χρώματα και ποσότητες. Το Kromatch βρίσκει το σωστό σπρέι για κάθε χρώμα του σχεδίου σου, σου λέει πόσα χρειάζεσαι και πού θα τα βρεις κοντά σου.',
     aoReady: 'Έτοιμη για παραλαβή: {shop}', aoSent: 'Στάλθηκε: {shop}',
     updateCart: 'Ενημέρωση καλαθιού', cartUpdated: 'Το καλάθι ενημερώθηκε: {n} σπρέι από αυτό το σχέδιο.', designUpdated: 'Το σχέδιο ενημερώθηκε.', continueDesign: 'Συνέχισε το τελευταίο σου σχέδιο →',
     homeOneQ: 'Χρειάζεσαι μόνο ένα χρώμα;', homeOneLink: 'Βρες το από φωτογραφία',
@@ -1088,7 +1136,7 @@ const T = {
     viewOrder: 'Προβολή παραγγελίας',
     goToCart: 'Στο καλάθι · {n}',
     holdOriginal: 'Αυτό είναι το σχέδιό σου με τα σπρέι παρακάτω. Άγγιξε και κράτα για να δεις το αρχικό.',
-    taglineMatch: 'Σχεδίασε το κομμάτι σου. Βρες κάθε σπρέι.',
+    taglineMatch: 'Ταίριαξε κάθε χρώμα. Βρες κάθε σπρέι.',
     allShopsIn: 'Όλα τα καταστήματα ({city})',
     shopLabel: 'Κατάστημα',
     addedOne: 'Προστέθηκε 1 σπρέι στο καλάθι σου.',
@@ -1114,7 +1162,7 @@ const T = {
     autoDetected: 'εντοπίστηκαν αυτόματα',
     backToAuto: 'Αυτόματος εντοπισμός χρωμάτων',
     tabDesign: 'Σχέδιο',
-    designTitle: 'Σχεδίασε τοιχογραφία',
+    designTitle: 'Σχεδίασε ένα κομμάτι',
     designIntro: 'Ανέβασε ένα σχέδιο από Procreate, Photoshop ή Illustrator. Το Kromatch βρίσκει τα χρώματά του, τα ταιριάζει με σπρέι και υπολογίζει πόσα χρειάζεσαι.',
     uploadDesign: 'Ανέβασε σχέδιο',
     designTip: 'Κάνε εξαγωγή σε PNG ή JPG. Χρησιμοποιούνται τα ακριβή χρώματα του αρχείου, οπότε δεν χρειάζεται διόρθωση φωτισμού.',
@@ -1222,7 +1270,7 @@ const T = {
     otherCityPh: 'Γράψε την πόλη σου',
     noShops: 'Δεν υπάρχουν ακόμα καταστήματα για την πόλη σου.',
     noCity: 'Διάλεξε την πόλη σου στις Ρυθμίσεις για να δεις καταστήματα κοντά σου.',
-    tagline: 'Σχεδίασε το κομμάτι σου. Βρες κάθε σπρέι.',
+    tagline: 'Ταίριαξε κάθε χρώμα. Βρες κάθε σπρέι.',
     takePhoto: 'Τράβηξε ή διάλεξε φωτογραφία',
     shootHint: 'Φωτογράφισε στο φως της ημέρας, κάθετα, χωρίς φλας.',
     tapHint: 'Άγγιξε το χρώμα που θέλεις. Σύρε το δάχτυλο για να το ρυθμίσεις και μετά άφησέ το.',
@@ -1277,6 +1325,9 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    how1: 'Importez votre croquis', how2: 'Voyez de quelles bombes vous avez besoin, et combien', how3: 'Commandez ou retirez près de chez vous',
+    designN: 'Dessin {n}', otherCans: 'Autres bombes',
+    heroLine: 'Fini de deviner les couleurs et le nombre de bombes. Kromatch trouve la bonne bombe pour chaque couleur de votre dessin, vous dit combien il en faut et où les acheter près de chez vous.',
     aoReady: 'Prête à retirer chez {shop}', aoSent: 'Envoyée à {shop}',
     updateCart: 'Mettre à jour le panier', cartUpdated: 'Panier mis à jour : {n} bombes pour ce dessin.', designUpdated: 'Projet mis à jour.', continueDesign: 'Reprendre votre dernier dessin →',
     homeOneQ: 'Juste une couleur ?', homeOneLink: 'Trouvez-la avec une photo',
@@ -1303,7 +1354,7 @@ const T = {
     viewOrder: 'Voir la commande',
     goToCart: 'Voir le panier · {n}',
     holdOriginal: 'Voici votre dessin avec les bombes ci-dessous. Touchez et maintenez pour voir l’original.',
-    taglineMatch: 'Préparez votre pièce. Trouvez chaque bombe.',
+    taglineMatch: 'Associez chaque couleur. Trouvez chaque bombe.',
     allShopsIn: 'Tous les magasins à {city}',
     shopLabel: 'Magasin',
     addedOne: '1 bombe ajoutée au panier.',
@@ -1329,7 +1380,7 @@ const T = {
     autoDetected: 'détectées automatiquement',
     backToAuto: 'Détecter les couleurs automatiquement',
     tabDesign: 'Projet',
-    designTitle: 'Préparer une fresque',
+    designTitle: 'Préparer une pièce',
     designIntro: 'Importez un croquis depuis Procreate, Photoshop ou Illustrator. Kromatch trouve ses couleurs, les associe à des bombes et calcule combien il vous en faut.',
     uploadDesign: 'Importer un dessin',
     designTip: 'Exportez en PNG ou JPG. Les couleurs exactes du fichier sont utilisées : pas besoin de corriger l’éclairage.',
@@ -1437,7 +1488,7 @@ const T = {
     otherCityPh: 'Saisissez votre ville',
     noShops: 'Aucun magasin n’est encore référencé pour votre ville.',
     noCity: 'Choisissez votre ville dans Réglages pour voir les magasins proches.',
-    tagline: 'Préparez votre pièce. Trouvez chaque bombe.',
+    tagline: 'Associez chaque couleur. Trouvez chaque bombe.',
     takePhoto: 'Prendre ou choisir une photo',
     shootHint: 'Photographiez à la lumière du jour, bien en face, sans flash.',
     tapHint: 'Touchez la couleur voulue. Glissez le doigt pour ajuster, puis relâchez.',
@@ -1492,6 +1543,9 @@ const T = {
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    how1: 'Skizze hochladen', how2: 'Sieh, welche Dosen du brauchst und wie viele', how3: 'Bestellen oder in der Nähe abholen',
+    designN: 'Design {n}', otherCans: 'Weitere Dosen',
+    heroLine: 'Schluss mit Raten bei Farben und Dosenzahl. Kromatch findet die richtige Dose für jede Farbe deines Designs, sagt dir, wie viele du brauchst und wo du sie in der Nähe bekommst.',
     aoReady: 'Abholbereit bei {shop}', aoSent: 'An {shop} gesendet',
     updateCart: 'Warenkorb aktualisieren', cartUpdated: 'Warenkorb aktualisiert: {n} Dosen aus diesem Design.', designUpdated: 'Design aktualisiert.', continueDesign: 'Mit deinem letzten Design weitermachen →',
     homeOneQ: 'Nur eine Farbe?', homeOneLink: 'Per Foto abgleichen',
@@ -1511,7 +1565,7 @@ const T = {
     viewOrder: 'Bestellung ansehen',
     goToCart: 'Zum Warenkorb · {n}',
     holdOriginal: 'Das ist dein Design mit den Dosen unten. Halte es gedrückt, um das Original zu sehen.',
-    taglineMatch: 'Plane dein Piece. Finde jede Dose.',
+    taglineMatch: 'Triff jede Farbe. Finde jede Dose.',
     allShopsIn: 'Alle Shops in {city}',
     shopLabel: 'Shop',
     addedOne: '1 Dose zum Warenkorb hinzugefügt.',
@@ -1537,7 +1591,7 @@ const T = {
     autoDetected: 'automatisch erkannt',
     backToAuto: 'Farben automatisch erkennen',
     tabDesign: 'Design',
-    designTitle: 'Ein ganzes Wandbild planen',
+    designTitle: 'Ein Piece planen',
     designIntro: 'Lade eine Skizze aus Procreate, Photoshop oder Illustrator hoch. Kromatch findet ihre Farben, ordnet Dosen zu und berechnet, wie viele du brauchst.',
     uploadDesign: 'Design hochladen',
     designTip: 'Als PNG oder JPG exportieren. Es werden die exakten Farben der Datei verwendet, eine Lichtkorrektur ist nicht nötig.',
@@ -1645,7 +1699,7 @@ const T = {
     otherCityPh: 'Stadt eingeben',
     noShops: 'Für deine Stadt sind noch keine Shops eingetragen.',
     noCity: 'Wähle in den Einstellungen deine Stadt, um Shops in der Nähe zu sehen.',
-    tagline: 'Plane dein Piece. Finde jede Dose.',
+    tagline: 'Triff jede Farbe. Finde jede Dose.',
     takePhoto: 'Foto aufnehmen oder auswählen',
     shootHint: 'Bei Tageslicht, gerade von vorn, ohne Blitz fotografieren.',
     tapHint: 'Berühre die Farbe, die du abgleichen willst. Zum Anpassen den Finger schieben, dann loslassen.',
@@ -1700,6 +1754,9 @@ const T = {
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    how1: 'Sube tu boceto', how2: 'Mira qué sprays necesitas y cuántos', how3: 'Pide o recoge cerca de ti',
+    designN: 'Diseño {n}', otherCans: 'Otros sprays',
+    heroLine: 'Deja de adivinar colores y cuántos sprays. Kromatch encuentra el spray adecuado para cada color de tu diseño, te dice cuántos necesitas y dónde comprarlos cerca.',
     aoReady: 'Lista para recoger en {shop}', aoSent: 'Enviado a {shop}',
     updateCart: 'Actualizar carrito', cartUpdated: 'Carrito actualizado: {n} sprays de este diseño.', designUpdated: 'Diseño actualizado.', continueDesign: 'Seguir con tu último diseño →',
     homeOneQ: '¿Solo necesitas un color?', homeOneLink: 'Encuéntralo con una foto',
@@ -1719,7 +1776,7 @@ const T = {
     viewOrder: 'Ver pedido',
     goToCart: 'Ir al carrito · {n}',
     holdOriginal: 'Este es tu diseño pintado con los sprays de abajo. Mantén pulsado para ver el original.',
-    taglineMatch: 'Planea tu pieza. Encuentra cada spray.',
+    taglineMatch: 'Acierta cada color. Encuentra cada spray.',
     allShopsIn: 'Todas las tiendas de {city}',
     shopLabel: 'Tienda',
     addedOne: 'Se añadió 1 spray al carrito.',
@@ -1745,7 +1802,7 @@ const T = {
     autoDetected: 'detectados automáticamente',
     backToAuto: 'Detectar colores automáticamente',
     tabDesign: 'Diseño',
-    designTitle: 'Planifica un mural entero',
+    designTitle: 'Planea una pieza',
     designIntro: 'Sube un boceto desde Procreate, Photoshop o Illustrator. Kromatch encuentra sus colores, los asocia a sprays y calcula cuántos necesitas.',
     uploadDesign: 'Subir un diseño',
     designTip: 'Expórtalo en PNG o JPG. Se usan los colores exactos del archivo, así que no hace falta corregir la luz.',
@@ -1853,7 +1910,7 @@ const T = {
     otherCityPh: 'Escribe tu ciudad',
     noShops: 'Todavía no hay tiendas para tu ciudad.',
     noCity: 'Elige tu ciudad en Ajustes para ver tiendas cerca de ti.',
-    tagline: 'Planea tu pieza. Encuentra cada spray.',
+    tagline: 'Acierta cada color. Encuentra cada spray.',
     takePhoto: 'Haz o elige una foto',
     shootHint: 'Con luz de día, de frente y sin flash.',
     tapHint: 'Toca el color que quieres encontrar. Desliza el dedo para ajustar y luego suelta.',
@@ -1908,6 +1965,9 @@ const T = {
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    how1: 'Carica il tuo schizzo', how2: 'Scopri quali bombolette ti servono e quante', how3: 'Ordina o ritira vicino a te',
+    designN: 'Progetto {n}', otherCans: 'Altre bombolette',
+    heroLine: 'Basta indovinare colori e numero di bombolette. Kromatch trova la bomboletta giusta per ogni colore del tuo progetto, ti dice quante ne servono e dove comprarle vicino a te.',
     aoReady: 'Pronto da ritirare da {shop}', aoSent: 'Inviato a {shop}',
     updateCart: 'Aggiorna carrello', cartUpdated: 'Carrello aggiornato: {n} bombolette da questo progetto.', designUpdated: 'Progetto aggiornato.', continueDesign: 'Continua il tuo ultimo progetto →',
     homeOneQ: 'Ti serve solo un colore?', homeOneLink: 'Trovalo da una foto',
@@ -1927,7 +1987,7 @@ const T = {
     viewOrder: 'Vedi ordine',
     goToCart: 'Vai al carrello · {n}',
     holdOriginal: 'Questo è il tuo progetto con le bombolette qui sotto. Tieni premuto per vedere l’originale.',
-    taglineMatch: 'Progetta il tuo pezzo. Trova ogni bomboletta.',
+    taglineMatch: 'Abbina ogni colore. Trova ogni bomboletta.',
     allShopsIn: 'Tutti i negozi a {city}',
     shopLabel: 'Negozio',
     addedOne: '1 bomboletta aggiunta al carrello.',
@@ -1953,7 +2013,7 @@ const T = {
     autoDetected: 'rilevati automaticamente',
     backToAuto: 'Rileva i colori automaticamente',
     tabDesign: 'Progetto',
-    designTitle: 'Pianifica un intero murale',
+    designTitle: 'Progetta un pezzo',
     designIntro: 'Carica uno schizzo da Procreate, Photoshop o Illustrator. Kromatch trova i suoi colori, li abbina alle bombolette e calcola quante te ne servono.',
     uploadDesign: 'Carica un progetto',
     designTip: 'Esporta in PNG o JPG. Vengono usati i colori esatti del file, quindi non serve correggere la luce.',
@@ -2061,7 +2121,7 @@ const T = {
     otherCityPh: 'Scrivi la tua città',
     noShops: 'Non ci sono ancora negozi per la tua città.',
     noCity: 'Scegli la tua città nelle Impostazioni per vedere i negozi vicini.',
-    tagline: 'Progetta il tuo pezzo. Trova ogni bomboletta.',
+    tagline: 'Abbina ogni colore. Trova ogni bomboletta.',
     takePhoto: 'Scatta o scegli una foto',
     shootHint: 'Alla luce del giorno, di fronte, senza flash.',
     tapHint: 'Tocca il colore da abbinare. Scorri il dito per regolare, poi rilascia.',
@@ -2116,6 +2176,9 @@ const T = {
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    how1: 'Envie seu esboço', how2: 'Veja quais latas você precisa e quantas', how3: 'Peça ou retire perto de você',
+    designN: 'Projeto {n}', otherCans: 'Outras latas',
+    heroLine: 'Chega de adivinhar cores e quantidades. O Kromatch encontra a lata certa para cada cor do seu desenho, diz quantas você precisa e onde comprá-las por perto.',
     aoReady: 'Pronto para retirar em {shop}', aoSent: 'Enviado para {shop}',
     updateCart: 'Atualizar carrinho', cartUpdated: 'Carrinho atualizado: {n} sprays deste projeto.', designUpdated: 'Projeto atualizado.', continueDesign: 'Continuar seu último projeto →',
     homeOneQ: 'Só precisas de uma cor?', homeOneLink: 'Encontra-a com uma foto',
@@ -2135,7 +2198,7 @@ const T = {
     viewOrder: 'Ver pedido',
     goToCart: 'Ir ao carrinho · {n}',
     holdOriginal: 'Este é o seu projeto pintado com os sprays abaixo. Toque e segure para ver o original.',
-    taglineMatch: 'Planeje sua peça. Encontre cada spray.',
+    taglineMatch: 'Combine cada cor. Encontre cada spray.',
     allShopsIn: 'Todas as lojas em {city}',
     shopLabel: 'Loja',
     addedOne: '1 spray adicionado ao carrinho.',
@@ -2161,7 +2224,7 @@ const T = {
     autoDetected: 'detectadas automaticamente',
     backToAuto: 'Detectar cores automaticamente',
     tabDesign: 'Projeto',
-    designTitle: 'Planeje um mural inteiro',
+    designTitle: 'Planeje uma peça',
     designIntro: 'Envie um esboço do Procreate, Photoshop ou Illustrator. O Kromatch encontra as cores, combina com sprays e calcula quantos você precisa.',
     uploadDesign: 'Enviar um projeto',
     designTip: 'Exporte em PNG ou JPG. São usadas as cores exatas do arquivo, então não é preciso corrigir a luz.',
@@ -2269,7 +2332,7 @@ const T = {
     otherCityPh: 'Digite sua cidade',
     noShops: 'Ainda não há lojas para a sua cidade.',
     noCity: 'Escolha sua cidade nos Ajustes para ver lojas perto de você.',
-    tagline: 'Planeje sua peça. Encontre cada spray.',
+    tagline: 'Combine cada cor. Encontre cada spray.',
     takePhoto: 'Tire ou escolha uma foto',
     shootHint: 'Com luz do dia, de frente e sem flash.',
     tapHint: 'Toque na cor que quer encontrar. Deslize o dedo para ajustar e solte.',
@@ -2379,6 +2442,8 @@ function applyLang() {
   document.querySelectorAll('.lang-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
   setHint(hintState);
   if (typeof updateLocBar === 'function' && $('locText')) try { updateLocBar(); } catch (e) {}
+  // the tagline: one short phrase per line
+  document.querySelectorAll('.hero .tagline').forEach(el => { el.textContent = el.textContent.replace(/([.!?])\s+/g, '$1\n'); });
   renderListCount();
   if (lastSample) showResults();
   if (typeof updateAddAllLabel === 'function' && $('addAll')) try { updateAddAllLabel(); } catch (e) {}
@@ -2806,11 +2871,42 @@ $('colorSearch').addEventListener('input', () => { clearTimeout(searchTimer); se
 $('colorSearch').addEventListener('keydown', e => { if (e.key === 'Enter') { clearTimeout(searchTimer); runSearch(); e.target.blur(); } });
 
 /* ---------- Shopping list (several colours, several cans) ---------- */
-function addToList(p, target) {
-  const item = store.list.find(i => i.id === p.id);
+// d = the design this can is for ('' = a single colour, not from a design). The same can in two designs = two lines.
+function addToList(p, target, d = '') {
+  if (d) noteDesign(d);
+  const item = store.list.find(i => i.id === p.id && (i.d || '') === d);
   if (item) { item.qty += 1; if (!item.targets.includes(target)) item.targets.push(target); }
-  else store.list.push({ id: p.id, brand: p.brand, code: p.code, name: p.name, name_fr: p.name_fr, hex: p.hex, qty: 1, targets: [target] });
+  else store.list.push({ id: p.id, brand: p.brand, code: p.code, name: p.name, name_fr: p.name_fr, hex: p.hex, qty: 1, targets: [target], d });
   save(); renderListCount();
+}
+// "Design 1", "Design 2"… with a small picture, so the cart can show which cans belong to which design
+function noteDesign(d) {
+  store.designs = store.designs || {};
+  if (!store.designs[d]) {
+    store.designSeq = (store.designSeq || 0) + 1;
+    store.designs[d] = { n: store.designSeq, thumb: '' };
+  }
+  if (!store.designs[d].thumb && typeof designImg !== 'undefined' && designImg && d === designUid) {
+    try {
+      const c = document.createElement('canvas'), sc = 96 / Math.max(designImg.naturalWidth, designImg.naturalHeight);
+      c.width = Math.max(1, Math.round(designImg.naturalWidth * sc)); c.height = Math.max(1, Math.round(designImg.naturalHeight * sc));
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(designImg, 0, 0, c.width, c.height);
+      store.designs[d].thumb = c.toDataURL('image/jpeg', 0.7);
+    } catch (e) {}
+  }
+}
+// forget designs that no longer have anything in the cart
+function pruneDesigns() {
+  if (!store.designs) return;
+  const used = new Set(store.list.map(i => i.d || ''));
+  Object.keys(store.designs).forEach(k => { if (!used.has(k)) delete store.designs[k]; });
+  if (!Object.keys(store.designs).length) store.designSeq = 0;
+}
+// the order a shop receives: one line per can, even if it's in two designs
+function mergedItems(items) {
+  const m = new Map();
+  items.forEach(i => { const k = i.id; if (!m.has(k)) m.set(k, Object.assign({}, i, { targets: [...i.targets] })); else { const x = m.get(k); x.qty += i.qty; i.targets.forEach(t2 => { if (!x.targets.includes(t2)) x.targets.push(t2); }); } });
+  return [...m.values()];
 }
 function renderListCount() {
   const n = store.list.reduce((a, i) => a + i.qty, 0);
@@ -3016,9 +3112,9 @@ function itemRow(i, shop) {
   row.querySelector('.qty span').textContent = i.qty;
   row.querySelector('.plus').addEventListener('click', () => { i.qty++; save(); renderList(); renderListCount(); });
   row.querySelector('.minus').addEventListener('click', () => {
-    i.qty--; if (i.qty <= 0) store.list = store.list.filter(x => x !== i); save(); renderList(); renderListCount();
+    i.qty--; if (i.qty <= 0) { store.list = store.list.filter(x => x !== i); pruneDesigns(); } save(); renderList(); renderListCount();
   });
-  row.querySelector('.remove').addEventListener('click', () => { store.list = store.list.filter(x => x !== i); save(); renderList(); renderListCount(); });
+  row.querySelector('.remove').addEventListener('click', () => { store.list = store.list.filter(x => x !== i); pruneDesigns(); save(); renderList(); renderListCount(); });
   return row;
 }
 let ordersCheckedAt = 0;
@@ -3065,7 +3161,7 @@ function renderList() {
     if (shop.paused) { const pn = document.createElement('div'); pn.className = 'paused-note'; pn.textContent = t('shopPaused') + (shop.pauseMsg ? ': ' + shop.pauseMsg : ''); g.appendChild(pn); }
     const os = openStatus(shop.hours, shop.tz);
     if (os) { const ol = document.createElement('p'); ol.className = 'open-line ' + (os.open ? 'open' : 'closed'); ol.style.margin = '0 0 8px'; ol.textContent = os.text; g.appendChild(ol); }
-    items.forEach(i => g.appendChild(itemRow(i, shop)));
+    appendByDesign(g, items, shop);
     const { sum, unpriced, count } = totalsFor(shop);
     const tot = document.createElement('div'); tot.className = 'cart-total';
     tot.innerHTML = '<div class="total-row"><span></span><b></b></div><small></small>';
@@ -3084,12 +3180,28 @@ function renderList() {
   if (missing.length) {
     const g = document.createElement('section'); g.className = 'shop-group';
     const h = document.createElement('h3'); h.className = 'sub-h'; h.textContent = t('notInCity'); g.appendChild(h);
-    missing.forEach(i => g.appendChild(itemRow(i, null)));
+    appendByDesign(g, missing, null);
     box.appendChild(g);
   }
 }
+// Cans from each design under their own small heading ("Design 1" with its picture); other cans last
+function appendByDesign(box, items, shop) {
+  const ds = store.designs || {};
+  const keys = [...new Set(items.map(i => i.d || ''))].sort((a, b) => (a ? (ds[a] || {}).n || 999 : 1e9) - (b ? (ds[b] || {}).n || 999 : 1e9));
+  const showHeads = keys.some(k => k && ds[k]);
+  keys.forEach(k => {
+    if (showHeads) {
+      const h = document.createElement('div'); h.className = 'design-head';
+      const info = k && ds[k];
+      if (info && info.thumb) { const im = document.createElement('img'); im.src = info.thumb; im.alt = ''; h.appendChild(im); }
+      const b = document.createElement('b'); b.textContent = info ? t('designN').replace('{n}', info.n) : t('otherCans'); h.appendChild(b);
+      box.appendChild(h);
+    }
+    items.filter(i => (i.d || '') === k).forEach(i => box.appendChild(itemRow(i, shop)));
+  });
+}
 function orderLines(shop) {
-  return itemsFor(shop).map(i => {
+  return mergedItems(itemsFor(shop)).map(i => {
     const p = priceOf(shop, i.brand, i.code);
     return { label: `${i.qty} × ${i.brand} ${[i.code, itemName(i)].filter(Boolean).join(' ')}`,
              price: typeof p === 'number' ? money(p * i.qty, shop.currency) : t('priceAtShop') };
@@ -3208,7 +3320,7 @@ $('placeOrder').addEventListener('click', async () => {
   if (!shop.demo) { await placeRealOrder(shop); return; }
   $('demoNoteEl').hidden = false; $('realDone').hidden = true;
   {
-    const its = itemsFor(shop), tt0 = checkoutTotals(shop);
+    const its = mergedItems(itemsFor(shop)), tt0 = checkoutTotals(shop);
     store.demoNo = (store.demoNo || 0) + 1;
     store.orders = [{ id: 'demo-' + Date.now(), demo: true, no: 'D' + store.demoNo, code: 'K-' + String(1000 + Math.floor(Math.random() * 9000)),
       shop: shop.name, status: 'new', method: coMethod, currency: shop.currency, total: Math.round(tt0.grand * 100) / 100, created: new Date().toISOString(),
@@ -3247,7 +3359,7 @@ async function placeRealOrder(shop) {
   if (CFG.turnstileSiteKey && !tsToken) { $('coMsg').textContent = t('botCheck'); return; }
   const remember = $('coRemember').checked;
   if (remember) { store.account = Object.assign(store.account || {}, { name, phone, email }); save(); if (authSession) syncProfile(); }
-  const items = itemsFor(shop);
+  const lines = itemsFor(shop), items = mergedItems(lines);
   const btn = $('placeOrder'); btn.disabled = true; $('coMsg').textContent = t('sending');
   try {
     const r = await fetch(`${CFG.functionsUrl}/create-order`, { method: 'POST',
@@ -3269,7 +3381,7 @@ async function placeRealOrder(shop) {
                       items: items.map(i => ({ line: i.brand, code: i.code, name: itemName(i), qty: i.qty, unit_price: priceOf(shop, i.brand, i.code) })) }]
                       .concat(store.orders || []).slice(0, 30);
     logEvent('order', { demo: false, method: coMethod, currency: shop.currency, items: items.map(i => ({ line: i.brand, code: i.code, name: i.name, qty: i.qty })) });
-    store.list = store.list.filter(i => !items.includes(i)); save(); renderListCount();
+    store.list = store.list.filter(i => !lines.includes(i)); pruneDesigns(); save(); renderListCount();
     $('orderTitle').textContent = t('orderSent').replace('{shop}', shop.name);
     $('demoNoteEl').hidden = true; $('realDone').hidden = false;
     $('rdNo').textContent = t('orderNo').replace('{n}', j.order_no);
@@ -3398,7 +3510,7 @@ $('backToMatch').addEventListener('click', () => {
 $('tabMatch').addEventListener('click', goMatch);
 $('openList').addEventListener('click', () => { $('settingsSheet').hidden = true; $('designSheet').hidden = true; renderList(); $('listSheet').hidden = false; setTab('openList'); });
 $('closeList').addEventListener('click', () => navBack());
-$('clearList').addEventListener('click', () => { store.list = []; save(); renderList(); renderListCount(); });
+$('clearList').addEventListener('click', () => { store.list = []; pruneDesigns(); save(); renderList(); renderListCount(); });
 $('shareList').addEventListener('click', () => shareText(listText(), t('listHeader'), $('listMsg')));
 
 /* ---------- Candidate cans (same filters as the Match tab) ---------- */
@@ -3904,7 +4016,7 @@ function renderPalette() {
     li.querySelector('.minus').addEventListener('click', () => { qtyOverride[i] = Math.max(0, qty - 1); renderPalette(); });
     li.querySelector('.plus').addEventListener('click', () => { qtyOverride[i] = Math.min(99, qty + 1); renderPalette(); });
     const one = li.querySelector('.add-one'); one.textContent = t('addToList'); one.disabled = qty === 0;
-    one.addEventListener('click', () => { for (let k = 0; k < qty; k++) addToList(p, c.hex); logEvent('add', { line: p.brand, code: p.code, name: p.name, qty, source: 'design' }); $('designMsg').textContent = (qty === 1 ? t('addedOne') : t('addedAll').replace('{n}', qty)); });
+    one.addEventListener('click', () => { for (let k = 0; k < qty; k++) addToList(p, c.hex, designUid); logEvent('add', { line: p.brand, code: p.code, name: p.name, qty, source: 'design' }); $('designMsg').textContent = (qty === 1 ? t('addedOne') : t('addedAll').replace('{n}', qty)); });
     if (qty === 0) li.classList.add('d-skip');
     li.querySelector('.score b').textContent = pct(m); li.querySelector('.score span').textContent = label(m);
     const sbtn = li.querySelector('.shade-btn'), sbox = li.querySelector('.shade-box');
@@ -3918,7 +4030,7 @@ function renderPalette() {
         r.innerHTML = `<span class="sw" style="background:${q.hex}"></span><div><b></b><small></small></div><button type="button" class="chip alt-chip">+ 1</button>`;
         r.querySelector('b').textContent = `${t(key)}: ${paintName(q)}`;
         const pt = priceTag(q.brand, q.code); r.querySelector('small').textContent = [q.brand, q.code, pt ? pt.text : ''].filter(Boolean).join(' · ');
-        r.querySelector('button').addEventListener('click', () => { addToList(q, q.hex); logEvent('add', { line: q.brand, code: q.code, name: q.name, qty: 1, source: 'shade' }); $('designMsg').textContent = t('addedShade'); });
+        r.querySelector('button').addEventListener('click', () => { addToList(q, q.hex, designUid); logEvent('add', { line: q.brand, code: q.code, name: q.name, qty: 1, source: 'shade' }); $('designMsg').textContent = t('addedShade'); });
         sbox.appendChild(r);
       });
     });
@@ -3958,24 +4070,15 @@ dCanvas.addEventListener('pointerdown', e => { e.preventDefault(); showOrig(true
 dCanvas.addEventListener('contextmenu', e => e.preventDefault());
 $('viewCans').addEventListener('click', () => { designView = 'cans'; drawDesign(); });
 // The cans this design put in the cart, so pressing the button again updates them instead of adding a second set
-function designInCart() {
-  const a = store.designAdded;
-  return !!(a && a.uid === designUid && Object.keys(a.items || {}).some(id => store.list.some(i => i.id === id)));
-}
+function designInCart() { return !!designUid && store.list.some(i => i.d === designUid); }
 function updateAddAllLabel() { $('addAll').textContent = t(designInCart() ? 'updateCart' : 'addAll'); }
 $('addAll').addEventListener('click', () => {
   const updating = designInCart();
-  if (updating) {
-    // take out what this design added last time (only what's still in the cart)
-    Object.entries(store.designAdded.items).forEach(([id, q]) => {
-      const it = store.list.find(i => i.id === id); if (!it) return;
-      it.qty -= Math.min(q, it.qty); if (it.qty <= 0) store.list = store.list.filter(x => x !== it);
-    });
-  }
+  if (updating) store.list = store.list.filter(i => i.d !== designUid);   // replace this design's cans with the current picks
   let n = 0; const items = {};
-  clusters.forEach((c, i) => { const o = c.options[picks[i]]; if (!o) return; const q = qtyFor(i, c); for (let k = 0; k < q; k++) addToList(o.p, c.hex); n += q;
+  clusters.forEach((c, i) => { const o = c.options[picks[i]]; if (!o) return; const q = qtyFor(i, c); for (let k = 0; k < q; k++) addToList(o.p, c.hex, designUid); n += q;
     if (q) { items[o.p.id] = (items[o.p.id] || 0) + q; if (!updating) logEvent('add', { line: o.p.brand, code: o.p.code, name: o.p.name, qty: q, source: 'design' }); } });
-  store.designAdded = { uid: designUid, items }; save(); renderListCount(); updateAddAllLabel();
+  save(); renderListCount(); updateAddAllLabel();
   $('designMsg').textContent = updating ? t('cartUpdated').replace('{n}', n) : (n === 1 ? t('addedOne') : t('addedAll').replace('{n}', n));
 });
 
@@ -4598,7 +4701,7 @@ $('setOther').addEventListener('input', e => { store.cityOther = e.target.value.
   save(); $('setMsg').textContent = t('saved');
   clearTimeout(window.__profT); window.__profT = setTimeout(() => { if (authSession) syncProfile(); }, 800);
 }));
-$('setEmpty').addEventListener('click', () => { store.list = []; save(); renderListCount(); $('setMsg').textContent = t('cartEmptied'); });
+$('setEmpty').addEventListener('click', () => { store.list = []; pruneDesigns(); save(); renderListCount(); $('setMsg').textContent = t('cartEmptied'); });
 $('shareData').addEventListener('change', e => { store.analyticsOff = !e.target.checked; if (store.analyticsOff) evQueue = []; save(); });
 $('setAbout').addEventListener('click', () => { showStep('stepAbout'); });
 

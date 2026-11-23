@@ -1,7 +1,7 @@
 {
   "name": "Kromatch",
   "short_name": "Kromatch",
-  "description": "Plan your piece. Get every can.",
+  "description": "Match every colour. Get every can.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
