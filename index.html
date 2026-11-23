@@ -96,7 +96,7 @@
   input[type=file] { position: absolute; opacity: 0; width: 1px; height: 1px; }
 
   .loc-bar { display: flex; align-items: center; gap: 8px; margin: -8px 0 14px; font-weight: 700; font-size: 0.95rem; }
-  .loc-bar .link-btn { margin-left: auto; }
+  .loc-bar .link-btn { margin-left: auto; white-space: nowrap; }
   .shop-pick { display: flex; align-items: center; gap: 8px; margin: -6px 0 14px; font-size: 0.9rem; font-weight: 700; }
   .shop-pick select { flex: 1; font: inherit; font-weight: 400; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line);
                       background: var(--surface); color: var(--ink); min-width: 0; }
@@ -827,9 +827,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-23-simple3"></script>
-<script src="shops.js?v=2026-11-23-simple3"></script>
-<script src="config.js?v=2026-11-23-simple3"></script>
+<script src="colors.js?v=2026-11-23-city"></script>
+<script src="shops.js?v=2026-11-23-city"></script>
+<script src="config.js?v=2026-11-23-city"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -890,6 +890,7 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    locPickCity: 'Choose city',
     how1: 'Upload your sketch', how2: 'See which cans you need, and how many', how3: 'Order or pick up nearby',
     designN: 'Design {n}', otherCans: 'Other cans',
     heroLine: 'Stop guessing colours and can counts. Kromatch finds the right can for every colour in your design, tells you how many you need, and where to buy them nearby.',
@@ -1104,10 +1105,11 @@ const T = {
     locSuggest: 'Looks like you’re in {city}. Switch to shops there?',
     locSwitch: 'Switch',
     locKeep: 'Keep {city}',
-    locNoCity: 'No city chosen',
+    locNoCity: 'See shops near you',
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    locPickCity: 'Επιλογή πόλης',
     how1: 'Ανέβασε το σκίτσο σου', how2: 'Δες ποια σπρέι χρειάζεσαι και πόσα', how3: 'Παράγγειλε ή παράλαβε κοντά σου',
     designN: 'Σχέδιο {n}', otherCans: 'Άλλα σπρέι',
     heroLine: 'Τέλος οι μαντεψιές για χρώματα και ποσότητες. Το Kromatch βρίσκει το σωστό σπρέι για κάθε χρώμα του σχεδίου σου, σου λέει πόσα χρειάζεσαι και πού θα τα βρεις κοντά σου.',
@@ -1322,10 +1324,11 @@ const T = {
     locSuggest: 'Φαίνεται ότι είσαι στην πόλη {city}. Αλλαγή στα καταστήματα εκεί;',
     locSwitch: 'Αλλαγή',
     locKeep: 'Μείνε στην πόλη {city}',
-    locNoCity: 'Δεν έχει επιλεγεί πόλη',
+    locNoCity: 'Καταστήματα κοντά σου',
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    locPickCity: 'Choisir la ville',
     how1: 'Importez votre croquis', how2: 'Voyez de quelles bombes vous avez besoin, et combien', how3: 'Commandez ou retirez près de chez vous',
     designN: 'Dessin {n}', otherCans: 'Autres bombes',
     heroLine: 'Fini de deviner les couleurs et le nombre de bombes. Kromatch trouve la bonne bombe pour chaque couleur de votre dessin, vous dit combien il en faut et où les acheter près de chez vous.',
@@ -1540,10 +1543,11 @@ const T = {
     locSuggest: 'Vous semblez être à {city}. Afficher les magasins de cette ville\u202f?',
     locSwitch: 'Changer',
     locKeep: 'Garder {city}',
-    locNoCity: 'Aucune ville choisie',
+    locNoCity: 'Magasins près de chez vous',
     locAuto: 'Défini d’après le fuseau horaire du téléphone'
   },
   de: {
+    locPickCity: 'Stadt wählen',
     how1: 'Skizze hochladen', how2: 'Sieh, welche Dosen du brauchst und wie viele', how3: 'Bestellen oder in der Nähe abholen',
     designN: 'Design {n}', otherCans: 'Weitere Dosen',
     heroLine: 'Schluss mit Raten bei Farben und Dosenzahl. Kromatch findet die richtige Dose für jede Farbe deines Designs, sagt dir, wie viele du brauchst und wo du sie in der Nähe bekommst.',
@@ -1751,10 +1755,11 @@ const T = {
     locSuggest: 'Du scheinst in {city} zu sein. Zu den Shops dort wechseln?',
     locSwitch: 'Wechseln',
     locKeep: '{city} behalten',
-    locNoCity: 'Keine Stadt gewählt',
+    locNoCity: 'Läden in deiner Nähe',
     locAuto: 'Aus der Zeitzone deines Handys übernommen'
   },
   es: {
+    locPickCity: 'Elegir ciudad',
     how1: 'Sube tu boceto', how2: 'Mira qué sprays necesitas y cuántos', how3: 'Pide o recoge cerca de ti',
     designN: 'Diseño {n}', otherCans: 'Otros sprays',
     heroLine: 'Deja de adivinar colores y cuántos sprays. Kromatch encuentra el spray adecuado para cada color de tu diseño, te dice cuántos necesitas y dónde comprarlos cerca.',
@@ -1962,10 +1967,11 @@ const T = {
     locSuggest: 'Parece que estás en {city}. ¿Cambiar a las tiendas de allí?',
     locSwitch: 'Cambiar',
     locKeep: 'Seguir con {city}',
-    locNoCity: 'Ninguna ciudad elegida',
+    locNoCity: 'Tiendas cerca de ti',
     locAuto: 'Según la zona horaria de tu móvil'
   },
   it: {
+    locPickCity: 'Scegli città',
     how1: 'Carica il tuo schizzo', how2: 'Scopri quali bombolette ti servono e quante', how3: 'Ordina o ritira vicino a te',
     designN: 'Progetto {n}', otherCans: 'Altre bombolette',
     heroLine: 'Basta indovinare colori e numero di bombolette. Kromatch trova la bomboletta giusta per ogni colore del tuo progetto, ti dice quante ne servono e dove comprarle vicino a te.',
@@ -2173,10 +2179,11 @@ const T = {
     locSuggest: 'Sembra che tu sia a {city}. Passare ai negozi di lì?',
     locSwitch: 'Cambia',
     locKeep: 'Resta su {city}',
-    locNoCity: 'Nessuna città scelta',
+    locNoCity: 'Negozi vicino a te',
     locAuto: 'Impostata dal fuso orario del telefono'
   },
   pt: {
+    locPickCity: 'Escolher cidade',
     how1: 'Envie seu esboço', how2: 'Veja quais latas você precisa e quantas', how3: 'Peça ou retire perto de você',
     designN: 'Projeto {n}', otherCans: 'Outras latas',
     heroLine: 'Chega de adivinhar cores e quantidades. O Kromatch encontra a lata certa para cada cor do seu desenho, diz quantas você precisa e onde comprá-las por perto.',
@@ -2384,7 +2391,7 @@ const T = {
     locSuggest: 'Parece que você está em {city}. Mudar para as lojas de lá?',
     locSwitch: 'Mudar',
     locKeep: 'Continuar em {city}',
-    locNoCity: 'Nenhuma cidade escolhida',
+    locNoCity: 'Lojas perto de você',
     locAuto: 'Definida pelo fuso horário do telefone'
   }
 };
@@ -4727,7 +4734,7 @@ function updateLocBar() {
     $('locChange').textContent = t('allShopsLink');
   } else {
     $('locText').textContent = store.city ? t('locNear').replace('{city}', cityName(store.city)) : t('locNoCity');
-    $('locChange').textContent = t('locChange');
+    $('locChange').textContent = store.city ? t('locChange') : t('locPickCity');   // no city yet: an obvious next step
   }
   renderShopPick();
 }
@@ -4750,6 +4757,8 @@ $('locKeep').addEventListener('click', () => { store.dismissTz = suggestCity; sa
 $('locChange').addEventListener('click', () => {
   if (lockedShop) { unlockShop(); if (lastSample) showResults(); rematchDesign(); renderListCount(); return; }
   $('openSettings').click();
+  // go straight to the city choice
+  setTimeout(() => { const c = $('setCity'); if (c) { c.scrollIntoView({ block: 'center' }); c.focus(); } }, 150);
 });
 $('useLocation').addEventListener('click', () => {
   if (!navigator.geolocation) { $('locMsg').textContent = t('locDenied'); return; }
