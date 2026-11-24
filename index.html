@@ -849,9 +849,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-24-k5"></script>
-<script src="shops.js?v=2026-11-24-k5"></script>
-<script src="config.js?v=2026-11-24-k5"></script>
+<script src="colors.js?v=2026-11-24-sales"></script>
+<script src="shops.js?v=2026-11-24-sales"></script>
+<script src="config.js?v=2026-11-24-sales"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -3098,7 +3098,8 @@ window.addEventListener('message', e => {
   store.list = store.list.filter(i => !done.some(x => x.item === i)); pruneDesigns(); save();
   if (d.cartUrl) WIDGET.cartUrl = d.cartUrl;
   widgetResult = { added: cans, missing: job.missing, failed: failed.map(x => x.item) };
-  if (cans) logEvent('widget_add', { shop: LINK_SHOP, cans, colours: done.length });
+  if (cans) logEvent('widget_add', { shop: LINK_SHOP, cans, colours: done.length,
+    items: done.map(x => ({ line: x.item.brand, code: x.item.code || null, name: itemName(x.item), qty: x.qty })) });
   renderList(); renderListCount();
 });
 function widgetResultEl() {

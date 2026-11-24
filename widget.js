@@ -183,10 +183,63 @@
         var job = typeof window.KromatchCart === 'function' ? Promise.resolve(window.KromatchCart(items))
           : platform === 'shopify' ? shopifyAdd(items) : platform === 'woocommerce' ? wooAdd(items) : null;
         if (!job) { reply({ added: [], failed: [], error: 'unsupported' }); return; }
-        job.then(reply, function (err) { reply({ added: [], failed: [], error: String(err && err.message || err) }); });
+        job.then(function (res) { remember(res.added || [], items); reply(res); }, function (err) { reply({ added: [], failed: [], error: String(err && err.message || err) }); });
       }
     });
 
+    /* ---------- Counting sales: which orders on this website contained cans added through Kromatch ----------
+       Only the order number, its total and the product ids/quantities are sent: never a name, email or address. */
+    var TKEY = 'kromatch:added:' + SHOP, SKEY = 'kromatch:snap:' + SHOP, DAY = 864e5;
+    var lsGet = function (k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+    var lsSet = function (k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+    var remember = function (ids, items) {
+      if (!ids.length) return;
+      var a = lsGet(TKEY); if (!a || Date.now() - a.t > 30 * DAY) a = { ids: {}, t: 0 };
+      ids.forEach(function (id) { var it = items.filter(function (x) { return x.id === String(id); })[0]; a.ids[String(id)] = (a.ids[String(id)] || 0) + (it ? it.qty : 1); });
+      a.t = Date.now(); lsSet(TKEY, a);
+    };
+    var report = function (o) {
+      try {
+        fetch(BASE + '/api/convert', { method: 'POST', keepalive: true, mode: 'cors', headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ shop: SHOP, ref: o.ref, total: o.total, currency: o.currency, platform: o.platform, items: o.items }) });
+      } catch (e) {}
+    };
+    var money = function (txt) {     // "1.234,50 EUR", "EUR62.50" -> 1234.5 / 62.5
+      var m = String(txt || '').replace(/[^0-9.,]/g, ''); if (!m) return null;
+      var last = Math.max(m.lastIndexOf(','), m.lastIndexOf('.'));
+      if (last >= 0 && m.length - last - 1 === 2) m = m.slice(0, last).replace(/[.,]/g, '') + '.' + m.slice(last + 1); else m = m.replace(/[.,]/g, '');
+      var n = Number(m); return isFinite(n) ? n : null;
+    };
+    var track = function () {
+      var added = lsGet(TKEY);
+      if (!added || Date.now() - added.t > 30 * DAY) { lsSet(TKEY, null); lsSet(SKEY, null); return; }
+      if (detectPlatform(null) !== 'woocommerce') return;     // Shopify: the checkout reports it (Customer events snippet)
+      var done = location.pathname.match(/order-received\/(\d+)/) || (document.body && /\bwoocommerce-order-received\b/.test(document.body.className));
+      if (done) {
+        var snap = lsGet(SKEY);
+        var refEl = document.querySelector('.woocommerce-order-overview__order strong, .order-number, .wc-block-order-confirmation-summary-list-item__value');
+        var ref = (Array.isArray(done) && done[1]) || (refEl && refEl.textContent.trim()) || '';
+        var totEl = document.querySelector('.woocommerce-order-overview__total .amount, .woocommerce-order-overview__total, .order-total .amount');
+        if (snap && snap.items && snap.items.length && ref) {
+          report({ ref: ref, total: money(totEl && totEl.textContent) || snap.total, currency: snap.currency, platform: 'woocommerce', items: snap.items });
+        }
+        lsSet(TKEY, null); lsSet(SKEY, null);
+        return;
+      }
+      // any other page (cart, checkout...): note which Kromatch cans are in the cart right now
+      fetch(wpRoot() + 'wc/store/v1/cart', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
+          if (!c || !c.items) return;
+          var items = c.items.filter(function (i) { return added.ids[String(i.id)]; }).map(function (i) {
+            var minor = (i.prices && i.prices.currency_minor_unit) || 2;
+            return { id: String(i.id), qty: Math.min(i.quantity, added.ids[String(i.id)]), price: i.prices && i.prices.price ? Number(i.prices.price) / Math.pow(10, minor) : null };
+          });
+          var tminor = (c.totals && c.totals.currency_minor_unit) || 2;
+          lsSet(SKEY, { items: items, total: c.totals && c.totals.total_price ? Number(c.totals.total_price) / Math.pow(10, tminor) : null,
+            currency: c.totals && c.totals.currency_code, t: Date.now() });
+        }, function () {});
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', track); else track();
 
     /* ---------- Placements: banner, button, floating ---------- */
     var CSS = '<style>:host{all:initial;display:block}:host([data-style=button]){display:inline-block}' +
