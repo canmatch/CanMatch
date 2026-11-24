@@ -17,6 +17,6 @@ window.KROMATCH_CONFIG = {
   // To bring one back, add its key here. All cities: athens, thessaloniki, paris, berlin, barcelona,
   // lisbon, milan, amsterdam, london, toronto, montreal, halifax, newyork, losangeles, mexicocity, saopaulo
   // All languages: en, el, fr, de, es, it, pt
-  cities: ['athens', 'toronto', 'newyork', 'halifax'],
+  cities: ['athens', 'halifax', 'toronto'],
   languages: ['en', 'el', 'fr']
 };
