@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Widget preview</title>
+<style>
+  :root { --bg:#f6f5f2; --ink:#161616; --muted:#666; --card:#fff; --line:#e3e0da; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141414; --ink:#f1efea; --muted:#aaa; --card:#1f1f1f; --line:#333; } }
+  body { margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); }
+  main { max-width:880px; margin:0 auto; padding:24px 16px 80px; }
+  .note { color:var(--muted); font-size:.9rem; }
+  .fake { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin:18px 0; }
+  .cans { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px; margin:14px 0; }
+  .cans div { height:90px; border-radius:10px; }
+  #cart { background:var(--card); border:1px dashed var(--line); border-radius:14px; padding:14px 18px; }
+  #cart li { margin:2px 0; }
+  code { background:var(--card); border:1px solid var(--line); padding:2px 6px; border-radius:6px; font-size:.85rem; word-break:break-all; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Widget preview</h1>
+  <p class="note">How the Kromatch widget looks on a shop's website. Only works for shops whose widget is switched on in the dashboard. Open with <code>?shop=their-shop</code>. The cart below is pretend: nothing is ordered.</p>
+  <div class="fake">
+    <h2 style="margin-top:0">Spray paint (pretend shop page)</h2>
+    <div class="cans"><div style="background:#d3473a"></div><div style="background:#2a6fdb"></div><div style="background:#f5b700"></div><div style="background:#1fa6a0"></div></div>
+    <div id="slot"></div>
+  </div>
+  <div id="cart"><b>Pretend cart</b><ul id="cartList"><li class="note">empty</li></ul></div>
+</main>
+<script>
+  // Pretend cart: shows what would go into the shop's real cart
+  window.KromatchCart = function (items) {
+    var ul = document.getElementById('cartList');
+    if (ul.querySelector('.note')) ul.innerHTML = '';
+    items.forEach(function (it) { var li = document.createElement('li'); li.textContent = it.qty + ' × product ' + it.id; ul.appendChild(li); });
+    return { added: items.map(function (it) { return it.id; }), failed: [] };
+  };
+  var shop = (new URLSearchParams(location.search).get('shop') || '').replace(/[^a-z0-9-]/gi, '');
+  var s = document.createElement('script');
+  s.src = 'widget.js'; s.async = true; s.setAttribute('data-shop', shop || 'revolt-shop'); s.setAttribute('data-target', '#slot');
+  document.body.appendChild(s);
+</script>
+</body>
+</html>

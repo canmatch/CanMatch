@@ -261,6 +261,14 @@
               padding: 6px 2px; margin: 0 0 4px -2px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
   .back-btn span:first-child { font-size: 1.6rem; line-height: 0.8; }
   .welcome { z-index: 45; }
+  /* Inside a shop's website: no city choice, no other shops, no Kromatch orders or account */
+  html.embed #homeCity, html.embed #locChange, html.embed #locSuggest, html.embed #openSettings,
+  html.embed #activeOrders, html.embed #myOrders { display: none !important; }
+  .widget-res { border: 1px solid var(--line, #ddd); border-radius: 12px; padding: 12px 14px; margin: 0 0 14px; }
+  .widget-res p { margin: 0 0 8px; }
+  .widget-res .primary { margin-top: 4px; }
+  .powered { text-align: center; font-size: 0.8rem; color: var(--muted); margin: 14px 0 0; }
+  .powered a { color: inherit; }
   #orderDetail { z-index: 32; }
   #shopSheet { z-index: 34; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
   .od-steps { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 0; }
@@ -841,9 +849,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-24-dang"></script>
-<script src="shops.js?v=2026-11-24-dang"></script>
-<script src="config.js?v=2026-11-24-dang"></script>
+<script src="colors.js?v=2026-11-24-widget"></script>
+<script src="shops.js?v=2026-11-24-widget"></script>
+<script src="config.js?v=2026-11-24-widget"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -904,6 +912,13 @@ function deltaE2000(lab1, lab2) {
 /* ---------- Text in seven languages ---------- */
 const T = {
   en: {
+    addToShopCart: 'Add to {shop} cart',
+    widgetAdding: 'Adding…',
+    widgetAdded: '{n} added to your cart.',
+    widgetViewCart: 'View cart',
+    widgetFailed: 'Couldn’t add (sold out online?): {list}',
+    widgetMissing: 'Not in the online shop, ask in store: {list}',
+    widgetError: 'Couldn’t reach the shop’s cart. Try again in a moment.',
     chooseCityBtn: 'Choose your city', langLabel: 'Language',
     how1: 'Upload your sketch', how2: 'See which cans you need, and how many', how3: 'Order or pick up nearby',
     designN: 'Design {n}', otherCans: 'Other cans',
@@ -1123,6 +1138,13 @@ const T = {
     locAuto: 'Set from your phone’s time zone'
   },
   el: {
+    addToShopCart: 'Προσθήκη στο καλάθι του {shop}',
+    widgetAdding: 'Προστίθεται…',
+    widgetAdded: 'Προστέθηκαν {n} στο καλάθι σου.',
+    widgetViewCart: 'Δες το καλάθι',
+    widgetFailed: 'Δεν προστέθηκαν (εξαντλημένα online;): {list}',
+    widgetMissing: 'Δεν υπάρχουν στο online κατάστημα, ρώτα στο μαγαζί: {list}',
+    widgetError: 'Δεν ήταν δυνατή η σύνδεση με το καλάθι του καταστήματος. Δοκίμασε ξανά σε λίγο.',
     chooseCityBtn: 'Διάλεξε πόλη', langLabel: 'Γλώσσα',
     how1: 'Ανέβασε το σκίτσο σου', how2: 'Δες ποια σπρέι χρειάζεσαι και πόσα', how3: 'Παράγγειλε ή παράλαβε κοντά σου',
     designN: 'Σχέδιο {n}', otherCans: 'Άλλα σπρέι',
@@ -1342,6 +1364,13 @@ const T = {
     locAuto: 'Ορίστηκε από τη ζώνη ώρας του κινητού'
   },
   fr: {
+    addToShopCart: 'Ajouter au panier {shop}',
+    widgetAdding: 'Ajout…',
+    widgetAdded: '{n} ajoutées à votre panier.',
+    widgetViewCart: 'Voir le panier',
+    widgetFailed: 'Impossible d’ajouter (épuisé en ligne ?) : {list}',
+    widgetMissing: 'Pas dans la boutique en ligne, demandez en magasin : {list}',
+    widgetError: 'Impossible de joindre le panier de la boutique. Réessayez dans un instant.',
     chooseCityBtn: 'Choisir la ville', langLabel: 'Langue',
     how1: 'Importez votre croquis', how2: 'Voyez de quelles bombes vous avez besoin, et combien', how3: 'Commandez ou retirez près de chez vous',
     designN: 'Dessin {n}', otherCans: 'Autres bombes',
@@ -2443,7 +2472,11 @@ function phoneLang() {
   for (const p of prefs) { const c = String(p).slice(0, 2).toLowerCase(); if (langOk(c)) return c; }
   return 'en';
 }
-let lang = store.lang && langOk(store.lang) ? store.lang : phoneLang();
+// Website widget: kromatch.com/embed?shop=… shown inside a shop's own website (see widget.js)
+const QS = new URLSearchParams(location.search);
+const EMBED = /\/embed\/?$/.test(location.pathname) || QS.get('embed') === '1';
+if (EMBED) document.documentElement.classList.add('embed');
+let lang = store.lang && langOk(store.lang) ? store.lang : (EMBED && langOk(QS.get('lang') || '') ? QS.get('lang') : phoneLang());
 const t = key => (T[lang] && T[lang][key] !== undefined) ? T[lang][key] : T.en[key];
 const pct = n => lang === 'fr' ? `${n}\u202f%` : (lang === 'de' || lang === 'es') ? `${n}\u00a0%` : `${n}%`;
 
@@ -3005,8 +3038,84 @@ function renderShopPick() {
   sel.value = store.shopPref || '';
 }
 // The shop a can is bought from: the first shop in the city that sells its line and has that colour in stock
-const shopFor = (brand, code) => cityShops().find(sh => sh.lines.includes(brand) && !(code && sh.out.has(brand + '|' + code)) && priceOf(sh, brand, code) !== undefined) || null;
+// Inside a shop's website (widget), only colours that can actually go into THEIR online cart count as available
+let WIDGET = null;
+const cartable = (sh, brand, code) => !(WIDGET && lockedShop && sh === lockedShop) || !!(code && (WIDGET.map.get(brand + '|' + code) || {}).in_stock);
+const shopFor = (brand, code) => cityShops().find(sh => sh.lines.includes(brand) && !(code && sh.out.has(brand + '|' + code)) && priceOf(sh, brand, code) !== undefined && cartable(sh, brand, code)) || null;
 const CFG = window.KROMATCH_CONFIG || null;
+/* ---------- Website widget: cans go into the shop's OWN cart ----------
+   Only when this page is inside a website the shop has listed in the dashboard, and the widget is switched on. */
+let widgetResult = null;
+const widgetPending = {};
+const parentOrigin = (() => {
+  try {
+    if (location.ancestorOrigins && location.ancestorOrigins.length) return location.ancestorOrigins[0];
+    return document.referrer ? new URL(document.referrer).origin : '';
+  } catch (e) { return ''; }
+})();
+async function loadWidget() {
+  if (!EMBED || !LINK_SHOP || !CFG || window.parent === window) return;
+  try {
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/rpc/widget_info`, { method: 'POST',
+      headers: { apikey: CFG.supabaseKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ p_slug: LINK_SHOP }) });
+    const info = r.ok ? await r.json() : null;
+    if (!info || !info.enabled) return;
+    const allowed = (info.origins || []).map(o => { try { return new URL(o).origin; } catch (e) { return null; } }).filter(Boolean);
+    // the shop's own website(s), or Kromatch's own preview page (widget-demo.html)
+    if (!parentOrigin || !(allowed.includes(parentOrigin) || parentOrigin === location.origin)) return;
+    const map = new Map();
+    (info.products || []).forEach(x => { const k = x.line + '|' + x.code, cur = map.get(k); if (!cur || (!cur.in_stock && x.in_stock)) map.set(k, x); });
+    WIDGET = { platform: info.platform || null, cartUrl: info.cart_url || null, origin: parentOrigin, map };
+    logEvent('widget_open', { shop: LINK_SHOP });
+    // match again, now leaving out colours their online shop doesn't have
+    if (lastSample) showResults();
+    rematchDesign(); renderListCount();
+    if (!$('listSheet').hidden) renderList();
+  } catch (e) { /* no widget: the normal Kromatch order flow stays */ }
+}
+const widgetFor = shop => WIDGET && lockedShop && shop === lockedShop;
+const canLabel = i => `${i.brand} ${i.code ? i.code + ' ' : ''}${itemName(i)}`;
+function widgetAdd(shop, btn) {
+  const send = [], missing = [];
+  itemsFor(shop).forEach(i => { const m = WIDGET.map.get(i.brand + '|' + i.code); if (m && m.id) send.push({ id: String(m.id), qty: i.qty, item: i }); else missing.push(i); });
+  if (!send.length) { widgetResult = { added: 0, missing, failed: [] }; renderList(); return; }
+  const ref = newKey();
+  widgetPending[ref] = { send, missing, shop };
+  btn.disabled = true; btn.textContent = t('widgetAdding');
+  window.parent.postMessage({ type: 'kromatch:add', ref, platform: WIDGET.platform, cartUrl: WIDGET.cartUrl,
+    items: send.map(x => ({ id: x.id, qty: x.qty })) }, WIDGET.origin);
+  setTimeout(() => { if (widgetPending[ref]) { delete widgetPending[ref]; widgetResult = { error: true }; renderList(); } }, 25000);
+}
+window.addEventListener('message', e => {
+  if (!WIDGET || e.origin !== WIDGET.origin || e.source !== window.parent) return;
+  const d = e.data || {};
+  if (d.type !== 'kromatch:added' || !widgetPending[d.ref]) return;
+  const job = widgetPending[d.ref]; delete widgetPending[d.ref];
+  if (d.error) { widgetResult = { error: true }; renderList(); return; }
+  const ok = new Set((d.added || []).map(String));
+  const done = job.send.filter(x => ok.has(x.id)), failed = job.send.filter(x => !ok.has(x.id));
+  const cans = done.reduce((n, x) => n + x.qty, 0);
+  store.list = store.list.filter(i => !done.some(x => x.item === i)); pruneDesigns(); save();
+  if (d.cartUrl) WIDGET.cartUrl = d.cartUrl;
+  widgetResult = { added: cans, missing: job.missing, failed: failed.map(x => x.item) };
+  if (cans) logEvent('widget_add', { shop: LINK_SHOP, cans, colours: done.length });
+  renderList(); renderListCount();
+});
+function widgetResultEl() {
+  const r = widgetResult; if (!r) return null;
+  const box = document.createElement('div'); box.className = 'widget-res'; box.setAttribute('role', 'status');
+  const p = txt => { const el = document.createElement('p'); el.textContent = txt; box.appendChild(el); };
+  if (r.error) p(t('widgetError'));
+  if (r.added) p(t('widgetAdded').replace('{n}', cansText(r.added)));
+  if (r.failed && r.failed.length) p(t('widgetFailed').replace('{list}', r.failed.map(canLabel).join(', ')));
+  if (r.missing && r.missing.length) p(t('widgetMissing').replace('{list}', r.missing.map(canLabel).join(', ')));
+  if (r.added) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'primary buy'; b.textContent = t('widgetViewCart');
+    b.addEventListener('click', () => window.parent.postMessage({ type: 'kromatch:go-cart', platform: WIDGET && WIDGET.platform, cartUrl: WIDGET && WIDGET.cartUrl }, WIDGET.origin));
+    box.appendChild(b);
+  }
+  return box;
+}
 async function loadLiveShops() {
   if (!CFG) return false;
   const get = async path => {
@@ -3180,6 +3289,8 @@ function renderList() {
   const empty = store.list.length === 0;
   $('cartEmpty').hidden = !empty; $('cartFull').hidden = empty; $('listMsg').textContent = '';
   const box = $('cartGroups'); box.innerHTML = '';
+  const wr = widgetResultEl();
+  if (wr) { if (empty) { $('cartEmpty').hidden = true; $('cartFull').hidden = false; } box.appendChild(wr); }
   if (empty) return;
   if (cityShops().some(sh => sh.demo)) {
     const n = document.createElement('p'); n.className = 'note'; n.textContent = t('testShort'); box.appendChild(n);
@@ -3209,10 +3320,18 @@ function renderList() {
     tot.querySelector('small').textContent = [unpricedText(sum, unpriced), t('priceNote')].filter(Boolean).join(' · ');
     g.appendChild(tot);
     const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'primary buy';
-    btn.textContent = shop.paused ? t('shopPaused') : t('buyNow').replace('{shop}', shop.name);
-    btn.disabled = !!shop.paused;
-    btn.addEventListener('click', () => openOrder(shop));
-    g.appendChild(btn);
+    if (widgetFor(shop)) {
+      btn.textContent = t('addToShopCart').replace('{shop}', shop.name);
+      btn.addEventListener('click', () => { widgetResult = null; widgetAdd(shop, btn); });
+      g.appendChild(btn);
+      const pw = document.createElement('p'); pw.className = 'powered';
+      pw.innerHTML = 'Powered by <a href="https://kromatch.com" target="_blank" rel="noopener">Kromatch</a>'; g.appendChild(pw);
+    } else {
+      btn.textContent = shop.paused ? t('shopPaused') : t('buyNow').replace('{shop}', shop.name);
+      btn.disabled = !!shop.paused;
+      btn.addEventListener('click', () => openOrder(shop));
+      g.appendChild(btn);
+    }
     box.appendChild(g);
   });
   const missing = store.list.filter(i => !shopFor(i.brand, i.code));
@@ -4855,7 +4974,7 @@ async function refreshLive(force) {
   if (!$('listSheet').hidden) renderList();
   renderListCount();
 }
-refreshLive(true).then(renderFavs);
+refreshLive(true).then(renderFavs).then(loadWidget);
 renderFavs();
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
