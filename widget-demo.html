@@ -16,17 +16,34 @@
   .cans div { height:90px; border-radius:10px; }
   #cart { background:var(--card); border:1px dashed var(--line); border-radius:14px; padding:14px 18px; }
   #cart li { margin:2px 0; }
+  .prod { display:grid; grid-template-columns: 120px 1fr; gap:18px; align-items:start; }
+  .prod .pic { height:160px; border-radius:12px; }
+  @media (max-width:560px) { .prod { grid-template-columns:1fr; } .prod .pic { height:100px; } }
   code { background:var(--card); border:1px solid var(--line); padding:2px 6px; border-radius:6px; font-size:.85rem; word-break:break-all; }
 </style>
 </head>
 <body>
 <main>
   <h1>Widget preview</h1>
-  <p class="note">How the Kromatch widget looks on a shop's website. Only works for shops whose widget is switched on in the dashboard. Open with <code>?shop=their-shop</code>. The cart below is pretend: nothing is ordered.</p>
+  <p class="note">How Kromatch looks on a shop's website: the script goes on the site once, then these spots wherever they want them. Only works for shops whose widget is switched on in the dashboard. Open with <code>?shop=their-shop</code>. The cart below is pretend: nothing is ordered.</p>
   <div class="fake">
-    <h2 style="margin-top:0">Spray paint (pretend shop page)</h2>
+    <p class="note" style="margin-top:0">1 · Home page, or the top of the spray-paint section: <code>&lt;div class="kromatch-banner"&gt;&lt;/div&gt;</code></p>
+    <div class="kromatch-banner"></div>
+  </div>
+  <div class="fake">
+    <p class="note" style="margin-top:0">2 · Spray-paint category, above the products: <code>&lt;div class="kromatch-button"&gt;&lt;/div&gt;</code></p>
+    <h2 style="margin:4px 0 12px">Spray paint 400 ml</h2>
+    <div class="kromatch-button"></div>
     <div class="cans"><div style="background:#d3473a"></div><div style="background:#2a6fdb"></div><div style="background:#f5b700"></div><div style="background:#1fa6a0"></div></div>
-    <div id="slot"></div>
+  </div>
+  <div class="fake prod">
+    <div class="pic" style="background:#2a6fdb"></div>
+    <div>
+      <p class="note" style="margin-top:0">3 · Each spray-can product page, near "Add to cart" (light version): <code>&lt;div class="kromatch-button" data-theme="light"&gt;&lt;/div&gt;</code></p>
+      <h2 style="margin:4px 0">MTN 94 · RV-5020 Lago Blue</h2>
+      <p style="margin:0 0 12px">€5.30</p>
+      <div class="kromatch-button" data-theme="light"></div>
+    </div>
   </div>
   <div id="cart"><b>Pretend cart</b><ul id="cartList"><li class="note">empty</li></ul></div>
 </main>
@@ -40,7 +57,7 @@
   };
   var shop = (new URLSearchParams(location.search).get('shop') || '').replace(/[^a-z0-9-]/gi, '');
   var s = document.createElement('script');
-  s.src = 'widget.js'; s.async = true; s.setAttribute('data-shop', shop || 'revolt-shop'); s.setAttribute('data-target', '#slot');
+  s.src = 'widget.js'; s.async = true; s.setAttribute('data-shop', shop || 'revolt-shop'); 
   document.body.appendChild(s);
 </script>
 </body>
