@@ -285,7 +285,10 @@
           <label class="field grow"><span data-t="cityKey"></span><select id="nCity"></select></label>
           <label class="field grow"><span data-t="currency"></span><select id="nCur"><option>EUR</option><option>GBP</option><option>USD</option><option>CAD</option><option>MXN</option><option>BRL</option></select></label>
         </div>
+        <label class="field"><span data-t="address"></span><input id="nAddress" autocomplete="off"></label>
+        <label class="field"><span data-t="website"></span><input id="nWebsite" type="url" placeholder="https://"></label>
         <label class="field"><span data-t="orderEmail"></span><input id="nEmail" type="email"></label>
+        <p class="note" data-t="newShopHours"></p>
         <button id="createShop" data-t="createShop"></button>
       </div>
     </div>
@@ -296,8 +299,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script src="config.js?v=2026-11-24-k5"></script>
-<script src="colors.js?v=2026-11-24-k5"></script>
+<script src="config.js?v=2026-11-24-k6"></script>
+<script src="colors.js?v=2026-11-24-k6"></script>
 <script>
 /* ---------- Text (English and Greek) ---------- */
 const TX = {
@@ -328,7 +331,7 @@ const TX = {
     contactPhone: 'Contact phone', deliveryTitle: 'Delivery', weDeliver: 'We deliver', deliveryFee: 'Delivery fee',
     freeOver: 'Free delivery over (leave empty for never)', deliveryNote: 'Note (e.g. courier, within Greece)', save: 'Save',
     saved: 'Saved.', error: 'Something went wrong: {m}', lockedNote: 'City and currency are set by Kromatch. Ask us to change them.',
-    allShops: 'All shops', newShop: 'Add a shop', cityKey: 'City', currency: 'Currency', createShop: 'Create shop',
+    allShops: 'All shops', newShop: 'Add a shop', newShopHours: 'Opening hours come next: after you create the shop, its Shop details open so you can set them.', createdHours: 'Shop created. Now set its opening hours here.', cityKey: 'City', currency: 'Currency', createShop: 'Create shop',
     demo: 'Demo', live: 'Live', off: 'Off', plan: 'Plan', plan_per_can: 'Per can', plan_capped: 'Per can, with monthly cap', plan_monthly: 'Monthly', feeCap: 'Monthly cap', monthlyFee: 'Monthly fee',
     planPerCanTxt: '{f} per can collected', planCappedTxt: '{f} per can collected, never more than {c} a month', planMonthlyTxt: '{m} a month',
     yourPlan: 'Your plan: {p}.', freeUntil: 'Free until {d}.', feePerCan: 'Fee per can', trialEnds: 'Free until', inviteEmail: 'Invite staff (email)',
@@ -362,7 +365,7 @@ const TX = {
     contactPhone: 'Τηλέφωνο επικοινωνίας', deliveryTitle: 'Παράδοση', weDeliver: 'Κάνουμε παράδοση', deliveryFee: 'Μεταφορικά',
     freeOver: 'Δωρεάν παράδοση άνω των (κενό για ποτέ)', deliveryNote: 'Σημείωση (π.χ. courier, εντός Ελλάδας)', save: 'Αποθήκευση',
     saved: 'Αποθηκεύτηκε.', error: 'Κάτι πήγε στραβά: {m}', lockedNote: 'Την πόλη και το νόμισμα τα ορίζει το Kromatch. Ζήτησέ μας να τα αλλάξουμε.',
-    allShops: 'Όλα τα καταστήματα', newShop: 'Προσθήκη καταστήματος', cityKey: 'Πόλη', currency: 'Νόμισμα', createShop: 'Δημιουργία καταστήματος',
+    allShops: 'Όλα τα καταστήματα', newShop: 'Προσθήκη καταστήματος', newShopHours: 'Το ωράριο ακολουθεί: μόλις δημιουργήσεις το κατάστημα, ανοίγουν τα στοιχεία του για να το ορίσεις.', createdHours: 'Το κατάστημα δημιουργήθηκε. Όρισε τώρα το ωράριο εδώ.', cityKey: 'Πόλη', currency: 'Νόμισμα', createShop: 'Δημιουργία καταστήματος',
     demo: 'Επίδειξη', live: 'Ενεργό', off: 'Ανενεργό', plan: 'Πακέτο', plan_per_can: 'Ανά σπρέι', plan_capped: 'Ανά σπρέι, με μηνιαίο όριο', plan_monthly: 'Μηνιαίο', feeCap: 'Μηνιαίο όριο', monthlyFee: 'Μηνιαία χρέωση',
     planPerCanTxt: '{f} ανά σπρέι που παραλήφθηκε', planCappedTxt: '{f} ανά σπρέι που παραλήφθηκε, έως {c} τον μήνα', planMonthlyTxt: '{m} τον μήνα',
     yourPlan: 'Το πακέτο σου: {p}.', freeUntil: 'Δωρεάν έως {d}.', feePerCan: 'Χρέωση ανά σπρέι', trialEnds: 'Δωρεάν έως', inviteEmail: 'Πρόσκληση προσωπικού (email)',
@@ -1128,13 +1131,20 @@ $('billCsv').addEventListener('click', () => {
 $('createShop').addEventListener('click', async () => {
   const name = $('nName').value.trim(); if (!name) return;
   const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + Math.random().toString(36).slice(2, 6);
-  const { data, error } = await sb.from('shops').insert({ slug, name, city: $('nCity').value, currency: $('nCur').value, is_demo: false, is_live: false, sort_order: 1 }).select().single();
+  let website = $('nWebsite').value.trim();
+  if (website && !/^https?:\/\//i.test(website)) website = 'https://' + website;
+  const { data, error } = await sb.from('shops').insert({ slug, name, city: $('nCity').value, currency: $('nCur').value, is_demo: true, is_live: false, sort_order: 1,   // starts as a demo: hidden, but its link works
+    address: $('nAddress').value.trim() || null, website: website || null }).select().single();
   if (error) return fail(error);
   const { error: e2 } = await sb.from('shop_private').insert({ shop_id: data.id, order_email: $('nEmail').value.trim() || null });
   if (e2) return fail(e2);
-  myShops.unshift(data); $('nName').value = ''; $('nEmail').value = '';
-  const sel = $('shopSel'); sel.insertAdjacentHTML('afterbegin', `<option value="${data.id}">${esc(data.name)} (off)</option>`);
-  renderAdmin(); toast(t('created'));
+  myShops.unshift(data); ['nName', 'nEmail', 'nAddress', 'nWebsite'].forEach(id => { $(id).value = ''; });
+  const sel = $('shopSel'); sel.insertAdjacentHTML('afterbegin', `<option value="${data.id}">${esc(data.name)} (demo)</option>`);
+  renderAdmin(); toast(t('createdHours'));
+  // straight on to the new shop's details, where the opening hours are set
+  sel.value = data.id; await selectShop(data.id);
+  const shopTab = document.querySelector('.tab[data-tab="shop"]'); if (shopTab) shopTab.click();
+  window.scrollTo(0, 0);
 });
 
 start();
