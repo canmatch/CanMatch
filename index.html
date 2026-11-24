@@ -841,9 +841,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-23-top"></script>
-<script src="shops.js?v=2026-11-23-top"></script>
-<script src="config.js?v=2026-11-23-top"></script>
+<script src="colors.js?v=2026-11-24-nbq"></script>
+<script src="shops.js?v=2026-11-24-nbq"></script>
+<script src="config.js?v=2026-11-24-nbq"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -3011,7 +3011,8 @@ async function loadLiveShops() {
       holdDays: sh.hold_days || 7, phone: sh.phone || '', address: sh.address || '', mapsUrl: sh.maps_url || '', website: sh.website || '', about: sh.about || '' }));
     // a city with a live shop shows only real shops there
     const liveCities = new Set(list.filter(sh => sh.live && !sh.demo).map(sh => sh.city));
-    const shown = list.filter(sh => !(sh.demo && liveCities.has(sh.city)));
+    // …except a shop opened through its own link (so a hidden demo shop can still be shown to that shop)
+    const shown = list.filter(sh => !(sh.demo && liveCities.has(sh.city)) || (LINK_SHOP && (sh.slug === LINK_SHOP || sh.id === LINK_SHOP)));
     store.shopsCache = shown; save();
     SHOPS_ALL = shown.map(normShop);
     return true;
