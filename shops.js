@@ -30,16 +30,32 @@ window.SHOPS = [
       "Montana BLACK",
       "Molotow Premium",
       "Flame Blue",
-      "Flame Orange"
+      "Flame Orange",
+      "Ironlak",
+      "Ironlak Sugar",
+      "MTN Water Based",
+      "NBQ Slow",
+      "NBQ Fast",
+      "NBQ Water Based",
+      "DANG Prime",
+      "DANG Hiflow"
     ],
     "prices": {
       "MTN 94": 5.3,
-      "MTN Hardcore": 4.5,
+      "MTN Hardcore": 4.9,
       "Montana GOLD": 5.3,
       "Montana BLACK": 4.7,
       "Molotow Premium": 4.9,
       "Flame Blue": 3.9,
-      "Flame Orange": 3.7
+      "Flame Orange": 3.7,
+      "Ironlak": 5.5,
+      "Ironlak Sugar": 5.5,
+      "MTN Water Based": 8.9,
+      "NBQ Slow": 4.2,
+      "NBQ Fast": 3.9,
+      "NBQ Water Based": 7.5,
+      "DANG Prime": 5.0,
+      "DANG Hiflow": 5.0
     }
   },
   {
@@ -53,22 +69,38 @@ window.SHOPS = [
       "note": "ground shipping, within Canada"
     },
     "lines": [
+      "MTN 94",
+      "MTN Hardcore",
       "Montana GOLD",
       "Montana BLACK",
       "Molotow Premium",
       "Flame Blue",
       "Flame Orange",
       "Ironlak",
-      "Ironlak Sugar"
+      "Ironlak Sugar",
+      "MTN Water Based",
+      "NBQ Slow",
+      "NBQ Fast",
+      "NBQ Water Based",
+      "DANG Prime",
+      "DANG Hiflow"
     ],
     "prices": {
-      "Montana GOLD": 9,
-      "Montana BLACK": 8.99,
-      "Molotow Premium": 9,
-      "Flame Blue": 8,
+      "MTN 94": 9.49,
+      "MTN Hardcore": 9.49,
+      "Montana GOLD": 9.99,
+      "Montana BLACK": 9.49,
+      "Molotow Premium": 11.99,
+      "Flame Blue": 8.99,
       "Flame Orange": 8.99,
-      "Ironlak": null,
-      "Ironlak Sugar": null
+      "Ironlak": 9.99,
+      "Ironlak Sugar": 9.99,
+      "MTN Water Based": 15.99,
+      "NBQ Slow": 8.99,
+      "NBQ Fast": 8.49,
+      "NBQ Water Based": 13.99,
+      "DANG Prime": 9.99,
+      "DANG Hiflow": 9.99
     }
   },
   {
@@ -89,17 +121,31 @@ window.SHOPS = [
       "Molotow Premium",
       "Flame Blue",
       "Flame Orange",
-      "Ironlak"
+      "Ironlak",
+      "Ironlak Sugar",
+      "MTN Water Based",
+      "NBQ Slow",
+      "NBQ Fast",
+      "NBQ Water Based",
+      "DANG Prime",
+      "DANG Hiflow"
     ],
     "prices": {
-      "MTN 94": 8.3,
-      "MTN Hardcore": 8.2,
-      "Montana GOLD": 9,
-      "Montana BLACK": 8.99,
-      "Molotow Premium": 12.09,
-      "Flame Blue": 8.99,
-      "Flame Orange": 9.09,
-      "Ironlak": null
+      "MTN 94": 9.99,
+      "MTN Hardcore": 9.99,
+      "Montana GOLD": 10.49,
+      "Montana BLACK": 9.99,
+      "Molotow Premium": 12.49,
+      "Flame Blue": 9.49,
+      "Flame Orange": 9.49,
+      "Ironlak": 10.49,
+      "Ironlak Sugar": 10.49,
+      "MTN Water Based": 16.49,
+      "NBQ Slow": 9.49,
+      "NBQ Fast": 8.99,
+      "NBQ Water Based": 14.49,
+      "DANG Prime": 10.49,
+      "DANG Hiflow": 10.49
     }
   }
 ];

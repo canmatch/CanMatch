@@ -849,9 +849,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-24-private"></script>
-<script src="shops.js?v=2026-11-24-private"></script>
-<script src="config.js?v=2026-11-24-private"></script>
+<script src="colors.js?v=2026-11-25-demo"></script>
+<script src="shops.js?v=2026-11-25-demo"></script>
+<script src="config.js?v=2026-11-25-demo"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -3142,7 +3142,7 @@ async function loadLiveShops() {
       paused: !!sh.orders_paused, pauseMsg: sh.pause_message || '', hours: sh.opening_hours || null, tz: sh.timezone || null,
       holdDays: sh.hold_days || 7, phone: sh.phone || '', address: sh.address || '', mapsUrl: sh.maps_url || '', website: sh.website || '', about: sh.about || '' }));
     // a city with a live shop shows only real shops there
-    const liveCities = new Set(list.filter(sh => sh.live && !sh.demo).map(sh => sh.city));
+    const liveCities = new Set(list.filter(sh => sh.live && !sh.demo && !sh.linkOnly).map(sh => sh.city));
     // …except a shop opened through its own link (so a hidden demo shop can still be shown to that shop)
     // a private-preview shop (not launched yet) is only ever shown through its own link or QR code
     const viaLink = sh => !!(LINK_SHOP && (sh.slug === LINK_SHOP || sh.id === LINK_SHOP));
