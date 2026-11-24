@@ -849,9 +849,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-24-sales"></script>
-<script src="shops.js?v=2026-11-24-sales"></script>
-<script src="config.js?v=2026-11-24-sales"></script>
+<script src="colors.js?v=2026-11-24-private"></script>
+<script src="shops.js?v=2026-11-24-private"></script>
+<script src="config.js?v=2026-11-24-private"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -3125,14 +3125,16 @@ async function loadLiveShops() {
   };
   try {
     // Newer shop details (hours, pause...) if the database has them; the basic list otherwise
-    const shopsQ = get('shops?select=id,slug,name,city,currency,delivery,is_demo,is_live,sort_order,address,maps_url,website,phone,about,orders_paused,pause_message,opening_hours,timezone,hold_days&order=sort_order')
+    const FULL = 'id,slug,name,city,currency,delivery,is_demo,is_live,sort_order,address,maps_url,website,phone,about,orders_paused,pause_message,opening_hours,timezone,hold_days';
+    const shopsQ = get(`shops?select=${FULL},link_only&order=sort_order`)
+      .catch(() => get(`shops?select=${FULL}&order=sort_order`))
       .catch(() => get('shops?select=id,slug,name,city,currency,delivery,is_demo,is_live,sort_order&order=sort_order'));
     const [shops, lines, outs, ovs] = await Promise.all([
       shopsQ,
       get('shop_lines?select=shop_id,line,price'), get('stock_out?select=shop_id,line,code'),
       get('price_overrides?select=shop_id,line,code,price')]);
     const list = shops.filter(sh => sh.is_demo || sh.is_live).map(sh => ({
-      id: sh.id, slug: sh.slug || '', name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery, demo: sh.is_demo, live: sh.is_live,
+      id: sh.id, slug: sh.slug || '', name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery, demo: sh.is_demo, live: sh.is_live, linkOnly: !!sh.link_only,
       lines: lines.filter(l => l.shop_id === sh.id).map(l => l.line),
       prices: Object.fromEntries(lines.filter(l => l.shop_id === sh.id).map(l => [l.line, l.price == null ? null : Number(l.price)])),
       overrides: Object.fromEntries(ovs.filter(o => o.shop_id === sh.id).map(o => [o.line + '|' + o.code, Number(o.price)])),
@@ -3142,7 +3144,9 @@ async function loadLiveShops() {
     // a city with a live shop shows only real shops there
     const liveCities = new Set(list.filter(sh => sh.live && !sh.demo).map(sh => sh.city));
     // …except a shop opened through its own link (so a hidden demo shop can still be shown to that shop)
-    const shown = list.filter(sh => !(sh.demo && liveCities.has(sh.city)) || (LINK_SHOP && (sh.slug === LINK_SHOP || sh.id === LINK_SHOP)));
+    // a private-preview shop (not launched yet) is only ever shown through its own link or QR code
+    const viaLink = sh => !!(LINK_SHOP && (sh.slug === LINK_SHOP || sh.id === LINK_SHOP));
+    const shown = list.filter(sh => viaLink(sh) || (!sh.linkOnly && !(sh.demo && liveCities.has(sh.city))));
     store.shopsCache = shown; save();
     SHOPS_ALL = shown.map(normShop);
     return true;

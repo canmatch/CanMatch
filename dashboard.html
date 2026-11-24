@@ -305,8 +305,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script src="config.js?v=2026-11-24-sales"></script>
-<script src="colors.js?v=2026-11-24-sales"></script>
+<script src="config.js?v=2026-11-24-private"></script>
+<script src="colors.js?v=2026-11-24-private"></script>
 <script>
 /* ---------- Text (English and Greek) ---------- */
 const TX = {
@@ -342,7 +342,7 @@ const TX = {
     planPerCanTxt: '{f} per can collected', planCappedTxt: '{f} per can collected, never more than {c} a month', planMonthlyTxt: '{m} a month',
     yourPlan: 'Your plan: {p}.', freeUntil: 'Free until {d}.', feePerCan: 'Fee per can', trialEnds: 'Free until', inviteEmail: 'Invite staff (email)',
     invite: 'Invite', invited: 'Invitation sent.', linked: 'Existing login linked to this shop.', makeLive: 'Make live',
-    makeDemo: 'Make demo', switchOff: 'Switch off', created: 'Shop created. Invite its staff below.'
+    makeDemo: 'Make demo', linkOnly: 'Only visible with its link or QR code (private preview, not listed in the app)', linkOnlyPill: 'link only', switchOff: 'Switch off', created: 'Shop created. Invite its staff below.'
   },
   el: {
     linkTitle: 'Ο σύνδεσμος και ο κωδικός QR σου', linkIntro: 'Ανοίγει το Kromatch ρυθμισμένο στο κατάστημά σου: μόνο τα δικά σου σπρέι και τιμές. Βάλ’ τον στο site, στο Instagram ή σε αφίσα στο ταμείο.', copy: 'Αντιγραφή', copied: 'Αντιγράφηκε', qrIntro: 'Οι πελάτες το σκανάρουν για να σχεδιάσουν τοιχογραφία ή να βρουν χρώμα με τα δικά σου σπρέι και να τα κρατήσουν.', downloadQr: 'Λήψη QR (για εκτύπωση)',
@@ -376,7 +376,7 @@ const TX = {
     planPerCanTxt: '{f} ανά σπρέι που παραλήφθηκε', planCappedTxt: '{f} ανά σπρέι που παραλήφθηκε, έως {c} τον μήνα', planMonthlyTxt: '{m} τον μήνα',
     yourPlan: 'Το πακέτο σου: {p}.', freeUntil: 'Δωρεάν έως {d}.', feePerCan: 'Χρέωση ανά σπρέι', trialEnds: 'Δωρεάν έως', inviteEmail: 'Πρόσκληση προσωπικού (email)',
     invite: 'Πρόσκληση', invited: 'Η πρόσκληση στάλθηκε.', linked: 'Ο υπάρχων λογαριασμός συνδέθηκε με το κατάστημα.', makeLive: 'Ενεργοποίηση',
-    makeDemo: 'Επίδειξη', switchOff: 'Απενεργοποίηση', created: 'Το κατάστημα δημιουργήθηκε. Πρόσκαλεσε το προσωπικό του παρακάτω.'
+    makeDemo: 'Επίδειξη', linkOnly: 'Ορατό μόνο με τον σύνδεσμο ή τον κωδικό QR (ιδιωτική προεπισκόπηση, δεν εμφανίζεται στην εφαρμογή)', linkOnlyPill: 'μόνο με σύνδεσμο', switchOff: 'Απενεργοποίηση', created: 'Το κατάστημα δημιουργήθηκε. Πρόσκαλεσε το προσωπικό του παρακάτω.'
   }
 };
 let lang = (() => {   // the language picked here before, otherwise the first one in the device's list that the dashboard speaks
@@ -855,11 +855,12 @@ async function renderAdmin() {
   myShops.forEach(s => {
     const p = pmap.get(s.id) || {};
     const d = document.createElement('div'); d.className = 'card';
-    const state = s.is_live && !s.is_demo ? t('live') : s.is_demo ? t('demo') : t('off');
+    const state = (s.is_live && !s.is_demo ? t('live') : s.is_demo ? t('demo') : t('off')) + (s.link_only ? ' · ' + t('linkOnlyPill') : '');
     d.innerHTML = `<div class="row"><b class="grow">${esc(s.name)}</b><span class="pill">${esc(s.city)} · ${esc(s.currency)}</span><span class="pill">${state}</span></div>
       <div class="row" style="margin-top:8px">
         <button class="small live">${t('makeLive')}</button><button class="small secondary demo">${t('makeDemo')}</button><button class="small danger offb">${t('switchOff')}</button>
       </div>
+      ${'link_only' in s ? `<label class="toggle" style="margin:4px 0 8px"><input type="checkbox" class="lonly" ${s.link_only ? 'checked' : ''}> <span>${t('linkOnly')}</span></label>` : ''}
       <div class="row">
         <label class="field grow"><span>${t('plan')}</span><select class="plan">${['per_can', 'capped', 'monthly'].map(x => `<option value="${x}" ${(p.plan || 'per_can') === x ? 'selected' : ''}>${t('plan_' + x)}</option>`).join('')}</select></label>
         <label class="field grow"><span>${t('trialEnds')}</span><input class="trial" type="date" value="${p.trial_ends || ''}"></label>
@@ -878,7 +879,9 @@ async function renderAdmin() {
       <details class="conn" style="margin-top:12px"><summary><b>${t('connTitle')}</b> <span class="pill connstate"></span></summary><div class="connbody"></div></details>
       <details class="wid" style="margin-top:12px"><summary><b>${t('widTitle')}</b> <span class="pill widstate"></span></summary><div class="widbody"></div></details>`;
     const set = async upd => { const { error } = await sb.from('shops').update(upd).eq('id', s.id); if (error) return fail(error); Object.assign(s, upd); renderAdmin(); toast(t('saved')); };
-    d.querySelector('.live').addEventListener('click', () => set({ is_live: true, is_demo: false }));
+    // going live makes the shop visible to everyone in its city
+    d.querySelector('.live').addEventListener('click', () => set('link_only' in s ? { is_live: true, is_demo: false, link_only: false } : { is_live: true, is_demo: false }));
+    const lo = d.querySelector('.lonly'); if (lo) lo.addEventListener('change', () => set({ link_only: lo.checked }));
     d.querySelector('.demo').addEventListener('click', () => set({ is_live: false, is_demo: true }));
     d.querySelector('.offb').addEventListener('click', () => set({ is_live: false, is_demo: false }));
     // show only the price fields the chosen plan uses, and the plan in words
@@ -1183,6 +1186,7 @@ $('createShop').addEventListener('click', async () => {
   let website = $('nWebsite').value.trim();
   if (website && !/^https?:\/\//i.test(website)) website = 'https://' + website;
   const { data, error } = await sb.from('shops').insert({ slug, name, city: $('nCity').value, currency: $('nCur').value, is_demo: true, is_live: false, sort_order: 1,   // starts as a demo: hidden, but its link works
+    ...('link_only' in (myShops[0] || {}) ? { link_only: true } : {}),
     address: $('nAddress').value.trim() || null, website: website || null }).select().single();
   if (error) return fail(error);
   const { error: e2 } = await sb.from('shop_private').insert({ shop_id: data.id, order_email: $('nEmail').value.trim() || null });
