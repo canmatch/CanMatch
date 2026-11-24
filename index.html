@@ -841,9 +841,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-24-nbq"></script>
-<script src="shops.js?v=2026-11-24-nbq"></script>
-<script src="config.js?v=2026-11-24-nbq"></script>
+<script src="colors.js?v=2026-11-24-filt"></script>
+<script src="shops.js?v=2026-11-24-filt"></script>
+<script src="config.js?v=2026-11-24-filt"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -2493,7 +2493,10 @@ const PAINTS = [];
     finish: c.finish || 'solid', category: b.category || '', lab: rgbToLab(...hexToRgb(c.hex)) });
 }));
 const BRANDS = [...new Set(PAINTS.map(p => p.brand))];
-const activeBrands = new Set(BRANDS);
+// Water-based paint is pricier and mostly for indoors: off unless someone switches it on
+const isWater = b => /water\s*based/i.test(b);
+let waterOn = false;
+const activeBrands = new Set(BRANDS.filter(b => !isWater(b)));
 let includeSpecial = false, includeHardware = false;
 const nearOnly = true; // only cans sold in the user's city (when the city has partner shops)
 const isHardware = p => p.pressure === 'hardware';
@@ -2740,10 +2743,26 @@ function showResults() {
 }
 let showAll = false;
 $('showMore').addEventListener('click', () => { showAll = !showAll; showResults(); });
+// Only offer the brands the shop (or the city's shops) actually sells; everything when there are no shops
+function shopBrands() {
+  const shops = lockedShop ? [lockedShop] : cityShops();
+  return shops.length ? new Set(shops.flatMap(sh => sh.lines)) : null;
+}
+function refreshBrandChips() {
+  const avail = shopBrands();
+  document.querySelectorAll('#brandChips .chip').forEach(c => {
+    const b = c.dataset.brand;
+    if (BRAND_PRESSURE[b] === 'hardware') return;          // handled by the hardware toggle
+    c.hidden = !!avail && !avail.has(b);
+  });
+}
 function updateFilterBtn() {
-  // Count how many filters differ from the defaults (all brands on, special finishes off)
-  const graffiti = BRANDS.filter(b => BRAND_PRESSURE[b] !== 'hardware');
-  const n = (graffiti.some(b => !activeBrands.has(b)) ? 1 : 0) + (includeSpecial ? 1 : 0) + (includeHardware ? 1 : 0);
+  refreshBrandChips();
+  // Count how many filters differ from the defaults (all brands on except water-based, special finishes off), among the brands on offer
+  const avail = shopBrands();
+  const graffiti = BRANDS.filter(b => BRAND_PRESSURE[b] !== 'hardware' && (!avail || avail.has(b)));
+  const changed = graffiti.some(b => isWater(b) ? activeBrands.has(b) : !activeBrands.has(b));
+  const n = (changed ? 1 : 0) + (includeSpecial ? 1 : 0) + (includeHardware ? 1 : 0);
   const label = n ? t('filtersOn').replace('{n}', n) : t('filters');
   $('filterBtn').textContent = label;
   if ($('dFilterBtn')) $('dFilterBtn').textContent = label;
@@ -2774,7 +2793,7 @@ PAINTS.forEach(p => { BRAND_PRESSURE[p.brand] = p.pressure; });
 function setPressure(p) {
   // Low pressure selects only low-pressure lines, high only high, all selects everything
   activeBrands.clear();
-  BRANDS.forEach(b => { if (BRAND_PRESSURE[b] === 'hardware' ? includeHardware : (p === 'all' || BRAND_PRESSURE[b] === p)) activeBrands.add(b); });
+  BRANDS.forEach(b => { if (isWater(b) && !waterOn) return; if (BRAND_PRESSURE[b] === 'hardware' ? includeHardware : (p === 'all' || BRAND_PRESSURE[b] === p)) activeBrands.add(b); });
   document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
   document.querySelectorAll('#brandChips .chip').forEach(c => c.setAttribute('aria-pressed', activeBrands.has(c.dataset.brand) ? 'true' : 'false'));
   showResults(); rematchDesign(); updateFilterBtn();
@@ -2793,16 +2812,17 @@ function syncHardwareChips() {
 
 BRANDS.forEach(brand => {
   const btn = document.createElement('button');
-  btn.className = 'chip'; btn.type = 'button'; btn.textContent = brand; btn.setAttribute('aria-pressed', 'true');
+  btn.className = 'chip'; btn.type = 'button'; btn.textContent = brand; btn.setAttribute('aria-pressed', activeBrands.has(brand) ? 'true' : 'false');
   btn.dataset.brand = brand;
   btn.addEventListener('click', () => {
     if (activeBrands.has(brand)) activeBrands.delete(brand); else activeBrands.add(brand);
     btn.setAttribute('aria-pressed', activeBrands.has(brand) ? 'true' : 'false');
+    if (isWater(brand)) waterOn = BRANDS.some(b => isWater(b) && activeBrands.has(b));
     // A manual brand choice no longer matches a single pressure setting
     const sel = [...activeBrands];
     const graffiti = BRANDS.filter(b => BRAND_PRESSURE[b] !== 'hardware');
     const groups = [...new Set(graffiti.map(b => BRAND_PRESSURE[b]))];
-    const p = graffiti.every(b => activeBrands.has(b)) ? 'all'
+    const p = graffiti.every(b => activeBrands.has(b) || (isWater(b) && !waterOn)) ? 'all'
       : groups.find(g => sel.length && sel.every(b => BRAND_PRESSURE[b] === g) && BRANDS.filter(b => BRAND_PRESSURE[b] === g).every(b => activeBrands.has(b))) || '';
     document.querySelectorAll('#pressureChips .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.p === p ? 'true' : 'false'));
     showResults(); rematchDesign(); updateFilterBtn();
