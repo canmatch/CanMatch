@@ -854,9 +854,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-26-disclaimer"></script>
-<script src="shops.js?v=2026-11-26-disclaimer"></script>
-<script src="config.js?v=2026-11-26-disclaimer"></script>
+<script src="colors.js?v=2026-11-26-cart"></script>
+<script src="shops.js?v=2026-11-26-cart"></script>
+<script src="config.js?v=2026-11-26-cart"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -925,7 +925,7 @@ const T = {
     widgetMissing: 'Not in the online shop, ask in store: {list}',
     widgetError: 'Couldn’t reach the shop’s cart. Try again in a moment.',
     chooseCityBtn: 'Choose your city', langLabel: 'Language',
-    how1: 'Upload your design', how2: 'See which cans you need, and how many', how3: 'Order or pick up nearby',
+    how1: 'Upload your design', how2: 'See which cans you need, and how many', how3: 'Order or pick up nearby', how3Shop: 'Add them all to the shop’s cart',
     designN: 'Design {n}', otherCans: 'Other cans',
     heroLine: 'Stop guessing colours and can counts. Kromatch finds the right can for every colour in your design, tells you how many you need, and where to buy them nearby.',
     aoReady: 'Ready to collect at {shop}', aoSent: 'Sent to {shop}',
@@ -1152,7 +1152,7 @@ const T = {
     widgetMissing: 'Δεν υπάρχουν στο online κατάστημα, ρώτα στο μαγαζί: {list}',
     widgetError: 'Δεν ήταν δυνατή η σύνδεση με το καλάθι του καταστήματος. Δοκίμασε ξανά σε λίγο.',
     chooseCityBtn: 'Διάλεξε πόλη', langLabel: 'Γλώσσα',
-    how1: 'Ανέβασε το σχέδιό σου', how2: 'Δες ποια σπρέι χρειάζεσαι και πόσα', how3: 'Παράγγειλε ή παράλαβε κοντά σου',
+    how1: 'Ανέβασε το σχέδιό σου', how2: 'Δες ποια σπρέι χρειάζεσαι και πόσα', how3: 'Παράγγειλε ή παράλαβε κοντά σου', how3Shop: 'Βάλ’ τα όλα στο καλάθι του καταστήματος',
     designN: 'Σχέδιο {n}', otherCans: 'Άλλα σπρέι',
     heroLine: 'Τέλος οι μαντεψιές για χρώματα και ποσότητες. Το Kromatch βρίσκει το σωστό σπρέι για κάθε χρώμα του σχεδίου σου, σου λέει πόσα χρειάζεσαι και πού θα τα βρεις κοντά σου.',
     aoReady: 'Έτοιμη για παραλαβή: {shop}', aoSent: 'Στάλθηκε: {shop}',
@@ -1379,7 +1379,7 @@ const T = {
     widgetMissing: 'Pas dans la boutique en ligne, demandez en magasin : {list}',
     widgetError: 'Impossible de joindre le panier de la boutique. Réessayez dans un instant.',
     chooseCityBtn: 'Choisir la ville', langLabel: 'Langue',
-    how1: 'Importez votre dessin', how2: 'Voyez de quelles bombes vous avez besoin, et combien', how3: 'Commandez ou retirez près de chez vous',
+    how1: 'Importez votre dessin', how2: 'Voyez de quelles bombes vous avez besoin, et combien', how3: 'Commandez ou retirez près de chez vous', how3Shop: 'Ajoutez-les toutes au panier du magasin',
     designN: 'Dessin {n}', otherCans: 'Autres bombes',
     heroLine: 'Fini de deviner les couleurs et le nombre de bombes. Kromatch trouve la bonne bombe pour chaque couleur de votre dessin, vous dit combien il en faut et où les acheter près de chez vous.',
     aoReady: 'Prête à retirer chez {shop}', aoSent: 'Envoyée à {shop}',
@@ -1599,7 +1599,7 @@ const T = {
   },
   de: {
     chooseCityBtn: 'Stadt wählen', langLabel: 'Sprache',
-    how1: 'Entwurf hochladen', how2: 'Sieh, welche Dosen du brauchst und wie viele', how3: 'Bestellen oder in der Nähe abholen',
+    how1: 'Entwurf hochladen', how2: 'Sieh, welche Dosen du brauchst und wie viele', how3: 'Bestellen oder in der Nähe abholen', how3Shop: 'Alle in den Warenkorb des Shops legen',
     designN: 'Design {n}', otherCans: 'Weitere Dosen',
     heroLine: 'Schluss mit Raten bei Farben und Dosenzahl. Kromatch findet die richtige Dose für jede Farbe deines Designs, sagt dir, wie viele du brauchst und wo du sie in der Nähe bekommst.',
     aoReady: 'Abholbereit bei {shop}', aoSent: 'An {shop} gesendet',
@@ -1811,7 +1811,7 @@ const T = {
   },
   es: {
     chooseCityBtn: 'Elige tu ciudad', langLabel: 'Idioma',
-    how1: 'Sube tu diseño', how2: 'Mira qué sprays necesitas y cuántos', how3: 'Pide o recoge cerca de ti',
+    how1: 'Sube tu diseño', how2: 'Mira qué sprays necesitas y cuántos', how3: 'Pide o recoge cerca de ti', how3Shop: 'Añádelos todos al carrito de la tienda',
     designN: 'Diseño {n}', otherCans: 'Otros sprays',
     heroLine: 'Deja de adivinar colores y cuántos sprays. Kromatch encuentra el spray adecuado para cada color de tu diseño, te dice cuántos necesitas y dónde comprarlos cerca.',
     aoReady: 'Lista para recoger en {shop}', aoSent: 'Enviado a {shop}',
@@ -2023,7 +2023,7 @@ const T = {
   },
   it: {
     chooseCityBtn: 'Scegli la città', langLabel: 'Lingua',
-    how1: 'Carica il tuo disegno', how2: 'Scopri quali bombolette ti servono e quante', how3: 'Ordina o ritira vicino a te',
+    how1: 'Carica il tuo disegno', how2: 'Scopri quali bombolette ti servono e quante', how3: 'Ordina o ritira vicino a te', how3Shop: 'Aggiungile tutte al carrello del negozio',
     designN: 'Progetto {n}', otherCans: 'Altre bombolette',
     heroLine: 'Basta indovinare colori e numero di bombolette. Kromatch trova la bomboletta giusta per ogni colore del tuo progetto, ti dice quante ne servono e dove comprarle vicino a te.',
     aoReady: 'Pronto da ritirare da {shop}', aoSent: 'Inviato a {shop}',
@@ -2235,7 +2235,7 @@ const T = {
   },
   pt: {
     chooseCityBtn: 'Escolha a cidade', langLabel: 'Idioma',
-    how1: 'Envie seu desenho', how2: 'Veja quais latas você precisa e quantas', how3: 'Peça ou retire perto de você',
+    how1: 'Envie seu desenho', how2: 'Veja quais latas você precisa e quantas', how3: 'Peça ou retire perto de você', how3Shop: 'Adiciona-as todas ao carrinho da loja',
     designN: 'Projeto {n}', otherCans: 'Outras latas',
     heroLine: 'Chega de adivinhar cores e quantidades. O Kromatch encontra a lata certa para cada cor do seu desenho, diz quantas você precisa e onde comprá-las por perto.',
     aoReady: 'Pronto para retirar em {shop}', aoSent: 'Enviado para {shop}',
@@ -2487,6 +2487,7 @@ function phoneLang() {
 // Website widget: kromatch.com/embed?shop=… shown inside a shop's own website (see widget.js)
 const QS = new URLSearchParams(location.search);
 const EMBED = /\/embed\/?$/.test(location.pathname) || QS.get('embed') === '1';
+if (EMBED) document.querySelectorAll('[data-i18n="how3"]').forEach(el => { el.dataset.i18n = 'how3Shop'; });
 if (EMBED) document.documentElement.classList.add('embed');
 let lang = store.lang && langOk(store.lang) ? store.lang : (EMBED && langOk(QS.get('lang') || '') ? QS.get('lang') : phoneLang());
 const t = key => (T[lang] && T[lang][key] !== undefined) ? T[lang][key] : T.en[key];
