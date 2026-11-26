@@ -345,7 +345,14 @@
   .crop-note { margin: 0 0 8px; } .crop-note .link-btn { font-size: 0.85rem; }
   .wall-row select, .wall-row input { padding: 12px 8px !important; }
   .wall-row .field { margin-top: 8px; font-size: 0.9rem; }
-  .alts { grid-column: 1 / 4; display: flex; flex-wrap: wrap; gap: 6px; }
+  .alts { grid-column: 1 / 4; display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .alt-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; }
+  .mini-pair { display: flex; width: 44px; height: 30px; border-radius: 7px; overflow: hidden; border: 1px solid var(--line); }
+  .mini-pair span { flex: 1; }
+  .alt-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+  .alt-txt b { font-size: 0.95rem; } .alt-txt small { color: var(--muted); font-size: 0.8rem; }
+  .alt-txt .alt-diff { color: var(--ink); font-weight: 600; }
+  .match .diff { font-size: 0.82rem; color: var(--muted); margin-top: 1px; }
   .d-actions { grid-column: 1 / 4; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 2px; }
   .d-actions .qty button { width: 32px; height: 32px; }
   .d-actions .qty span { min-width: 1.6em; text-align: center; font-weight: 800; }
@@ -855,9 +862,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-26-handoff"></script>
-<script src="shops.js?v=2026-11-26-handoff"></script>
-<script src="config.js?v=2026-11-26-handoff"></script>
+<script src="colors.js?v=2026-11-26-alts"></script>
+<script src="shops.js?v=2026-11-26-alts"></script>
+<script src="config.js?v=2026-11-26-alts"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -961,7 +968,7 @@ const T = {
     addedOne: 'Added 1 can to your cart.',
     back: 'Back',
     welcomeP1: 'Match a colour from any photo', welcomeP2: 'Plan a mural from your sketch', welcomeP3: 'Reserve the cans at a shop near you', welcomeStart: 'Start', privacyLink: 'Privacy policy', rememberMe: 'Remember my details on this phone', accPromptTitle: 'Keep your orders and designs', accPromptText: 'Create a free account to track orders and save designs on any device.', accCreate: 'Create free account', notNow: 'Not now', accTitle: 'Your Kromatch account', accBenefits: 'Free. Track your orders and save your designs on any phone or computer.', continueEmail: 'Continue with email', continueGoogle: 'Continue with Google', continueApple: 'Continue with Apple', accLinkSent: 'Check your email and tap the link to sign in.', accError: 'Couldn’t send the link: {m}', accNoPassword: 'No password needed. We’ll email you a sign-in link.', signedInAs: 'Signed in as {email}', signOut: 'Sign out', deleteAccount: 'Delete account', deleteConfirm: 'Delete your account, saved designs and profile? Orders already sent to shops stay with the shops. This can’t be undone.', accDeleted: 'Your account was deleted.', accOrSignIn: 'Create account or sign in', accLocalNote: 'Without an account, your details stay only on this phone.', accSyncedNote: 'Your details are saved to your account.', saveDesign: 'Save design', designNamePrompt: 'Name this design', myDesigns: 'My designs', openDesign: 'Open', designSaved: 'Design saved.', signInToSave: 'Create a free account to save designs.', noDesigns: 'No saved designs yet.',
-    yourDetails: 'Your details', consentL: 'I agree to share my name and contact details with {shop} for this order.', needName: 'Please enter your name.', needContact: 'Please enter a phone number or email.', needConsent: 'Please tick the box to share your details with the shop.', sending: 'Sending your order…', sendFail: 'Couldn’t send the order: {m}', orderSent: 'Order sent to {shop}', orderNo: 'Order #{n}', pickupCodeL: 'Pickup code', showCode: 'Show this code in the shop when you collect your cans. You pay in the shop.', deliveryInfo: 'The shop will deliver your cans. You pay on delivery.', emailSentTo: 'A confirmation was sent to {email}.', myOrders: 'My orders', checkStatus: 'Check status', offline: 'no connection, please try again', st_new: 'Sent to shop', st_ready: 'Ready to collect', st_picked_up: 'Collected', st_not_available: 'Not available', st_cancelled: 'Cancelled',
+    yourDetails: 'Your details', consentL: 'I agree to share my name and contact details with {shop} for this order.', needName: 'Please enter your name.', needContact: 'Please enter a phone number or email.', needConsent: 'Please tick the box to share your details with the shop.', sending: 'Sending your order…', sendFail: 'Couldn’t send the order: {m}', orderSent: 'Order sent to {shop}', orderNo: 'Order #{n}', pickupCodeL: 'Pickup code', showCode: 'Show this code in the shop when you collect your cans. You pay in the shop.', deliveryInfo: 'The shop will deliver your cans. You pay on delivery.', emailSentTo: 'A confirmation was sent to {email}.', myOrders: 'My orders', checkStatus: 'Check status', offline: 'no connection, please try again', st_new: 'Sent to shop', st_ready: 'Ready to collect', st_picked_up: 'Collected', st_not_available: 'Not available', st_cancelled: 'Cancelled', odMissing: 'the shop doesn’t have this one', odAlt: 'Closest the shop has: {c}. Ask for it if you’d like it instead.',
     wallQ: 'How big is the wall?',
     wallWhy: 'Optional. Fill it in to see how many cans of each colour you need.',
     details: 'Details',
@@ -996,6 +1003,7 @@ const T = {
     twoCoats: '2 coats',
     coverageNote: 'Estimate assumes about {c} m² per 400 ml can per coat. Real coverage depends on the brand, cap and wall.',
     ofDesign: '{p}% of design',
+    dfSame: 'almost the same', dfLighter: 'lighter', dfDarker: 'darker', dfSlLighter: 'slightly lighter', dfSlDarker: 'slightly darker', dfMuchLighter: 'much lighter', dfMuchDarker: 'much darker', dfVivid: 'more vivid', dfDuller: 'duller', dfMore: 'more {h}', hu_red: 'red', hu_orange: 'orange', hu_yellow: 'yellow', hu_green: 'green', hu_teal: 'turquoise', hu_blue: 'blue', hu_purple: 'purple', hu_pink: 'pink', altUse: 'Use this', altVs: 'vs your colour: {d}',
     otherOptions: 'Other options',
     designTotal: 'Total for this wall',
     addAll: 'Add all to cart',
@@ -1078,7 +1086,7 @@ const T = {
     cans: '{n} cans',
     oneCan: '1 can',
     priceNote: 'Prices are confirmed by the shop.',
-    buyNow: 'Purchase now from {shop}', buyOnSite: 'Buy on {shop}’s website', reserveInStore: 'Reserve, pay in store', buyOnSiteNote: 'You check out and pay on {shop}’s website. Kromatch puts the cans in their cart.', notOnSite: 'Not in {shop}’s online shop: {list}. Reserve these instead.', openingSite: 'Opening {shop}…',
+    buyNow: 'Purchase now from {shop}', buyOnSite: 'Buy on {shop}’s website', reserveInStore: 'Reserve, pay in store', buyOnSiteNote: 'You check out and pay on {shop}’s website. Kromatch puts the cans in their cart.', notOnSite: 'Not on {shop}’s website: {list}. They may still be in the shop: reserve them to pay in store, or ask {shop}.', openingSite: 'Opening {shop}…',
     orderTitle: 'Order ready for {shop}',
     demoNote: 'This is a test. No order was sent and the shop has not been contacted. Please don’t contact the shop about this order.',
     backToCart: 'Back to cart',
@@ -1188,7 +1196,7 @@ const T = {
     addedOne: 'Προστέθηκε 1 σπρέι στο καλάθι σου.',
     back: 'Πίσω',
     welcomeP1: 'Ταίριαξε ένα χρώμα από οποιαδήποτε φωτογραφία', welcomeP2: 'Σχεδίασε τοιχογραφία από το σκίτσο σου', welcomeP3: 'Κράτησε τα σπρέι σε κατάστημα κοντά σου', welcomeStart: 'Ξεκίνα', privacyLink: 'Πολιτική απορρήτου', rememberMe: 'Να θυμάται τα στοιχεία μου σε αυτό το κινητό', accPromptTitle: 'Κράτα τις παραγγελίες και τα σχέδιά σου', accPromptText: 'Φτιάξε δωρεάν λογαριασμό για να βλέπεις τις παραγγελίες σου και να αποθηκεύεις σχέδια σε κάθε συσκευή.', accCreate: 'Δωρεάν λογαριασμός', notNow: 'Όχι τώρα', accTitle: 'Ο λογαριασμός σου στο Kromatch', accBenefits: 'Δωρεάν. Παρακολούθησε τις παραγγελίες σου και αποθήκευσε τα σχέδιά σου σε κάθε κινητό ή υπολογιστή.', continueEmail: 'Συνέχεια με email', continueGoogle: 'Συνέχεια με Google', continueApple: 'Συνέχεια με Apple', accLinkSent: 'Έλεγξε το email σου και πάτα τον σύνδεσμο για να συνδεθείς.', accError: 'Ο σύνδεσμος δεν στάλθηκε: {m}', accNoPassword: 'Χωρίς κωδικό. Θα σου στείλουμε σύνδεσμο σύνδεσης στο email.', signedInAs: 'Συνδεδεμένος ως {email}', signOut: 'Αποσύνδεση', deleteAccount: 'Διαγραφή λογαριασμού', deleteConfirm: 'Να διαγραφούν ο λογαριασμός, τα σχέδια και το προφίλ σου; Οι παραγγελίες που έχουν ήδη σταλεί μένουν στα καταστήματα. Δεν αναιρείται.', accDeleted: 'Ο λογαριασμός σου διαγράφηκε.', accOrSignIn: 'Δημιουργία λογαριασμού ή σύνδεση', accLocalNote: 'Χωρίς λογαριασμό, τα στοιχεία σου μένουν μόνο σε αυτό το κινητό.', accSyncedNote: 'Τα στοιχεία σου αποθηκεύονται στον λογαριασμό σου.', saveDesign: 'Αποθήκευση σχεδίου', designNamePrompt: 'Δώσε όνομα στο σχέδιο', myDesigns: 'Τα σχέδιά μου', openDesign: 'Άνοιγμα', designSaved: 'Το σχέδιο αποθηκεύτηκε.', signInToSave: 'Φτιάξε δωρεάν λογαριασμό για να αποθηκεύεις σχέδια.', noDesigns: 'Δεν υπάρχουν ακόμα αποθηκευμένα σχέδια.',
-    yourDetails: 'Τα στοιχεία σου', consentL: 'Συμφωνώ να μοιραστώ το όνομα και τα στοιχεία επικοινωνίας μου με το {shop} για αυτή την παραγγελία.', needName: 'Γράψε το όνομά σου.', needContact: 'Γράψε τηλέφωνο ή email.', needConsent: 'Τσέκαρε το κουτάκι για να μοιραστείς τα στοιχεία σου με το κατάστημα.', sending: 'Αποστολή παραγγελίας…', sendFail: 'Η παραγγελία δεν στάλθηκε: {m}', orderSent: 'Η παραγγελία στάλθηκε στο {shop}', orderNo: 'Παραγγελία #{n}', pickupCodeL: 'Κωδικός παραλαβής', showCode: 'Δείξε αυτόν τον κωδικό στο κατάστημα όταν παραλάβεις τα σπρέι. Πληρώνεις στο κατάστημα.', deliveryInfo: 'Το κατάστημα θα σου στείλει τα σπρέι. Πληρώνεις κατά την παράδοση.', emailSentTo: 'Στάλθηκε επιβεβαίωση στο {email}.', myOrders: 'Οι παραγγελίες μου', checkStatus: 'Έλεγχος κατάστασης', offline: 'δεν υπάρχει σύνδεση, δοκίμασε ξανά', st_new: 'Στάλθηκε στο κατάστημα', st_ready: 'Έτοιμη για παραλαβή', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
+    yourDetails: 'Τα στοιχεία σου', consentL: 'Συμφωνώ να μοιραστώ το όνομα και τα στοιχεία επικοινωνίας μου με το {shop} για αυτή την παραγγελία.', needName: 'Γράψε το όνομά σου.', needContact: 'Γράψε τηλέφωνο ή email.', needConsent: 'Τσέκαρε το κουτάκι για να μοιραστείς τα στοιχεία σου με το κατάστημα.', sending: 'Αποστολή παραγγελίας…', sendFail: 'Η παραγγελία δεν στάλθηκε: {m}', orderSent: 'Η παραγγελία στάλθηκε στο {shop}', orderNo: 'Παραγγελία #{n}', pickupCodeL: 'Κωδικός παραλαβής', showCode: 'Δείξε αυτόν τον κωδικό στο κατάστημα όταν παραλάβεις τα σπρέι. Πληρώνεις στο κατάστημα.', deliveryInfo: 'Το κατάστημα θα σου στείλει τα σπρέι. Πληρώνεις κατά την παράδοση.', emailSentTo: 'Στάλθηκε επιβεβαίωση στο {email}.', myOrders: 'Οι παραγγελίες μου', checkStatus: 'Έλεγχος κατάστασης', offline: 'δεν υπάρχει σύνδεση, δοκίμασε ξανά', st_new: 'Στάλθηκε στο κατάστημα', st_ready: 'Έτοιμη για παραλαβή', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε', odMissing: 'δεν το έχει το κατάστημα', odAlt: 'Το πιο κοντινό που έχει το κατάστημα: {c}. Ζήτα το αν το θέλεις στη θέση του.',
     wallQ: 'Πόσο μεγάλος είναι ο τοίχος;',
     wallWhy: 'Προαιρετικό. Συμπλήρωσέ το για να δεις πόσα σπρέι από κάθε χρώμα χρειάζεσαι.',
     details: 'Λεπτομέρειες',
@@ -1223,6 +1231,7 @@ const T = {
     twoCoats: '2 στρώσεις',
     coverageNote: 'Ο υπολογισμός θεωρεί περίπου {c} m² ανά σπρέι 400 ml ανά στρώση. Η πραγματική κάλυψη εξαρτάται από τη μάρκα, το καπάκι και τον τοίχο.',
     ofDesign: '{p}% του σχεδίου',
+    dfSame: 'σχεδόν ίδιο', dfLighter: 'πιο ανοιχτό', dfDarker: 'πιο σκούρο', dfSlLighter: 'λίγο πιο ανοιχτό', dfSlDarker: 'λίγο πιο σκούρο', dfMuchLighter: 'πολύ πιο ανοιχτό', dfMuchDarker: 'πολύ πιο σκούρο', dfVivid: 'πιο έντονο', dfDuller: 'πιο θαμπό', dfMore: 'πιο {h}', hu_red: 'κόκκινο', hu_orange: 'πορτοκαλί', hu_yellow: 'κίτρινο', hu_green: 'πράσινο', hu_teal: 'τιρκουάζ', hu_blue: 'μπλε', hu_purple: 'μωβ', hu_pink: 'ροζ', altUse: 'Αυτό', altVs: 'σε σχέση με το χρώμα σου: {d}',
     otherOptions: 'Άλλες επιλογές',
     designTotal: 'Σύνολο για αυτόν τον τοίχο',
     addAll: 'Όλα στο καλάθι',
@@ -1305,7 +1314,7 @@ const T = {
     cans: '{n} σπρέι',
     oneCan: '1 σπρέι',
     priceNote: 'Οι τιμές επιβεβαιώνονται από το κατάστημα.',
-    buyNow: 'Αγορά τώρα από {shop}', buyOnSite: 'Αγορά στην ιστοσελίδα του {shop}', reserveInStore: 'Κράτηση, πληρωμή στο κατάστημα', buyOnSiteNote: 'Ολοκληρώνεις και πληρώνεις στην ιστοσελίδα του {shop}. Το Kromatch βάζει τα σπρέι στο καλάθι τους.', notOnSite: 'Δεν υπάρχουν στο e-shop του {shop}: {list}. Κάνε κράτηση γι’ αυτά.', openingSite: 'Άνοιγμα του {shop}…',
+    buyNow: 'Αγορά τώρα από {shop}', buyOnSite: 'Αγορά στην ιστοσελίδα του {shop}', reserveInStore: 'Κράτηση, πληρωμή στο κατάστημα', buyOnSiteNote: 'Ολοκληρώνεις και πληρώνεις στην ιστοσελίδα του {shop}. Το Kromatch βάζει τα σπρέι στο καλάθι τους.', notOnSite: 'Δεν υπάρχουν στην ιστοσελίδα του {shop}: {list}. Μπορεί να υπάρχουν στο κατάστημα: κάνε κράτηση για πληρωμή στο κατάστημα ή ρώτα το {shop}.', openingSite: 'Άνοιγμα του {shop}…',
     orderTitle: 'Η παραγγελία για {shop} είναι έτοιμη',
     demoNote: 'Αυτό είναι δοκιμή. Δεν στάλθηκε καμία παραγγελία και το κατάστημα δεν ειδοποιήθηκε. Μην επικοινωνήσεις με το κατάστημα για αυτή την παραγγελία.',
     backToCart: 'Πίσω στο καλάθι',
@@ -1415,7 +1424,7 @@ const T = {
     addedOne: '1 bombe ajoutée au panier.',
     back: 'Retour',
     welcomeP1: 'Trouvez une couleur à partir de n’importe quelle photo', welcomeP2: 'Préparez une fresque à partir de votre croquis', welcomeP3: 'Réservez les bombes dans un magasin près de chez vous', welcomeStart: 'Commencer', privacyLink: 'Politique de confidentialité', rememberMe: 'Mémoriser mes coordonnées sur ce téléphone', accPromptTitle: 'Gardez vos commandes et vos projets', accPromptText: 'Créez un compte gratuit pour suivre vos commandes et enregistrer vos projets sur tous vos appareils.', accCreate: 'Créer un compte gratuit', notNow: 'Pas maintenant', accTitle: 'Votre compte Kromatch', accBenefits: 'Gratuit. Suivez vos commandes et enregistrez vos projets sur n’importe quel téléphone ou ordinateur.', continueEmail: 'Continuer avec un e-mail', continueGoogle: 'Continuer avec Google', continueApple: 'Continuer avec Apple', accLinkSent: 'Consultez vos e-mails et touchez le lien pour vous connecter.', accError: 'Le lien n’a pas pu être envoyé\u00a0: {m}', accNoPassword: 'Pas de mot de passe. Nous vous envoyons un lien de connexion par e-mail.', signedInAs: 'Connecté en tant que {email}', signOut: 'Se déconnecter', deleteAccount: 'Supprimer le compte', deleteConfirm: 'Supprimer votre compte, vos projets et votre profil\u202f? Les commandes déjà envoyées restent chez les magasins. Action irréversible.', accDeleted: 'Votre compte a été supprimé.', accOrSignIn: 'Créer un compte ou se connecter', accLocalNote: 'Sans compte, vos coordonnées restent uniquement sur ce téléphone.', accSyncedNote: 'Vos coordonnées sont enregistrées dans votre compte.', saveDesign: 'Enregistrer le projet', designNamePrompt: 'Nommez ce projet', myDesigns: 'Mes projets', openDesign: 'Ouvrir', designSaved: 'Projet enregistré.', signInToSave: 'Créez un compte gratuit pour enregistrer vos projets.', noDesigns: 'Aucun projet enregistré.',
-    yourDetails: 'Vos coordonnées', consentL: 'J’accepte de partager mon nom et mes coordonnées avec {shop} pour cette commande.', needName: 'Veuillez saisir votre nom.', needContact: 'Veuillez saisir un téléphone ou un e-mail.', needConsent: 'Cochez la case pour partager vos coordonnées avec le magasin.', sending: 'Envoi de la commande…', sendFail: 'La commande n’a pas pu être envoyée\u00a0: {m}', orderSent: 'Commande envoyée à {shop}', orderNo: 'Commande n°{n}', pickupCodeL: 'Code de retrait', showCode: 'Montrez ce code en magasin pour récupérer vos bombes. Vous payez en magasin.', deliveryInfo: 'Le magasin vous livrera. Vous payez à la livraison.', emailSentTo: 'Une confirmation a été envoyée à {email}.', myOrders: 'Mes commandes', checkStatus: 'Voir le statut', offline: 'pas de connexion, réessayez', st_new: 'Envoyée au magasin', st_ready: 'Prête à retirer', st_picked_up: 'Retirée', st_not_available: 'Indisponible', st_cancelled: 'Annulée',
+    yourDetails: 'Vos coordonnées', consentL: 'J’accepte de partager mon nom et mes coordonnées avec {shop} pour cette commande.', needName: 'Veuillez saisir votre nom.', needContact: 'Veuillez saisir un téléphone ou un e-mail.', needConsent: 'Cochez la case pour partager vos coordonnées avec le magasin.', sending: 'Envoi de la commande…', sendFail: 'La commande n’a pas pu être envoyée\u00a0: {m}', orderSent: 'Commande envoyée à {shop}', orderNo: 'Commande n°{n}', pickupCodeL: 'Code de retrait', showCode: 'Montrez ce code en magasin pour récupérer vos bombes. Vous payez en magasin.', deliveryInfo: 'Le magasin vous livrera. Vous payez à la livraison.', emailSentTo: 'Une confirmation a été envoyée à {email}.', myOrders: 'Mes commandes', checkStatus: 'Voir le statut', offline: 'pas de connexion, réessayez', st_new: 'Envoyée au magasin', st_ready: 'Prête à retirer', st_picked_up: 'Retirée', st_not_available: 'Indisponible', st_cancelled: 'Annulée', odMissing: 'le magasin ne l’a pas', odAlt: 'Le plus proche disponible : {c}. Demandez-le si vous le voulez à la place.',
     wallQ: 'Quelle taille fait le mur ?',
     wallWhy: 'Facultatif. Renseignez-le pour voir combien de bombes de chaque couleur il vous faut.',
     details: 'Détails',
@@ -1450,6 +1459,7 @@ const T = {
     twoCoats: '2 couches',
     coverageNote: 'Estimation basée sur environ {c} m² par bombe de 400 ml et par couche. La couverture réelle dépend de la marque, du cap et du mur.',
     ofDesign: '{p} % du dessin',
+    dfSame: 'presque pareil', dfLighter: 'plus clair', dfDarker: 'plus foncé', dfSlLighter: 'un peu plus clair', dfSlDarker: 'un peu plus foncé', dfMuchLighter: 'beaucoup plus clair', dfMuchDarker: 'beaucoup plus foncé', dfVivid: 'plus vif', dfDuller: 'plus terne', dfMore: 'plus {h}', hu_red: 'rouge', hu_orange: 'orangé', hu_yellow: 'jaune', hu_green: 'vert', hu_teal: 'turquoise', hu_blue: 'bleu', hu_purple: 'violet', hu_pink: 'rose', altUse: 'Choisir', altVs: 'par rapport à votre couleur : {d}',
     otherOptions: 'Autres choix',
     designTotal: 'Total pour ce mur',
     addAll: 'Tout ajouter au panier',
@@ -1532,7 +1542,7 @@ const T = {
     cans: '{n} bombes',
     oneCan: '1 bombe',
     priceNote: 'Les prix sont confirmés par le magasin.',
-    buyNow: 'Acheter maintenant chez {shop}', buyOnSite: 'Acheter sur le site de {shop}', reserveInStore: 'Réserver, payer en magasin', buyOnSiteNote: 'Vous finalisez et payez sur le site de {shop}. Kromatch met les bombes dans leur panier.', notOnSite: 'Absent de la boutique en ligne de {shop} : {list}. Réservez-les plutôt.', openingSite: 'Ouverture de {shop}…',
+    buyNow: 'Acheter maintenant chez {shop}', buyOnSite: 'Acheter sur le site de {shop}', reserveInStore: 'Réserver, payer en magasin', buyOnSiteNote: 'Vous finalisez et payez sur le site de {shop}. Kromatch met les bombes dans leur panier.', notOnSite: 'Absent du site de {shop} : {list}. Ils sont peut-être en magasin : réservez-les pour payer sur place, ou demandez à {shop}.', openingSite: 'Ouverture de {shop}…',
     orderTitle: 'Commande prête pour {shop}',
     demoNote: 'Ceci est un test. Aucune commande n’a été envoyée et le magasin n’a pas été contacté. Merci de ne pas contacter le magasin au sujet de cette commande.',
     backToCart: 'Retour au panier',
@@ -1628,7 +1638,7 @@ const T = {
     addedOne: '1 Dose zum Warenkorb hinzugefügt.',
     back: 'Zurück',
     welcomeP1: 'Eine Farbe aus jedem Foto abgleichen', welcomeP2: 'Plane ein ganzes Wandbild aus deiner Skizze', welcomeP3: 'Die Dosen in einem Shop in deiner Nähe reservieren', welcomeStart: 'Los geht’s', privacyLink: 'Datenschutzerklärung', rememberMe: 'Meine Angaben auf diesem Handy merken', accPromptTitle: 'Behalte deine Bestellungen und Designs', accPromptText: 'Erstelle ein kostenloses Konto, um Bestellungen zu verfolgen und Designs auf jedem Gerät zu speichern.', accCreate: 'Kostenloses Konto erstellen', notNow: 'Nicht jetzt', accTitle: 'Dein Kromatch-Konto', accBenefits: 'Kostenlos. Verfolge deine Bestellungen und speichere deine Designs auf jedem Handy oder Computer.', continueEmail: 'Weiter mit E-Mail', continueGoogle: 'Weiter mit Google', continueApple: 'Weiter mit Apple', accLinkSent: 'Sieh in deinen E-Mails nach und tippe auf den Link, um dich anzumelden.', accError: 'Link konnte nicht gesendet werden: {m}', accNoPassword: 'Kein Passwort nötig. Wir schicken dir einen Anmeldelink per E-Mail.', signedInAs: 'Angemeldet als {email}', signOut: 'Abmelden', deleteAccount: 'Konto löschen', deleteConfirm: 'Konto, gespeicherte Designs und Profil löschen? Bereits gesendete Bestellungen bleiben bei den Shops. Das lässt sich nicht rückgängig machen.', accDeleted: 'Dein Konto wurde gelöscht.', accOrSignIn: 'Konto erstellen oder anmelden', accLocalNote: 'Ohne Konto bleiben deine Angaben nur auf diesem Handy.', accSyncedNote: 'Deine Angaben sind in deinem Konto gespeichert.', saveDesign: 'Design speichern', designNamePrompt: 'Gib diesem Design einen Namen', myDesigns: 'Meine Designs', openDesign: 'Öffnen', designSaved: 'Design gespeichert.', signInToSave: 'Erstelle ein kostenloses Konto, um Designs zu speichern.', noDesigns: 'Noch keine gespeicherten Designs.',
-    yourDetails: 'Deine Angaben', consentL: 'Ich bin einverstanden, meinen Namen und meine Kontaktdaten für diese Bestellung mit {shop} zu teilen.', needName: 'Bitte gib deinen Namen ein.', needContact: 'Bitte gib eine Telefonnummer oder E-Mail ein.', needConsent: 'Bitte setz das Häkchen, um deine Angaben mit dem Shop zu teilen.', sending: 'Bestellung wird gesendet…', sendFail: 'Bestellung konnte nicht gesendet werden: {m}', orderSent: 'Bestellung an {shop} gesendet', orderNo: 'Bestellung #{n}', pickupCodeL: 'Abholcode', showCode: 'Zeig diesen Code bei der Abholung im Shop. Du bezahlst im Shop.', deliveryInfo: 'Der Shop liefert deine Dosen. Du bezahlst bei Lieferung.', emailSentTo: 'Eine Bestätigung wurde an {email} gesendet.', myOrders: 'Meine Bestellungen', checkStatus: 'Status prüfen', offline: 'keine Verbindung, bitte erneut versuchen', st_new: 'An den Shop gesendet', st_ready: 'Abholbereit', st_picked_up: 'Abgeholt', st_not_available: 'Nicht verfügbar', st_cancelled: 'Storniert',
+    yourDetails: 'Deine Angaben', consentL: 'Ich bin einverstanden, meinen Namen und meine Kontaktdaten für diese Bestellung mit {shop} zu teilen.', needName: 'Bitte gib deinen Namen ein.', needContact: 'Bitte gib eine Telefonnummer oder E-Mail ein.', needConsent: 'Bitte setz das Häkchen, um deine Angaben mit dem Shop zu teilen.', sending: 'Bestellung wird gesendet…', sendFail: 'Bestellung konnte nicht gesendet werden: {m}', orderSent: 'Bestellung an {shop} gesendet', orderNo: 'Bestellung #{n}', pickupCodeL: 'Abholcode', showCode: 'Zeig diesen Code bei der Abholung im Shop. Du bezahlst im Shop.', deliveryInfo: 'Der Shop liefert deine Dosen. Du bezahlst bei Lieferung.', emailSentTo: 'Eine Bestätigung wurde an {email} gesendet.', myOrders: 'Meine Bestellungen', checkStatus: 'Status prüfen', offline: 'keine Verbindung, bitte erneut versuchen', st_new: 'An den Shop gesendet', st_ready: 'Abholbereit', st_picked_up: 'Abgeholt', st_not_available: 'Nicht verfügbar', st_cancelled: 'Storniert', odMissing: 'hat der Shop nicht', odAlt: 'Am nächsten dran im Shop: {c}. Frag danach, wenn du sie stattdessen willst.',
     wallQ: 'Wie groß ist die Wand?',
     wallWhy: 'Optional. Trag die Maße ein, um zu sehen, wie viele Dosen du von jeder Farbe brauchst.',
     details: 'Details',
@@ -1663,6 +1673,7 @@ const T = {
     twoCoats: '2 Schichten',
     coverageNote: 'Die Schätzung geht von etwa {c} m² pro 400-ml-Dose und Schicht aus. Die tatsächliche Deckkraft hängt von Marke, Cap und Wand ab.',
     ofDesign: '{p} % des Designs',
+    dfSame: 'fast gleich', dfLighter: 'heller', dfDarker: 'dunkler', dfSlLighter: 'etwas heller', dfSlDarker: 'etwas dunkler', dfMuchLighter: 'viel heller', dfMuchDarker: 'viel dunkler', dfVivid: 'kräftiger', dfDuller: 'matter', dfMore: 'mehr ins {h}', hu_red: 'Rote', hu_orange: 'Orange', hu_yellow: 'Gelbe', hu_green: 'Grüne', hu_teal: 'Türkis', hu_blue: 'Blaue', hu_purple: 'Violette', hu_pink: 'Rosa', altUse: 'Nehmen', altVs: 'im Vergleich zu deiner Farbe: {d}',
     otherOptions: 'Andere Optionen',
     designTotal: 'Summe für diese Wand',
     addAll: 'Alles in den Warenkorb',
@@ -1745,7 +1756,7 @@ const T = {
     cans: '{n} Dosen',
     oneCan: '1 Dose',
     priceNote: 'Die Preise werden vom Shop bestätigt.',
-    buyNow: 'Jetzt bei {shop} kaufen', buyOnSite: 'Auf der Website von {shop} kaufen', reserveInStore: 'Reservieren, im Laden zahlen', buyOnSiteNote: 'Du schließt den Kauf auf der Website von {shop} ab. Kromatch legt die Dosen in deren Warenkorb.', notOnSite: 'Nicht im Onlineshop von {shop}: {list}. Reserviere diese stattdessen.', openingSite: '{shop} wird geöffnet…',
+    buyNow: 'Jetzt bei {shop} kaufen', buyOnSite: 'Auf der Website von {shop} kaufen', reserveInStore: 'Reservieren, im Laden zahlen', buyOnSiteNote: 'Du schließt den Kauf auf der Website von {shop} ab. Kromatch legt die Dosen in deren Warenkorb.', notOnSite: 'Nicht auf der Website von {shop}: {list}. Vielleicht gibt es sie im Laden: reserviere sie zum Bezahlen vor Ort oder frag {shop}.', openingSite: '{shop} wird geöffnet…',
     orderTitle: 'Bestellung für {shop} bereit',
     demoNote: 'Das ist ein Test. Es wurde keine Bestellung gesendet und der Shop wurde nicht kontaktiert. Bitte kontaktiere den Shop nicht wegen dieser Bestellung.',
     backToCart: 'Zurück zum Warenkorb',
@@ -1840,7 +1851,7 @@ const T = {
     addedOne: 'Se añadió 1 spray al carrito.',
     back: 'Atrás',
     welcomeP1: 'Encuentra un color en cualquier foto', welcomeP2: 'Planifica un mural entero desde tu boceto', welcomeP3: 'Reserva los sprays en una tienda cerca de ti', welcomeStart: 'Empezar', privacyLink: 'Política de privacidad', rememberMe: 'Recordar mis datos en este móvil', accPromptTitle: 'Guarda tus pedidos y diseños', accPromptText: 'Crea una cuenta gratuita para seguir tus pedidos y guardar diseños en cualquier dispositivo.', accCreate: 'Crear cuenta gratuita', notNow: 'Ahora no', accTitle: 'Tu cuenta de Kromatch', accBenefits: 'Gratis. Sigue tus pedidos y guarda tus diseños en cualquier móvil u ordenador.', continueEmail: 'Continuar con correo', continueGoogle: 'Continuar con Google', continueApple: 'Continuar con Apple', accLinkSent: 'Revisa tu correo y toca el enlace para iniciar sesión.', accError: 'No se pudo enviar el enlace: {m}', accNoPassword: 'Sin contraseña. Te enviamos un enlace de acceso por correo.', signedInAs: 'Sesión iniciada como {email}', signOut: 'Cerrar sesión', deleteAccount: 'Eliminar cuenta', deleteConfirm: '¿Eliminar tu cuenta, tus diseños y tu perfil? Los pedidos ya enviados se quedan en las tiendas. No se puede deshacer.', accDeleted: 'Tu cuenta se ha eliminado.', accOrSignIn: 'Crear cuenta o iniciar sesión', accLocalNote: 'Sin cuenta, tus datos se quedan solo en este móvil.', accSyncedNote: 'Tus datos se guardan en tu cuenta.', saveDesign: 'Guardar diseño', designNamePrompt: 'Ponle nombre a este diseño', myDesigns: 'Mis diseños', openDesign: 'Abrir', designSaved: 'Diseño guardado.', signInToSave: 'Crea una cuenta gratuita para guardar diseños.', noDesigns: 'Aún no hay diseños guardados.',
-    yourDetails: 'Tus datos', consentL: 'Acepto compartir mi nombre y mis datos de contacto con {shop} para este pedido.', needName: 'Escribe tu nombre.', needContact: 'Escribe un teléfono o un correo.', needConsent: 'Marca la casilla para compartir tus datos con la tienda.', sending: 'Enviando tu pedido…', sendFail: 'No se pudo enviar el pedido: {m}', orderSent: 'Pedido enviado a {shop}', orderNo: 'Pedido n.º {n}', pickupCodeL: 'Código de recogida', showCode: 'Muestra este código en la tienda al recoger tus sprays. Pagas en la tienda.', deliveryInfo: 'La tienda te enviará los sprays. Pagas a la entrega.', emailSentTo: 'Se envió una confirmación a {email}.', myOrders: 'Mis pedidos', checkStatus: 'Ver estado', offline: 'sin conexión, inténtalo de nuevo', st_new: 'Enviado a la tienda', st_ready: 'Listo para recoger', st_picked_up: 'Recogido', st_not_available: 'No disponible', st_cancelled: 'Cancelado',
+    yourDetails: 'Tus datos', consentL: 'Acepto compartir mi nombre y mis datos de contacto con {shop} para este pedido.', needName: 'Escribe tu nombre.', needContact: 'Escribe un teléfono o un correo.', needConsent: 'Marca la casilla para compartir tus datos con la tienda.', sending: 'Enviando tu pedido…', sendFail: 'No se pudo enviar el pedido: {m}', orderSent: 'Pedido enviado a {shop}', orderNo: 'Pedido n.º {n}', pickupCodeL: 'Código de recogida', showCode: 'Muestra este código en la tienda al recoger tus sprays. Pagas en la tienda.', deliveryInfo: 'La tienda te enviará los sprays. Pagas a la entrega.', emailSentTo: 'Se envió una confirmación a {email}.', myOrders: 'Mis pedidos', checkStatus: 'Ver estado', offline: 'sin conexión, inténtalo de nuevo', st_new: 'Enviado a la tienda', st_ready: 'Listo para recoger', st_picked_up: 'Recogido', st_not_available: 'No disponible', st_cancelled: 'Cancelado', odMissing: 'la tienda no lo tiene', odAlt: 'Lo más parecido que tiene la tienda: {c}. Pídelo si lo quieres en su lugar.',
     wallQ: '¿Qué tamaño tiene la pared?',
     wallWhy: 'Opcional. Rellénalo para ver cuántos sprays de cada color necesitas.',
     details: 'Detalles',
@@ -1875,6 +1886,7 @@ const T = {
     twoCoats: '2 capas',
     coverageNote: 'El cálculo supone unos {c} m² por spray de 400 ml y por capa. La cobertura real depende de la marca, la boquilla y la pared.',
     ofDesign: '{p} % del diseño',
+    dfSame: 'casi igual', dfLighter: 'más claro', dfDarker: 'más oscuro', dfSlLighter: 'un poco más claro', dfSlDarker: 'un poco más oscuro', dfMuchLighter: 'mucho más claro', dfMuchDarker: 'mucho más oscuro', dfVivid: 'más vivo', dfDuller: 'más apagado', dfMore: 'más {h}', hu_red: 'rojo', hu_orange: 'naranja', hu_yellow: 'amarillo', hu_green: 'verde', hu_teal: 'turquesa', hu_blue: 'azul', hu_purple: 'morado', hu_pink: 'rosa', altUse: 'Elegir', altVs: 'frente a tu color: {d}',
     otherOptions: 'Otras opciones',
     designTotal: 'Total para esta pared',
     addAll: 'Añadir todo al carrito',
@@ -1957,7 +1969,7 @@ const T = {
     cans: '{n} sprays',
     oneCan: '1 spray',
     priceNote: 'La tienda confirma los precios.',
-    buyNow: 'Comprar ahora en {shop}', buyOnSite: 'Comprar en la web de {shop}', reserveInStore: 'Reservar, pagar en tienda', buyOnSiteNote: 'Terminas y pagas en la web de {shop}. Kromatch pone los botes en su carrito.', notOnSite: 'No están en la tienda online de {shop}: {list}. Resérvalos en su lugar.', openingSite: 'Abriendo {shop}…',
+    buyNow: 'Comprar ahora en {shop}', buyOnSite: 'Comprar en la web de {shop}', reserveInStore: 'Reservar, pagar en tienda', buyOnSiteNote: 'Terminas y pagas en la web de {shop}. Kromatch pone los botes en su carrito.', notOnSite: 'No están en la web de {shop}: {list}. Puede que estén en la tienda: resérvalos para pagar allí o pregunta a {shop}.', openingSite: 'Abriendo {shop}…',
     orderTitle: 'Pedido listo para {shop}',
     demoNote: 'Esto es una prueba. No se ha enviado ningún pedido ni se ha contactado con la tienda. No contactes con la tienda por este pedido.',
     backToCart: 'Volver al carrito',
@@ -2052,7 +2064,7 @@ const T = {
     addedOne: '1 bomboletta aggiunta al carrello.',
     back: 'Indietro',
     welcomeP1: 'Abbina un colore da qualsiasi foto', welcomeP2: 'Pianifica un intero murale dal tuo schizzo', welcomeP3: 'Prenota le bombolette in un negozio vicino a te', welcomeStart: 'Inizia', privacyLink: 'Informativa sulla privacy', rememberMe: 'Ricorda i miei dati su questo telefono', accPromptTitle: 'Conserva ordini e progetti', accPromptText: 'Crea un account gratuito per seguire gli ordini e salvare i progetti su qualsiasi dispositivo.', accCreate: 'Crea account gratuito', notNow: 'Non ora', accTitle: 'Il tuo account Kromatch', accBenefits: 'Gratis. Segui i tuoi ordini e salva i tuoi progetti su qualsiasi telefono o computer.', continueEmail: 'Continua con email', continueGoogle: 'Continua con Google', continueApple: 'Continua con Apple', accLinkSent: 'Controlla la tua email e tocca il link per accedere.', accError: 'Impossibile inviare il link: {m}', accNoPassword: 'Nessuna password. Ti inviamo un link di accesso via email.', signedInAs: 'Accesso effettuato come {email}', signOut: 'Esci', deleteAccount: 'Elimina account', deleteConfirm: 'Eliminare account, progetti salvati e profilo? Gli ordini già inviati restano ai negozi. Non si può annullare.', accDeleted: 'Il tuo account è stato eliminato.', accOrSignIn: 'Crea un account o accedi', accLocalNote: 'Senza account, i tuoi dati restano solo su questo telefono.', accSyncedNote: 'I tuoi dati sono salvati nel tuo account.', saveDesign: 'Salva progetto', designNamePrompt: 'Dai un nome a questo progetto', myDesigns: 'I miei progetti', openDesign: 'Apri', designSaved: 'Progetto salvato.', signInToSave: 'Crea un account gratuito per salvare i progetti.', noDesigns: 'Nessun progetto salvato.',
-    yourDetails: 'I tuoi dati', consentL: 'Accetto di condividere il mio nome e i miei contatti con {shop} per questo ordine.', needName: 'Inserisci il tuo nome.', needContact: 'Inserisci un telefono o un’email.', needConsent: 'Spunta la casella per condividere i tuoi dati con il negozio.', sending: 'Invio dell’ordine…', sendFail: 'Impossibile inviare l’ordine: {m}', orderSent: 'Ordine inviato a {shop}', orderNo: 'Ordine n. {n}', pickupCodeL: 'Codice di ritiro', showCode: 'Mostra questo codice in negozio quando ritiri le bombolette. Paghi in negozio.', deliveryInfo: 'Il negozio ti consegnerà le bombolette. Paghi alla consegna.', emailSentTo: 'È stata inviata una conferma a {email}.', myOrders: 'I miei ordini', checkStatus: 'Controlla lo stato', offline: 'nessuna connessione, riprova', st_new: 'Inviato al negozio', st_ready: 'Pronto per il ritiro', st_picked_up: 'Ritirato', st_not_available: 'Non disponibile', st_cancelled: 'Annullato',
+    yourDetails: 'I tuoi dati', consentL: 'Accetto di condividere il mio nome e i miei contatti con {shop} per questo ordine.', needName: 'Inserisci il tuo nome.', needContact: 'Inserisci un telefono o un’email.', needConsent: 'Spunta la casella per condividere i tuoi dati con il negozio.', sending: 'Invio dell’ordine…', sendFail: 'Impossibile inviare l’ordine: {m}', orderSent: 'Ordine inviato a {shop}', orderNo: 'Ordine n. {n}', pickupCodeL: 'Codice di ritiro', showCode: 'Mostra questo codice in negozio quando ritiri le bombolette. Paghi in negozio.', deliveryInfo: 'Il negozio ti consegnerà le bombolette. Paghi alla consegna.', emailSentTo: 'È stata inviata una conferma a {email}.', myOrders: 'I miei ordini', checkStatus: 'Controlla lo stato', offline: 'nessuna connessione, riprova', st_new: 'Inviato al negozio', st_ready: 'Pronto per il ritiro', st_picked_up: 'Ritirato', st_not_available: 'Non disponibile', st_cancelled: 'Annullato', odMissing: 'il negozio non ce l’ha', odAlt: 'Il più vicino che ha il negozio: {c}. Chiedilo se lo vuoi al suo posto.',
     wallQ: 'Quanto è grande il muro?',
     wallWhy: 'Facoltativo. Compilalo per vedere quante bombolette di ogni colore ti servono.',
     details: 'Dettagli',
@@ -2087,6 +2099,7 @@ const T = {
     twoCoats: '2 mani',
     coverageNote: 'La stima considera circa {c} m² per bomboletta da 400 ml per mano. La copertura reale dipende da marca, cap e muro.',
     ofDesign: '{p}% del progetto',
+    dfSame: 'quasi uguale', dfLighter: 'più chiaro', dfDarker: 'più scuro', dfSlLighter: 'un po’ più chiaro', dfSlDarker: 'un po’ più scuro', dfMuchLighter: 'molto più chiaro', dfMuchDarker: 'molto più scuro', dfVivid: 'più vivace', dfDuller: 'più spento', dfMore: 'più {h}', hu_red: 'rosso', hu_orange: 'arancione', hu_yellow: 'giallo', hu_green: 'verde', hu_teal: 'turchese', hu_blue: 'blu', hu_purple: 'viola', hu_pink: 'rosa', altUse: 'Scegli', altVs: 'rispetto al tuo colore: {d}',
     otherOptions: 'Altre opzioni',
     designTotal: 'Totale per questo muro',
     addAll: 'Aggiungi tutto al carrello',
@@ -2169,7 +2182,7 @@ const T = {
     cans: '{n} bombolette',
     oneCan: '1 bomboletta',
     priceNote: 'I prezzi sono confermati dal negozio.',
-    buyNow: 'Acquista ora da {shop}', buyOnSite: 'Acquista sul sito di {shop}', reserveInStore: 'Prenota, paga in negozio', buyOnSiteNote: 'Concludi e paghi sul sito di {shop}. Kromatch mette le bombolette nel loro carrello.', notOnSite: 'Non presenti nel negozio online di {shop}: {list}. Prenotale invece.', openingSite: 'Apertura di {shop}…',
+    buyNow: 'Acquista ora da {shop}', buyOnSite: 'Acquista sul sito di {shop}', reserveInStore: 'Prenota, paga in negozio', buyOnSiteNote: 'Concludi e paghi sul sito di {shop}. Kromatch mette le bombolette nel loro carrello.', notOnSite: 'Non presenti sul sito di {shop}: {list}. Potrebbero essere in negozio: prenotale per pagare lì o chiedi a {shop}.', openingSite: 'Apertura di {shop}…',
     orderTitle: 'Ordine pronto per {shop}',
     demoNote: 'Questa è una prova. Nessun ordine è stato inviato e il negozio non è stato contattato. Non contattare il negozio per questo ordine.',
     backToCart: 'Torna al carrello',
@@ -2264,7 +2277,7 @@ const T = {
     addedOne: '1 spray adicionado ao carrinho.',
     back: 'Voltar',
     welcomeP1: 'Encontre uma cor em qualquer foto', welcomeP2: 'Planeje um mural inteiro a partir do seu esboço', welcomeP3: 'Reserve os sprays numa loja perto de você', welcomeStart: 'Começar', privacyLink: 'Política de privacidade', rememberMe: 'Lembrar meus dados neste telefone', accPromptTitle: 'Guarde seus pedidos e projetos', accPromptText: 'Crie uma conta grátis para acompanhar pedidos e salvar projetos em qualquer dispositivo.', accCreate: 'Criar conta grátis', notNow: 'Agora não', accTitle: 'Sua conta Kromatch', accBenefits: 'Grátis. Acompanhe seus pedidos e salve seus projetos em qualquer telefone ou computador.', continueEmail: 'Continuar com e-mail', continueGoogle: 'Continuar com Google', continueApple: 'Continuar com Apple', accLinkSent: 'Confira seu e-mail e toque no link para entrar.', accError: 'Não foi possível enviar o link: {m}', accNoPassword: 'Sem senha. Enviamos um link de acesso por e-mail.', signedInAs: 'Conectado como {email}', signOut: 'Sair', deleteAccount: 'Excluir conta', deleteConfirm: 'Excluir sua conta, projetos salvos e perfil? Pedidos já enviados ficam com as lojas. Não dá para desfazer.', accDeleted: 'Sua conta foi excluída.', accOrSignIn: 'Criar conta ou entrar', accLocalNote: 'Sem conta, seus dados ficam só neste telefone.', accSyncedNote: 'Seus dados são salvos na sua conta.', saveDesign: 'Salvar projeto', designNamePrompt: 'Dê um nome a este projeto', myDesigns: 'Meus projetos', openDesign: 'Abrir', designSaved: 'Projeto salvo.', signInToSave: 'Crie uma conta grátis para salvar projetos.', noDesigns: 'Nenhum projeto salvo ainda.',
-    yourDetails: 'Seus dados', consentL: 'Concordo em compartilhar meu nome e meus contatos com {shop} para este pedido.', needName: 'Digite seu nome.', needContact: 'Digite um telefone ou e-mail.', needConsent: 'Marque a caixa para compartilhar seus dados com a loja.', sending: 'Enviando seu pedido…', sendFail: 'Não foi possível enviar o pedido: {m}', orderSent: 'Pedido enviado para {shop}', orderNo: 'Pedido nº {n}', pickupCodeL: 'Código de retirada', showCode: 'Mostre este código na loja ao retirar seus sprays. Você paga na loja.', deliveryInfo: 'A loja vai entregar seus sprays. Você paga na entrega.', emailSentTo: 'Uma confirmação foi enviada para {email}.', myOrders: 'Meus pedidos', checkStatus: 'Ver status', offline: 'sem conexão, tente novamente', st_new: 'Enviado à loja', st_ready: 'Pronto para retirar', st_picked_up: 'Retirado', st_not_available: 'Indisponível', st_cancelled: 'Cancelado',
+    yourDetails: 'Seus dados', consentL: 'Concordo em compartilhar meu nome e meus contatos com {shop} para este pedido.', needName: 'Digite seu nome.', needContact: 'Digite um telefone ou e-mail.', needConsent: 'Marque a caixa para compartilhar seus dados com a loja.', sending: 'Enviando seu pedido…', sendFail: 'Não foi possível enviar o pedido: {m}', orderSent: 'Pedido enviado para {shop}', orderNo: 'Pedido nº {n}', pickupCodeL: 'Código de retirada', showCode: 'Mostre este código na loja ao retirar seus sprays. Você paga na loja.', deliveryInfo: 'A loja vai entregar seus sprays. Você paga na entrega.', emailSentTo: 'Uma confirmação foi enviada para {email}.', myOrders: 'Meus pedidos', checkStatus: 'Ver status', offline: 'sem conexão, tente novamente', st_new: 'Enviado à loja', st_ready: 'Pronto para retirar', st_picked_up: 'Retirado', st_not_available: 'Indisponível', st_cancelled: 'Cancelado', odMissing: 'a loja não tem esta', odAlt: 'O mais próximo que a loja tem: {c}. Pede-o se o quiseres em vez deste.',
     wallQ: 'Qual o tamanho da parede?',
     wallWhy: 'Opcional. Preencha para ver quantos sprays de cada cor você precisa.',
     details: 'Detalhes',
@@ -2299,6 +2312,7 @@ const T = {
     twoCoats: '2 demãos',
     coverageNote: 'A estimativa considera cerca de {c} m² por spray de 400 ml por demão. A cobertura real depende da marca, do bico e da parede.',
     ofDesign: '{p}% do projeto',
+    dfSame: 'quase igual', dfLighter: 'mais claro', dfDarker: 'mais escuro', dfSlLighter: 'um pouco mais claro', dfSlDarker: 'um pouco mais escuro', dfMuchLighter: 'muito mais claro', dfMuchDarker: 'muito mais escuro', dfVivid: 'mais vivo', dfDuller: 'mais apagado', dfMore: 'mais {h}', hu_red: 'vermelho', hu_orange: 'laranja', hu_yellow: 'amarelo', hu_green: 'verde', hu_teal: 'turquesa', hu_blue: 'azul', hu_purple: 'roxo', hu_pink: 'rosa', altUse: 'Escolher', altVs: 'em relação à tua cor: {d}',
     otherOptions: 'Outras opções',
     designTotal: 'Total para esta parede',
     addAll: 'Adicionar tudo ao carrinho',
@@ -2381,7 +2395,7 @@ const T = {
     cans: '{n} sprays',
     oneCan: '1 spray',
     priceNote: 'Os preços são confirmados pela loja.',
-    buyNow: 'Comprar agora em {shop}', buyOnSite: 'Comprar no site de {shop}', reserveInStore: 'Reservar, pagar na loja', buyOnSiteNote: 'Concluis e pagas no site de {shop}. A Kromatch põe as latas no carrinho deles.', notOnSite: 'Não estão na loja online de {shop}: {list}. Reserva-as em vez disso.', openingSite: 'A abrir {shop}…',
+    buyNow: 'Comprar agora em {shop}', buyOnSite: 'Comprar no site de {shop}', reserveInStore: 'Reservar, pagar na loja', buyOnSiteNote: 'Concluis e pagas no site de {shop}. A Kromatch põe as latas no carrinho deles.', notOnSite: 'Não estão no site de {shop}: {list}. Podem estar na loja: reserva-as para pagar lá ou pergunta a {shop}.', openingSite: 'A abrir {shop}…',
     orderTitle: 'Pedido pronto para {shop}',
     demoNote: 'Isto é um teste. Nenhum pedido foi enviado e a loja não foi contatada. Não entre em contato com a loja sobre este pedido.',
     backToCart: 'Voltar ao carrinho',
@@ -3144,7 +3158,8 @@ function handoffFor(shop) {
   fetch(`${CFG.supabaseUrl}/rest/v1/rpc/widget_info`, { method: 'POST',
     headers: { apikey: CFG.supabaseKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ p_slug: shop.slug }) })
     .then(r => r.ok ? r.json() : null).then(info => {
-      const site = info && info.enabled && info.app_handoff !== false && (info.origins || [])
+      // only once their website has actually loaded the widget code (otherwise shoppers would land on a site that can't take the cans)
+      const site = info && info.enabled && info.installed === true && info.app_handoff !== false && (info.origins || [])
         .map(o => { try { return new URL(o).origin; } catch (e) { return null; } }).filter(o => o && o.startsWith('https://'))[0];
       if (!site) { HANDOFF.set(k, false); return; }
       const map = new Map();
@@ -4233,7 +4248,7 @@ function renderPalette() {
     if (shop && typeof price === 'number') totals[shop.currency] = (totals[shop.currency] || 0) + price * qty;
     li.innerHTML = `<div class="pair-wrap"><div class="pair" aria-hidden="true"><span style="background:${c.hex}"></span><span style="background:${p.hex}"></span></div>
         <div class="pair-cap" aria-hidden="true"><span>${t('pairYou')}</span><span>${t('pairCan')}</span></div></div>
-      <div><div class="name"></div><div class="meta"></div><div class="price-tag"></div></div>
+      <div><div class="name"></div><div class="meta"></div><div class="diff"></div><div class="price-tag"></div></div>
       <div class="score"><b></b><span></span></div>
       <div class="d-actions">
         <div class="qty"><button type="button" class="minus" aria-label="−">−</button><span></span><button type="button" class="plus" aria-label="+">+</button></div>
@@ -4245,6 +4260,7 @@ function renderPalette() {
     li.querySelector('.meta').textContent = [p.brand, codesMode ? c.hex : t('ofDesign').replace('{p}', Math.max(1, Math.round(c.share * 100)))].filter(Boolean).join(', ');
     li.querySelector('.price-tag').textContent = [shop && typeof price === 'number' ? (qty > 1 ? `${money(price * qty, shop.currency)} (${money(price, shop.currency)} ${t('each')})` : money(price, shop.currency)) : (shop ? t('priceAtShop') : ''),
       shop ? shop.name : ''].filter(Boolean).join(' · ');
+    li.querySelector('.diff').textContent = t('altVs').replace('{d}', diffWords(c.lab, p.lab));
     li.querySelector('.qty span').textContent = qty;
     li.querySelector('.minus').addEventListener('click', () => { qtyOverride[i] = Math.max(0, qty - 1); renderPalette(); });
     li.querySelector('.plus').addEventListener('click', () => { qtyOverride[i] = Math.min(99, qty + 1); renderPalette(); });
@@ -4273,11 +4289,17 @@ function renderPalette() {
     btn.addEventListener('click', () => { alts.hidden = !alts.hidden; });
     c.options.forEach((o, j) => {
       if (j === picks[i]) return;
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip alt-chip';
-      b.innerHTML = `<span class="dot" style="background:${o.p.hex}"></span>`;
-      b.append(`${paintName(o.p)} · ${o.p.brand} · ${pct(matchPct(o.d))}`);
-      b.addEventListener('click', () => { picks[i] = j; drawDesign(); renderPalette(); });
-      alts.appendChild(b);
+      const r = document.createElement('div'); r.className = 'alt-row';
+      r.innerHTML = `<span class="mini-pair" aria-hidden="true"><span style="background:${c.hex}"></span><span style="background:${o.p.hex}"></span></span>
+        <div class="alt-txt"><b></b><small class="alt-meta"></small><small class="alt-diff"></small></div><button type="button" class="chip alt-use"></button>`;
+      r.querySelector('b').textContent = paintName(o.p);
+      const pt = priceTag(o.p.brand, o.p.code);
+      r.querySelector('.alt-meta').textContent = [o.p.brand, o.p.code, pt ? pt.text : ''].filter(Boolean).join(' · ');
+      const mp = matchPct(o.d);
+      r.querySelector('.alt-diff').textContent = `${pct(mp)} ${label(mp).toLowerCase()} · ${diffWords(c.lab, o.p.lab)}`;
+      const ub = r.querySelector('.alt-use'); ub.textContent = t('altUse');
+      ub.addEventListener('click', () => { picks[i] = j; drawDesign(); renderPalette(); });
+      alts.appendChild(r);
     });
     ol.appendChild(li);
   });
@@ -4286,6 +4308,28 @@ function renderPalette() {
   const l = document.createElement('span'); l.textContent = `${t('designTotal')} · ${cansText(totalCans)}`;
   const v = document.createElement('b'); v.textContent = Object.entries(totals).map(([cur, val]) => money(val, cur)).join(' + ');
   row.append(l, v); tot.appendChild(row);
+}
+// How a can compares to a colour from the design, in plain words: "slightly darker, more blue"
+function diffWords(labA, labB) {
+  const [L1, a1, b1] = labA, [L2, a2, b2] = labB;
+  const C1 = Math.hypot(a1, b1), C2 = Math.hypot(a2, b2), dL = L2 - L1, dC = C2 - C1;
+  const out = [];
+  const aL = Math.abs(dL);
+  if (aL >= 12) out.push(t(dL > 0 ? 'dfMuchLighter' : 'dfMuchDarker'));
+  else if (aL >= 5) out.push(t(dL > 0 ? 'dfLighter' : 'dfDarker'));
+  else if (aL >= 2) out.push(t(dL > 0 ? 'dfSlLighter' : 'dfSlDarker'));
+  if (Math.abs(dC) >= 6 && (C1 > 8 || C2 > 8)) out.push(t(dC > 0 ? 'dfVivid' : 'dfDuller'));
+  if (C1 > 12 && C2 > 12) {
+    const hue = (a, b) => { let h = Math.atan2(b, a) * 180 / Math.PI; return h < 0 ? h + 360 : h; };
+    const h1 = hue(a1, b1), h2 = hue(a2, b2); let dh = h2 - h1; if (dh > 180) dh -= 360; if (dh < -180) dh += 360;
+    if (Math.abs(dh) >= 7 && Math.min(C1, C2) * Math.abs(dh) * Math.PI / 180 >= 3) {
+      const fam = h => { h = ((h % 360) + 360) % 360; return h >= 340 || h < 20 ? 'pink' : h < 50 ? 'red' : h < 78 ? 'orange' : h < 105 ? 'yellow' : h < 170 ? 'green' : h < 225 ? 'teal' : h < 295 ? 'blue' : 'purple'; };
+      const own = fam(h1); let to = null;
+      for (let st = 5; st <= 180 && !to; st += 5) { const f = fam(h1 + Math.sign(dh) * st); if (f !== own) to = f; }
+      if (to) out.push(t('dfMore').replace('{h}', t('hu_' + to)));
+    }
+  }
+  return out.length ? out.join(', ') : t('dfSame');
 }
 function updateColoursLabel() {
   $('numColoursLabel').textContent = t('numColours').replace('{n}', $('numColours').value) + (autoColours ? ` · ${t('autoDetected')}` : '');
@@ -4814,8 +4858,12 @@ function renderOrderDetail(o, full) {
   const cur = (full && full.currency) || o.currency || 'EUR';
   items.forEach(i => {
     const unit = i.unit_price != null ? Number(i.unit_price) : null;
-    const label = `${i.qty} × ${i.line || i.brand} ${[i.code, i.name].filter(Boolean).join(' ')}${i.available === false ? ' (' + t('st_not_available') + ')' : ''}`;
-    box.appendChild(lineEl(label, unit != null ? money(unit * i.qty, cur) : ''));
+    const label = `${i.qty} × ${i.line || i.brand} ${[i.code, i.name].filter(Boolean).join(' ')}${i.available === false ? ' (' + t('odMissing') + ')' : ''}`;
+    box.appendChild(lineEl(label, unit != null && i.available !== false ? money(unit * i.qty, cur) : ''));
+    if (i.available === false && i.alt && i.alt.line) {
+      const n = document.createElement('p'); n.className = 'note'; n.style.margin = '0 0 6px';
+      n.textContent = t('odAlt').replace('{c}', [i.alt.line, i.alt.code, i.alt.name].filter(Boolean).join(' ')); box.appendChild(n);
+    }
   });
   const total = full ? Number(full.total) : o.total;
   if (total != null && !isNaN(total)) {

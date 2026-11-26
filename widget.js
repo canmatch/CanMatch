@@ -247,6 +247,15 @@
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', track); else track();
 
+    // tell Kromatch the code is installed on this website (at most every few hours per visitor), so the Kromatch app
+    // can send shoppers here with their cans
+    (function () {
+      var k = 'kromatch:seen:' + SHOP, last = lsGet(k);
+      if (location.protocol !== 'https:' || (last && Date.now() - last < 6 * 36e5)) return;
+      lsSet(k, Date.now());
+      try { fetch(BASE + '/api/seen', { method: 'POST', keepalive: true, mode: 'cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ shop: SHOP }) }); } catch (e) {}
+    })();
+
     /* ---------- Cans sent from the Kromatch app: ?kromatch_cart=... puts them into THIS website's cart ----------
        The Kromatch app sends a shopper here with the list (product ids and quantities only); the cans go into their
        normal cart on this website and they check out here as usual. Counted as source 'app'. */

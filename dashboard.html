@@ -59,6 +59,8 @@
   .code { font-stretch: 125%; font-weight: 900; font-size: 1.3rem; letter-spacing: 0.02em; }
   .items { list-style: none; padding: 0; margin: 8px 0; }
   .items li { display: flex; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); font-size: 0.92rem; }
+  .items .miss { display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--muted); white-space: nowrap; cursor: pointer; }
+  .items li.miss-item .grow { opacity: 0.75; }
   .sw { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--line); flex: none; }
   .colours { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
   .colour { display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: 10px; border: 2px solid var(--line);
@@ -307,8 +309,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script src="config.js?v=2026-11-26-handoff"></script>
-<script src="colors.js?v=2026-11-26-handoff"></script>
+<script src="config.js?v=2026-11-26-alts"></script>
+<script src="colors.js?v=2026-11-26-alts"></script>
 <script>
 /* ---------- Text (English and Greek) ---------- */
 const TX = {
@@ -329,7 +331,7 @@ const TX = {
     noRecent: 'Nothing yet.', pickup: 'Pickup', delivery: 'Delivery', code: 'Pickup code', customer: 'Customer',
     total: 'Total', priceAtShop: 'price at shop', markReady: 'Ready', markPicked: 'Picked up', notAvail: 'Not available',
     cancel: 'Cancel order', enterCode: 'Enter the customer’s pickup code', codeWrong: 'That code doesn’t match.',
-    confirmNotAvail: 'Mark this order as not available? The customer will be told.', confirmCancel: 'Cancel this order?',
+    missHelp: 'Missing a colour? Tick it, then press Ready: the customer is told which colours you don’t have, with the closest one you do.', missL: 'Don’t have', missShort: 'not in stock', altOffered: 'Closest you have', confirmPartial: 'Mark ready without {n} colour(s)? The customer will be told, with the closest colour you have:', confirmNotAvail: 'Mark this order as not available? The customer will be told.', confirmCancel: 'Cancel this order?',
     st_new: 'New', st_ready: 'Ready', st_picked_up: 'Picked up', st_not_available: 'Not available', st_cancelled: 'Cancelled',
     yourFee: 'Kromatch fee', stockIntro: 'Everything is shown as in stock unless you mark it. Tap a colour when it runs out, tap again when it’s back.',
     line: 'Paint line', search: 'Search colour', onlyOut: 'Show only out of stock', outOf: '{n} out of stock',
@@ -364,7 +366,7 @@ const TX = {
     noRecent: 'Τίποτα ακόμα.', pickup: 'Παραλαβή', delivery: 'Παράδοση', code: 'Κωδικός παραλαβής', customer: 'Πελάτης',
     total: 'Σύνολο', priceAtShop: 'τιμή στο κατάστημα', markReady: 'Έτοιμη', markPicked: 'Παραλήφθηκε', notAvail: 'Μη διαθέσιμη',
     cancel: 'Ακύρωση παραγγελίας', enterCode: 'Γράψε τον κωδικό παραλαβής του πελάτη', codeWrong: 'Ο κωδικός δεν ταιριάζει.',
-    confirmNotAvail: 'Να σημειωθεί η παραγγελία ως μη διαθέσιμη; Ο πελάτης θα ενημερωθεί.', confirmCancel: 'Ακύρωση αυτής της παραγγελίας;',
+    missHelp: 'Λείπει κάποιο χρώμα; Τσέκαρέ το και πάτα Έτοιμη: ο πελάτης μαθαίνει ποια χρώματα δεν έχεις, με το πιο κοντινό που έχεις.', missL: 'Δεν έχω', missShort: 'δεν υπάρχει', altOffered: 'Το πιο κοντινό που έχεις', confirmPartial: 'Να σημειωθεί έτοιμη χωρίς {n} χρώμα(τα); Ο πελάτης θα ενημερωθεί, με το πιο κοντινό χρώμα που έχεις:', confirmNotAvail: 'Να σημειωθεί η παραγγελία ως μη διαθέσιμη; Ο πελάτης θα ενημερωθεί.', confirmCancel: 'Ακύρωση αυτής της παραγγελίας;',
     st_new: 'Νέα', st_ready: 'Έτοιμη', st_picked_up: 'Παραλήφθηκε', st_not_available: 'Μη διαθέσιμη', st_cancelled: 'Ακυρώθηκε',
     yourFee: 'Χρέωση Kromatch', stockIntro: 'Όλα εμφανίζονται διαθέσιμα εκτός αν τα σημειώσεις. Πάτα ένα χρώμα όταν τελειώσει και ξανά όταν έρθει.',
     line: 'Σειρά χρωμάτων', search: 'Αναζήτηση χρώματος', onlyOut: 'Μόνο όσα έχουν τελειώσει', outOf: '{n} εκτός αποθέματος',
@@ -412,6 +414,67 @@ const CITIES = ['athens','halifax','toronto'];
 const LINES = {};
 (window.PAINT_DATA || []).forEach(b => { LINES[b.brand] = b.colors.map(c => ({ code: c.code || c.name, name: c.name, hex: c.hex, finish: c.finish || '' })); });
 const ALL_LINES = Object.keys(LINES);
+/* colour maths (same as the app) for 'closest colour you have' */
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+function rgbToLab(r, g, b) {
+  const lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const R = lin(r), G = lin(g), B = lin(b);
+  const X = (0.4124564 * R + 0.3575761 * G + 0.1804375 * B) / 0.95047;
+  const Y = (0.2126729 * R + 0.7151522 * G + 0.0721750 * B) / 1.0;
+  const Z = (0.0193339 * R + 0.1191920 * G + 0.9503041 * B) / 1.08883;
+  const f = t => t > 216 / 24389 ? Math.cbrt(t) : (24389 / 27 * t + 16) / 116;
+  const fx = f(X), fy = f(Y), fz = f(Z);
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+}
+function deltaE2000(lab1, lab2) {
+  const [L1, a1, b1] = lab1, [L2, a2, b2] = lab2;
+  const rad = Math.PI / 180, deg = 180 / Math.PI;
+  const C1 = Math.hypot(a1, b1), C2 = Math.hypot(a2, b2);
+  const Cbar = (C1 + C2) / 2;
+  const G = 0.5 * (1 - Math.sqrt(Math.pow(Cbar, 7) / (Math.pow(Cbar, 7) + Math.pow(25, 7))));
+  const a1p = (1 + G) * a1, a2p = (1 + G) * a2;
+  const C1p = Math.hypot(a1p, b1), C2p = Math.hypot(a2p, b2);
+  const hp = (b, a) => { if (b === 0 && a === 0) return 0; const h = Math.atan2(b, a) * deg; return h < 0 ? h + 360 : h; };
+  const h1p = hp(b1, a1p), h2p = hp(b2, a2p);
+  const dLp = L2 - L1, dCp = C2p - C1p;
+  let dhp = 0;
+  if (C1p * C2p !== 0) {
+    dhp = h2p - h1p;
+    if (dhp > 180) dhp -= 360; else if (dhp < -180) dhp += 360;
+  }
+  const dHp = 2 * Math.sqrt(C1p * C2p) * Math.sin(dhp * rad / 2);
+  const Lbp = (L1 + L2) / 2, Cbp = (C1p + C2p) / 2;
+  let hbp = h1p + h2p;
+  if (C1p * C2p !== 0) {
+    if (Math.abs(h1p - h2p) > 180) hbp += (hbp < 360 ? 360 : -360);
+    hbp /= 2;
+  }
+  const T = 1 - 0.17 * Math.cos((hbp - 30) * rad) + 0.24 * Math.cos(2 * hbp * rad)
+          + 0.32 * Math.cos((3 * hbp + 6) * rad) - 0.20 * Math.cos((4 * hbp - 63) * rad);
+  const dTheta = 30 * Math.exp(-Math.pow((hbp - 275) / 25, 2));
+  const Rc = 2 * Math.sqrt(Math.pow(Cbp, 7) / (Math.pow(Cbp, 7) + Math.pow(25, 7)));
+  const Sl = 1 + (0.015 * Math.pow(Lbp - 50, 2)) / Math.sqrt(20 + Math.pow(Lbp - 50, 2));
+  const Sc = 1 + 0.045 * Cbp, Sh = 1 + 0.015 * Cbp * T;
+  const Rt = -Math.sin(2 * dTheta * rad) * Rc;
+  return Math.sqrt(Math.pow(dLp / Sl, 2) + Math.pow(dCp / Sc, 2) + Math.pow(dHp / Sh, 2)
+                   + Rt * (dCp / Sc) * (dHp / Sh));
+}
+const labOf = hex => { const [r, g, b] = hexToRgb(hex); return rgbToLab(r, g, b); };
+// the closest colour this shop sells and has in stock, for a can it doesn't have
+function closestHave(item) {
+  if (!item.hex) return null;
+  const target = labOf(item.hex), sold = new Set((lines || []).filter(l => l.price != null).map(l => l.line));
+  let best = null;
+  sold.forEach(line => (LINES[line] || []).forEach(c => {
+    if (!c.hex || c.finish || (line === item.line && c.code === item.code) || outs.has(line + '|' + c.code)) return;
+    const d = deltaE2000(target, labOf(c.hex)); if (!best || d < best.d) best = { d, line, code: c.code, name: c.name, hex: c.hex };
+  }));
+  return best && best.d < 25 ? { line: best.line, code: best.code, name: best.name, hex: best.hex } : null;
+}
+
 
 /* ---------- Supabase ---------- */
 const CFG = window.KROMATCH_CONFIG;
@@ -535,8 +598,9 @@ function orderCard(o) {
     <div class="row" style="margin-top:6px"><span class="muted">${t('code')}:</span> <span class="code">${esc(o.pickup_code)}</span></div>
     <div style="margin-top:4px"><b>${o.method === 'delivery' ? t('delivery') : t('pickup')}</b>${o.delivery_address ? ' · ' + esc(o.delivery_address) : ''}</div>
     <div class="muted">${t('customer')}: ${esc(o.customer_name)}${o.customer_phone ? ' · <a href="tel:' + esc(o.customer_phone) + '">' + esc(o.customer_phone) + '</a>' : ''}${o.customer_email ? ' · ' + esc(o.customer_email) : ''}</div>
-    <ul class="items">${(o.order_items || []).map(i => `<li><span class="sw" style="background:${esc(i.hex || '#ccc')}"></span>
-      <span class="grow">${i.qty} × <b>${esc(i.line)}</b> ${esc(i.code || '')} ${esc(i.name)}</span>
+    ${o.status === 'new' && (o.order_items || []).length > 1 ? `<p class="note" style="margin:6px 0 0">${t('missHelp')}</p>` : ''}
+    <ul class="items">${(o.order_items || []).map(i => `<li class="${i.available === false ? 'miss-item' : ''}">${o.status === 'new' && (o.order_items || []).length > 1 ? `<label class="miss" title="${esc(t('missL'))}"><input type="checkbox" class="miss-cb" data-id="${i.id}"> <span>${t('missL')}</span></label>` : ''}<span class="sw" style="background:${esc(i.hex || '#ccc')}"></span>
+      <span class="grow">${i.qty} × <b>${esc(i.line)}</b> ${esc(i.code || '')} ${esc(i.name)}${i.available === false ? ` <span class="flag bad">${t('missShort')}</span>${i.alt ? `<br><small class="muted">${t('altOffered')}: ${esc(i.alt.line)} ${esc(i.alt.code || '')} ${esc(i.alt.name || '')}</small>` : ''}` : ''}</span>
       <span>${i.unit_price == null ? t('priceAtShop') : money(i.unit_price * i.qty, o.currency)}</span></li>`).join('')}</ul>
     <div class="row"><b class="grow">${t('total')}: ${totalTxt}</b>${o.fee_total != null ? `<span class="note">${t('yourFee')}: ${money(Number(o.fee_total), o.currency)}</span>` : ''}</div>
     ${o.expires_at && (o.status === 'new' || o.status === 'ready') ? `<div class="note">${t('heldUntil', { d: esc(fmtDT(o.expires_at)) })}</div>` : ''}
@@ -546,7 +610,15 @@ function orderCard(o) {
     <div class="row acts" style="margin-top:10px"></div>`;
   const acts = d.querySelector('.acts');
   const btn = (label, cls, fn) => { const b = document.createElement('button'); b.textContent = label; b.className = cls; b.addEventListener('click', fn); acts.appendChild(b); };
-  if (o.status === 'new') btn(t('markReady'), 'small', () => setStatus(o, 'ready'));
+  if (o.status === 'new') btn(t('markReady'), 'small', () => {
+    const ids = [...d.querySelectorAll('.miss-cb:checked')].map(x => Number(x.dataset.id));
+    if (!ids.length) return setStatus(o, 'ready');
+    const items = (o.order_items || []).filter(i => ids.includes(i.id));
+    if (items.length === (o.order_items || []).length) { if (confirm(t('confirmNotAvail'))) setStatus(o, 'not_available'); return; }
+    const alternatives = {}; items.forEach(i => { const a = closestHave(i); if (a) alternatives[i.id] = a; });
+    const list = items.map(i => `${i.line} ${i.code || ''} ${i.name}` + (alternatives[i.id] ? ` → ${alternatives[i.id].line} ${alternatives[i.id].code} ${alternatives[i.id].name}` : '')).join('\n');
+    if (confirm(t('confirmPartial', { n: items.length }) + '\n\n' + list)) setStatus(o, 'ready', null, { unavailable_item_ids: ids, alternatives });
+  });
   if (o.status === 'new' || o.status === 'ready') {
     btn(t('markPicked'), 'small' + (o.status === 'new' ? ' secondary' : ''), () => {
       const code = prompt(t('enterCode'), 'K-'); if (code) setStatus(o, 'picked_up', code);
@@ -581,9 +653,9 @@ function printSlip(o) {
     <p style="font-size:11px">${esc(t('slipFooter'))}</p></div>`;
   window.print();
 }
-async function setStatus(o, status, code) {
+async function setStatus(o, status, code, extra) {
   try {
-    await callFn('update-order-status', { order_id: o.id, status, pickup_code: code });
+    await callFn('update-order-status', Object.assign({ order_id: o.id, status, pickup_code: code }, extra || {}));
     toast(t('st_' + status)); await loadOrders(); renderOrders();
   } catch (e) { toast(/match/i.test(e.message) ? t('codeWrong') : t('error', { m: e.message }), true); }
 }
