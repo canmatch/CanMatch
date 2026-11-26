@@ -109,6 +109,8 @@
   .shop-pick { display: flex; align-items: center; gap: 8px; margin: -6px 0 14px; font-size: 0.9rem; font-weight: 700; }
   .shop-pick select { flex: 1; font: inherit; font-weight: 400; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line);
                       background: var(--surface); color: var(--ink); min-width: 0; }
+  .disclaimer { display: flex; gap: 8px; align-items: flex-start; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 0.85rem; line-height: 1.4; margin: 8px 0 12px; }
+  .disclaimer::before { content: 'i'; flex: none; width: 18px; height: 18px; border-radius: 50%; background: var(--ink); color: var(--bg); font: 800 12px/18px system-ui, sans-serif; text-align: center; }
   .loc-suggest { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-weight: 700; }
   .loc-suggest .secondary { color: var(--bg); border-color: var(--bg); }
   .loc-suggest .primary { background: var(--bg); color: var(--ink); border-color: var(--bg); }
@@ -494,6 +496,7 @@
       <button type="button" class="secondary filter-btn" id="filterBtn" aria-expanded="false" aria-controls="filterPanel" data-i18n="filters"></button>
     </div>
     <p class="note" id="nearNote" hidden></p>
+    <p class="disclaimer" data-i18n="disclaimer"></p>
     <div id="filterSlotMatch"></div>
     <div id="filterPanel" class="filter-panel" hidden>
     <div id="sprayFilters">
@@ -684,6 +687,7 @@
       <p class="note" id="oneLineNote" hidden style="margin:0 0 6px"></p>
 
       <ol class="matches" id="paletteList"></ol>
+      <p class="disclaimer" data-i18n="disclaimer"></p>
       <div id="estimateBox">
       <p class="note" id="coverageNote"></p>
       <div class="cart-total" id="designTotal"></div>
@@ -818,6 +822,7 @@
         <p class="note"><a href="privacy.html" target="_blank" rel="noopener" data-i18n="privacyLink"></a></p>
       </div>
       <div id="coTurnstile" style="margin:12px 0" hidden></div>
+      <p class="disclaimer" data-i18n="disclaimerShort"></p>
       <div id="coTotals" class="cart-total"></div>
       <p class="hint" id="coMsg" aria-live="polite"></p>
       <button type="button" class="primary buy" id="placeOrder" data-i18n="placeOrder"></button>
@@ -849,9 +854,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-25-spotted"></script>
-<script src="shops.js?v=2026-11-25-spotted"></script>
-<script src="config.js?v=2026-11-25-spotted"></script>
+<script src="colors.js?v=2026-11-26-disclaimer"></script>
+<script src="shops.js?v=2026-11-26-disclaimer"></script>
+<script src="config.js?v=2026-11-26-disclaimer"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -1106,6 +1111,7 @@ const T = {
     addToList: '+ Add to cart',
     inList: '✓ In cart',
     noMatches: 'No cans match these filters. Select more brands or change the pressure.',
+    disclaimer: 'Colour matches are suggestions, not a guarantee. Screens and photos change how colours look, so check the can in the shop or test-spray before you paint.', disclaimerShort: 'Matches are suggestions, not a guarantee.',
     note: 'Each result shows your colour on the left and the can on the right. Above 95% is near-identical, above 87% is close. Phone cameras shift colours with the light, so test-spray before you paint.',
     list: 'Cart',
     settings: 'Settings',
@@ -1332,6 +1338,7 @@ const T = {
     addToList: '+ Στο καλάθι',
     inList: '✓ Στο καλάθι',
     noMatches: 'Κανένα σπρέι δεν ταιριάζει με αυτά τα φίλτρα. Επίλεξε περισσότερες μάρκες ή άλλαξε την πίεση.',
+    disclaimer: 'Οι αντιστοιχίσεις χρωμάτων είναι προτάσεις, όχι εγγύηση. Οι οθόνες και οι φωτογραφίες αλλάζουν την εικόνα των χρωμάτων, οπότε έλεγξε το σπρέι στο κατάστημα ή κάνε μια δοκιμή πριν βάψεις.', disclaimerShort: 'Οι αντιστοιχίσεις είναι προτάσεις, όχι εγγύηση.',
     note: 'Κάθε αποτέλεσμα δείχνει το χρώμα σου αριστερά και το σπρέι δεξιά. Πάνω από 95% είναι σχεδόν ίδιο, πάνω από 87% κοντινό. Οι κάμερες των κινητών αλλάζουν τα χρώματα ανάλογα με το φως, γι’ αυτό κάνε μια δοκιμή πριν βάψεις.',
     list: 'Καλάθι',
     settings: 'Ρυθμίσεις',
@@ -1558,6 +1565,7 @@ const T = {
     addToList: '+ Ajouter au panier',
     inList: '✓ Dans le panier',
     noMatches: 'Aucune bombe ne correspond à ces filtres. Sélectionnez plus de marques ou changez la pression.',
+    disclaimer: 'Les correspondances de couleurs sont des suggestions, pas une garantie. Les écrans et les photos modifient l’aspect des couleurs : vérifiez la bombe en magasin ou faites un essai avant de peindre.', disclaimerShort: 'Les correspondances sont des suggestions, pas une garantie.',
     note: 'Chaque résultat montre votre couleur à gauche et la bombe à droite. Au-dessus de 95 %, c’est presque identique ; au-dessus de 87 %, c’est proche. Les appareils photo des téléphones modifient les couleurs selon la lumière : faites un essai avant de peindre.',
     list: 'Panier',
     settings: 'Réglages',
@@ -1770,6 +1778,7 @@ const T = {
     addToList: '+ In den Warenkorb',
     inList: '✓ Im Warenkorb',
     noMatches: 'Keine Dosen passen zu diesen Filtern. Wähle mehr Marken oder ändere den Druck.',
+    disclaimer: 'Farbabgleiche sind Vorschläge, keine Garantie. Bildschirme und Fotos verändern, wie Farben aussehen – prüf die Dose im Shop oder sprüh vorher eine Probe.', disclaimerShort: 'Die Treffer sind Vorschläge, keine Garantie.',
     note: 'Jeder Treffer zeigt links deine Farbe und rechts die Dose. Über 95 % ist fast identisch, über 87 % ist nah. Handykameras verändern Farben je nach Licht, mach also vor dem Malen eine Probe.',
     list: 'Warenkorb',
     settings: 'Einstellungen',
@@ -1981,6 +1990,7 @@ const T = {
     addToList: '+ Añadir al carrito',
     inList: '✓ En el carrito',
     noMatches: 'Ningún spray coincide con estos filtros. Elige más marcas o cambia la presión.',
+    disclaimer: 'Las coincidencias de color son sugerencias, no una garantía. Las pantallas y las fotos cambian cómo se ven los colores: comprueba el bote en la tienda o haz una prueba antes de pintar.', disclaimerShort: 'Las coincidencias son sugerencias, no una garantía.',
     note: 'Cada resultado muestra tu color a la izquierda y el spray a la derecha. Por encima del 95 % es casi idéntico; por encima del 87 %, cercano. Las cámaras del móvil cambian los colores según la luz, así que haz una prueba antes de pintar.',
     list: 'Carrito',
     settings: 'Ajustes',
@@ -2192,6 +2202,7 @@ const T = {
     addToList: '+ Aggiungi al carrello',
     inList: '✓ Nel carrello',
     noMatches: 'Nessuna bomboletta corrisponde a questi filtri. Scegli più marche o cambia la pressione.',
+    disclaimer: 'Gli abbinamenti di colore sono suggerimenti, non una garanzia. Schermi e foto cambiano l’aspetto dei colori: controlla la bomboletta in negozio o fai una prova prima di dipingere.', disclaimerShort: 'Gli abbinamenti sono suggerimenti, non una garanzia.',
     note: 'Ogni risultato mostra il tuo colore a sinistra e la bomboletta a destra. Sopra il 95% è quasi identico, sopra l\'87% è vicino. Le fotocamere dei telefoni alterano i colori con la luce, quindi fai una prova prima di dipingere.',
     list: 'Carrello',
     settings: 'Impostazioni',
@@ -2403,6 +2414,7 @@ const T = {
     addToList: '+ Adicionar ao carrinho',
     inList: '✓ No carrinho',
     noMatches: 'Nenhum spray corresponde a estes filtros. Escolha mais marcas ou mude a pressão.',
+    disclaimer: 'As correspondências de cor são sugestões, não uma garantia. Ecrãs e fotos alteram o aspeto das cores: confirma a lata na loja ou faz um teste antes de pintar.', disclaimerShort: 'As correspondências são sugestões, não uma garantia.',
     note: 'Cada resultado mostra sua cor à esquerda e o spray à direita. Acima de 95% é quase idêntica; acima de 87%, próxima. As câmeras dos telefones mudam as cores conforme a luz, então teste antes de pintar.',
     list: 'Carrinho',
     settings: 'Ajustes',

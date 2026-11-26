@@ -6,7 +6,8 @@
      <div class="kromatch-button"></div>   compact branded button, e.g. on each spray-can product page
      <a class="kromatch-open" href="#">...</a>   any link or button of your own opens it too (or call Kromatch.open())
    Or put the script itself where one should go, with data-style="banner" | "button" | "floating" | "none".
-   Options on the script or on each div: data-theme="light" (light version; dark is the default), data-label="..." (own button text).
+   Options on the script or on each div: data-theme="light" (light version; dark is the default), data-label="..." (own button text),
+   data-note="off" (hides the small "suggestions, not a guarantee" line under a button; the banner and the panel always show it).
    Other script options: data-cart-url="/cart" (if the cart page isn't the usual one), data-lang="el" (otherwise the page language).
    What it does: opens Kromatch in a panel on this page, locked to this shop's colours, stock and prices;
    "Add to cart" puts the cans into THIS website's cart (Shopify or WooCommerce, or your own window.KromatchCart). */
@@ -31,11 +32,11 @@
     '<svg viewBox="0 0 96 72" aria-hidden="true"><path d="M8 14 H20 L30 50 H78 L86 24 H26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="62" r="5" fill="currentColor"/><circle cx="72" cy="62" r="5" fill="currentColor"/><rect x="38" y="28" width="9" height="16" rx="2" fill="#D3473A"/><rect x="50" y="28" width="9" height="16" rx="2" fill="#F5B700"/><rect x="62" y="28" width="9" height="16" rx="2" fill="#1FA6A0"/></svg>'
   ];
   var T = {
-    en: { pre: 'Match colours with', close: 'Close', h: 'Planning a piece or a mural?', p: 'Upload your design. Kromatch matches every colour to the cans we stock, tells you how many you need, and puts them all in your cart.', s: ['Upload your design', 'See the matching cans', 'Add them all to cart'] },
-    el: { pre: '\u03a4\u03b1\u03af\u03c1\u03b9\u03b1\u03be\u03b5 \u03c7\u03c1\u03ce\u03bc\u03b1\u03c4\u03b1 \u03bc\u03b5 \u03c4\u03bf', close: '\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf', h: '\u03a3\u03c7\u03b5\u03b4\u03b9\u03ac\u03b6\u03b5\u03b9\u03c2 \u03ba\u03bf\u03bc\u03bc\u03ac\u03c4\u03b9 \u03ae \u03c4\u03bf\u03b9\u03c7\u03bf\u03b3\u03c1\u03b1\u03c6\u03af\u03b1;', p: '\u0391\u03bd\u03ad\u03b2\u03b1\u03c3\u03b5 \u03c4\u03bf \u03c3\u03c7\u03ad\u03b4\u03b9\u03cc \u03c3\u03bf\u03c5. \u03a4\u03bf Kromatch \u03b2\u03c1\u03af\u03c3\u03ba\u03b5\u03b9 \u03b3\u03b9\u03b1 \u03ba\u03ac\u03b8\u03b5 \u03c7\u03c1\u03ce\u03bc\u03b1 \u03c4\u03bf \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c0\u03bf\u03c5 \u03ad\u03c7\u03bf\u03c5\u03bc\u03b5, \u03c3\u03bf\u03c5 \u03bb\u03ad\u03b5\u03b9 \u03c0\u03cc\u03c3\u03b1 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c3\u03b1\u03b9 \u03ba\u03b1\u03b9 \u03c4\u03b1 \u03b2\u03ac\u03b6\u03b5\u03b9 \u03cc\u03bb\u03b1 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9.', s: ['\u0391\u03bd\u03ad\u03b2\u03b1\u03c3\u03b5 \u03c4\u03bf \u03c3\u03c7\u03ad\u03b4\u03b9\u03bf', '\u0394\u03b5\u03c2 \u03c4\u03b1 \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c0\u03bf\u03c5 \u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03bf\u03c5\u03bd', '\u038c\u03bb\u03b1 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9'] },
-    fr: { pre: 'Trouvez vos couleurs avec', close: 'Fermer', h: 'Vous pr\u00e9parez une pi\u00e8ce ou une fresque\u00a0?', p: 'Importez votre dessin. Kromatch associe chaque couleur aux bombes que nous avons en stock, vous dit combien il en faut et les met toutes dans votre panier.', s: ['Importez votre dessin', 'Voyez les bombes assorties', 'Tout au panier'] },
-    de: { pre: 'Farben finden mit', close: 'Schlie\u00dfen', h: 'Du planst ein Piece oder ein Wandbild?', p: 'Lade deinen Entwurf hoch. Kromatch findet f\u00fcr jede Farbe die passende Dose aus unserem Sortiment, sagt dir, wie viele du brauchst, und legt alle in deinen Warenkorb.', s: ['Entwurf hochladen', 'Passende Dosen sehen', 'Alles in den Warenkorb'] },
-    es: { pre: 'Encuentra tus colores con', close: 'Cerrar', h: '\u00bfPreparando una pieza o un mural?', p: 'Sube tu dise\u00f1o. Kromatch encuentra para cada color el bote que tenemos, te dice cu\u00e1ntos necesitas y los pone todos en tu carrito.', s: ['Sube tu dise\u00f1o', 'Mira los botes que encajan', 'Todo al carrito'] }
+    en: { d: 'Matches are suggestions, not a guarantee.', pre: 'Match colours with', close: 'Close', h: 'Planning a piece or a mural?', p: 'Upload your design. Kromatch matches every colour to the cans we stock, tells you how many you need, and puts them all in your cart.', s: ['Upload your design', 'See the matching cans', 'Add them all to cart'] },
+    el: { d: '\u039f\u03b9 \u03b1\u03bd\u03c4\u03b9\u03c3\u03c4\u03bf\u03b9\u03c7\u03af\u03c3\u03b5\u03b9\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03bf\u03c4\u03ac\u03c3\u03b5\u03b9\u03c2, \u03cc\u03c7\u03b9 \u03b5\u03b3\u03b3\u03cd\u03b7\u03c3\u03b7.', pre: '\u03a4\u03b1\u03af\u03c1\u03b9\u03b1\u03be\u03b5 \u03c7\u03c1\u03ce\u03bc\u03b1\u03c4\u03b1 \u03bc\u03b5 \u03c4\u03bf', close: '\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf', h: '\u03a3\u03c7\u03b5\u03b4\u03b9\u03ac\u03b6\u03b5\u03b9\u03c2 \u03ba\u03bf\u03bc\u03bc\u03ac\u03c4\u03b9 \u03ae \u03c4\u03bf\u03b9\u03c7\u03bf\u03b3\u03c1\u03b1\u03c6\u03af\u03b1;', p: '\u0391\u03bd\u03ad\u03b2\u03b1\u03c3\u03b5 \u03c4\u03bf \u03c3\u03c7\u03ad\u03b4\u03b9\u03cc \u03c3\u03bf\u03c5. \u03a4\u03bf Kromatch \u03b2\u03c1\u03af\u03c3\u03ba\u03b5\u03b9 \u03b3\u03b9\u03b1 \u03ba\u03ac\u03b8\u03b5 \u03c7\u03c1\u03ce\u03bc\u03b1 \u03c4\u03bf \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c0\u03bf\u03c5 \u03ad\u03c7\u03bf\u03c5\u03bc\u03b5, \u03c3\u03bf\u03c5 \u03bb\u03ad\u03b5\u03b9 \u03c0\u03cc\u03c3\u03b1 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c3\u03b1\u03b9 \u03ba\u03b1\u03b9 \u03c4\u03b1 \u03b2\u03ac\u03b6\u03b5\u03b9 \u03cc\u03bb\u03b1 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9.', s: ['\u0391\u03bd\u03ad\u03b2\u03b1\u03c3\u03b5 \u03c4\u03bf \u03c3\u03c7\u03ad\u03b4\u03b9\u03bf', '\u0394\u03b5\u03c2 \u03c4\u03b1 \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c0\u03bf\u03c5 \u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03bf\u03c5\u03bd', '\u038c\u03bb\u03b1 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9'] },
+    fr: { d: 'Les correspondances sont des suggestions, pas une garantie.', pre: 'Trouvez vos couleurs avec', close: 'Fermer', h: 'Vous pr\u00e9parez une pi\u00e8ce ou une fresque\u00a0?', p: 'Importez votre dessin. Kromatch associe chaque couleur aux bombes que nous avons en stock, vous dit combien il en faut et les met toutes dans votre panier.', s: ['Importez votre dessin', 'Voyez les bombes assorties', 'Tout au panier'] },
+    de: { d: 'Die Treffer sind Vorschl\u00e4ge, keine Garantie.', pre: 'Farben finden mit', close: 'Schlie\u00dfen', h: 'Du planst ein Piece oder ein Wandbild?', p: 'Lade deinen Entwurf hoch. Kromatch findet f\u00fcr jede Farbe die passende Dose aus unserem Sortiment, sagt dir, wie viele du brauchst, und legt alle in deinen Warenkorb.', s: ['Entwurf hochladen', 'Passende Dosen sehen', 'Alles in den Warenkorb'] },
+    es: { d: 'Las coincidencias son sugerencias, no una garant\u00eda.', pre: 'Encuentra tus colores con', close: 'Cerrar', h: '\u00bfPreparando una pieza o un mural?', p: 'Sube tu dise\u00f1o. Kromatch encuentra para cada color el bote que tenemos, te dice cu\u00e1ntos necesitas y los pone todos en tu carrito.', s: ['Sube tu dise\u00f1o', 'Mira los botes que encajan', 'Todo al carrito'] }
   };
 
   /* ---------- Core: one panel per page, however many buttons ---------- */
@@ -258,6 +259,8 @@
       '.eyebrow{display:flex;align-items:center;gap:8px;font-size:13px;opacity:.85;margin:0 0 10px}.eyebrow .ico{width:22px;height:22px}' +
       '.banner h2{margin:0 0 10px;font-size:clamp(22px,2.6vw,32px);line-height:1.1;font-weight:900;font-stretch:108%}' +
       '.banner p{margin:0 0 18px;font-size:16px;line-height:1.45;opacity:.82}' +
+      '.fine{margin:12px 0 0;font-size:12px;line-height:1.35;opacity:.7}' +
+      '.bwrap{display:inline-flex;flex-direction:column;align-items:center;gap:5px}.cap{font:500 11px/1.25 ' + FONT + ';color:#5A5B5E;text-align:center}' +
       '.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}' +
       '.steps li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;font-size:14px;font-weight:700;line-height:1.25}' +
       '.steps svg{width:100%;max-width:96px;height:auto;color:currentColor}' +
@@ -268,14 +271,15 @@
         (label ? escapeHtml(label) : L.pre + ' <span class="wm">KROMATCH</span>') + '</span></button>';
     };
     var escapeHtml = function (x) { return String(x).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); };
-    var render = function (el, style, theme, label) {
+    var render = function (el, style, theme, label, note) {
       if (el.__kromatch) return; el.__kromatch = true;
       var sh = el.attachShadow ? el.attachShadow({ mode: 'open' }) : el;
       el.setAttribute('data-style', style);
       var inner = style === 'banner'
         ? '<div class="banner"><div><div class="eyebrow">' + ICON + '<span class="wm">KROMATCH</span></div><h2>' + L.h + '</h2><p>' + L.p + '</p>' +
-          btnHtml('cta', label) + '</div><ol class="steps">' + L.s.map(function (x, i) { return '<li>' + STEP_ART[i] + '<span><span class="num">' + (i + 1) + '</span>' + x + '</span></li>'; }).join('') + '</ol></div>'
-        : style === 'floating' ? btnHtml('float', label) : btnHtml('', label);
+          btnHtml('cta', label) + '<p class="fine">' + L.d + '</p></div><ol class="steps">' + L.s.map(function (x, i) { return '<li>' + STEP_ART[i] + '<span><span class="num">' + (i + 1) + '</span>' + x + '</span></li>'; }).join('') + '</ol></div>'
+        : style === 'floating' ? btnHtml('float', label)
+        : (note === 'off' ? btnHtml('', label) : '<span class="bwrap">' + btnHtml('', label) + '<span class="cap">' + L.d + '</span></span>');
       sh.innerHTML = CSS + '<div class="k' + (theme === 'light' ? ' light' : '') + '">' + inner + '</div>';
       sh.querySelector('.kbtn').addEventListener('click', open);
     };
@@ -293,12 +297,12 @@
       if (target) target.appendChild(el);
       else if (st !== 'floating' && sc.parentNode && sc.parentNode !== document.head) sc.parentNode.insertBefore(el, sc.nextSibling);
       else document.body.appendChild(el);
-      render(el, st, sc.getAttribute('data-theme'), sc.getAttribute('data-label'));
+      render(el, st, sc.getAttribute('data-theme'), sc.getAttribute('data-label'), sc.getAttribute('data-note'));
     };
     var scan = function () {
       [].forEach.call(document.querySelectorAll('.kromatch-banner, .kromatch-button, [data-kromatch-banner], [data-kromatch-button]'), function (el) {
         var banner = el.matches('.kromatch-banner, [data-kromatch-banner]');
-        render(el, banner ? 'banner' : 'button', el.getAttribute('data-theme'), el.getAttribute('data-label'));
+        render(el, banner ? 'banner' : 'button', el.getAttribute('data-theme'), el.getAttribute('data-label'), el.getAttribute('data-note'));
       });
     };
     var placed = false;
