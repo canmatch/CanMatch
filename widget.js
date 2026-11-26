@@ -32,11 +32,11 @@
     '<svg viewBox="0 0 96 72" aria-hidden="true"><path d="M8 14 H20 L30 50 H78 L86 24 H26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="62" r="5" fill="currentColor"/><circle cx="72" cy="62" r="5" fill="currentColor"/><rect x="38" y="28" width="9" height="16" rx="2" fill="#D3473A"/><rect x="50" y="28" width="9" height="16" rx="2" fill="#F5B700"/><rect x="62" y="28" width="9" height="16" rx="2" fill="#1FA6A0"/></svg>'
   ];
   var T = {
-    en: { d: 'Matches are suggestions, not a guarantee.', pre: 'Match colours with', close: 'Close', h: 'Planning a piece or a mural?', p: 'Upload your design. Kromatch matches every colour to the cans we stock, tells you how many you need, and puts them all in your cart.', s: ['Upload your design', 'See the matching cans', 'Add them all to cart'] },
-    el: { d: '\u039f\u03b9 \u03b1\u03bd\u03c4\u03b9\u03c3\u03c4\u03bf\u03b9\u03c7\u03af\u03c3\u03b5\u03b9\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03bf\u03c4\u03ac\u03c3\u03b5\u03b9\u03c2, \u03cc\u03c7\u03b9 \u03b5\u03b3\u03b3\u03cd\u03b7\u03c3\u03b7.', pre: '\u03a4\u03b1\u03af\u03c1\u03b9\u03b1\u03be\u03b5 \u03c7\u03c1\u03ce\u03bc\u03b1\u03c4\u03b1 \u03bc\u03b5 \u03c4\u03bf', close: '\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf', h: '\u03a3\u03c7\u03b5\u03b4\u03b9\u03ac\u03b6\u03b5\u03b9\u03c2 \u03ba\u03bf\u03bc\u03bc\u03ac\u03c4\u03b9 \u03ae \u03c4\u03bf\u03b9\u03c7\u03bf\u03b3\u03c1\u03b1\u03c6\u03af\u03b1;', p: '\u0391\u03bd\u03ad\u03b2\u03b1\u03c3\u03b5 \u03c4\u03bf \u03c3\u03c7\u03ad\u03b4\u03b9\u03cc \u03c3\u03bf\u03c5. \u03a4\u03bf Kromatch \u03b2\u03c1\u03af\u03c3\u03ba\u03b5\u03b9 \u03b3\u03b9\u03b1 \u03ba\u03ac\u03b8\u03b5 \u03c7\u03c1\u03ce\u03bc\u03b1 \u03c4\u03bf \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c0\u03bf\u03c5 \u03ad\u03c7\u03bf\u03c5\u03bc\u03b5, \u03c3\u03bf\u03c5 \u03bb\u03ad\u03b5\u03b9 \u03c0\u03cc\u03c3\u03b1 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c3\u03b1\u03b9 \u03ba\u03b1\u03b9 \u03c4\u03b1 \u03b2\u03ac\u03b6\u03b5\u03b9 \u03cc\u03bb\u03b1 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9.', s: ['\u0391\u03bd\u03ad\u03b2\u03b1\u03c3\u03b5 \u03c4\u03bf \u03c3\u03c7\u03ad\u03b4\u03b9\u03bf', '\u0394\u03b5\u03c2 \u03c4\u03b1 \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c0\u03bf\u03c5 \u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03bf\u03c5\u03bd', '\u038c\u03bb\u03b1 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9'] },
-    fr: { d: 'Les correspondances sont des suggestions, pas une garantie.', pre: 'Trouvez vos couleurs avec', close: 'Fermer', h: 'Vous pr\u00e9parez une pi\u00e8ce ou une fresque\u00a0?', p: 'Importez votre dessin. Kromatch associe chaque couleur aux bombes que nous avons en stock, vous dit combien il en faut et les met toutes dans votre panier.', s: ['Importez votre dessin', 'Voyez les bombes assorties', 'Tout au panier'] },
-    de: { d: 'Die Treffer sind Vorschl\u00e4ge, keine Garantie.', pre: 'Farben finden mit', close: 'Schlie\u00dfen', h: 'Du planst ein Piece oder ein Wandbild?', p: 'Lade deinen Entwurf hoch. Kromatch findet f\u00fcr jede Farbe die passende Dose aus unserem Sortiment, sagt dir, wie viele du brauchst, und legt alle in deinen Warenkorb.', s: ['Entwurf hochladen', 'Passende Dosen sehen', 'Alles in den Warenkorb'] },
-    es: { d: 'Las coincidencias son sugerencias, no una garant\u00eda.', pre: 'Encuentra tus colores con', close: 'Cerrar', h: '\u00bfPreparando una pieza o un mural?', p: 'Sube tu dise\u00f1o. Kromatch encuentra para cada color el bote que tenemos, te dice cu\u00e1ntos necesitas y los pone todos en tu carrito.', s: ['Sube tu dise\u00f1o', 'Mira los botes que encajan', 'Todo al carrito'] }
+    en: { a: 'Adding your Kromatch cans to the cart\u2026', af: 'Your cans couldn\'t be added to the cart. Please add them yourself, or ask the shop.', d: 'Matches are suggestions, not a guarantee.', pre: 'Match colours with', close: 'Close', h: 'Planning a piece or a mural?', p: 'Upload your design. Kromatch matches every colour to the cans we stock, tells you how many you need, and puts them all in your cart.', s: ['Upload your design', 'See the matching cans', 'Add them all to cart'] },
+    el: { a: '\u03a4\u03b1 \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c4\u03bf\u03c5 Kromatch \u03bc\u03c0\u03b1\u03af\u03bd\u03bf\u03c5\u03bd \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9\u2026', af: '\u03a4\u03b1 \u03c3\u03c0\u03c1\u03ad\u03b9 \u03b4\u03b5\u03bd \u03bc\u03c0\u03ae\u03ba\u03b1\u03bd \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9. \u03a0\u03c1\u03cc\u03c3\u03b8\u03b5\u03c3\u03ad \u03c4\u03b1 \u03bc\u03cc\u03bd\u03bf\u03c2 \u03c3\u03bf\u03c5 \u03ae \u03c1\u03ce\u03c4\u03b1 \u03c4\u03bf \u03ba\u03b1\u03c4\u03ac\u03c3\u03c4\u03b7\u03bc\u03b1.', d: '\u039f\u03b9 \u03b1\u03bd\u03c4\u03b9\u03c3\u03c4\u03bf\u03b9\u03c7\u03af\u03c3\u03b5\u03b9\u03c2 \u03b5\u03af\u03bd\u03b1\u03b9 \u03c0\u03c1\u03bf\u03c4\u03ac\u03c3\u03b5\u03b9\u03c2, \u03cc\u03c7\u03b9 \u03b5\u03b3\u03b3\u03cd\u03b7\u03c3\u03b7.', pre: '\u03a4\u03b1\u03af\u03c1\u03b9\u03b1\u03be\u03b5 \u03c7\u03c1\u03ce\u03bc\u03b1\u03c4\u03b1 \u03bc\u03b5 \u03c4\u03bf', close: '\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf', h: '\u03a3\u03c7\u03b5\u03b4\u03b9\u03ac\u03b6\u03b5\u03b9\u03c2 \u03ba\u03bf\u03bc\u03bc\u03ac\u03c4\u03b9 \u03ae \u03c4\u03bf\u03b9\u03c7\u03bf\u03b3\u03c1\u03b1\u03c6\u03af\u03b1;', p: '\u0391\u03bd\u03ad\u03b2\u03b1\u03c3\u03b5 \u03c4\u03bf \u03c3\u03c7\u03ad\u03b4\u03b9\u03cc \u03c3\u03bf\u03c5. \u03a4\u03bf Kromatch \u03b2\u03c1\u03af\u03c3\u03ba\u03b5\u03b9 \u03b3\u03b9\u03b1 \u03ba\u03ac\u03b8\u03b5 \u03c7\u03c1\u03ce\u03bc\u03b1 \u03c4\u03bf \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c0\u03bf\u03c5 \u03ad\u03c7\u03bf\u03c5\u03bc\u03b5, \u03c3\u03bf\u03c5 \u03bb\u03ad\u03b5\u03b9 \u03c0\u03cc\u03c3\u03b1 \u03c7\u03c1\u03b5\u03b9\u03ac\u03b6\u03b5\u03c3\u03b1\u03b9 \u03ba\u03b1\u03b9 \u03c4\u03b1 \u03b2\u03ac\u03b6\u03b5\u03b9 \u03cc\u03bb\u03b1 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9.', s: ['\u0391\u03bd\u03ad\u03b2\u03b1\u03c3\u03b5 \u03c4\u03bf \u03c3\u03c7\u03ad\u03b4\u03b9\u03bf', '\u0394\u03b5\u03c2 \u03c4\u03b1 \u03c3\u03c0\u03c1\u03ad\u03b9 \u03c0\u03bf\u03c5 \u03c4\u03b1\u03b9\u03c1\u03b9\u03ac\u03b6\u03bf\u03c5\u03bd', '\u038c\u03bb\u03b1 \u03c3\u03c4\u03bf \u03ba\u03b1\u03bb\u03ac\u03b8\u03b9'] },
+    fr: { a: 'Ajout de vos bombes Kromatch au panier\u2026', af: 'Vos bombes n\'ont pas pu \u00eatre ajout\u00e9es au panier. Ajoutez-les vous-m\u00eame ou demandez au magasin.', d: 'Les correspondances sont des suggestions, pas une garantie.', pre: 'Trouvez vos couleurs avec', close: 'Fermer', h: 'Vous pr\u00e9parez une pi\u00e8ce ou une fresque\u00a0?', p: 'Importez votre dessin. Kromatch associe chaque couleur aux bombes que nous avons en stock, vous dit combien il en faut et les met toutes dans votre panier.', s: ['Importez votre dessin', 'Voyez les bombes assorties', 'Tout au panier'] },
+    de: { a: 'Deine Kromatch-Dosen kommen in den Warenkorb\u2026', af: 'Die Dosen konnten nicht in den Warenkorb gelegt werden. Leg sie selbst hinein oder frag den Shop.', d: 'Die Treffer sind Vorschl\u00e4ge, keine Garantie.', pre: 'Farben finden mit', close: 'Schlie\u00dfen', h: 'Du planst ein Piece oder ein Wandbild?', p: 'Lade deinen Entwurf hoch. Kromatch findet f\u00fcr jede Farbe die passende Dose aus unserem Sortiment, sagt dir, wie viele du brauchst, und legt alle in deinen Warenkorb.', s: ['Entwurf hochladen', 'Passende Dosen sehen', 'Alles in den Warenkorb'] },
+    es: { a: 'A\u00f1adiendo tus botes de Kromatch al carrito\u2026', af: 'No se pudieron a\u00f1adir los botes al carrito. A\u00f1\u00e1delos t\u00fa o pregunta en la tienda.', d: 'Las coincidencias son sugerencias, no una garant\u00eda.', pre: 'Encuentra tus colores con', close: 'Cerrar', h: '\u00bfPreparando una pieza o un mural?', p: 'Sube tu dise\u00f1o. Kromatch encuentra para cada color el bote que tenemos, te dice cu\u00e1ntos necesitas y los pone todos en tu carrito.', s: ['Sube tu dise\u00f1o', 'Mira los botes que encajan', 'Todo al carrito'] }
   };
 
   /* ---------- Core: one panel per page, however many buttons ---------- */
@@ -113,11 +113,11 @@
       if (window.wc_add_to_cart_params && window.wc_add_to_cart_params.cart_url) return window.wc_add_to_cart_params.cart_url;
       return '/cart/';
     }
-    function shopifyAdd(items) {
+    function shopifyAdd(items, src) {
       var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
       var one = function (it) {
         return fetch(rootPath + 'cart/add.js', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ items: [{ id: Number(it.id), quantity: it.qty, properties: { _kromatch: '1' } }] }) })
+          body: JSON.stringify({ items: [{ id: Number(it.id), quantity: it.qty, properties: { _kromatch: src === 'app' ? 'app' : '1' } }] }) })
           .then(function (r) { return r.ok ? { ok: true } : r.json().then(function (j) { return { ok: false, reason: j.description || j.message || ('error ' + r.status) }; }, function () { return { ok: false, reason: 'error ' + r.status }; }); });
       };
       // one at a time, so a sold-out colour doesn't stop the rest
@@ -182,9 +182,9 @@
         };
         // a shop on another system can handle it itself: window.KromatchCart = function (items) { ...; return { added: [ids], failed: [] } }
         var job = typeof window.KromatchCart === 'function' ? Promise.resolve(window.KromatchCart(items))
-          : platform === 'shopify' ? shopifyAdd(items) : platform === 'woocommerce' ? wooAdd(items) : null;
+          : platform === 'shopify' ? shopifyAdd(items, 'widget') : platform === 'woocommerce' ? wooAdd(items) : null;
         if (!job) { reply({ added: [], failed: [], error: 'unsupported' }); return; }
-        job.then(function (res) { remember(res.added || [], items); reply(res); }, function (err) { reply({ added: [], failed: [], error: String(err && err.message || err) }); });
+        job.then(function (res) { remember(res.added || [], items, 'widget'); reply(res); }, function (err) { reply({ added: [], failed: [], error: String(err && err.message || err) }); });
       }
     });
 
@@ -193,16 +193,19 @@
     var TKEY = 'kromatch:added:' + SHOP, SKEY = 'kromatch:snap:' + SHOP, DAY = 864e5;
     var lsGet = function (k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
     var lsSet = function (k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-    var remember = function (ids, items) {
+    var remember = function (ids, items, src) {
       if (!ids.length) return;
       var a = lsGet(TKEY); if (!a || Date.now() - a.t > 30 * DAY) a = { ids: {}, t: 0 };
-      ids.forEach(function (id) { var it = items.filter(function (x) { return x.id === String(id); })[0]; a.ids[String(id)] = (a.ids[String(id)] || 0) + (it ? it.qty : 1); });
+      if (!a.src) a.src = {};
+      ids.forEach(function (id) { var it = items.filter(function (x) { return x.id === String(id); })[0]; a.ids[String(id)] = (a.ids[String(id)] || 0) + (it ? it.qty : 1);
+        if (src === 'app') a.src[String(id)] = 'app'; });
       a.t = Date.now(); lsSet(TKEY, a);
     };
     var report = function (o) {
       try {
         fetch(BASE + '/api/convert', { method: 'POST', keepalive: true, mode: 'cors', headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ shop: SHOP, ref: o.ref, total: o.total, currency: o.currency, platform: o.platform, items: o.items }) });
+          body: JSON.stringify({ shop: SHOP, ref: o.ref, total: o.total, currency: o.currency, platform: o.platform, source: o.source || 'widget',
+            items: o.items.map(function (i) { return { id: i.id, qty: i.qty, price: i.price }; }) }) });
       } catch (e) {}
     };
     var money = function (txt) {     // "1.234,50 EUR", "EUR62.50" -> 1234.5 / 62.5
@@ -222,7 +225,8 @@
         var ref = (Array.isArray(done) && done[1]) || (refEl && refEl.textContent.trim()) || '';
         var totEl = document.querySelector('.woocommerce-order-overview__total .amount, .woocommerce-order-overview__total, .order-total .amount');
         if (snap && snap.items && snap.items.length && ref) {
-          report({ ref: ref, total: money(totEl && totEl.textContent) || snap.total, currency: snap.currency, platform: 'woocommerce', items: snap.items });
+          report({ ref: ref, total: money(totEl && totEl.textContent) || snap.total, currency: snap.currency, platform: 'woocommerce', items: snap.items,
+            source: snap.items.some(function (i) { return i.src === 'app'; }) ? 'app' : 'widget' });
         }
         lsSet(TKEY, null); lsSet(SKEY, null);
         return;
@@ -233,7 +237,8 @@
           if (!c || !c.items) return;
           var items = c.items.filter(function (i) { return added.ids[String(i.id)]; }).map(function (i) {
             var minor = (i.prices && i.prices.currency_minor_unit) || 2;
-            return { id: String(i.id), qty: Math.min(i.quantity, added.ids[String(i.id)]), price: i.prices && i.prices.price ? Number(i.prices.price) / Math.pow(10, minor) : null };
+            return { id: String(i.id), qty: Math.min(i.quantity, added.ids[String(i.id)]), price: i.prices && i.prices.price ? Number(i.prices.price) / Math.pow(10, minor) : null,
+              src: added.src && added.src[String(i.id)] === 'app' ? 'app' : 'widget' };
           });
           var tminor = (c.totals && c.totals.currency_minor_unit) || 2;
           lsSet(SKEY, { items: items, total: c.totals && c.totals.total_price ? Number(c.totals.total_price) / Math.pow(10, tminor) : null,
@@ -241,6 +246,44 @@
         }, function () {});
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', track); else track();
+
+    /* ---------- Cans sent from the Kromatch app: ?kromatch_cart=... puts them into THIS website's cart ----------
+       The Kromatch app sends a shopper here with the list (product ids and quantities only); the cans go into their
+       normal cart on this website and they check out here as usual. Counted as source 'app'. */
+    var handoff = function () {
+      var raw = null;
+      try { raw = new URLSearchParams(location.search).get('kromatch_cart'); } catch (e) {}
+      if (!raw) return;
+      var d = null;
+      try { d = JSON.parse(decodeURIComponent(escape(atob(raw.replace(/-/g, '+').replace(/_/g, '/'))))); } catch (e) {}
+      try { var u = new URL(location.href); u.searchParams.delete('kromatch_cart'); history.replaceState(null, '', u.pathname + u.search + u.hash); } catch (e) {}
+      if (!d || d.s !== SHOP || !Array.isArray(d.i)) return;
+      var items = d.i.slice(0, 60).map(function (x) { return { id: String(x && x[0] || '').replace(/\D/g, ''), qty: Math.max(1, Math.min(99, Math.round(Number(x && x[1]) || 1))) }; })
+        .filter(function (x) { return x.id; });
+      if (!items.length) return;
+      var box = document.createElement('div'); box.setAttribute('data-kromatch', 'handoff');
+      var sr = box.attachShadow ? box.attachShadow({ mode: 'open' }) : box;
+      sr.innerHTML = '<style>:host{all:initial}.w{position:fixed;inset:0;z-index:2147483647;background:rgba(20,20,20,.55);display:flex;align-items:center;justify-content:center;font-family:' + FONT + '}' +
+        '.c{background:#fff;color:#141414;border-radius:16px;padding:22px 24px;max-width:340px;margin:16px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.3)}' +
+        '.c .ico{width:34px;height:34px;flex:none}p{margin:0;font-size:15px;line-height:1.4;font-weight:600}button{margin-top:10px;font:700 14px ' + FONT + ';background:#141414;color:#fff;border:0;border-radius:999px;padding:8px 16px;cursor:pointer}</style>' +
+        '<div class="w" role="status"><div class="c">' + ICON + '<div><p class="m">' + L.a + '</p></div></div></div>';
+      document.body.appendChild(box);
+      var platform = detectPlatform(null);
+      var job = typeof window.KromatchCart === 'function' ? Promise.resolve(window.KromatchCart(items))
+        : platform === 'shopify' ? shopifyAdd(items, 'app') : platform === 'woocommerce' ? wooAdd(items) : Promise.resolve({ added: [], failed: [] });
+      var fail = function () {
+        sr.querySelector('.m').textContent = L.af;
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = L.close; b.addEventListener('click', function () { box.remove(); });
+        sr.querySelector('.m').parentNode.appendChild(b);
+      };
+      job.then(function (res) {
+        var added = (res && res.added) || [];
+        if (!added.length) { fail(); return; }
+        remember(added, items, 'app');
+        location.href = cartUrl(platform, null);
+      }, fail);
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', handoff); else handoff();
 
     /* ---------- Placements: banner, button, floating ---------- */
     var CSS = '<style>:host{all:initial;display:block}:host([data-style=button]){display:inline-block}' +
