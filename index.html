@@ -862,9 +862,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-26-alts"></script>
-<script src="shops.js?v=2026-11-26-alts"></script>
-<script src="config.js?v=2026-11-26-alts"></script>
+<script src="colors.js?v=2026-11-27-ship"></script>
+<script src="shops.js?v=2026-11-27-ship"></script>
+<script src="config.js?v=2026-11-27-ship"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -1054,8 +1054,8 @@ const T = {
     s4t: 'Pick a can and buy',
     s4d: 'The best matches come first. Add cans to your cart and buy from your local shop.',
     tabMatch: 'Match',
-    filters: 'Filters',
-    filtersOn: 'Filters ({n})',
+    filters: 'Spray can filters',
+    filtersOn: 'Spray can filters ({n})',
     showMore: 'Show more matches',
     showLess: 'Show fewer',
     low: 'Fine detail (low pressure)',
@@ -1086,7 +1086,7 @@ const T = {
     cans: '{n} cans',
     oneCan: '1 can',
     priceNote: 'Prices are confirmed by the shop.',
-    buyNow: 'Purchase now from {shop}', buyOnSite: 'Buy on {shop}’s website', reserveInStore: 'Reserve, pay in store', buyOnSiteNote: 'You check out and pay on {shop}’s website. Kromatch puts the cans in their cart.', notOnSite: 'Not on {shop}’s website: {list}. They may still be in the shop: reserve them to pay in store, or ask {shop}.', openingSite: 'Opening {shop}…',
+    buyNow: 'Purchase now from {shop}', buyOnSite: 'Buy on {shop}’s website', reserveInStore: 'Reserve, pay in store', buyOnSiteNote: 'You check out and pay on {shop}’s website. Kromatch puts the cans in their cart.', cansVat: 'Cans, VAT included', shipNote: 'Shipping isn’t included: {shop} adds it at checkout (it depends on weight and area). Picking up in the shop, if they offer it, costs nothing extra.', notOnSite: 'Not on {shop}’s website: {list}. They may still be in the shop: reserve them to pay in store, or ask {shop}.', openingSite: 'Opening {shop}…',
     orderTitle: 'Order ready for {shop}',
     demoNote: 'This is a test. No order was sent and the shop has not been contacted. Please don’t contact the shop about this order.',
     backToCart: 'Back to cart',
@@ -1282,8 +1282,8 @@ const T = {
     s4t: 'Διάλεξε σπρέι και αγόρασε',
     s4d: 'Οι καλύτερες αντιστοιχίες εμφανίζονται πρώτες. Πρόσθεσε σπρέι στο καλάθι και αγόρασε από το κατάστημα της περιοχής σου.',
     tabMatch: 'Ταίριασμα',
-    filters: 'Φίλτρα',
-    filtersOn: 'Φίλτρα ({n})',
+    filters: 'Φίλτρα σπρέι',
+    filtersOn: 'Φίλτρα σπρέι ({n})',
     showMore: 'Περισσότερα αποτελέσματα',
     showLess: 'Λιγότερα',
     low: 'Λεπτομέρεια (χαμηλή πίεση)',
@@ -1314,7 +1314,7 @@ const T = {
     cans: '{n} σπρέι',
     oneCan: '1 σπρέι',
     priceNote: 'Οι τιμές επιβεβαιώνονται από το κατάστημα.',
-    buyNow: 'Αγορά τώρα από {shop}', buyOnSite: 'Αγορά στην ιστοσελίδα του {shop}', reserveInStore: 'Κράτηση, πληρωμή στο κατάστημα', buyOnSiteNote: 'Ολοκληρώνεις και πληρώνεις στην ιστοσελίδα του {shop}. Το Kromatch βάζει τα σπρέι στο καλάθι τους.', notOnSite: 'Δεν υπάρχουν στην ιστοσελίδα του {shop}: {list}. Μπορεί να υπάρχουν στο κατάστημα: κάνε κράτηση για πληρωμή στο κατάστημα ή ρώτα το {shop}.', openingSite: 'Άνοιγμα του {shop}…',
+    buyNow: 'Αγορά τώρα από {shop}', buyOnSite: 'Αγορά στην ιστοσελίδα του {shop}', reserveInStore: 'Κράτηση, πληρωμή στο κατάστημα', buyOnSiteNote: 'Ολοκληρώνεις και πληρώνεις στην ιστοσελίδα του {shop}. Το Kromatch βάζει τα σπρέι στο καλάθι τους.', cansVat: 'Σπρέι, με ΦΠΑ', shipNote: 'Τα μεταφορικά δεν περιλαμβάνονται: το {shop} τα προσθέτει στο ταμείο (εξαρτώνται από το βάρος και την περιοχή). Η παραλαβή από το κατάστημα, αν την προσφέρει, δεν κοστίζει κάτι επιπλέον.', notOnSite: 'Δεν υπάρχουν στην ιστοσελίδα του {shop}: {list}. Μπορεί να υπάρχουν στο κατάστημα: κάνε κράτηση για πληρωμή στο κατάστημα ή ρώτα το {shop}.', openingSite: 'Άνοιγμα του {shop}…',
     orderTitle: 'Η παραγγελία για {shop} είναι έτοιμη',
     demoNote: 'Αυτό είναι δοκιμή. Δεν στάλθηκε καμία παραγγελία και το κατάστημα δεν ειδοποιήθηκε. Μην επικοινωνήσεις με το κατάστημα για αυτή την παραγγελία.',
     backToCart: 'Πίσω στο καλάθι',
@@ -1510,8 +1510,8 @@ const T = {
     s4t: 'Choisissez une bombe et achetez',
     s4d: 'Les meilleures correspondances s’affichent en premier. Ajoutez des bombes au panier et achetez dans votre magasin local.',
     tabMatch: 'Trouver',
-    filters: 'Filtres',
-    filtersOn: 'Filtres ({n})',
+    filters: 'Filtres bombes',
+    filtersOn: 'Filtres bombes ({n})',
     showMore: 'Plus de résultats',
     showLess: 'Moins de résultats',
     low: 'Détails fins (basse pression)',
@@ -1542,7 +1542,7 @@ const T = {
     cans: '{n} bombes',
     oneCan: '1 bombe',
     priceNote: 'Les prix sont confirmés par le magasin.',
-    buyNow: 'Acheter maintenant chez {shop}', buyOnSite: 'Acheter sur le site de {shop}', reserveInStore: 'Réserver, payer en magasin', buyOnSiteNote: 'Vous finalisez et payez sur le site de {shop}. Kromatch met les bombes dans leur panier.', notOnSite: 'Absent du site de {shop} : {list}. Ils sont peut-être en magasin : réservez-les pour payer sur place, ou demandez à {shop}.', openingSite: 'Ouverture de {shop}…',
+    buyNow: 'Acheter maintenant chez {shop}', buyOnSite: 'Acheter sur le site de {shop}', reserveInStore: 'Réserver, payer en magasin', buyOnSiteNote: 'Vous finalisez et payez sur le site de {shop}. Kromatch met les bombes dans leur panier.', cansVat: 'Bombes, TVA comprise', shipNote: 'Livraison non comprise : {shop} l’ajoute au paiement (selon le poids et la zone). Le retrait en magasin, s’il est proposé, ne coûte rien de plus.', notOnSite: 'Absent du site de {shop} : {list}. Ils sont peut-être en magasin : réservez-les pour payer sur place, ou demandez à {shop}.', openingSite: 'Ouverture de {shop}…',
     orderTitle: 'Commande prête pour {shop}',
     demoNote: 'Ceci est un test. Aucune commande n’a été envoyée et le magasin n’a pas été contacté. Merci de ne pas contacter le magasin au sujet de cette commande.',
     backToCart: 'Retour au panier',
@@ -1724,8 +1724,8 @@ const T = {
     s4t: 'Dose wählen und kaufen',
     s4d: 'Die besten Treffer stehen oben. Leg Dosen in den Warenkorb und kauf sie in deinem Shop vor Ort.',
     tabMatch: 'Abgleich',
-    filters: 'Filter',
-    filtersOn: 'Filter ({n})',
+    filters: 'Dosen-Filter',
+    filtersOn: 'Dosen-Filter ({n})',
     showMore: 'Mehr Treffer anzeigen',
     showLess: 'Weniger anzeigen',
     low: 'Feine Details (Niederdruck)',
@@ -1756,7 +1756,7 @@ const T = {
     cans: '{n} Dosen',
     oneCan: '1 Dose',
     priceNote: 'Die Preise werden vom Shop bestätigt.',
-    buyNow: 'Jetzt bei {shop} kaufen', buyOnSite: 'Auf der Website von {shop} kaufen', reserveInStore: 'Reservieren, im Laden zahlen', buyOnSiteNote: 'Du schließt den Kauf auf der Website von {shop} ab. Kromatch legt die Dosen in deren Warenkorb.', notOnSite: 'Nicht auf der Website von {shop}: {list}. Vielleicht gibt es sie im Laden: reserviere sie zum Bezahlen vor Ort oder frag {shop}.', openingSite: '{shop} wird geöffnet…',
+    buyNow: 'Jetzt bei {shop} kaufen', buyOnSite: 'Auf der Website von {shop} kaufen', reserveInStore: 'Reservieren, im Laden zahlen', buyOnSiteNote: 'Du schließt den Kauf auf der Website von {shop} ab. Kromatch legt die Dosen in deren Warenkorb.', cansVat: 'Dosen, inkl. MwSt.', shipNote: 'Versand ist nicht enthalten: {shop} berechnet ihn an der Kasse (je nach Gewicht und Gebiet). Abholung im Laden, falls angeboten, kostet nichts extra.', notOnSite: 'Nicht auf der Website von {shop}: {list}. Vielleicht gibt es sie im Laden: reserviere sie zum Bezahlen vor Ort oder frag {shop}.', openingSite: '{shop} wird geöffnet…',
     orderTitle: 'Bestellung für {shop} bereit',
     demoNote: 'Das ist ein Test. Es wurde keine Bestellung gesendet und der Shop wurde nicht kontaktiert. Bitte kontaktiere den Shop nicht wegen dieser Bestellung.',
     backToCart: 'Zurück zum Warenkorb',
@@ -1937,8 +1937,8 @@ const T = {
     s4t: 'Elige un spray y cómpralo',
     s4d: 'Las mejores coincidencias aparecen primero. Añade sprays al carrito y cómpralos en tu tienda local.',
     tabMatch: 'Buscar',
-    filters: 'Filtros',
-    filtersOn: 'Filtros ({n})',
+    filters: 'Filtros de botes',
+    filtersOn: 'Filtros de botes ({n})',
     showMore: 'Ver más coincidencias',
     showLess: 'Ver menos',
     low: 'Detalle fino (baja presión)',
@@ -1969,7 +1969,7 @@ const T = {
     cans: '{n} sprays',
     oneCan: '1 spray',
     priceNote: 'La tienda confirma los precios.',
-    buyNow: 'Comprar ahora en {shop}', buyOnSite: 'Comprar en la web de {shop}', reserveInStore: 'Reservar, pagar en tienda', buyOnSiteNote: 'Terminas y pagas en la web de {shop}. Kromatch pone los botes en su carrito.', notOnSite: 'No están en la web de {shop}: {list}. Puede que estén en la tienda: resérvalos para pagar allí o pregunta a {shop}.', openingSite: 'Abriendo {shop}…',
+    buyNow: 'Comprar ahora en {shop}', buyOnSite: 'Comprar en la web de {shop}', reserveInStore: 'Reservar, pagar en tienda', buyOnSiteNote: 'Terminas y pagas en la web de {shop}. Kromatch pone los botes en su carrito.', cansVat: 'Botes, IVA incluido', shipNote: 'El envío no está incluido: {shop} lo añade al pagar (depende del peso y la zona). Recoger en la tienda, si lo ofrece, no cuesta nada más.', notOnSite: 'No están en la web de {shop}: {list}. Puede que estén en la tienda: resérvalos para pagar allí o pregunta a {shop}.', openingSite: 'Abriendo {shop}…',
     orderTitle: 'Pedido listo para {shop}',
     demoNote: 'Esto es una prueba. No se ha enviado ningún pedido ni se ha contactado con la tienda. No contactes con la tienda por este pedido.',
     backToCart: 'Volver al carrito',
@@ -2150,8 +2150,8 @@ const T = {
     s4t: 'Scegli una bomboletta e acquista',
     s4d: 'Gli abbinamenti migliori compaiono per primi. Aggiungi le bombolette al carrello e comprale nel tuo negozio locale.',
     tabMatch: 'Abbina',
-    filters: 'Filtri',
-    filtersOn: 'Filtri ({n})',
+    filters: 'Filtri bombolette',
+    filtersOn: 'Filtri bombolette ({n})',
     showMore: 'Mostra altri abbinamenti',
     showLess: 'Mostra meno',
     low: 'Dettagli fini (bassa pressione)',
@@ -2182,7 +2182,7 @@ const T = {
     cans: '{n} bombolette',
     oneCan: '1 bomboletta',
     priceNote: 'I prezzi sono confermati dal negozio.',
-    buyNow: 'Acquista ora da {shop}', buyOnSite: 'Acquista sul sito di {shop}', reserveInStore: 'Prenota, paga in negozio', buyOnSiteNote: 'Concludi e paghi sul sito di {shop}. Kromatch mette le bombolette nel loro carrello.', notOnSite: 'Non presenti sul sito di {shop}: {list}. Potrebbero essere in negozio: prenotale per pagare lì o chiedi a {shop}.', openingSite: 'Apertura di {shop}…',
+    buyNow: 'Acquista ora da {shop}', buyOnSite: 'Acquista sul sito di {shop}', reserveInStore: 'Prenota, paga in negozio', buyOnSiteNote: 'Concludi e paghi sul sito di {shop}. Kromatch mette le bombolette nel loro carrello.', cansVat: 'Bombolette, IVA inclusa', shipNote: 'La spedizione non è inclusa: {shop} la aggiunge al pagamento (dipende da peso e zona). Il ritiro in negozio, se previsto, non costa nulla in più.', notOnSite: 'Non presenti sul sito di {shop}: {list}. Potrebbero essere in negozio: prenotale per pagare lì o chiedi a {shop}.', openingSite: 'Apertura di {shop}…',
     orderTitle: 'Ordine pronto per {shop}',
     demoNote: 'Questa è una prova. Nessun ordine è stato inviato e il negozio non è stato contattato. Non contattare il negozio per questo ordine.',
     backToCart: 'Torna al carrello',
@@ -2363,8 +2363,8 @@ const T = {
     s4t: 'Escolha um spray e compre',
     s4d: 'As melhores combinações aparecem primeiro. Adicione sprays ao carrinho e compre na loja da sua cidade.',
     tabMatch: 'Encontrar',
-    filters: 'Filtros',
-    filtersOn: 'Filtros ({n})',
+    filters: 'Filtros de latas',
+    filtersOn: 'Filtros de latas ({n})',
     showMore: 'Ver mais combinações',
     showLess: 'Ver menos',
     low: 'Detalhes finos (baixa pressão)',
@@ -2395,7 +2395,7 @@ const T = {
     cans: '{n} sprays',
     oneCan: '1 spray',
     priceNote: 'Os preços são confirmados pela loja.',
-    buyNow: 'Comprar agora em {shop}', buyOnSite: 'Comprar no site de {shop}', reserveInStore: 'Reservar, pagar na loja', buyOnSiteNote: 'Concluis e pagas no site de {shop}. A Kromatch põe as latas no carrinho deles.', notOnSite: 'Não estão no site de {shop}: {list}. Podem estar na loja: reserva-as para pagar lá ou pergunta a {shop}.', openingSite: 'A abrir {shop}…',
+    buyNow: 'Comprar agora em {shop}', buyOnSite: 'Comprar no site de {shop}', reserveInStore: 'Reservar, pagar na loja', buyOnSiteNote: 'Concluis e pagas no site de {shop}. A Kromatch põe as latas no carrinho deles.', cansVat: 'Latas, IVA incluído', shipNote: 'O envio não está incluído: {shop} acrescenta-o no pagamento (depende do peso e da zona). Levantar na loja, se disponível, não custa nada a mais.', notOnSite: 'Não estão no site de {shop}: {list}. Podem estar na loja: reserva-as para pagar lá ou pergunta a {shop}.', openingSite: 'A abrir {shop}…',
     orderTitle: 'Pedido pronto para {shop}',
     demoNote: 'Isto é um teste. Nenhum pedido foi enviado e a loja não foi contatada. Não entre em contato com a loja sobre este pedido.',
     backToCart: 'Voltar ao carrinho',
@@ -3407,8 +3407,11 @@ function renderList() {
         btn.classList.add('to-site');
         btn.addEventListener('click', () => handoffGo(shop, h, btn));
         g.appendChild(btn);
-        const nt = document.createElement('p'); nt.className = 'note'; nt.style.margin = '6px 0 10px';
+        const nt = document.createElement('p'); nt.className = 'note'; nt.style.margin = '6px 0 4px';
         nt.textContent = t('buyOnSiteNote').replace('{shop}', shop.name); g.appendChild(nt);
+        const sn = document.createElement('p'); sn.className = 'note ship-note'; sn.style.margin = '0 0 10px';
+        sn.textContent = t('shipNote').replace('{shop}', shop.name); g.appendChild(sn);
+        const tl = g.querySelector('.cart-total .total-row span'); if (tl) tl.textContent = `${t('cansVat')} · ${cansText(totalsFor(shop).count)}`;
         if (split.missing.length) { const mn = document.createElement('p'); mn.className = 'note'; mn.style.margin = '0 0 10px';
           mn.textContent = t('notOnSite').replace('{shop}', shop.name).replace('{list}', split.missing.map(canLabel).join(', ')); g.appendChild(mn); }
         const rb = document.createElement('button'); rb.type = 'button'; rb.className = 'secondary buy reserve';
