@@ -869,9 +869,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-27-website4"></script>
-<script src="shops.js?v=2026-11-27-website4"></script>
-<script src="config.js?v=2026-11-27-website4"></script>
+<script src="colors.js?v=2026-11-27-orders1"></script>
+<script src="shops.js?v=2026-11-27-orders1"></script>
+<script src="config.js?v=2026-11-27-orders1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -3189,6 +3189,12 @@ function handoffSplit(shop, h) {
   itemsFor(shop).forEach(i => { const m = i.code && h.map.get(i.brand + '|' + i.code); if (m && m.id && m.in_stock) send.push({ id: String(m.id), qty: i.qty, item: i }); else missing.push(i); });
   return { send, missing };
 }
+// Every visit Kromatch sends to a shop's website carries utm_source=kromatch: WooCommerce (order attribution, "Origin")
+// and Shopify (conversion summary) then show "kromatch" on the order in the shop's own admin, and Kromatch's sync can find it
+function kmTag(url, medium) {
+  const [base, hash] = String(url).split('#');
+  return base + (base.includes('?') ? '&' : '?') + 'utm_source=kromatch&utm_medium=' + (medium || 'app') + '&utm_campaign=kromatch' + (hash ? '#' + hash : '');
+}
 function handoffGo(shop, h, btn) {
   const { send } = handoffSplit(shop, h);
   if (!send.length) return;
@@ -3200,7 +3206,7 @@ function handoffGo(shop, h, btn) {
   store.list = store.list.filter(i => !send.some(x => x.item === i)); pruneDesigns(); save(); renderListCount();
   const url = h.installed ? h.site + '/?kromatch_cart=' + payload
     : h.site + '/cart/' + send.map(x => `${encodeURIComponent(x.id)}:${x.qty}`).join(',');   // Shopify cart link (no code needed)
-  setTimeout(() => { location.href = url; }, 150);
+  setTimeout(() => { location.href = kmTag(url, 'app'); }, 150);
 }
 async function loadLiveShops() {
   if (!CFG) return false;
@@ -3434,7 +3440,7 @@ function renderList() {
       } else if (h && !(split.send.length && (h.installed || h.platform === 'shopify'))) {
         // Their website can't take the whole list yet (no Kromatch code there): the main button simply opens their website
         const a = document.createElement('a'); a.className = 'primary buy to-site-link'; a.target = '_blank'; a.rel = 'noopener';
-        a.href = h.site + '/'; a.textContent = t('buyOnSite').replace(/\{shop\}/g, shop.name);
+        a.href = kmTag(h.site + '/', 'app'); a.textContent = t('buyOnSite').replace(/\{shop\}/g, shop.name);
         a.addEventListener('click', () => { logEvent('app_handoff', { shop: shop.slug, mode: 'site', cans: totalsFor(shop).count }); flushEvents(); });
         g.appendChild(a);
         const sn = document.createElement('p'); sn.className = 'note ship-note'; sn.style.margin = '6px 0 0'; sn.textContent = t('shipNote').replace(/\{shop\}/g, shop.name); g.appendChild(sn);
@@ -3452,7 +3458,7 @@ function renderList() {
         const nn = document.createElement('p'); nn.className = 'note'; nn.style.margin = '6px 0';
         nn.textContent = split && !split.send.length ? t('noneOnSite').replace(/\{shop\}/g, shop.name) : t('notSetUp').replace(/\{shop\}/g, shop.name); g.appendChild(nn);
         if (shop.website) { const a = document.createElement('a'); a.className = 'secondary buy'; a.target = '_blank'; a.rel = 'noopener';
-          a.href = /^https?:/.test(shop.website) ? shop.website : 'https://' + shop.website; a.textContent = t('visitSite').replace(/\{shop\}/g, shop.name); g.appendChild(a); }
+          a.href = kmTag(/^https?:/.test(shop.website) ? shop.website : 'https://' + shop.website, 'app'); a.textContent = t('visitSite').replace(/\{shop\}/g, shop.name); g.appendChild(a); }
       }
     }
     box.appendChild(g);
