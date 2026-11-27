@@ -241,6 +241,13 @@
   .buy { width: 100%; font-size: 1.05rem; }
   .buy:disabled { opacity: 0.4; cursor: not-allowed; }
   .buy.reserve { margin-top: 2px; }
+  a.buy { display: flex; align-items: center; justify-content: center; text-decoration: none; }
+  .add-steps { list-style: none; padding: 0; margin: 0 0 10px; }
+  .add-steps li { display: flex; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 0.92rem; }
+  .add-steps .sw { width: 22px; height: 22px; border-radius: 6px; flex: none; border: 1px solid var(--line); }
+  .add-steps .grow { flex: 1; min-width: 0; }
+  .add-steps li.done .grow { opacity: 0.55; }
+  .add-steps .add-one { text-decoration: none; white-space: nowrap; padding: 7px 12px; font-size: 0.85rem; }
   .cart-actions { display: flex; gap: 18px; justify-content: center; margin-top: 10px; }
   .link-btn { font: inherit; font-size: 0.9rem; font-weight: 700; color: var(--ink); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 4px; }
   .consent { color: var(--ink); align-items: flex-start; }
@@ -862,9 +869,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-27-ship4"></script>
-<script src="shops.js?v=2026-11-27-ship4"></script>
-<script src="config.js?v=2026-11-27-ship4"></script>
+<script src="colors.js?v=2026-11-27-website2"></script>
+<script src="shops.js?v=2026-11-27-website2"></script>
+<script src="config.js?v=2026-11-27-website2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -1086,7 +1093,7 @@ const T = {
     cans: '{n} cans',
     oneCan: '1 can',
     priceNote: 'Prices are confirmed by the shop.',
-    buyNow: 'Purchase now from {shop}', buyOnSite: 'Buy on {shop}’s website', reserveInStore: 'Reserve, pay in store', buyOnSiteNote: 'You check out and pay on {shop}’s website. Kromatch puts the cans in their cart.', cansVat: 'Cans, VAT included', cansTax: 'Cans, before tax', pickupNote: 'Payment is made in store at pickup. No shipping charges apply.', shipNote: 'Shipping cost is added at checkout on {shop}’s website. In-store pickup is free of shipping charges.', notOnSite: 'Not on {shop}’s website: {list}. They may still be in the shop: reserve them to pay in store, or ask {shop}.', openingSite: 'Opening {shop}…',
+    buyNow: 'Purchase now from {shop}', buyOnSite: 'Buy on {shop}’s website', reserveInStore: 'Reserve, pay in store', buyOnSiteNote: 'You check out and pay on {shop}’s website. Kromatch puts the cans in their cart.', cansVat: 'Cans, VAT included', cansTax: 'Cans, before tax', pickupNote: 'Payment is made in store at pickup. No shipping charges apply.', shipNote: 'Shipping cost is added at checkout on {shop}’s website. In-store pickup is free of shipping charges.', notOnSite: 'Not on {shop}’s website: {list}. Ask {shop} about these.', stepsIntro: 'Tap “Add” for each colour: it opens {shop}’s website with that can in your cart. Then open the cart to check out.', addOne: 'Add', addedOne: 'Added ✓', openCart: 'Open {shop}’s cart', visitSite: 'Visit {shop}’s website', notSetUp: 'Ordering through Kromatch isn’t set up for {shop} yet. You can buy these cans on their website or in the shop.', noneOnSite: 'None of these colours are on {shop}’s website right now. Ask {shop} about them.', openingSite: 'Opening {shop}…',
     orderTitle: 'Order ready for {shop}',
     demoNote: 'This is a test. No order was sent and the shop has not been contacted. Please don’t contact the shop about this order.',
     backToCart: 'Back to cart',
@@ -1314,7 +1321,7 @@ const T = {
     cans: '{n} σπρέι',
     oneCan: '1 σπρέι',
     priceNote: 'Οι τιμές επιβεβαιώνονται από το κατάστημα.',
-    buyNow: 'Αγορά τώρα από {shop}', buyOnSite: 'Αγορά στην ιστοσελίδα του {shop}', reserveInStore: 'Κράτηση, πληρωμή στο κατάστημα', buyOnSiteNote: 'Ολοκληρώνεις και πληρώνεις στην ιστοσελίδα του {shop}. Το Kromatch βάζει τα σπρέι στο καλάθι τους.', cansVat: 'Σπρέι, με ΦΠΑ', cansTax: 'Σπρέι, χωρίς φόρους', pickupNote: 'Η πληρωμή γίνεται στο κατάστημα κατά την παραλαβή. Δεν υπάρχουν έξοδα αποστολής.', shipNote: 'Τα έξοδα αποστολής προστίθενται κατά την ολοκλήρωση της παραγγελίας στην ιστοσελίδα του {shop}. Η παραλαβή από το κατάστημα δεν έχει έξοδα αποστολής.', notOnSite: 'Δεν υπάρχουν στην ιστοσελίδα του {shop}: {list}. Μπορεί να υπάρχουν στο κατάστημα: κάνε κράτηση για πληρωμή στο κατάστημα ή ρώτα το {shop}.', openingSite: 'Άνοιγμα του {shop}…',
+    buyNow: 'Αγορά τώρα από {shop}', buyOnSite: 'Αγορά στην ιστοσελίδα του {shop}', reserveInStore: 'Κράτηση, πληρωμή στο κατάστημα', buyOnSiteNote: 'Ολοκληρώνεις και πληρώνεις στην ιστοσελίδα του {shop}. Το Kromatch βάζει τα σπρέι στο καλάθι τους.', cansVat: 'Σπρέι, με ΦΠΑ', cansTax: 'Σπρέι, χωρίς φόρους', pickupNote: 'Η πληρωμή γίνεται στο κατάστημα κατά την παραλαβή. Δεν υπάρχουν έξοδα αποστολής.', shipNote: 'Τα έξοδα αποστολής προστίθενται κατά την ολοκλήρωση της παραγγελίας στην ιστοσελίδα του {shop}. Η παραλαβή από το κατάστημα δεν έχει έξοδα αποστολής.', notOnSite: 'Δεν υπάρχουν στην ιστοσελίδα του {shop}: {list}. Ρώτα το {shop} γι’ αυτά.', stepsIntro: 'Πάτα «Προσθήκη» για κάθε χρώμα: ανοίγει η ιστοσελίδα του {shop} με το σπρέι στο καλάθι σου. Μετά άνοιξε το καλάθι για να ολοκληρώσεις.', addOne: 'Προσθήκη', addedOne: 'Προστέθηκε ✓', openCart: 'Άνοιγμα καλαθιού του {shop}', visitSite: 'Ιστοσελίδα του {shop}', notSetUp: 'Οι αγορές μέσω Kromatch δεν έχουν ρυθμιστεί ακόμα για το {shop}. Μπορείς να αγοράσεις αυτά τα σπρέι στην ιστοσελίδα ή στο κατάστημά τους.', noneOnSite: 'Κανένα από αυτά τα χρώματα δεν υπάρχει αυτή τη στιγμή στην ιστοσελίδα του {shop}. Ρώτα το {shop}.', openingSite: 'Άνοιγμα του {shop}…',
     orderTitle: 'Η παραγγελία για {shop} είναι έτοιμη',
     demoNote: 'Αυτό είναι δοκιμή. Δεν στάλθηκε καμία παραγγελία και το κατάστημα δεν ειδοποιήθηκε. Μην επικοινωνήσεις με το κατάστημα για αυτή την παραγγελία.',
     backToCart: 'Πίσω στο καλάθι',
@@ -1542,7 +1549,7 @@ const T = {
     cans: '{n} bombes',
     oneCan: '1 bombe',
     priceNote: 'Les prix sont confirmés par le magasin.',
-    buyNow: 'Acheter maintenant chez {shop}', buyOnSite: 'Acheter sur le site de {shop}', reserveInStore: 'Réserver, payer en magasin', buyOnSiteNote: 'Vous finalisez et payez sur le site de {shop}. Kromatch met les bombes dans leur panier.', cansVat: 'Bombes, TVA comprise', cansTax: 'Bombes, hors taxes', pickupNote: 'Paiement en magasin au retrait. Aucuns frais de livraison.', shipNote: 'Les frais de livraison sont ajoutés lors du paiement sur le site de {shop}. Le retrait en magasin est sans frais de livraison.', notOnSite: 'Absent du site de {shop} : {list}. Ils sont peut-être en magasin : réservez-les pour payer sur place, ou demandez à {shop}.', openingSite: 'Ouverture de {shop}…',
+    buyNow: 'Acheter maintenant chez {shop}', buyOnSite: 'Acheter sur le site de {shop}', reserveInStore: 'Réserver, payer en magasin', buyOnSiteNote: 'Vous finalisez et payez sur le site de {shop}. Kromatch met les bombes dans leur panier.', cansVat: 'Bombes, TVA comprise', cansTax: 'Bombes, hors taxes', pickupNote: 'Paiement en magasin au retrait. Aucuns frais de livraison.', shipNote: 'Les frais de livraison sont ajoutés lors du paiement sur le site de {shop}. Le retrait en magasin est sans frais de livraison.', notOnSite: 'Absent du site de {shop} : {list}. Demandez à {shop}.', stepsIntro: 'Touchez « Ajouter » pour chaque couleur : le site de {shop} s’ouvre avec la bombe dans votre panier. Ouvrez ensuite le panier pour payer.', addOne: 'Ajouter', addedOne: 'Ajouté ✓', openCart: 'Ouvrir le panier de {shop}', visitSite: 'Site de {shop}', notSetUp: 'La commande via Kromatch n’est pas encore activée pour {shop}. Vous pouvez acheter ces bombes sur leur site ou en magasin.', noneOnSite: 'Aucune de ces couleurs n’est sur le site de {shop} pour le moment. Demandez à {shop}.', openingSite: 'Ouverture de {shop}…',
     orderTitle: 'Commande prête pour {shop}',
     demoNote: 'Ceci est un test. Aucune commande n’a été envoyée et le magasin n’a pas été contacté. Merci de ne pas contacter le magasin au sujet de cette commande.',
     backToCart: 'Retour au panier',
@@ -1756,7 +1763,7 @@ const T = {
     cans: '{n} Dosen',
     oneCan: '1 Dose',
     priceNote: 'Die Preise werden vom Shop bestätigt.',
-    buyNow: 'Jetzt bei {shop} kaufen', buyOnSite: 'Auf der Website von {shop} kaufen', reserveInStore: 'Reservieren, im Laden zahlen', buyOnSiteNote: 'Du schließt den Kauf auf der Website von {shop} ab. Kromatch legt die Dosen in deren Warenkorb.', cansVat: 'Dosen, inkl. MwSt.', cansTax: 'Dosen, ohne Steuern', pickupNote: 'Bezahlung im Geschäft bei Abholung. Es fallen keine Versandkosten an.', shipNote: 'Versandkosten werden beim Bezahlvorgang auf der Website von {shop} hinzugefügt. Bei Abholung im Geschäft entfallen die Versandkosten.', notOnSite: 'Nicht auf der Website von {shop}: {list}. Vielleicht gibt es sie im Laden: reserviere sie zum Bezahlen vor Ort oder frag {shop}.', openingSite: '{shop} wird geöffnet…',
+    buyNow: 'Jetzt bei {shop} kaufen', buyOnSite: 'Auf der Website von {shop} kaufen', reserveInStore: 'Reservieren, im Laden zahlen', buyOnSiteNote: 'Du schließt den Kauf auf der Website von {shop} ab. Kromatch legt die Dosen in deren Warenkorb.', cansVat: 'Dosen, inkl. MwSt.', cansTax: 'Dosen, ohne Steuern', pickupNote: 'Bezahlung im Geschäft bei Abholung. Es fallen keine Versandkosten an.', shipNote: 'Versandkosten werden beim Bezahlvorgang auf der Website von {shop} hinzugefügt. Bei Abholung im Geschäft entfallen die Versandkosten.', notOnSite: 'Nicht auf der Website von {shop}: {list}. Frag {shop} danach.', stepsIntro: 'Tippe bei jeder Farbe auf „Hinzufügen“: Die Website von {shop} öffnet sich mit der Dose im Warenkorb. Dann den Warenkorb öffnen und bezahlen.', addOne: 'Hinzufügen', addedOne: 'Hinzugefügt ✓', openCart: 'Warenkorb von {shop} öffnen', visitSite: 'Website von {shop}', notSetUp: 'Bestellen über Kromatch ist für {shop} noch nicht eingerichtet. Du kannst die Dosen auf der Website oder im Laden kaufen.', noneOnSite: 'Keine dieser Farben ist gerade auf der Website von {shop}. Frag {shop} danach.', openingSite: '{shop} wird geöffnet…',
     orderTitle: 'Bestellung für {shop} bereit',
     demoNote: 'Das ist ein Test. Es wurde keine Bestellung gesendet und der Shop wurde nicht kontaktiert. Bitte kontaktiere den Shop nicht wegen dieser Bestellung.',
     backToCart: 'Zurück zum Warenkorb',
@@ -1969,7 +1976,7 @@ const T = {
     cans: '{n} sprays',
     oneCan: '1 spray',
     priceNote: 'La tienda confirma los precios.',
-    buyNow: 'Comprar ahora en {shop}', buyOnSite: 'Comprar en la web de {shop}', reserveInStore: 'Reservar, pagar en tienda', buyOnSiteNote: 'Terminas y pagas en la web de {shop}. Kromatch pone los botes en su carrito.', cansVat: 'Botes, IVA incluido', cansTax: 'Botes, sin impuestos', pickupNote: 'El pago se realiza en la tienda al recoger. Sin gastos de envío.', shipNote: 'Los gastos de envío se añaden al finalizar la compra en la web de {shop}. La recogida en tienda no tiene gastos de envío.', notOnSite: 'No están en la web de {shop}: {list}. Puede que estén en la tienda: resérvalos para pagar allí o pregunta a {shop}.', openingSite: 'Abriendo {shop}…',
+    buyNow: 'Comprar ahora en {shop}', buyOnSite: 'Comprar en la web de {shop}', reserveInStore: 'Reservar, pagar en tienda', buyOnSiteNote: 'Terminas y pagas en la web de {shop}. Kromatch pone los botes en su carrito.', cansVat: 'Botes, IVA incluido', cansTax: 'Botes, sin impuestos', pickupNote: 'El pago se realiza en la tienda al recoger. Sin gastos de envío.', shipNote: 'Los gastos de envío se añaden al finalizar la compra en la web de {shop}. La recogida en tienda no tiene gastos de envío.', notOnSite: 'No están en la web de {shop}: {list}. Pregunta a {shop}.', stepsIntro: 'Toca «Añadir» en cada color: se abre la web de {shop} con el bote en tu carrito. Luego abre el carrito para pagar.', addOne: 'Añadir', addedOne: 'Añadido ✓', openCart: 'Abrir el carrito de {shop}', visitSite: 'Web de {shop}', notSetUp: 'La compra a través de Kromatch aún no está activa para {shop}. Puedes comprar estos botes en su web o en la tienda.', noneOnSite: 'Ninguno de estos colores está ahora en la web de {shop}. Pregunta a {shop}.', openingSite: 'Abriendo {shop}…',
     orderTitle: 'Pedido listo para {shop}',
     demoNote: 'Esto es una prueba. No se ha enviado ningún pedido ni se ha contactado con la tienda. No contactes con la tienda por este pedido.',
     backToCart: 'Volver al carrito',
@@ -2182,7 +2189,7 @@ const T = {
     cans: '{n} bombolette',
     oneCan: '1 bomboletta',
     priceNote: 'I prezzi sono confermati dal negozio.',
-    buyNow: 'Acquista ora da {shop}', buyOnSite: 'Acquista sul sito di {shop}', reserveInStore: 'Prenota, paga in negozio', buyOnSiteNote: 'Concludi e paghi sul sito di {shop}. Kromatch mette le bombolette nel loro carrello.', cansVat: 'Bombolette, IVA inclusa', cansTax: 'Bombolette, tasse escluse', pickupNote: 'Il pagamento avviene in negozio al ritiro. Nessuna spesa di spedizione.', shipNote: 'Le spese di spedizione vengono aggiunte al checkout sul sito di {shop}. Il ritiro in negozio non prevede spese di spedizione.', notOnSite: 'Non presenti sul sito di {shop}: {list}. Potrebbero essere in negozio: prenotale per pagare lì o chiedi a {shop}.', openingSite: 'Apertura di {shop}…',
+    buyNow: 'Acquista ora da {shop}', buyOnSite: 'Acquista sul sito di {shop}', reserveInStore: 'Prenota, paga in negozio', buyOnSiteNote: 'Concludi e paghi sul sito di {shop}. Kromatch mette le bombolette nel loro carrello.', cansVat: 'Bombolette, IVA inclusa', cansTax: 'Bombolette, tasse escluse', pickupNote: 'Il pagamento avviene in negozio al ritiro. Nessuna spesa di spedizione.', shipNote: 'Le spese di spedizione vengono aggiunte al checkout sul sito di {shop}. Il ritiro in negozio non prevede spese di spedizione.', notOnSite: 'Non presenti sul sito di {shop}: {list}. Chiedi a {shop}.', stepsIntro: 'Tocca «Aggiungi» per ogni colore: si apre il sito di {shop} con la bomboletta nel carrello. Poi apri il carrello per pagare.', addOne: 'Aggiungi', addedOne: 'Aggiunto ✓', openCart: 'Apri il carrello di {shop}', visitSite: 'Sito di {shop}', notSetUp: 'Gli acquisti tramite Kromatch non sono ancora attivi per {shop}. Puoi comprare queste bombolette sul loro sito o in negozio.', noneOnSite: 'Nessuno di questi colori è ora sul sito di {shop}. Chiedi a {shop}.', openingSite: 'Apertura di {shop}…',
     orderTitle: 'Ordine pronto per {shop}',
     demoNote: 'Questa è una prova. Nessun ordine è stato inviato e il negozio non è stato contattato. Non contattare il negozio per questo ordine.',
     backToCart: 'Torna al carrello',
@@ -2395,7 +2402,7 @@ const T = {
     cans: '{n} sprays',
     oneCan: '1 spray',
     priceNote: 'Os preços são confirmados pela loja.',
-    buyNow: 'Comprar agora em {shop}', buyOnSite: 'Comprar no site de {shop}', reserveInStore: 'Reservar, pagar na loja', buyOnSiteNote: 'Concluis e pagas no site de {shop}. A Kromatch põe as latas no carrinho deles.', cansVat: 'Latas, IVA incluído', cansTax: 'Latas, sem impostos', pickupNote: 'O pagamento é feito na loja no levantamento. Sem custos de envio.', shipNote: 'Os custos de envio são acrescentados no checkout do site de {shop}. O levantamento na loja não tem custos de envio.', notOnSite: 'Não estão no site de {shop}: {list}. Podem estar na loja: reserva-as para pagar lá ou pergunta a {shop}.', openingSite: 'A abrir {shop}…',
+    buyNow: 'Comprar agora em {shop}', buyOnSite: 'Comprar no site de {shop}', reserveInStore: 'Reservar, pagar na loja', buyOnSiteNote: 'Concluis e pagas no site de {shop}. A Kromatch põe as latas no carrinho deles.', cansVat: 'Latas, IVA incluído', cansTax: 'Latas, sem impostos', pickupNote: 'O pagamento é feito na loja no levantamento. Sem custos de envio.', shipNote: 'Os custos de envio são acrescentados no checkout do site de {shop}. O levantamento na loja não tem custos de envio.', notOnSite: 'Não estão no site de {shop}: {list}. Pergunta a {shop}.', stepsIntro: 'Toca em «Adicionar» em cada cor: abre o site de {shop} com a lata no carrinho. Depois abre o carrinho para pagar.', addOne: 'Adicionar', addedOne: 'Adicionado ✓', openCart: 'Abrir o carrinho de {shop}', visitSite: 'Site de {shop}', notSetUp: 'As compras através da Kromatch ainda não estão ativas para {shop}. Podes comprar estas latas no site ou na loja.', noneOnSite: 'Nenhuma destas cores está agora no site de {shop}. Pergunta a {shop}.', openingSite: 'A abrir {shop}…',
     orderTitle: 'Pedido pronto para {shop}',
     demoNote: 'Isto é um teste. Nenhum pedido foi enviado e a loja não foi contatada. Não entre em contato com a loja sobre este pedido.',
     backToCart: 'Voltar ao carrinho',
@@ -3045,7 +3052,7 @@ const normShop = sh => {
   // Only lines with a price are shown and orderable; a colour with its own price keeps its line visible
   const priced = l => typeof prices[l] === 'number' || Object.keys(overrides).some(k => k.startsWith(l + '|'));
   return { id: sh.id || null, slug: sh.slug || slugify(sh.name), name: sh.name, city: sh.city, currency: sh.currency, delivery: sh.delivery || null,
-    demo: sh.demo !== false && sh.is_demo !== false, live: !!(sh.live || sh.is_live), lines: (sh.lines || []).filter(priced), prices,
+    demo: sh.demo !== false && sh.is_demo !== false, live: !!(sh.live || sh.is_live), linkOnly: !!(sh.linkOnly || sh.link_only), lines: (sh.lines || []).filter(priced), prices,
     overrides, out: new Set(sh.out || []),
     paused: !!sh.paused, pauseMsg: sh.pauseMsg || '', hours: sh.hours || null, tz: sh.tz || null, holdDays: sh.holdDays || 7,
     phone: sh.phone || '', address: sh.address || '', mapsUrl: sh.mapsUrl || '', website: sh.website || '', about: sh.about || '' };
@@ -3158,15 +3165,18 @@ function handoffFor(shop) {
   fetch(`${CFG.supabaseUrl}/rest/v1/rpc/widget_info`, { method: 'POST',
     headers: { apikey: CFG.supabaseKey, 'Content-Type': 'application/json' }, body: JSON.stringify({ p_slug: shop.slug }) })
     .then(r => r.ok ? r.json() : null).then(info => {
-      // only once their website has actually loaded the widget code (otherwise shoppers would land on a site that can't take the cans)
-      const site = info && info.enabled && info.installed === true && info.app_handoff !== false && (info.origins || [])
+      // installed = their website has loaded the widget code, so the whole list can go into their cart in one go.
+      // Not installed yet: WooCommerce takes one product per link, so the shopper adds colour by colour (Shopify takes the list in one link).
+      const site = info && info.enabled && info.app_handoff !== false && (info.origins || [])
         .map(o => { try { return new URL(o).origin; } catch (e) { return null; } }).filter(o => o && o.startsWith('https://'))[0];
-      if (!site) { HANDOFF.set(k, false); return; }
+      if (!site) { HANDOFF.set(k, false); if (!$('listSheet').hidden) renderList(); return; }
       const map = new Map();
       (info.products || []).forEach(x => { const key = x.line + '|' + x.code, c = map.get(key); if (!c || (!c.in_stock && x.in_stock)) map.set(key, x); });
-      HANDOFF.set(k, { site, map });
+      let cart = site + '/cart/';
+      try { if (info.cart_url) cart = new URL(info.cart_url, site).href; } catch (e) {}
+      HANDOFF.set(k, { site, map, installed: info.installed === true, platform: info.platform || '', cart });
       if (!$('listSheet').hidden) renderList();
-    }, () => HANDOFF.set(k, false));
+    }, () => { HANDOFF.set(k, false); if (!$('listSheet').hidden) renderList(); });
   return null;
 }
 function handoffSplit(shop, h) {
@@ -3174,16 +3184,39 @@ function handoffSplit(shop, h) {
   itemsFor(shop).forEach(i => { const m = i.code && h.map.get(i.brand + '|' + i.code); if (m && m.id && m.in_stock) send.push({ id: String(m.id), qty: i.qty, item: i }); else missing.push(i); });
   return { send, missing };
 }
+// WooCommerce shop without the Kromatch code yet: one "Add" link per colour (each opens their site with that can added), then their cart
+function handoffSteps(shop, h, send, g) {
+  const intro = document.createElement('p'); intro.className = 'note'; intro.style.margin = '4px 0 6px';
+  intro.textContent = t('stepsIntro').replace(/\{shop\}/g, shop.name); g.appendChild(intro);
+  const ul = document.createElement('ul'); ul.className = 'add-steps';
+  send.forEach(x => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="sw" style="background:${escHtml(x.item.hex || '#ccc')}"></span><span class="grow"></span><a class="secondary small add-one" target="_blank" rel="noopener"></a>`;
+    li.querySelector('.grow').textContent = `${x.qty} × ${itemName(x.item)} · ${x.item.brand}`;
+    const a = li.querySelector('a'); a.textContent = t('addOne');
+    a.href = `${h.site}/?add-to-cart=${encodeURIComponent(x.id)}&quantity=${x.qty}`;
+    a.addEventListener('click', () => { li.classList.add('done'); a.textContent = t('addedOne'); });
+    ul.appendChild(li);
+  });
+  g.appendChild(ul);
+  const go = document.createElement('a'); go.className = 'primary buy to-cart'; go.target = '_blank'; go.rel = 'noopener';
+  go.href = h.cart; go.textContent = t('openCart').replace(/\{shop\}/g, shop.name);
+  go.addEventListener('click', () => { logEvent('app_handoff', { shop: shop.slug, mode: 'steps', cans: send.reduce((n, x) => n + x.qty, 0), colours: send.length,
+    items: send.map(x => ({ line: x.item.brand, code: x.item.code || null, name: itemName(x.item), qty: x.qty })) }); flushEvents(); });
+  g.appendChild(go);
+}
 function handoffGo(shop, h, btn) {
   const { send } = handoffSplit(shop, h);
   if (!send.length) return;
-  btn.disabled = true; btn.textContent = t('openingSite').replace('{shop}', shop.name);
+  btn.disabled = true; btn.textContent = t('openingSite').replace(/\{shop\}/g, shop.name);
   const payload = btoa(JSON.stringify({ v: 1, s: shop.slug, i: send.map(x => [x.id, x.qty]) })).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   logEvent('app_handoff', { shop: shop.slug, cans: send.reduce((n, x) => n + x.qty, 0), colours: send.length,
     items: send.map(x => ({ line: x.item.brand, code: x.item.code || null, name: itemName(x.item), qty: x.qty })) });
   flushEvents();
   store.list = store.list.filter(i => !send.some(x => x.item === i)); pruneDesigns(); save(); renderListCount();
-  setTimeout(() => { location.href = h.site + '/?kromatch_cart=' + payload; }, 150);
+  const url = h.installed ? h.site + '/?kromatch_cart=' + payload
+    : h.site + '/cart/' + send.map(x => `${encodeURIComponent(x.id)}:${x.qty}`).join(',');   // Shopify cart link (no code needed)
+  setTimeout(() => { location.href = url; }, 150);
 }
 async function loadLiveShops() {
   if (!CFG) return false;
@@ -3399,33 +3432,43 @@ function renderList() {
       g.appendChild(btn);
       const pw = document.createElement('p'); pw.className = 'powered';
       pw.innerHTML = 'Powered by <a href="https://kromatch.com" target="_blank" rel="noopener">Kromatch</a>'; g.appendChild(pw);
+    } else if (shop.demo && !shop.linkOnly) {
+      // Kromatch's own demo shops (Graffiti Shop …): test reservations, so friends can try the whole flow
+      btn.textContent = shop.paused ? t('shopPaused') : t('buyNow').replace('{shop}', shop.name);
+      btn.disabled = !!shop.paused;
+      btn.addEventListener('click', () => openOrder(shop));
+      g.appendChild(btn);
+      if (!shop.paused && !shop.delivery) { const pn = document.createElement('p'); pn.className = 'note pickup-note'; pn.style.margin = '6px 0 0'; pn.textContent = t('pickupNote'); g.appendChild(pn); }
     } else {
+      // Real shops: customers buy on the shop's own website
       const h = handoffFor(shop);
       const split = h ? handoffSplit(shop, h) : null;
-      if (split && split.send.length) {
-        btn.textContent = t('buyOnSite').replace('{shop}', shop.name);
+      const vatIn = ['EUR', 'GBP', 'CHF', 'SEK', 'DKK', 'NOK', 'PLN', 'CZK', 'HUF', 'RON', 'BGN'].includes(shop.currency || 'EUR');
+      const tl = g.querySelector('.cart-total .total-row span'); if (tl) tl.textContent = `${t(vatIn ? 'cansVat' : 'cansTax')} · ${cansText(totalsFor(shop).count)}`;
+      if (HANDOFF.get(shopKey(shop)) === 'loading') {
+        const ld = document.createElement('p'); ld.className = 'note'; ld.textContent = t('openingSite').replace(/\{shop\}/g, shop.name); g.appendChild(ld);
+      } else if (split && split.send.length && !(h.installed || h.platform === 'shopify')) {
+        handoffSteps(shop, h, split.send, g);
+        const sn = document.createElement('p'); sn.className = 'note ship-note'; sn.style.margin = '6px 0 0'; sn.textContent = t('shipNote').replace(/\{shop\}/g, shop.name); g.appendChild(sn);
+        if (split.missing.length) { const mn = document.createElement('p'); mn.className = 'note'; mn.style.margin = '6px 0 0';
+          mn.textContent = t('notOnSite').replace(/\{shop\}/g, shop.name).replace('{list}', split.missing.map(canLabel).join(', ')); g.appendChild(mn); }
+      } else if (split && split.send.length) {
+        btn.textContent = t('buyOnSite').replace(/\{shop\}/g, shop.name);
         btn.classList.add('to-site');
         btn.addEventListener('click', () => handoffGo(shop, h, btn));
         g.appendChild(btn);
         const nt = document.createElement('p'); nt.className = 'note'; nt.style.margin = '6px 0 4px';
-        nt.textContent = t('buyOnSiteNote').replace('{shop}', shop.name); g.appendChild(nt);
+        nt.textContent = t('buyOnSiteNote').replace(/\{shop\}/g, shop.name); g.appendChild(nt);
         const sn = document.createElement('p'); sn.className = 'note ship-note'; sn.style.margin = '0 0 10px';
-        sn.textContent = t('shipNote').replace('{shop}', shop.name); g.appendChild(sn);
-        // EU shops show prices with VAT; elsewhere (Canada) shop prices are before tax
-        const vatIn = ['EUR', 'GBP', 'CHF', 'SEK', 'DKK', 'NOK', 'PLN', 'CZK', 'HUF', 'RON', 'BGN'].includes(shop.currency || 'EUR');
-        const tl = g.querySelector('.cart-total .total-row span'); if (tl) tl.textContent = `${t(vatIn ? 'cansVat' : 'cansTax')} · ${cansText(totalsFor(shop).count)}`;
+        sn.textContent = t('shipNote').replace(/\{shop\}/g, shop.name); g.appendChild(sn);
         if (split.missing.length) { const mn = document.createElement('p'); mn.className = 'note'; mn.style.margin = '0 0 10px';
-          mn.textContent = t('notOnSite').replace('{shop}', shop.name).replace('{list}', split.missing.map(canLabel).join(', ')); g.appendChild(mn); }
-        const rb = document.createElement('button'); rb.type = 'button'; rb.className = 'secondary buy reserve';
-        rb.textContent = shop.paused ? t('shopPaused') : t('reserveInStore'); rb.disabled = !!shop.paused;
-        rb.addEventListener('click', () => openOrder(shop));
-        g.appendChild(rb);
+          mn.textContent = t('notOnSite').replace(/\{shop\}/g, shop.name).replace('{list}', split.missing.map(canLabel).join(', ')); g.appendChild(mn); }
       } else {
-        btn.textContent = shop.paused ? t('shopPaused') : t('buyNow').replace('{shop}', shop.name);
-        btn.disabled = !!shop.paused;
-        btn.addEventListener('click', () => openOrder(shop));
-        g.appendChild(btn);
-        if (!shop.paused && !shop.delivery) { const pn = document.createElement('p'); pn.className = 'note pickup-note'; pn.style.margin = '6px 0 0'; pn.textContent = t('pickupNote'); g.appendChild(pn); }
+        // not linked yet (or none of these colours are on their website): point to their website
+        const nn = document.createElement('p'); nn.className = 'note'; nn.style.margin = '6px 0';
+        nn.textContent = split && !split.send.length ? t('noneOnSite').replace(/\{shop\}/g, shop.name) : t('notSetUp').replace(/\{shop\}/g, shop.name); g.appendChild(nn);
+        if (shop.website) { const a = document.createElement('a'); a.className = 'secondary buy'; a.target = '_blank'; a.rel = 'noopener';
+          a.href = /^https?:/.test(shop.website) ? shop.website : 'https://' + shop.website; a.textContent = t('visitSite').replace(/\{shop\}/g, shop.name); g.appendChild(a); }
       }
     }
     box.appendChild(g);
