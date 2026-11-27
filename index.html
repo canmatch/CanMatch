@@ -869,9 +869,9 @@
   </div>
 </div>
 
-<script src="colors.js?v=2026-11-27-website2"></script>
-<script src="shops.js?v=2026-11-27-website2"></script>
-<script src="config.js?v=2026-11-27-website2"></script>
+<script src="colors.js?v=2026-11-27-website4"></script>
+<script src="shops.js?v=2026-11-27-website4"></script>
+<script src="config.js?v=2026-11-27-website4"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script>
 /* ---------- Colour maths ---------- */
@@ -3041,6 +3041,7 @@ function applyShopLink() {
   lockedShop = sh;
   if (store.city !== sh.city) store.city = sh.city;
   store.shopPref = shopKey(sh); save();
+  setTimeout(() => handoffFor(sh), 0);   // after the page script has finished loading
 }
 function unlockShop() {
   lockedShop = null; linkTried = 'off';
@@ -3075,7 +3076,10 @@ function renderShopPick() {
 // The shop a can is bought from: the first shop in the city that sells its line and has that colour in stock
 // Inside a shop's website (widget), only colours that can actually go into THEIR online cart count as available
 let WIDGET = null;
-const cartable = (sh, brand, code) => !(WIDGET && lockedShop && sh === lockedShop) || !!(code && (WIDGET.map.get(brand + '|' + code) || {}).in_stock);
+const cartable = (sh, brand, code) => {
+  if (WIDGET && lockedShop && sh === lockedShop) return !!(code && (WIDGET.map.get(brand + '|' + code) || {}).in_stock);
+  return true;
+};
 const shopFor = (brand, code) => cityShops().find(sh => sh.lines.includes(brand) && !(code && sh.out.has(brand + '|' + code)) && priceOf(sh, brand, code) !== undefined && cartable(sh, brand, code)) || null;
 const CFG = window.KROMATCH_CONFIG || null;
 /* ---------- Website widget: cans go into the shop's OWN cart ----------
@@ -3175,6 +3179,7 @@ function handoffFor(shop) {
       let cart = site + '/cart/';
       try { if (info.cart_url) cart = new URL(info.cart_url, site).href; } catch (e) {}
       HANDOFF.set(k, { site, map, installed: info.installed === true, platform: info.platform || '', cart });
+      renderListCount();
       if (!$('listSheet').hidden) renderList();
     }, () => { HANDOFF.set(k, false); if (!$('listSheet').hidden) renderList(); });
   return null;
@@ -3183,27 +3188,6 @@ function handoffSplit(shop, h) {
   const send = [], missing = [];
   itemsFor(shop).forEach(i => { const m = i.code && h.map.get(i.brand + '|' + i.code); if (m && m.id && m.in_stock) send.push({ id: String(m.id), qty: i.qty, item: i }); else missing.push(i); });
   return { send, missing };
-}
-// WooCommerce shop without the Kromatch code yet: one "Add" link per colour (each opens their site with that can added), then their cart
-function handoffSteps(shop, h, send, g) {
-  const intro = document.createElement('p'); intro.className = 'note'; intro.style.margin = '4px 0 6px';
-  intro.textContent = t('stepsIntro').replace(/\{shop\}/g, shop.name); g.appendChild(intro);
-  const ul = document.createElement('ul'); ul.className = 'add-steps';
-  send.forEach(x => {
-    const li = document.createElement('li');
-    li.innerHTML = `<span class="sw" style="background:${escHtml(x.item.hex || '#ccc')}"></span><span class="grow"></span><a class="secondary small add-one" target="_blank" rel="noopener"></a>`;
-    li.querySelector('.grow').textContent = `${x.qty} × ${itemName(x.item)} · ${x.item.brand}`;
-    const a = li.querySelector('a'); a.textContent = t('addOne');
-    a.href = `${h.site}/?add-to-cart=${encodeURIComponent(x.id)}&quantity=${x.qty}`;
-    a.addEventListener('click', () => { li.classList.add('done'); a.textContent = t('addedOne'); });
-    ul.appendChild(li);
-  });
-  g.appendChild(ul);
-  const go = document.createElement('a'); go.className = 'primary buy to-cart'; go.target = '_blank'; go.rel = 'noopener';
-  go.href = h.cart; go.textContent = t('openCart').replace(/\{shop\}/g, shop.name);
-  go.addEventListener('click', () => { logEvent('app_handoff', { shop: shop.slug, mode: 'steps', cans: send.reduce((n, x) => n + x.qty, 0), colours: send.length,
-    items: send.map(x => ({ line: x.item.brand, code: x.item.code || null, name: itemName(x.item), qty: x.qty })) }); flushEvents(); });
-  g.appendChild(go);
 }
 function handoffGo(shop, h, btn) {
   const { send } = handoffSplit(shop, h);
@@ -3447,11 +3431,13 @@ function renderList() {
       const tl = g.querySelector('.cart-total .total-row span'); if (tl) tl.textContent = `${t(vatIn ? 'cansVat' : 'cansTax')} · ${cansText(totalsFor(shop).count)}`;
       if (HANDOFF.get(shopKey(shop)) === 'loading') {
         const ld = document.createElement('p'); ld.className = 'note'; ld.textContent = t('openingSite').replace(/\{shop\}/g, shop.name); g.appendChild(ld);
-      } else if (split && split.send.length && !(h.installed || h.platform === 'shopify')) {
-        handoffSteps(shop, h, split.send, g);
+      } else if (h && !(split.send.length && (h.installed || h.platform === 'shopify'))) {
+        // Their website can't take the whole list yet (no Kromatch code there): the main button simply opens their website
+        const a = document.createElement('a'); a.className = 'primary buy to-site-link'; a.target = '_blank'; a.rel = 'noopener';
+        a.href = h.site + '/'; a.textContent = t('buyOnSite').replace(/\{shop\}/g, shop.name);
+        a.addEventListener('click', () => { logEvent('app_handoff', { shop: shop.slug, mode: 'site', cans: totalsFor(shop).count }); flushEvents(); });
+        g.appendChild(a);
         const sn = document.createElement('p'); sn.className = 'note ship-note'; sn.style.margin = '6px 0 0'; sn.textContent = t('shipNote').replace(/\{shop\}/g, shop.name); g.appendChild(sn);
-        if (split.missing.length) { const mn = document.createElement('p'); mn.className = 'note'; mn.style.margin = '6px 0 0';
-          mn.textContent = t('notOnSite').replace(/\{shop\}/g, shop.name).replace('{list}', split.missing.map(canLabel).join(', ')); g.appendChild(mn); }
       } else if (split && split.send.length) {
         btn.textContent = t('buyOnSite').replace(/\{shop\}/g, shop.name);
         btn.classList.add('to-site');
@@ -3461,8 +3447,6 @@ function renderList() {
         nt.textContent = t('buyOnSiteNote').replace(/\{shop\}/g, shop.name); g.appendChild(nt);
         const sn = document.createElement('p'); sn.className = 'note ship-note'; sn.style.margin = '0 0 10px';
         sn.textContent = t('shipNote').replace(/\{shop\}/g, shop.name); g.appendChild(sn);
-        if (split.missing.length) { const mn = document.createElement('p'); mn.className = 'note'; mn.style.margin = '0 0 10px';
-          mn.textContent = t('notOnSite').replace(/\{shop\}/g, shop.name).replace('{list}', split.missing.map(canLabel).join(', ')); g.appendChild(mn); }
       } else {
         // not linked yet (or none of these colours are on their website): point to their website
         const nn = document.createElement('p'); nn.className = 'note'; nn.style.margin = '6px 0';
