@@ -316,12 +316,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script src="config.js?v=2026-11-27-orders1"></script>
-<script src="colors.js?v=2026-11-27-orders1"></script>
+<script src="config.js?v=2026-11-28-spray1"></script>
+<script src="colors.js?v=2026-11-28-spray1"></script>
 <script>
 /* ---------- Text (English and Greek) ---------- */
 const TX = {
-  en: { woTitle: 'Website orders through Kromatch', woNote: 'Every order on your website with cans from Kromatch, with your own order number. Only completed orders count in the sales above. If your shop system is connected with keys, the status updates by itself; otherwise mark orders here once they are completed.', woDate: 'Date', woRef: 'Order no.', woFrom: 'From', woCans: 'Kromatch cans', woStatus: 'Status', st_placed: 'Placed', st_completed: 'Completed', st_cancelled: 'Cancelled', st_refunded: 'Refunded', woMarkDone: 'Completed', woMarkCancel: 'Cancelled', woUndo: 'Undo', woBySystem: 'from your shop system', woFound: 'found by your shop system', srcApp: 'App', srcWidget: 'Widget', salesOpen: '{n} website order(s) waiting to be completed.', woNone: 'No website orders through Kromatch yet.',
+  en: { secLabel: 'Spray-paint sections of their website', secAuto: 'Found automatically', secHelp: 'Kromatch reads only the shop’s spray-paint categories (e.g. “Spray paint”, “Graffiti”, “Montana”), not clothes or other products. Leave empty to find them automatically, or type their names one per line to choose them yourself. * reads the whole shop.', secUsed: 'Spray paint only: {s}.', woTitle: 'Website orders through Kromatch', woNote: 'Every order on your website with cans from Kromatch, with your own order number. Only completed orders count in the sales above. If your shop system is connected with keys, the status updates by itself; otherwise mark orders here once they are completed.', woDate: 'Date', woRef: 'Order no.', woFrom: 'From', woCans: 'Kromatch cans', woStatus: 'Status', st_placed: 'Placed', st_completed: 'Completed', st_cancelled: 'Cancelled', st_refunded: 'Refunded', woMarkDone: 'Completed', woMarkCancel: 'Cancelled', woUndo: 'Undo', woBySystem: 'from your shop system', woFound: 'found by your shop system', srcApp: 'App', srcWidget: 'Widget', salesOpen: '{n} website order(s) waiting to be completed.', woNone: 'No website orders through Kromatch yet.',
     linkTitle: 'Your Kromatch link and QR code', linkIntro: 'Opens Kromatch set to your shop: only your cans and prices. Put it on your website, Instagram or a poster at the counter.', copy: 'Copy', copied: 'Copied', qrIntro: 'Customers scan this to plan a mural or match a colour with your cans, then reserve them.', downloadQr: 'Download QR (for printing)',
     codeSent: 'We emailed you a login code (check spam too). Type it here, or tap the link in the email.', codeLabel: 'Code from the email', codeVerify: 'Log in', codeBad: 'That code didn’t work. Check it, or send a new one.',
     repBad: 'Reported wrong matches', repBadDesc: 'Cans testers flagged as not matching (too light, too dark or wrong colour). Fix these colours first.',
@@ -356,7 +356,7 @@ const TX = {
     invite: 'Invite', invited: 'Invitation sent.', linked: 'Existing login linked to this shop.', makeLive: 'Make live',
     makeDemo: 'Make demo', linkOnly: 'Only visible with its link or QR code (private preview, not listed in the app)', linkOnlyPill: 'link only', switchOff: 'Switch off', created: 'Shop created. Invite its staff below.'
   },
-  el: { woTitle: 'Παραγγελίες ιστοσελίδας μέσω Kromatch', woNote: 'Κάθε παραγγελία στην ιστοσελίδα σου με σπρέι από το Kromatch, με τον δικό σου αριθμό παραγγελίας. Στις πωλήσεις παραπάνω μετράνε μόνο οι ολοκληρωμένες. Αν το σύστημα του καταστήματος είναι συνδεδεμένο με κλειδιά, η κατάσταση ενημερώνεται αυτόματα· αλλιώς σημείωσε εδώ τις παραγγελίες όταν ολοκληρωθούν.', woDate: 'Ημερομηνία', woRef: 'Αρ. παραγγελίας', woFrom: 'Από', woCans: 'Σπρέι Kromatch', woStatus: 'Κατάσταση', st_placed: 'Καταχωρήθηκε', st_completed: 'Ολοκληρώθηκε', st_cancelled: 'Ακυρώθηκε', st_refunded: 'Επιστράφηκε', woMarkDone: 'Ολοκληρώθηκε', woMarkCancel: 'Ακυρώθηκε', woUndo: 'Αναίρεση', woBySystem: 'από το σύστημα του καταστήματος', woFound: 'βρέθηκε από το σύστημα του καταστήματος', srcApp: 'Εφαρμογή', srcWidget: 'Widget', salesOpen: '{n} παραγγελίες ιστοσελίδας περιμένουν ολοκλήρωση.', woNone: 'Δεν υπάρχουν ακόμα παραγγελίες ιστοσελίδας μέσω Kromatch.',
+  el: { secLabel: 'Ενότητες σπρέι της ιστοσελίδας τους', secAuto: 'Βρίσκονται αυτόματα', secHelp: 'Το Kromatch διαβάζει μόνο τις κατηγορίες σπρέι του καταστήματος (π.χ. «Σπρέι», «Graffiti», «Montana»), όχι ρούχα ή άλλα προϊόντα. Άφησέ το κενό για να βρεθούν αυτόματα, ή γράψε τα ονόματά τους, ένα ανά γραμμή, για να τα διαλέξεις εσύ. Το * διαβάζει όλο το κατάστημα.', secUsed: 'Μόνο σπρέι: {s}.', woTitle: 'Παραγγελίες ιστοσελίδας μέσω Kromatch', woNote: 'Κάθε παραγγελία στην ιστοσελίδα σου με σπρέι από το Kromatch, με τον δικό σου αριθμό παραγγελίας. Στις πωλήσεις παραπάνω μετράνε μόνο οι ολοκληρωμένες. Αν το σύστημα του καταστήματος είναι συνδεδεμένο με κλειδιά, η κατάσταση ενημερώνεται αυτόματα· αλλιώς σημείωσε εδώ τις παραγγελίες όταν ολοκληρωθούν.', woDate: 'Ημερομηνία', woRef: 'Αρ. παραγγελίας', woFrom: 'Από', woCans: 'Σπρέι Kromatch', woStatus: 'Κατάσταση', st_placed: 'Καταχωρήθηκε', st_completed: 'Ολοκληρώθηκε', st_cancelled: 'Ακυρώθηκε', st_refunded: 'Επιστράφηκε', woMarkDone: 'Ολοκληρώθηκε', woMarkCancel: 'Ακυρώθηκε', woUndo: 'Αναίρεση', woBySystem: 'από το σύστημα του καταστήματος', woFound: 'βρέθηκε από το σύστημα του καταστήματος', srcApp: 'Εφαρμογή', srcWidget: 'Widget', salesOpen: '{n} παραγγελίες ιστοσελίδας περιμένουν ολοκλήρωση.', woNone: 'Δεν υπάρχουν ακόμα παραγγελίες ιστοσελίδας μέσω Kromatch.',
     linkTitle: 'Ο σύνδεσμος και ο κωδικός QR σου', linkIntro: 'Ανοίγει το Kromatch ρυθμισμένο στο κατάστημά σου: μόνο τα δικά σου σπρέι και τιμές. Βάλ’ τον στο site, στο Instagram ή σε αφίσα στο ταμείο.', copy: 'Αντιγραφή', copied: 'Αντιγράφηκε', qrIntro: 'Οι πελάτες το σκανάρουν για να σχεδιάσουν τοιχογραφία ή να βρουν χρώμα με τα δικά σου σπρέι και να τα κρατήσουν.', downloadQr: 'Λήψη QR (για εκτύπωση)',
     codeSent: 'Σου στείλαμε κωδικό σύνδεσης (δες και στα ανεπιθύμητα). Γράψ’ τον εδώ ή πάτα τον σύνδεσμο στο email.', codeLabel: 'Κωδικός από το email', codeVerify: 'Σύνδεση', codeBad: 'Ο κωδικός δεν δούλεψε. Έλεγξέ τον ή ζήτα νέο.',
     repBad: 'Αναφορές λάθος αντιστοίχισης', repBadDesc: 'Σπρέι που οι δοκιμαστές σημείωσαν ότι δεν ταιριάζουν (πιο ανοιχτό, πιο σκούρο ή λάθος χρώμα). Διόρθωσε πρώτα αυτά.',
@@ -1081,6 +1081,8 @@ async function renderConnection(s, body, pill) {
       <p class="note">${t('wooHelp')}</p></div>
     <div class="cf cf-csv"><label class="field"><span>${t('csvUrl')}</span><input class="ccsv" placeholder="https://docs.google.com/…/pub?output=csv"></label>
       <p class="note">${t('csvHelp')}</p></div>
+    <div class="cf cf-shopify cf-woocommerce"><label class="field"><span>${t('secLabel')}</span><textarea class="csections" rows="2" placeholder="${t('secAuto')}"></textarea></label>
+      <p class="note">${t('secHelp')}</p></div>
     <label class="row"><input type="checkbox" class="cstock" style="width:auto;margin:0"> ${t('optStock')}</label>
     <label class="row"><input type="checkbox" class="cprices" style="width:auto;margin:0"> ${t('optPrices')}</label>
     <label class="row"><input type="checkbox" class="cpush" style="width:auto;margin:0"> ${t('optPush')}</label>
@@ -1094,12 +1096,15 @@ async function renderConnection(s, body, pill) {
   $$('.ccsv').value = integ.provider === 'csv' ? (integ.config.url || '') : '';
   $$('.cstock').checked = integ.sync_stock !== false; $$('.cprices').checked = integ.sync_prices !== false; $$('.cpush').checked = integ.push_orders !== false;
   $$('.chook').value = integ.webhook_url || '';
+  $$('.csections').value = Array.isArray(integ.config.sections) ? integ.config.sections.join('\n') : (integ.config.sections || '');
   const showFields = () => body.querySelectorAll('.cf').forEach(f => { f.hidden = !f.classList.contains('cf-' + $$('.cprov').value); });
   $$('.cprov').addEventListener('change', showFields); showFields();
   const msg = m => { $$('.cmsg').textContent = m; };
   $$('.csave').addEventListener('click', async () => {
     const prov = $$('.cprov').value;
     const config = prov === 'shopify' ? { store: $$('.cstore').value.trim() } : prov === 'woocommerce' ? { url: $$('.curl').value.trim() } : { url: $$('.ccsv').value.trim() };
+    const sections = $$('.csections').value.split('\n').map(x => x.trim()).filter(Boolean);
+    if (prov !== 'csv' && sections.length) config.sections = sections;
     const secret = prov === 'shopify' ? { token: $$('.ctoken').value.trim() } : prov === 'woocommerce' ? { key: $$('.ckey').value.trim(), secret: $$('.csecret').value.trim() } : null;
     try { await callFn('integrations', { action: 'save', shop_id: s.id, provider: prov, config, secret,
       sync_stock: $$('.cstock').checked, sync_prices: $$('.cprices').checked, push_orders: $$('.cpush').checked, webhook_url: $$('.chook').value.trim() || null });
@@ -1107,13 +1112,13 @@ async function renderConnection(s, body, pill) {
   });
   $$('.ctest').addEventListener('click', async () => {
     msg(t('working'));
-    try { const r = await callFn('integrations', { action: 'test', shop_id: s.id }); msg(t('testResult', { p: r.products, r: r.recognised })); }
+    try { const r = await callFn('integrations', { action: 'test', shop_id: s.id }); msg(t('testResult', { p: r.products, r: r.recognised }) + (r.sections ? ' ' + t('secUsed', { s: r.sections }) : '')); }
     catch (e) { msg(t('error', { m: e.message })); }
   });
   $$('.csync').addEventListener('click', async () => {
     msg(t('working'));
     try { const r = await callFn('integrations', { action: 'sync', shop_id: s.id }); const x = r.results[0] || {};
-      msg(x.status === 'ok' ? t('syncResult', { r: x.recognised, p: x.products, o: x.out_of_stock }) : t('error', { m: x.message }));
+      msg(x.status === 'ok' ? t('syncResult', { r: x.recognised, p: x.products, o: x.out_of_stock }) + (x.sections ? ' ' + t('secUsed', { s: x.sections }) : '') : t('error', { m: x.message }));
       loadConnState(s, pill); renderUnmatched(s, $$('.cunmatched')); if (shop && shop.id === s.id) refreshShopData(); }
     catch (e) { msg(t('error', { m: e.message })); }
   });
